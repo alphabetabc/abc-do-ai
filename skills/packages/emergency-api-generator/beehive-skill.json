@@ -1,0 +1,7 @@
+{
+  "id": "emergency-api-generator",
+  "version": "0.0.0",
+  "targets": [
+    "trae"
+  ]
+}

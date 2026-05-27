@@ -1,0 +1,6 @@
+{
+    "id": "ui-emap-gis",
+    "version": "0.0.0",
+    "targets": ["trae"],
+    "files": ["./MapEmergencyTransmission.md"]
+}
