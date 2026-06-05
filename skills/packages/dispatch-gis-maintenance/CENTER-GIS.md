@@ -529,19 +529,86 @@ const columns = useMemo(() => {
 }, [resourceTypes]);
 ```
 
-## 9. 相关文件
+## 9. 传输路由告警图层
 
-| 文件路径                                                                    | 说明            |
-| --------------------------------------------------------------------------- | --------------- |
-| `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`         | 主组件          |
-| `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx` | 地图工具类      |
-| `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`    | 字段配置        |
-| `apps/main/app/request/center.ts`                                           | API 请求定义    |
-| `apps/main/app/request/custom/center.ts`                                    | 自定义 API 请求 |
-| `apps/main/app/store.ts`                                                    | 全局状态管理    |
+### 9.1 组件职责
+
+`MapEmergencyTransmissionView` 组件负责传输路由告警数据的请求、过滤和图层渲染，支持多种传输路由类型的动态显示。
+
+### 9.2 核心流程
+
+```
+图例状态变化 → 数据时间计算 → 全量告警数据请求 → 图层参数过滤 → 图层数据请求 → 地图渲染
+```
+
+### 9.3 图例状态映射
+
+| 图例名称   | 图层服务名             | 类型枚举值 |
+| ---------- | ---------------------- | ---------- |
+| 二干       | 省级传输二干告警图层   | 1          |
+| 骨干层路由 | 地市骨干层路由告警图层 | 3          |
+| 汇聚路由   | 区县汇聚层路由告警图层 | 4          |
+| 接入层     | 乡镇接入层路由告警图层 | 2          |
+| 乡镇三路由 | 乡镇三路由告警图层     | -          |
+| 节点机房   | 乡镇路由站点告警图层表 | -          |
+
+### 9.4 详细文档
+
+请参考: [MapEmergencyTransmissionView 组件维护文档](./MapEmergencyTransmissionView.md)
+
+## 10. 图例组件
+
+### 10.1 组件职责
+
+`DispatchLegend` 组件负责管理地图图例的显示/隐藏状态，提供应急物资、物理站点、传输路由、动环机房等多种图层的复选框控制。
+
+### 10.2 核心功能
+
+- **状态管理**: 维护图例选中状态，支持单选和批量选择
+- **联动机制**: 与调度队伍、乡镇退服告警等场景联动
+- **限制控制**: 应急资源类型最大选择数量限制
+- **状态同步**: 实时同步图例状态到外部组件
+
+### 10.3 图例分组
+
+| 分组         | 主要图例                                                                           |
+| ------------ | ---------------------------------------------------------------------------------- |
+| 应急物资     | 任务中、应急通信车、抢修车辆、无线队伍、应急发电车、卫星便携包、传输队伍、跨市调度 |
+| 物理站点     | 核心层、重要层、支撑层、普通站、光缆、机房                                         |
+| 传输路由     | 二干、骨干层路由、汇聚路由、接入层、乡镇三路由、节点机房                           |
+| 传输状态     | 传输路由中断、传输路由正常                                                         |
+| 物理站址状态 | 物理站址退服、物理站址正常                                                         |
+| 动环机房     | 动环机房停电、动环机房环境、动环机房正常、核心机楼、重要汇聚、普通汇聚、业务汇聚   |
+
+### 10.4 详细文档
+
+请参考: [DispatchLegend 组件维护文档](./DispatchLegend.md)
+
+## 11. 全局状态变量
+
+### 11.1 damageToTownsGisPin（乡镇退服GIS定位）
+
+`damageToTownsGisPin` 是用于乡镇退服告警GIS定位联动的核心全局状态变量，实现了右侧告警面板与地图组件之间的数据传递和事件联动。
+
+**消费组件**：DispatchLegend、zone-select、center-gis、damage-to-towns
+
+**详细文档**: [damageToTownsGisPin 全局状态变量维护文档](./damageToTownsGisPin.md)
+
+## 12. 相关文件
+
+| 文件路径                                                                        | 说明             |
+| ------------------------------------------------------------------------------- | ---------------- |
+| `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`             | 主组件           |
+| `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`     | 地图工具类       |
+| `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`        | 字段配置         |
+| `apps/main/app/components/center/dispatch-gis/MapEmergencyTransmissionView.tsx` | 传输路由告警组件 |
+| `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`        | 图例组件         |
+| `apps/main/app/request/center.ts`                                               | API 请求定义     |
+| `apps/main/app/request/custom/center.ts`                                        | 自定义 API 请求  |
+| `apps/main/app/store.ts`                                                        | 全局状态管理     |
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-05-21  
+**文档版本**: 1.1
+**最后更新**: 2026-06-04
 **维护团队**: GD Emergency Support Team

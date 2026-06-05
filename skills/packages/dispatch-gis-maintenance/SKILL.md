@@ -2,922 +2,278 @@
 name: dispatch-gis-maintenance
 description: 用于维护和拓展 dispatch-gis 指挥调度 GIS 组件的可复用技能
 tags:
-  - GIS
-  - 指挥调度
-  - 维护
+    - GIS
+    - 指挥调度
+    - 维护
 ---
 
 # dispatch-gis 组件维护技能 (Skill)
 
-## 技能概述
+## 🚀 快速导航
 
-这是一个用于维护和拓展 `dispatch-gis` 指挥调度 GIS 组件的可复用技能。该技能涵盖了组件架构理解、常见修改、问题排查和性能优化等场景。
+| 使用场景         | 快速入口                          | 详细文档                                                             |
+| ---------------- | --------------------------------- | -------------------------------------------------------------------- |
+| 添加新图例项     | [点击跳转](#1-添加新图例项)       | [DispatchLegend.md](./DispatchLegend.md)                             |
+| 新增打点类型     | [点击跳转](#2-新增打点类型)       | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 修改弹窗字段     | [点击跳转](#3-修改弹窗字段)       | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 添加地图图层     | [点击跳转](#4-添加地图图层)       | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 调试数据不更新   | [点击跳转](#5-调试数据不更新问题) | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 优化性能问题     | [点击跳转](#6-优化性能问题)       | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 同经纬度处理     | [点击跳转](#7-同经纬度处理)       | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 扩展跨地市飞线   | [点击跳转](#8-扩展跨地市飞线功能) | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 传输路由状态控制 | [点击跳转](#9-传输路由状态控制)   | [MapEmergencyTransmissionView.md](./MapEmergencyTransmissionView.md) |
+| 乡镇退服图例联动 | [点击跳转](#10-乡镇退服图例联动)  | [damageToTownsGisPin.md](./damageToTownsGisPin.md)                   |
+| 添加新预警类型   | [点击跳转](#11-添加新预警类型)    | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
 
-**核心组件文档**: [center-gis 详细技术文档](CENTER-GIS.md)
+---
 
-## 使用场景
+## 📋 相关文档概览
 
-### 1. 添加新图例项
-
-### 2. 新增打点类型
-
-### 3. 修改弹窗字段
-
-### 4. 添加地图图层
-
-### 5. 调试数据不更新问题
-
-### 6. 优化性能问题
-
-### 7. 扩展跨地市飞线功能
-
-### 9. 添加新的预警类型
+| 文档                                | 定位             | 核心内容                     |
+| ----------------------------------- | ---------------- | ---------------------------- |
+| **CENTER-GIS.md**                   | 核心地图组件     | 架构设计、图层管理、数据流程 |
+| **DispatchLegend.md**               | 图例控制组件     | 状态管理、联动机制、图例配置 |
+| **MapEmergencyTransmissionView.md** | 传输路由告警组件 | 数据请求、图层渲染           |
+| **damageToTownsGisPin.md**          | 全局状态变量     | 乡镇退服联动、数据结构       |
 
 ---
 
 ## 1. 添加新图例项
 
-### 场景描述
+**场景**：需要添加新的图例选项（如"应急仓"）
 
-需要添加新的图例选项，例如添加"应急仓"图例项。
+**快速步骤**：
 
-### 步骤
+1. 在 `dispatch-legend/index.tsx` 的 `defaultValues` 中添加默认值
+2. 在对应分组位置添加复选框 JSX
+3. 如需数据请求，在 `center-gis/index.tsx` 中添加 `useRequest`
+4. 添加图层渲染 `useEffect`
 
-#### 1.1 在图例组件中添加默认值
+**关键文件**：
 
-**文件**: `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`
+- `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`
+- `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
 
-```typescript
-const defaultValues = {
-  任务中: true,
-  应急通信车: false,
-  抢修车辆: false,
-  无线队伍: false,
-  空闲: false,
-  应急发电车: false,
-  卫星便携包: false,
-  传输队伍: false,
-  核心层: true,
-  重要层: false,
-  支撑层: false,
-  普通站: false,
-  光缆: false,
-  机房: false,
-  跨市调度: showCrossLine,
-  应急仓: false, // ← 新增
-  // ... 其他图例
-};
-```
-
-#### 1.2 在图层状态设置中添加逻辑
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-const setLegendLayerStatus = () => {
-  const neTypeCheckList: any[] = [];
-  Object.keys(legendSelected).forEach((key) => {
-    if (
-      legendSelected[key] &&
-      key !== '任务中' &&
-      key !== '空闲' &&
-      key !== '跨市调度' &&
-      key !== '物理站址退服' &&
-      key !== '物理站址正常'
-    ) {
-      if (resourceTypes.includes(key)) {
-        if (isTasking) neTypeCheckList.push(`${key}1`);
-        if (isIdle) neTypeCheckList.push(`${key}0`);
-      } else {
-        neTypeCheckList.push(`${key}`);
-      }
-    }
-  });
-  MapInit.setLayerStatus(ctxOpt, neTypeCheckList);
-};
-```
-
-#### 1.3 添加数据请求和打点逻辑
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-// 添加新的数据请求
-const { data: newLegendData } = useRequest(
-  () =>
-    getNewLegendDataApi({
-      zoneId: currentZone?.zoneId,
-      zoneLevel: currentZone?.zoneLevel,
-      taskId: supportTask?.wdId,
-    }),
-  {
-    ready: isDefined(supportTask?.wdId) && isDefined(currentZone),
-    refreshDeps: [supportTask?.wdId, currentZone],
-    pollingInterval: interval * TIME_RANGE.SECOND,
-  }
-);
-
-// 添加 Effect 监听数据变化
-useEffect(() => {
-  if (ctxOpt && legendSelected['应急仓']) {
-    console.log('测试日志 指挥调度  应急仓打点数据 更新');
-    MapInit.clearLayerById(ctxOpt, ['应急仓']);
-    MapInit.addPoints(ctxOpt, newLegendData);
-    setLegendLayerStatus();
-  }
-}, [newLegendData, legendSelected]);
-```
-
-#### 1.4 在 MapInit 中添加图标路径
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
-
-```typescript
-const iconPath = `${p.level}.png`;
-const imageUrl = `${constants.IMAGE_PATH}/emergency/map/图例/应急仓/${iconPath}`;
-```
+**详细文档**：[DispatchLegend.md → 默认状态配置](./DispatchLegend.md#31-默认状态配置)
 
 ---
 
 ## 2. 新增打点类型
 
-### 场景描述
+**场景**：需要添加新的地图打点类型（如"无人机基站"）
 
-需要添加新的打点类型，例如添加"无人机基站"打点。
+**快速步骤**：
 
-### 步骤
+1. 在 `field.ts` 中添加字段配置（key、label、field 数组）
+2. 在 `center-gis/index.tsx` 中添加 `useRequest` 数据请求
+3. 添加 `useEffect` 监听数据变化并调用 `MapInit.addPoints`
+4. 在 `public/static/images/emergency/map/图例/` 下添加图标
 
-#### 2.1 添加字段配置
+**关键文件**：
 
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`
+- `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`
+- `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
 
-```typescript
-export const fieldSource = [
-  // ... 其他配置
-  {
-    key: '无人机基站',
-    label: '无人机基站',
-    showPopup: true,
-    title: '无人机基站详情',
-    showTrail: false,
-    field: [
-      { key: 'resourceTypeName', label: '物资类型' },
-      { key: 'resourceId', label: '设备编号' },
-      { key: 'regionName', label: '所属地市' },
-      { key: 'resourceStatusText', label: '调度状态' },
-      { key: 'batteryLevel', label: '电池电量', hideEmpty: true },
-      { key: 'flightTime', label: '飞行时长', hideEmpty: true },
-    ],
-  },
-];
-```
-
-#### 2.2 添加数据请求
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-const { data: droneDataNew } = useRequest(
-  () =>
-    getDronePointsApi({
-      zoneId: currentZone?.zoneId,
-      zoneLevel: currentZone?.zoneLevel,
-      taskId: supportTask?.wdId,
-    }),
-  {
-    ready: isDefined(supportTask?.wdId) && isDefined(currentZone),
-    refreshDeps: [supportTask?.wdId, currentZone],
-    pollingInterval: interval * TIME_RANGE.SECOND,
-  }
-);
-```
-
-#### 2.3 添加 Effect 监听
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-useEffect(() => {
-  if (ctxOpt && legendSelected['无人机基站']) {
-    console.log('测试日志 指挥调度  无人机基站打点数据 更新');
-    const layerIds = [...new Set(dataDroneRef.current.map((p: any) => p.type))];
-    MapInit.clearLayerById(ctxOpt, layerIds);
-
-    dataDroneRef.current = [...droneDataNew];
-
-    if (droneDataNew.length > 0) {
-      MapInit.addPoints(ctxOpt, droneDataNew);
-    }
-    setLegendLayerStatus();
-  }
-}, [droneDataNew, legendSelected]);
-```
-
-#### 2.4 添加图标文件
-
-**路径**: `apps/main/app/public/static/images/emergency/map/图例/无人机基站/`
-
-**图标文件**: `0.png`（空闲）、`1.png`（任务中）
+**详细文档**：[CENTER-GIS.md → 核心功能实现](./CENTER-GIS.md#3-核心功能实现)
 
 ---
 
 ## 3. 修改弹窗字段
 
-### 场景描述
+**场景**：需要修改地图弹窗中显示的字段
 
-需要修改应急发电车弹窗中显示的字段，例如添加"油机数量"字段。
+**快速步骤**：
 
-### 步骤
+1. 在 `field.ts` 中找到对应资源类型的配置
+2. 在 `field` 数组中添加/修改字段配置
+3. 如需样式处理，在 `dispatch-popup/index.tsx` 中添加条件样式
 
-#### 3.1 修改字段配置
+**关键文件**：
 
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`
+- `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`
+- `apps/main/app/components/center/dispatch-gis/dispatch-popup/index.tsx`
 
-```typescript
-{
-    key: "应急发电车",
-    label: "应急发电车",
-    showPopup: true,
-    title: "应急物资详情",
-    showTrail: true,
-    field: [
-        { key: "resourceTypeName", label: "物资类型" },
-        { key: "resourceId", label: "车牌号" },
-        { key: "regionName", label: "所属地市" },
-        { key: "resourceStatusText", label: "调度状态" },
-        { key: "supportOilMachine", label: "油机数量", hideEmpty: true },  // ← 新增
-        { key: "fuelLevel", label: "油量", hideEmpty: true },  // ← 新增
-    ],
-}
-```
-
-#### 3.2 添加样式处理（可选）
-
-**文件**: `apps/main/app/components/center/dispatch-gis/dispatch-popup/index.tsx`
-
-```typescript
-const renderStyle = (item: any) => {
-  if (item.key === 'deploy_state') {
-    return { color: '#44D7B6' };
-  } else if (
-    item.key === 'resourceStatusText' &&
-    source[item.key] === '任务中'
-  ) {
-    return { color: 'rgba(255, 139, 81, 1)' };
-  } else if (item.key === 'fuelLevel') {
-    // 油量低于 30% 显示红色
-    const fuelLevel = parseInt(source[item.key] || '100');
-    if (fuelLevel < 30) {
-      return { color: '#FF5733', fontWeight: 'bold' };
-    }
-  }
-  return {};
-};
-```
+**详细文档**：[CENTER-GIS.md → 字段配置](./CENTER-GIS.md#62-字段配置)
 
 ---
 
 ## 4. 添加地图图层
 
-### 场景描述
+**场景**：需要添加新的地图图层（如"实时位置"图层）
 
-需要添加新的地图图层，例如添加"应急通信车实时位置"图层。
+**快速步骤**：
 
-### 步骤
+1. 在 `mapInit.tsx` 中添加图层操作方法
+2. 在 `center-gis/index.tsx` 中添加数据请求和 `useEffect` 渲染
+3. 如需图例控制，在 `dispatch-legend/index.tsx` 中添加默认值和复选框
 
-#### 4.1 在 MapInit 中添加图层添加方法
+**关键文件**：
 
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
+- `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
+- `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
 
-```typescript
-addRealTimePosition: function (ctxOpt: any, data: any) {
-    const { map, EMap } = ctxOpt;
-    const eStyle = new EMap.Style();
-
-    // 清理旧数据
-    const gLayer = map.getLayerById("realTimePosition");
-    gLayer && map.clearLayerFeatures(gLayer);
-
-    let layer = map.getLayerById("realTimePosition");
-    if (!layer) {
-        layer = new EMap.ELayer({
-            type: "Vector",
-            id: "realTimePosition",
-            zIndex: 199,  // 高于普通打点
-            source: { wrapX: false },
-            style: eStyle.style({
-                stroke: eStyle.stroke({
-                    color: "rgba(255, 215, 0, 1)",
-                    lineCap: "round",
-                    width: 4,
-                }),
-            }),
-        });
-        map.addLayer(layer);
-    }
-
-    // 添加要素
-    data.forEach((item: any) => {
-        const g4point = new EMap.EFeature({
-            type: "Point",
-            coordinates: [item.longitude, item.latitude],
-            id: item.intId,
-            layer: layer,
-            style: eStyle.style({
-                image: eStyle.image({
-                    anchor: [0.5, 1],
-                    scale: 1.2,
-                    src: `${constants.IMAGE_PATH}/emergency/map/图例/应急通信车实时位置.png`,
-                }),
-                text: eStyle.text({
-                    font: "14px arial, sans-serif",
-                    text: item.resourceName,
-                    textBaseline: "bottom",
-                    offsetX: 0,
-                    offsetY: 25,
-                    fillColor: "#FFD700",
-                    strokeColor: "#000000",
-                    strokeWidth: 3,
-                }),
-            }),
-        });
-        g4point.add();
-    });
-}
-```
-
-#### 4.2 在主组件中调用
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-useEffect(() => {
-  if (ctxOpt && legendSelected['应急通信车实时位置']) {
-    console.log('测试日志 指挥调度  应急通信车实时位置图层 更新');
-    MapInit.addRealTimePosition(ctxOpt, realTimePositionData);
-    setLegendLayerStatus();
-  }
-}, [realTimePositionData, legendSelected]);
-```
+**详细文档**：[CENTER-GIS.md → 图层管理](./CENTER-GIS.md#35-图层管理)
 
 ---
 
 ## 5. 调试数据不更新问题
 
-### 场景描述
+**场景**：地图数据长时间不更新
 
-地图数据不更新，需要排查问题。
+**快速检查清单**：
+| 检查项 | 操作 |
+|--------|------|
+| 依赖项 | 检查 `refreshDeps` 是否包含所有必要依赖 |
+| 轮询间隔 | 确认 `pollingInterval` 配置合理 |
+| API 返回 | 添加 `onSuccess`/`onError` 回调调试 |
+| Effect 执行 | 添加 console.log 确认 Effect 是否触发 |
 
-### 排查步骤
-
-#### 5.1 检查依赖项
-
-**检查点**: `refreshDeps` 是否包含所有依赖
-
-```typescript
-// ❌ 错误示例
-const { data } = useRequest(api, {
-  refreshDeps: [supportTask?.wdId], // 缺少 currentZone
-});
-
-// ✅ 正确示例
-const { data } = useRequest(api, {
-  refreshDeps: [supportTask?.wdId, currentZone?.zoneId, currentZone?.zoneLevel],
-});
-```
-
-#### 5.2 检查轮询间隔
-
-**检查点**: 轮询间隔是否合理
+**关键代码模式**：
 
 ```typescript
-const { interval = 300 } =
-  useEnvironment('gd-emergency-support.modules.dispatch-gis.request') ?? {};
-pollingInterval: interval * TIME_RANGE.SECOND; // 默认 300 秒
-```
-
-#### 5.3 检查 API 返回数据
-
-**检查点**: API 是否返回数据
-
-```typescript
-const { data: newData } = useRequest(() => getNewDataApi({...}), {
-    onSuccess: (data) => {
-        console.log("✅ API 返回数据", data);
-    },
-    onError: (error) => {
-        console.error("❌ API 请求失败", error);
-    },
+useRequest(() => api(), {
+    ready: isDefined(param1) && isDefined(param2),
+    refreshDeps: [param1, param2],
+    pollingInterval: 300000,
+    onSuccess: (data) => console.log("✅ 数据更新", data),
 });
 ```
 
-#### 5.4 检查 Effect 执行
-
-**检查点**: Effect 是否执行
-
-```typescript
-useEffect(() => {
-  console.log('🔍 Effect 执行', data);
-  if (ctxOpt) {
-    // 地图操作
-  }
-}, [data]);
-```
+**详细文档**：[CENTER-GIS.md → 常见问题](./CENTER-GIS.md#7-常见问题解决方案)
 
 ---
 
 ## 6. 优化性能问题
 
-### 场景描述
+**场景**：地图渲染性能较差
 
-地图性能较差，需要优化。
+**快速优化策略**：
+| 优化项 | 方法 |
+|--------|------|
+| 大数据存储 | 使用 `useRef` 替代 `useState` |
+| 图层清理 | 使用 `MapInit.clearLayerById` 批量清理 |
+| 计算缓存 | 使用 `useMemo` 缓存计算结果 |
+| 函数缓存 | 使用 `useMemoizedFn` 缓存函数引用 |
 
-### 优化方法
-
-#### 6.1 使用 ref 存储大数据
-
-**优化前**:
-
-```typescript
-const [data, setData] = useState([]);
-```
-
-**优化后**:
-
-```typescript
-const dataRef = useRef([]);
-```
-
-#### 6.2 批量清理图层
-
-**优化前**:
-
-```typescript
-data.forEach((p) => {
-  const gLayer = map.getLayerById(p.type);
-  gLayer && map.clearLayerFeatures(gLayer);
-});
-```
-
-**优化后**:
-
-```typescript
-const layerIds = [...new Set(data.map((p) => p.type))];
-MapInit.clearLayerById(ctxOpt, layerIds);
-```
-
-#### 6.3 使用 useMemo 缓存计算结果
-
-**优化前**:
-
-```typescript
-const columns = [
-  // 每次渲染都重新计算
-];
-```
-
-**优化后**:
-
-```typescript
-const columns = useMemo(() => {
-  return [
-    // 缓存计算结果
-  ];
-}, [resourceTypes]);
-```
-
-#### 6.4 使用 useMemoizedFn 缓存函数
-
-**优化前**:
-
-```typescript
-const handleLegendChange = (value: string, checked: boolean) => {
-  // 每次渲染都重新创建函数
-};
-```
-
-**优化后**:
-
-```typescript
-const handleLegendChange = useMemoizedFn((value: string, checked: boolean) => {
-  // 缓存函数引用
-});
-```
+**详细文档**：[CENTER-GIS.md → 性能优化](./CENTER-GIS.md#8-性能优化)
 
 ---
 
 ## 7. 同经纬度处理
 
-### 场景描述
+**场景**：多个资源点同经纬度需要聚合，或路径起点/终点需要去重
 
-当多个应急资源点具有相同经纬度时，需要聚合显示以避免重叠；路径起点/终点需要去重以避免重复创建。
+**快速步骤**：
 
----
+1. **应急资源聚合**：在 `center-gis/index.tsx` 中使用 Map 按经纬度分组
+2. **路径去重**：使用 `isPointExists` 检查已存在的点
 
-#### 7.1 应急资源聚合（经纬度去重）
+**关键文件**：
 
-**位置**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
+- `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`（聚合逻辑）
+- `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`（去重逻辑）
 
-**核心逻辑**:
-
-```typescript
-// 过滤选中状态的数据
-const selectedStatus: string[] = [];
-if (legendSelected['任务中']) selectedStatus.push('1');
-if (legendSelected['空闲']) selectedStatus.push('0');
-
-// 使用 Map 按经纬度分组
-const pointMap = new Map();
-// 1. 有重复经纬度的数据（将type改为应急资源聚合）
-const aggPoints: any[] = [];
-// 2. 去掉重复数据以外的数据（经纬度唯一的数据）
-const singlePoints: any[] =
-  selectedStatus.length > 0 ? [] : [...dataResourcePointsNew];
-
-if (selectedStatus.length > 0) {
-  const resourceTypes = [
-    '应急通信车',
-    '应急发电车',
-    '卫星便携包',
-    '无线队伍',
-    '传输队伍',
-  ];
-
-  // 应急资源聚合选中的类型
-  const aggregatedSelectedTypes = Object.keys(legendSelected).filter((key) => {
-    return legendSelected[key] === true && resourceTypes.includes(key);
-  });
-  const emergencyAggregatedSelectedTypes = selectedStatus.flatMap((num) =>
-    aggregatedSelectedTypes.map((item) => item + num)
-  );
-
-  const selectedPoints: any = [];
-  const unselectedPoints: any = [];
-  dataResourcePointsRef.current.forEach((p: any) => {
-    if (emergencyAggregatedSelectedTypes.includes(p.type)) {
-      selectedPoints.push(p);
-    } else {
-      unselectedPoints.push(p);
-    }
-  });
-
-  // 按经纬度分组
-  selectedPoints.forEach((p: any) => {
-    const key = `${p.longitude}_${p.latitude}`;
-    if (!pointMap.has(key)) {
-      pointMap.set(key, []);
-    }
-    pointMap.get(key).push(p);
-  });
-
-  // 处理聚合和非聚合数据
-  pointMap.forEach((points) => {
-    if (points.length > 1) {
-      // 经纬度重复的数据 → 聚合为"应急资源聚合"类型
-      aggPoints.push({
-        ...points[0],
-        type: '应急资源聚合',
-        intId: `应急资源聚合_${points[0].longitude}_${points[0].latitude}`,
-        aggPoints: points,
-      });
-    } else {
-      // 经纬度唯一的数据 → 保持原样
-      singlePoints.push(...points);
-    }
-  });
-
-  singlePoints.push(...unselectedPoints);
-}
-
-// 分别添加聚合数据和非聚合数据
-MapInit.addPoints(ctxOpt, singlePoints);
-MapInit.addPoints(ctxOpt, aggPoints);
-```
-
-**处理流程**:
-
-1. **状态过滤**: 根据图例选中状态过滤数据
-2. **数据分组**: 通过 `longitude_latitude` 作为 key 将数据分组
-3. **判断聚合**: 如果同一经纬度有多个点，则进行聚合
-4. **生成聚合点**: 将聚合数据包装为"应急资源聚合"类型
-5. **分别渲染**: 聚合点和非聚合点分别添加到地图
-
-**验证点**:
-
-- [ ] 同经纬度的多个资源点正确聚合为一个标记
-- [ ] 聚合点显示"应急资源聚合"类型
-- [ ] 点击聚合点可查看所有聚合的资源详情
-- [ ] 非聚合点正常显示
-
----
-
-#### 7.2 路径起点/终点去重
-
-**位置**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
-
-**核心逻辑**:
-
-```typescript
-// 检查经纬度是否已存在的辅助函数
-const isPointExists = (longitude: number, latitude: number) => {
-  const features = gLayer2.getSource()?.getFeatures();
-  if (!features) return false;
-  return features.some((feature: any) => {
-    const coords = feature.getGeometry()?.getCoordinates();
-    return coords && coords[0] === longitude && coords[1] === latitude;
-  });
-};
-
-// 创建起点要素（仅当该经纬度不存在时）
-if (!isPointExists(p?.longitudeA, p?.latitudeA)) {
-  const g4point1 = new EMap.EFeature({
-    type: 'Point',
-    coordinates: [p?.longitudeA, p?.latitudeA],
-    id: 'A' + p?.intId,
-    layer: gLayer2,
-    style: eStyle.style({
-      image: eStyle.image({
-        anchor: [0.5, 0.5],
-        scale: 0.7,
-        src: `${constants.IMAGE_PATH}/emergency/map/图例/起点.png`,
-      }),
-      text: null,
-    }),
-  });
-  g4point1.add();
-}
-
-// 创建终点要素（仅当该经纬度不存在时）
-if (!isPointExists(p?.longitudeB, p?.latitudeB)) {
-  const g4point2 = new EMap.EFeature({
-    type: 'Point',
-    coordinates: [p?.longitudeB, p?.latitudeB],
-    id: 'B' + p?.intId,
-    layer: gLayer2,
-    style: eStyle.style({
-      image: eStyle.image({
-        anchor: [0.5, 0.5],
-        scale: 0.7,
-        src: `${constants.IMAGE_PATH}/emergency/map/图例/终点.png`,
-      }),
-      text: null,
-    }),
-  });
-  g4point2.add();
-}
-```
-
-**验证点**:
-
-- [ ] 相同经纬度的起点/终点只创建一次
-- [ ] 不同经纬度的点正常显示
-- [ ] 路径线条正常连接起点和终点
+**详细文档**：[CENTER-GIS.md → 应急资源聚合](./CENTER-GIS.md#32-应急资源聚合同经纬度处理)
 
 ---
 
 ## 8. 扩展跨地市飞线功能
 
-### 场景描述
+**场景**：需要修改跨地市飞线的样式或添加交互
 
-需要修改跨地市飞线的颜色和宽度。
+**快速步骤**：
 
-### 步骤
+1. 在 `mapInit.tsx` 的 `addCrossCityLines` 方法中修改样式
+2. 在 `center-gis/index.tsx` 中添加点击事件处理
 
-#### 8.1 修改飞线样式
+**关键文件**：
 
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
+- `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
 
-```typescript
-addCrossCityLines: function (ctxOpt: any, lines: any) {
-    // ... 其他代码
-
-    lines?.forEach((p: any) => {
-        if (p?.type) {
-            let gLayer = map.getLayerById(p.type);
-            if (!gLayer) {
-                gLayer = new EMap.ELayer({
-                    type: "Vector",
-                    id: p.type,
-                    zIndex: 98,
-                    source: { wrapX: false },
-                    style: eStyle.style({
-                        stroke: eStyle.stroke({
-                            color: "rgba(250, 100, 1, 1)",  // ← 修改颜色
-                            lineCap: "round",
-                            lineDash: null,
-                            lineDashOffset: 0,
-                            lineJoin: "round",
-                            miterLimit: 10,
-                            width: 6,  // ← 修改宽度
-                        }),
-                    }),
-                });
-                map.addLayer(gLayer);
-            }
-
-            // ... 其他代码
-        }
-    });
-}
-```
-
-#### 8.2 添加飞线点击事件
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-useEffect(() => {
-  if (state.curPoint?.intId?.includes('crossCityLine')) {
-    if (state.curPoint.handleType === 'singleclick') {
-      setState({
-        crossCityLineId: state.curPoint.intId,
-        modalVisible: true,
-      });
-    }
-  }
-}, [state.curPoint]);
-```
+**详细文档**：[CENTER-GIS.md → 跨地市飞线绘制](./CENTER-GIS.md#33-跨地市飞线绘制)
 
 ---
 
-## 9. 添加新的预警类型
+## 9. 传输路由状态控制
 
-### 场景描述
+**场景**：需要控制传输路由告警数据的请求和显示
 
-需要添加新的预警类型，例如添加"台风预警"打点。
+**快速步骤**：
 
-### 步骤
+1. 在图例中添加 `传输路由中断` 和 `传输路由正常` 默认值
+2. 在图例中添加对应的复选框
+3. 在 `MapEmergencyTransmissionView.tsx` 中添加状态判断逻辑
 
-#### 8.1 添加字段配置
+**关键逻辑**：
 
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`
+- `dataTime`：仅在 `传输路由中断` 选中时计算
+- `alarmLayerParams`：仅在 `传输路由中断` 选中时构建有效参数
 
-```typescript
-{
-    key: "台风预警",
-    label: "台风预警",
-    showPopup: true,
-    title: "台风预警详情",
-    showTrail: false,
-    field: [
-        { key: "alarmType", label: "预警类型" },
-        { key: "alarmTime", label: "预警时间" },
-        { key: "windSpeed", label: "风速", hideEmpty: true },
-        { key: "pressure", label: "气压", hideEmpty: true },
-        { key: "moveDirection", label: "移动方向", hideEmpty: true },
-        { key: "moveSpeed", label: "移动速度", hideEmpty: true },
-    ],
-}
-```
-
-#### 8.2 添加数据请求
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-const { data: typhoonAlarmData } = useRequest(
-  () =>
-    getTyphoonAlarmApi({
-      zoneId: currentZone?.zoneId,
-      zoneLevel: currentZone?.zoneLevel,
-      taskId: supportTask?.wdId,
-    }),
-  {
-    ready: isDefined(supportTask?.wdId) && isDefined(currentZone),
-    refreshDeps: [supportTask?.wdId, currentZone],
-    pollingInterval: interval * TIME_RANGE.SECOND,
-  }
-);
-```
-
-#### 8.3 添加 Effect 监听
-
-**文件**: `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
-
-```typescript
-useEffect(() => {
-  if (ctxOpt && legendSelected['台风预警']) {
-    console.log('测试日志 指挥调度  台风预警打点数据 更新');
-    MapInit.clearLayerById(ctxOpt, ['台风预警']);
-    MapInit.addPoints(ctxOpt, typhoonAlarmData);
-    setLegendLayerStatus();
-  }
-}, [typhoonAlarmData, legendSelected]);
-```
+**详细文档**：[MapEmergencyTransmissionView.md](./MapEmergencyTransmissionView.md)
 
 ---
 
-## 10. 常见问题
+## 10. 乡镇退服图例联动
 
-### 10.1 图层不显示
+**场景**：右侧组件选中乡镇出局路由或乡镇退服时联动图例
 
-**问题**: 地图图层不显示
+**联动规则**：
 
-**解决方案**:
+| 场景         | 条件                      | 联动动作                                             |
+| ------------ | ------------------------- | ---------------------------------------------------- |
+| 乡镇出局路由 | `isTownExitRoute = true`  | 选中「乡镇三路由」，取消「物理站址退服」和「核心层」 |
+| 乡镇退服     | `isTownExitRoute = false` | 选中核心层、重要层、支撑层、普通站、光缆、机房       |
 
-1. 检查图例是否选中
-2. 检查数据是否为空
-3. 检查图层 ID 是否重复
-4. 检查 `setLegendLayerStatus` 是否被调用
+**关键文件**：
 
-### 10.2 数据不更新
+- `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`
 
-**问题**: 地图数据不更新
-
-**解决方案**:
-
-1. 检查依赖项是否变化
-2. 检查轮询间隔设置
-3. 检查 API 是否返回数据
-4. 检查 Effect 是否执行
-
-### 10.3 弹窗不显示
-
-**问题**: 点击地图元素弹窗不显示
-
-**解决方案**:
-
-1. 检查 `showPopup` 是否为 true
-2. 检查字段数据是否存在
-3. 检查 `legendSelected` 中的对应项是否为 true
-4. 检查 `clearPopupData` 是否被调用
-
-### 10.4 跨地市飞线不显示
-
-**问题**: 省级地图跨地市飞线不显示
-
-**解决方案**:
-
-1. 检查 `showCrossLine` 是否为 true
-2. 检查区域层级是否为省级
-3. 检查 `dataCrossCityLineNew` 是否有数据
-4. 检查 `legendSelected["跨市调度"]` 是否为 true
-
-### 10.5 传输机房光缆连线不显示
-
-**问题**: 乡镇单断/双断/全阻时传输机房光缆连线不显示
-
-**解决方案**:
-
-1. 检查 `damageToTownsGisPin.alarmType` 是否为 "乡镇单断"、"乡镇双断" 或 "乡镇全阻"
-2. 检查 `damageToTownsGisPin.selected` 是否为 true
-3. 检查 `dataTransPointsLines` 是否有数据
-4. 检查 Effect 是否执行
+**详细文档**：[damageToTownsGisPin.md](./damageToTownsGisPin.md)
 
 ---
 
-## 11. 维护指南
+## 11. 添加新预警类型
 
-### 11.1 添加新功能
+**场景**：需要添加新的预警类型打点（如"台风预警"）
 
-1. **确定位置**: 根据功能类型选择组件
-2. **数据请求**: 使用 ahooks useRequest
-3. **地图操作**: 使用 MapInit 工具类
-4. **状态管理**: 优先使用组件 state，其次使用 store
+**快速步骤**：
 
-### 11.2 调试技巧
+1. 在 `field.ts` 中添加预警类型配置
+2. 在 `center-gis/index.tsx` 中添加数据请求
+3. 添加 `useEffect` 监听并渲染
 
-1. **日志**: 使用 `console.log` + 前缀标识
-2. **检查点**:
-   - 数据请求是否触发
-   - 数据是否返回
-   - Effect 是否执行
-   - 地图操作是否成功
-
-### 11.3 性能监控
-
-1. **网络请求**: 检查轮询频率
-2. **DOM 操作**: 检查图层清理
-3. **渲染次数**: 使用 React DevTools Profiler
+**详细文档**：[CENTER-GIS.md → 核心功能实现](./CENTER-GIS.md#3-核心功能实现)
 
 ---
 
-## 12. 相关文件
+## 🎯 常见问题速查
 
-### 12.1 组件文件
-
-- `apps/main/app/components/center/dispatch-gis/`
-
-### 12.2 请求文件
-
-- `apps/main/app/request/center.ts`
-- `apps/main/app/request/custom/center.ts`
-
-### 12.3 Store
-
-- `apps/main/app/store.ts`
-
-### 12.4 枚举
-
-- `apps/main/app/enum/`
-
-### 12.5 UI 组件
-
-- `apps/main/app/components/ui/emap-gis/`
+| 问题               | 快速解决方案                           | 详细文档                                                              |
+| ------------------ | -------------------------------------- | --------------------------------------------------------------------- |
+| 图层不显示         | 检查图例选中状态、数据返回、图层 ID    | [CENTER-GIS.md#72](./CENTER-GIS.md#72-图层不显示)                     |
+| 数据不更新         | 检查 `refreshDeps`、轮询间隔、API 返回 | [CENTER-GIS.md#71](./CENTER-GIS.md#71-数据不更新)                     |
+| 弹窗不显示         | 检查 `showPopup` 配置、字段数据        | [DispatchLegend.md#83](./DispatchLegend.md#83-图例状态不同步)         |
+| 跨地市飞线不显示   | 检查区域层级、`showCrossLine` 配置     | [CENTER-GIS.md#73](./CENTER-GIS.md#73-跨地市飞线不显示)               |
+| 乡镇退服联动不生效 | 检查 `alarmType`、`selected` 状态      | [damageToTownsGisPin.md#101](./damageToTownsGisPin.md#101-联动不生效) |
 
 ---
 
-**文档版本**: 1.1  
-**最后更新**: 2026-05-21  
-**维护团队**: GD Emergency Support Team  
-**更新内容**: 添加同经纬度处理模块（应急资源聚合、路径起点/终点去重）
+## 📁 文件路径速查
+
+| 类型         | 文件路径                                                                        |
+| ------------ | ------------------------------------------------------------------------------- |
+| 主组件       | `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`             |
+| 地图工具类   | `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`     |
+| 字段配置     | `apps/main/app/components/center/dispatch-gis/center-gis/utils/field.ts`        |
+| 图例组件     | `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`        |
+| 传输路由视图 | `apps/main/app/components/center/dispatch-gis/MapEmergencyTransmissionView.tsx` |
+| 乡镇退服组件 | `apps/main/app/components/right/network-compact/damage-to-towns/index.tsx`      |
+| API 请求     | `apps/main/app/request/center.ts`                                               |
+| 全局状态     | `apps/main/app/store.ts`                                                        |
+
+---
+
+**文档版本**: 2.0
+**最后更新**: 2026-06-04
+**维护团队**: GD Emergency Support Team
+**更新内容**: 重构为场景索引模式，移除重复内容，提升检索效率

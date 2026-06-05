@@ -24,15 +24,16 @@ MapEmergencyTransmission
 
 **属性说明：**
 
-| 属性           | 类型             | 必填 | 默认值                | 说明           |
-| -------------- | ---------------- | ---- | --------------------- | -------------- |
-| id             | `string`         | 否   | `defaultId-{useId}`   | 图层唯一标识   |
-| name           | `string`         | 否   | `defaultName-{useId}` | 图层名称       |
-| serverCodeName | `ServerCodeName` | 是   | -                     | 服务编码名称   |
-| cqlFilter      | `string`         | 否   | -                     | CQL过滤条件    |
-| zIndex         | `number`         | 否   | 2                     | 图层层级       |
-| enableSubLayer | `boolean`        | 否   | false                 | 是否启用子图层 |
-| subLayerList   | `SubLayerItem[]` | 否   | -                     | 子图层配置列表 |
+| 属性             | 类型             | 必填 | 默认值                | 说明           |
+| ---------------- | ---------------- | ---- | --------------------- | -------------- |
+| id               | `string`         | 否   | `defaultId-{useId}`   | 图层唯一标识   |
+| name             | `string`         | 否   | `defaultName-{useId}` | 图层名称       |
+| serverCodeName   | `ServerCodeName` | 是   | -                     | 服务编码名称   |
+| cqlFilter        | `string`         | 否   | -                     | CQL过滤条件    |
+| zIndex           | `number`         | 否   | 2                     | 图层层级       |
+| enableSubLayer   | `boolean`        | 否   | false                 | 是否启用子图层 |
+| mainLayerVisible | `boolean`        | 否   | true                  | 主图层可见性   |
+| subLayerList     | `SubLayerItem[]` | 否   | -                     | 子图层配置列表 |
 
 **serverCodeName 支持的值：**
 
@@ -88,7 +89,19 @@ MapEmergencyTransmission
 
 1. 根据 `serverCodeName` 获取对应的搜索编码
 2. 调用 `EMapRequest.baseInfoSearchMultiSearch` 批量查询电路数据
-3. 将结果按 `alarmGroupSize`（默认100）分组，生成多个子图层配置
+3. 从响应中提取 `response.data` 获取实际数据
+4. 将结果按 `alarmGroupSize`（默认100）分组，生成多个子图层配置
+
+**返回值数据结构：**
+
+```typescript
+// runPromise 返回 [err, response] 结构
+const [err, response] = await runPromise(...);
+// 实际数据在 response.data 中
+const data = response.data;
+// 数据记录在 data.records 中
+data.records;
+```
 
 **搜索编码映射：**
 
@@ -169,6 +182,7 @@ const AlarmLayer = ({ circuitNames }) => {
 
 - `cqlFilter` 变化：重新创建图层
 - `zIndex` 变化：更新图层层级
+- `mainLayerVisible` 变化：动态切换主图层可见性
 - `enableSubLayer`/`subLayerList` 变化：重新渲染子图层
 
 ### 6.3 卸载阶段
@@ -177,13 +191,14 @@ const AlarmLayer = ({ circuitNames }) => {
 
 ## 7. 依赖关系
 
-| 依赖                            | 说明                            |
-| ------------------------------- | ------------------------------- |
-| `useEMapUtil`                   | 自定义Hook，封装EMap工具方法    |
-| `useSetState`                   | ahooks的状态管理Hook            |
-| `addEmergencyTransmissionLayer` | EMapUtils方法，添加应急传输图层 |
-| `EMapRequest`                   | EMap请求工具                    |
-| `getEnvironment`                | 环境配置获取                    |
+| 依赖                            | 说明                                     |
+| ------------------------------- | ---------------------------------------- |
+| `useEMapUtil`                   | 自定义Hook，封装EMap工具方法             |
+| `useSetState`                   | ahooks的状态管理Hook                     |
+| `useLatest`                     | ahooks的最新值引用Hook，避免闭包过时问题 |
+| `addEmergencyTransmissionLayer` | EMapUtils方法，添加应急传输图层          |
+| `EMapRequest`                   | EMap请求工具                             |
+| `getEnvironment`                | 环境配置获取                             |
 
 ## 8. 配置说明
 
@@ -200,3 +215,12 @@ const AlarmLayer = ({ circuitNames }) => {
 2. **CQL过滤**：支持标准CQL语法，可灵活过滤地理要素
 3. **图层层级**：子图层的 `zIndex` 独立于主图层，需合理设置避免遮挡
 4. **服务编码**：`serverCodeName` 必须与配置中的服务编码对应，否则无法加载图层
+
+## 10. 版本信息
+
+- **版本**: 1.2
+- **最后更新**: 2026-06-04
+- **更新内容**:
+    - 新增 `mainLayerVisible` 属性，支持主图层显隐控制
+    - 使用 `useLatest` Hook 避免闭包过时问题
+    - 调整 `getEmergencyTransmissionAlarmLayerDataApi` 返回值结构，提取 `response.data` 作为实际数据源
