@@ -1,7 +1,12 @@
 {
+  "contentHash": "4813cc9d54c070aeecca8d3ecf61c23879605e5eaf5fb2b347b817284953ee73",
+  "files": [
+    "./references/"
+  ],
   "id": "warn-gis-risk-prediction-points",
-  "version": "0.0.0",
   "targets": [
     "trae"
-  ]
+  ],
+  "updatedAt": "2026-06-09T06:24:10.333Z",
+  "version": "0.0.0"
 }

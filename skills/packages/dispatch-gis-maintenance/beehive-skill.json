@@ -1,6 +1,15 @@
 {
-    "id": "dispatch-gis-maintenance",
-    "version": "0.0.0",
-    "targets": ["trae"],
-    "files": ["./CENTER-GIS.md", "./MapEmergencyTransmissionView.md", "./DispatchLegend.md", "./damageToTownsGisPin.md"]
+  "contentHash": "fb5270d87fff7db0ba2b731fa454b9bd61ad0b43ebba77925d5e3b9e3ce54796",
+  "files": [
+    "./CENTER-GIS.md",
+    "./MapEmergencyTransmissionView.md",
+    "./DispatchLegend.md",
+    "./damageToTownsGisPin.md"
+  ],
+  "id": "dispatch-gis-maintenance",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-06-09T06:25:07.233Z",
+  "version": "0.0.0"
 }

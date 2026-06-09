@@ -207,6 +207,8 @@ useRequest(() => api(), {
 **关键逻辑**：
 
 - `dataTime`：仅在 `传输路由中断` 选中时计算
+- `circuitNames`：从告警全量数据中按 `filterType` 过滤后提取 `optical`
+- `optical`：接口可能返回 `"线路A;线路B;线路A"` 这类分号拼接字符串，需要按 `;` 拆分、`trim`、过滤空值并用 `Set` 去重
 - `alarmLayerParams`：仅在 `传输路由中断` 选中时构建有效参数
 
 **详细文档**：[MapEmergencyTransmissionView.md](./MapEmergencyTransmissionView.md)
@@ -255,6 +257,7 @@ useRequest(() => api(), {
 | 弹窗不显示         | 检查 `showPopup` 配置、字段数据        | [DispatchLegend.md#83](./DispatchLegend.md#83-图例状态不同步)         |
 | 跨地市飞线不显示   | 检查区域层级、`showCrossLine` 配置     | [CENTER-GIS.md#73](./CENTER-GIS.md#73-跨地市飞线不显示)               |
 | 乡镇退服联动不生效 | 检查 `alarmType`、`selected` 状态      | [damageToTownsGisPin.md#101](./damageToTownsGisPin.md#101-联动不生效) |
+| 传输子图层缺失/重复 | 检查 `optical` 是否按 `;` 拆分并去重   | [MapEmergencyTransmissionView.md#33-circuitnames-计算与-optical-去重](./MapEmergencyTransmissionView.md#33-circuitnames-计算与-optical-去重) |
 
 ---
 
@@ -273,7 +276,7 @@ useRequest(() => api(), {
 
 ---
 
-**文档版本**: 2.0
-**最后更新**: 2026-06-04
+**文档版本**: 2.1
+**最后更新**: 2026-06-09
 **维护团队**: GD Emergency Support Team
-**更新内容**: 重构为场景索引模式，移除重复内容，提升检索效率
+**更新内容**: 补充传输路由 `optical` 分号拆分去重维护规则
