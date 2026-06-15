@@ -10,9 +10,13 @@
 
 ```
 dispatch-legend/
-├── index.tsx          # 主组件，管理状态和交互逻辑
-└── index.css          # 样式文件
+├── index.tsx                                # 主组件，管理状态和交互逻辑
+├── index.css                                # 样式文件
+└── useEmergencyTransmissionLegendIcons.ts   # 传输路由图例图标 hook
 ```
+
+**关联文件**：
+- `apps/main/app/components/center/dispatch-gis/presets.ts` — 包含 `LAYER_CONFIG`（`defaultLegendIcon` 兜底）和 `useCurrentEmergencyTransmissionLayerSettings`（按 zoneLevel 取分级配置）
 
 ## 3. 核心功能实现
 
@@ -226,6 +230,91 @@ useEffect(() => {
 </div>
 ```
 
+### 3.7 传输路由图例图标分级配置
+
+#### 3.7.1 设计目标
+
+将"二干 / 骨干层路由 / 汇聚路由 / 接入层"4 个图例项的图标从**组件内硬编码**改为**按 `currentZone.zoneLevel` 读取 `EMapConfig.emergencyTransmission.layerSettings` 中的 `legendIcon` 字段**，未命中或为空字符串时使用 `presets.ts` 中 `LAYER_CONFIG` 提供的 `defaultLegendIcon` 兜底。
+
+`乡镇三路由` / `节点机房` 不在 `LAYER_CONFIG` 中，保持硬编码。
+
+#### 3.7.2 数据流
+
+```
+currentZone.zoneLevel
+    ↓
+useCurrentEmergencyTransmissionLayerSettings(currentZone)  // presets.ts
+    ↓
+currentLayerSettings  // 来自 EMapConfig.emergencyTransmission.layerSettings
+    ↓
+useEmergencyTransmissionLegendIcons(currentZone)         // dispatch-legend/useEmergencyTransmissionLegendIcons.ts
+    ↓
+legendIcons: Record<serverCodeName, 图标文件名>           // useMemo 缓存
+    ↓
+LegendItem / BackboneNetworkLegend / <Image src>
+```
+
+#### 3.7.3 关键代码
+
+**hook 文件** [useEmergencyTransmissionLegendIcons.ts](../../../../../../e:/oss-fe-git/phoenix/oss-visual-gd-emergency-support-next/apps/main/app/components/center/dispatch-gis/dispatch-legend/useEmergencyTransmissionLegendIcons.ts)：
+
+```typescript
+import { useMemo } from "react";
+import { LAYER_CONFIG, useCurrentEmergencyTransmissionLayerSettings } from "../presets";
+
+const useEmergencyTransmissionLegendIcons = (currentZone: any) => {
+    const currentLayerSettings = useCurrentEmergencyTransmissionLayerSettings(currentZone);
+
+    return useMemo(() => {
+        const result: Record<string, string> = {};
+        Object.values(LAYER_CONFIG).forEach((cfg) => {
+            const configuredIcon = currentLayerSettings?.[cfg.serverCodeName]?.legendIcon;
+            result[cfg.serverCodeName] = configuredIcon || cfg.defaultLegendIcon;
+        });
+        return result;
+    }, [currentLayerSettings]);
+};
+
+export { useEmergencyTransmissionLegendIcons };
+```
+
+**在 `TownThreeRouteLegendV2Root` 中调用**：
+
+```typescript
+const legendIcons = useEmergencyTransmissionLegendIcons(currentZone);
+```
+
+**4 处图例图标使用**（位于 `index.tsx`）：
+
+| 图例项   | serverCodeName                  | 旧硬编码          | 新表达式                                                                |
+| -------- | ------------------------------- | ----------------- | ----------------------------------------------------------------------- |
+| 二干     | `省级传输二干告警图层`          | `二干.png`        | `legendIcons[LAYER_CONFIG["二干"].serverCodeName]`                       |
+| 骨干层   | `地市骨干层路由告警图层`        | `骨干层路由.png`  | `legendIcons[LAYER_CONFIG["骨干层路由"].serverCodeName]`（传入 BackboneNetworkLegend 的 `icon` prop）|
+| 汇聚层   | `区县汇聚层路由告警图层`        | `汇聚路由.png`    | `legendIcons[LAYER_CONFIG["汇聚路由"].serverCodeName]`（Image src 拼接）|
+| 接入层   | `乡镇接入层路由告警图层`        | `接入层路由.png`  | `legendIcons[LAYER_CONFIG["接入层"].serverCodeName]`                    |
+
+**`BackboneNetworkLegend` 改造**（接受 `icon` prop）：
+
+```typescript
+// props.icon ?? "骨干层路由.png" 兜底
+src={`${constants.IMAGE_PATH}/emergency/map/图例/${props.icon ?? "骨干层路由.png"}`}
+```
+
+#### 3.7.4 兜底语义
+
+| 场景                          | 实际显示图标                       |
+| ----------------------------- | ---------------------------------- |
+| 配置 `legendIcon` 有值        | 配置值                             |
+| 配置 `legendIcon: ""` 空字符串 | 视为未配置，走 `defaultLegendIcon` |
+| 配置 key 缺失（town 级别等）  | 走 `defaultLegendIcon`             |
+| `layerSettings` 整个缺失      | 走 `defaultLegendIcon`             |
+
+#### 3.7.5 注意事项
+
+- `LAYER_CONFIG` 当前只包含 4 个图层（`二干` / `骨干层路由` / `汇聚路由` / `接入层`），与 `MapEmergencyTransmissionView.tsx` 的 `LAYER_CONFIG` 结构对齐
+- `legendIcon` 是**字符串图标名**（不含路径前缀），由 `Image src` 中 `constants.IMAGE_PATH/emergency/map/图例/` 前缀拼接
+- `zoneLevel` 切换时会自动触发 `useMemo` 重算（依赖 `currentLayerSettings`），图标即时更新
+
 ## 4. 图例分组结构
 
 ### 4.1 布局结构
@@ -244,8 +333,8 @@ useEffect(() => {
 
 ### 4.2 图例类型映射
 
-| 分组             | 图例名称     | 默认状态      | 说明             |
-| ---------------- | ------------ | ------------- | ---------------- |
+| 分组             | 图例名称     | 默认状态      | 说明             | 图标可配       |
+| ---------------- | ------------ | ------------- | ---------------- | -------------- |
 | **应急物资**     | 任务中       | true          | 任务进行中的资源 |
 |                  | 应急通信车   | false         | 应急通信车辆     |
 |                  | 抢修车辆     | false         | 抢修车辆         |
@@ -261,12 +350,12 @@ useEffect(() => {
 |                  | 普通站       | false         | 普通站点         |
 |                  | 光缆         | false         | 光缆线路         |
 |                  | 机房         | false         | 机房设施         |
-| **传输路由**     | 二干         | false         | 省级传输二干     |
-|                  | 骨干层路由   | false         | 地市骨干层       |
-|                  | 汇聚路由     | false         | 区县汇聚层       |
-|                  | 接入层       | false         | 乡镇接入层       |
-|                  | 乡镇三路由   | false         | 乡镇三路由       |
-|                  | 节点机房     | false         | 节点机房         |
+| **传输路由**     | 二干         | false         | 省级传输二干     | ✅ 可配        |
+|                  | 骨干层路由   | false         | 地市骨干层       | ✅ 可配        |
+|                  | 汇聚路由     | false         | 区县汇聚层       | ✅ 可配        |
+|                  | 接入层       | false         | 乡镇接入层       | ✅ 可配        |
+|                  | 乡镇三路由   | false         | 乡镇三路由       | ❌ 硬编码      |
+|                  | 节点机房     | false         | 节点机房         | ❌ 硬编码      |
 | **传输状态**     | 传输路由中断 | false         | 传输路由中断告警 |
 |                  | 传输路由正常 | false         | 传输路由正常状态 |
 | **物理站址状态** | 物理站址退服 | true          | 站址退服告警     |
@@ -302,6 +391,20 @@ useEffect(() => {
 用户操作 → handleCheckboxChange → 状态更新 → 外部回调 → 地图图层更新
     ↓              ↓                ↓              ↓              ↓
 点击复选框 → 验证限制 → setCheckedValues → onLegendSelected → 图层显示/隐藏
+```
+
+**图例图标数据流**（传输路由相关，详见 §3.7）：
+
+```
+currentZone.zoneLevel
+    ↓
+useCurrentEmergencyTransmissionLayerSettings → currentLayerSettings
+    ↓
+useEmergencyTransmissionLegendIcons → legendIcons (Record<serverCodeName, 图标名>)
+    ↓
+LegendItem.icon / BackboneNetworkLegend.icon / <Image src>
+    ↓
+zoneLevel 切换时 useMemo 自动重算 → 图标即时更新
 ```
 
 ## 7. 事件联动机制
@@ -360,6 +463,37 @@ setTimeout(() => {
 }, timeout * 1000);
 ```
 
+### 8.4 图例图标分级配置
+
+**问题**: 传输路由图例图标原本在 `index.tsx` 中硬编码，切换 `zoneLevel`（省/市/区县）时无法呈现不同样式。
+
+**解决方案**:
+
+1. 在 `presets.ts` 的 `LAYER_CONFIG` 中为 4 个路由图层（`二干` / `骨干层路由` / `汇聚路由` / `接入层`）新增 `defaultLegendIcon` 字段
+2. 在 `dispatch-legend/useEmergencyTransmissionLegendIcons.ts` 中按 `currentZone.zoneLevel` 读取分级配置 `legendIcon`，未命中走兜底
+3. 在 `index.tsx` 中调用 hook 拿到 `legendIcons` 替换 4 处硬编码；`BackboneNetworkLegend` 改造为接受 `icon` prop
+
+**配置示例** (`public/config/environment-local.json`)：
+
+```json
+{
+    "EMapConfig": {
+        "emergencyTransmission": {
+            "layerSettings": {
+                "province": {
+                    "地市骨干层路由告警图层": {
+                        "color": "csyj_blue_line_2",
+                        "legendIcon": "骨干层-省.png"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+> 详见 [§3.7](#37-传输路由图例图标分级配置)。
+
 ## 9. 乡镇退服联动（damageToTownsGisPin）
 
 `damageToTownsGisPin` 是全局状态变量，用于实现乡镇退服告警与地图的联动功能。
@@ -413,6 +547,8 @@ useEffect(() => {
 | ------------------------------------------------------------------------------- | -------------------- |
 | `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`        | 图例主组件           |
 | `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.css`        | 图例样式文件         |
+| `apps/main/app/components/center/dispatch-gis/dispatch-legend/useEmergencyTransmissionLegendIcons.ts` | 传输路由图例图标 hook |
+| `apps/main/app/components/center/dispatch-gis/presets.ts`                       | 共享 presets（含 LAYER_CONFIG / useCurrentEmergencyTransmissionLayerSettings） |
 | `apps/main/app/components/center/dispatch-gis/MapEmergencyTransmissionView.tsx` | 传输路由告警视图组件 |
 | `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`             | 中心GIS主组件        |
 | `apps/main/app/components/center/zone-select/index.tsx`                         | 区域选择组件         |
@@ -421,6 +557,7 @@ useEffect(() => {
 
 ---
 
-**文档版本**: 1.1
-**最后更新**: 2026-06-04
+**文档版本**: 1.2
+**最后更新**: 2026-06-11
 **维护团队**: GD Emergency Support Team
+**更新内容**: 新增 §3.7 传输路由图例图标分级配置（hook `useEmergencyTransmissionLegendIcons`），更新 §2 组件结构、§4.2 图例可配列、§6 数据流、§8.4 常见问题

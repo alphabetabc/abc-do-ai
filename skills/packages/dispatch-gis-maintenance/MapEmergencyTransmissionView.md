@@ -12,6 +12,7 @@
 - 按需请求：最多两个独立的全量数据请求（二干 + 本地）
 - 主图层可见性控制：通过 `mainLayerVisible` 属性控制
 - 子图层支持：通过 `enableSubLayer` 属性启用子图层渲染
+- **分级配置支持**：按 `currentZone.zoneLevel`（省/市/区县）从 `EMapConfig.emergencyTransmission.layerSettings` 中读取对应分级配置，控制主图层颜色、zIndex 与子图层告警色
 
 ## 2. 组件结构
 
@@ -50,10 +51,15 @@ interface TransmissionAlarmLayerProps {
     emergencyTransmissionCqlFilter: string;
     interval: number;
     mainLayerVisible?: boolean;
+    /**
+     * 分级配置（来自 currentLayerSettings）
+     * @example { "地市骨干层路由告警图层": { color, zIndex, alarmColor, alarmZIndex, alarmGroupSize } }
+     */
+    layerSettings?: any;
 }
 
 function TransmissionAlarmLayer(props: TransmissionAlarmLayerProps) {
-    const { serverCodeName, filterType, fullData, emergencyTransmissionCqlFilter, mainLayerVisible } = props;
+    const { serverCodeName, filterType, fullData, emergencyTransmissionCqlFilter, mainLayerVisible, layerSettings } = props;
 
     const circuitNames = useMemo(() => {
         return Array.from(
@@ -70,14 +76,18 @@ function TransmissionAlarmLayer(props: TransmissionAlarmLayerProps) {
     const { data: alarmLayerData } = useRequest(
         async () => {
             if (!isEmpty(circuitNames)) {
-                return getEmergencyTransmissionAlarmLayerDataApi({ serverCodeName, circuitNames });
+                return getEmergencyTransmissionAlarmLayerDataApi({ serverCodeName, circuitNames, layerSettings });
             }
             return [];
         },
         {
-            refreshDeps: [serverCodeName, circuitNames],
+            // layerSettings 必须包含在依赖中：zoneLevel 切换会重算 currentLayerSettings，
+            // 进而触发子图层告警数据按新分级配置重新拉取
+            refreshDeps: [serverCodeName, circuitNames, layerSettings],
         },
     );
+
+    const { color, zIndex = 2 } = (layerSettings ?? {})[serverCodeName] ?? {};
 
     return (
         <MapEmergencyTransmission
@@ -86,6 +96,8 @@ function TransmissionAlarmLayer(props: TransmissionAlarmLayerProps) {
             cqlFilter={emergencyTransmissionCqlFilter}
             subLayerList={alarmLayerData}
             enableSubLayer
+            mainLayerColor={color}
+            zIndex={zIndex}
         />
     );
 }
@@ -190,7 +202,81 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 );
 ```
 
-### 3.6 图层渲染
+### 3.6 分级配置（zoneLevel → layerSettings）
+
+`MapEmergencyTransmissionView` 根据 `currentZone.zoneLevel` 在 `EMapConfig.emergencyTransmission.layerSettings` 中按 key（`province` / `region` / `city`）取出对应分级配置，传递给 `TransmissionAlarmLayer`：
+
+```typescript
+const currentLayerSettings = useMemo(() => {
+    if (currentZone?.zoneLevel === ZoneLevelEnum.province) {
+        return layerSettings["province"] ?? null;
+    }
+    if (currentZone?.zoneLevel === ZoneLevelEnum.region) {
+        return layerSettings["region"] ?? null;
+    }
+    if (currentZone?.zoneLevel === ZoneLevelEnum.city) {
+        return layerSettings["city"] ?? null;
+    }
+    return null; // town 级别不渲染分级配置
+}, [currentZone?.zoneLevel, layerSettings]);
+```
+
+**配置结构**（来自 `environment.json`）：
+
+```json
+{
+    "EMapConfig": {
+        "emergencyTransmission": {
+            "layerSettings": {
+                "province": {
+                    "地市骨干层路由告警图层": {
+                        "color": "csyj_blue_line_2", // 主图层颜色
+                        "zIndex": 2, // 主图层 zIndex
+                        "alarmZIndex": 2, // 子图层告警 zIndex
+                        "alarmGroupSize": 100, // 告警数据分片大小
+                        "alarmColor": "csyj_red_line", // 子图层告警色
+                        "legendIcon": ""
+                    },
+                    "区县汇聚层路由告警图层": { "...": "..." },
+                    "乡镇接入层路由告警图层": { "...": "..." }
+                },
+                "region": { "...": "..." },
+                "city": { "...": "..." }
+            }
+        }
+    }
+}
+```
+
+**字段读取路径**：
+
+| 字段             | 读取位置                                                   | 用途                                    |
+| ---------------- | ---------------------------------------------------------- | --------------------------------------- |
+| `color`          | `MapEmergencyTransmissionView.L60` → `mainLayerColor` prop | 主图层 STYLES 颜色                      |
+| `zIndex`         | `MapEmergencyTransmissionView.L60` → `zIndex` prop         | 主图层 zIndex（在 effect 中 setZIndex） |
+| `alarmColor`     | `getEmergencyTransmissionAlarmLayerDataApi`                | 子图层告警色                            |
+| `alarmZIndex`    | `getEmergencyTransmissionAlarmLayerDataApi`                | 子图层告警 zIndex                       |
+| `alarmGroupSize` | `getEmergencyTransmissionAlarmLayerDataApi`                | 告警数据分片大小                        |
+
+**注意事项**：
+
+- 分级配置中 key 名必须与 `ZoneLevelEnum` 一致（`province` / `region` / `city`），拼写错误会导致整个分级配置 fallback 到 `null`，最终走 `emap.ts` 的全局兜底。
+- town 级别（`zoneLevel === "5"`）无对应分级配置，`currentLayerSettings` 返回 `null`，主/子图层走全局兜底，符合业务预期。
+- 切换 zoneLevel 时，`currentLayerSettings` 引用变化 → `TransmissionAlarmLayer` 中 `refreshDeps` 触发 → 子图层告警数据按新分级配置重新拉取，告警色保持一致。
+
+### 3.7 早期返回
+
+`MapEmergencyTransmissionView` 在所有 hook 调用之后做早期返回，避免 `currentZone` 为空时无意义渲染：
+
+```typescript
+if (!currentZone) {
+    return null;
+}
+```
+
+所有顶层 hook（`useRequest`、`useMemo`、`useEnvironment`、`useSubscribe`）均在 early return 之前调用，符合 React Rules of Hooks。
+
+### 3.8 图层渲染
 
 根据图例选中状态渲染对应的传输路由图层，支持多选：
 
@@ -198,6 +284,7 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 {legendSelected["骨干层路由"] && (
     <TransmissionAlarmLayer
         {...LAYER_CONFIG["骨干层路由"]}
+        layerSettings={currentLayerSettings}  // 传入分级配置
         fullData={shouldRequestLocal ? localFullData : EmptyObject.Array}
         currentZone={currentZone}
         emergencyTransmissionCqlFilter={emergencyTransmissionCqlFilter}
@@ -209,6 +296,7 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 {legendSelected["汇聚路由"] && (
     <TransmissionAlarmLayer
         {...LAYER_CONFIG["汇聚路由"]}
+        layerSettings={currentLayerSettings}
         fullData={shouldRequestLocal ? localFullData : EmptyObject.Array}
         currentZone={currentZone}
         emergencyTransmissionCqlFilter={emergencyTransmissionCqlFilter}
@@ -220,6 +308,7 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 {legendSelected["接入层"] && (
     <TransmissionAlarmLayer
         {...LAYER_CONFIG["接入层"]}
+        layerSettings={currentLayerSettings}
         fullData={shouldRequestLocal ? localFullData : EmptyObject.Array}
         currentZone={currentZone}
         emergencyTransmissionCqlFilter={emergencyTransmissionCqlFilter}
@@ -247,6 +336,7 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 {legendSelected["二干"] && (
     <TransmissionAlarmLayer
         {...LAYER_CONFIG["二干"]}
+        layerSettings={currentLayerSettings}
         fullData={shouldRequestErgan ? erganFullData : EmptyObject.Array}
         currentZone={currentZone}
         emergencyTransmissionCqlFilter={emergencyTransmissionCqlFilter}
@@ -258,10 +348,17 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 
 ## 4. API 接口说明
 
-| 接口名                                      | 功能                     | 参数                                             | 返回值   |
-| ------------------------------------------- | ------------------------ | ------------------------------------------------ | -------- |
-| `getTransmissionRouteInterruptionAlarmApi`  | 获取传输路由中断告警数据 | `regionName`, `cityName`, `townName`, `dataTime` | 告警数组 |
-| `getEmergencyTransmissionAlarmLayerDataApi` | 获取告警图层数据         | `serverCodeName`, `circuitNames`                 | 图层数据 |
+| 接口名                                      | 功能                     | 参数                                               | 返回值   |
+| ------------------------------------------- | ------------------------ | -------------------------------------------------- | -------- |
+| `getTransmissionRouteInterruptionAlarmApi`  | 获取传输路由中断告警数据 | `regionName`, `cityName`, `townName`, `dataTime`   | 告警数组 |
+| `getEmergencyTransmissionAlarmLayerDataApi` | 获取告警图层数据         | `serverCodeName`, `circuitNames`, `layerSettings?` | 图层数据 |
+
+`getEmergencyTransmissionAlarmLayerDataApi` 接收的 `layerSettings` 为可选参数：
+
+- 传入时：使用调用方传入的分级配置（来自 `currentLayerSettings`）。
+- 未传入时：fallback 到环境变量 `EMapConfig.emergencyTransmission.layerSettings[serverCodeName]`（全局兜底）。
+
+接口内部从 `settings` 中读取 `zIndex` / `alarmZIndex` / `alarmGroupSize` / `alarmColor` 字段，详见 [§3.6 分级配置](#36-分级配置zonelevel--layersettings)。
 
 ## 5. 图例状态映射
 
@@ -280,6 +377,13 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 图例状态变化 → 传输路由中断判断 → 数据时间计算 → 全量告警数据请求（按需）→ 图层数据请求 → 地图渲染
     ↓                      ↓                ↓                ↓                       ↓            ↓
  legendSelected → shouldRequest判断 → useMemo → useRequest(二干/本地) → TransmissionAlarmLayer → MapEmergencyTransmission
+                                                    ↑
+                                            currentLayerSettings
+                                            (按 zoneLevel 取分级配置)
+                                                    ↓
+                                            layerSettings prop
+                                                    ↓
+                                            子图层告警色 / 主图层颜色 / zIndex
 ```
 
 **关键控制点**：
@@ -297,6 +401,13 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 3. **主图层可见性**：`mainLayerVisible={legendSelected["传输路由正常"]}` 控制主图层显示
 
 4. **子图层启用**：`enableSubLayer` 属性启用子图层渲染，用于显示告警信息
+
+5. **分级配置链路**：`currentLayerSettings` 按 `currentZone.zoneLevel` 在 `EMapConfig.emergencyTransmission.layerSettings` 中取值，作为 `layerSettings` 传入 `TransmissionAlarmLayer`，影响：
+    - 主图层 `color`（`mainLayerColor` prop）→ 主图层 STYLES
+    - 主图层 `zIndex`（`zIndex` prop）→ 主图层 zIndex
+    - 子图层 `alarmColor`（`getEmergencyTransmissionAlarmLayerDataApi` 内部）→ 子图层 STYLES
+    - 子图层 `alarmZIndex`（同上）→ 子图层 zIndex
+    - 子图层 `alarmGroupSize`（同上）→ 告警数据分片大小
 
 ## 7. 配置参数
 
@@ -328,24 +439,30 @@ const { data: localFullData = EmptyObject.Array } = useRequest(
 
 ### 7.3 TransmissionAlarmLayer 属性
 
-| 属性名                           | 类型      | 说明             |
-| -------------------------------- | --------- | ---------------- |
-| `serverCodeName`                 | `string`  | 图层服务名       |
-| `filterType`                     | `string`  | 类型枚举值       |
-| `fullData`                       | `any[]`   | 全量告警数据     |
-| `currentZone`                    | `any`     | 当前区域信息     |
-| `emergencyTransmissionCqlFilter` | `string`  | CQL过滤条件      |
-| `interval`                       | `number`  | 轮询间隔（毫秒） |
-| `mainLayerVisible`               | `boolean` | 主图层可见性     |
+| 属性名                           | 类型      | 说明                        |
+| -------------------------------- | --------- | --------------------------- |
+| `serverCodeName`                 | `string`  | 图层服务名                  |
+| `filterType`                     | `string`  | 类型枚举值                  |
+| `fullData`                       | `any[]`   | 全量告警数据                |
+| `currentZone`                    | `any`     | 当前区域信息                |
+| `emergencyTransmissionCqlFilter` | `string`  | CQL过滤条件                 |
+| `interval`                       | `number`  | 轮询间隔（毫秒）            |
+| `mainLayerVisible`               | `boolean` | 主图层可见性                |
+| `layerSettings`                  | `any`     | 分级配置（按 zoneLevel 取） |
 
 ## 8. 修复记录
 
-| 修复项                        | 修复内容                                                            | 代码位置  |
-| ----------------------------- | ------------------------------------------------------------------- | --------- |
-| `optical` 分号拆分去重        | `optical` 可能包含 `A;B;A`，需拆分、去空、去重后生成 `circuitNames` | L58-68    |
-| `enableSubLayer`              | 添加 `enableSubLayer` 属性启用子图层渲染                            | L56       |
-| `refreshDeps`                 | 添加 `shouldRequestErgan` 和 `shouldRequestLocal` 到依赖数组        | L99, L115 |
-| `TransmissionAlarmLayerProps` | 添加 `currentZone` 和 `interval` 属性                               | L25-26    |
+| 修复项                           | 修复内容                                                                                  | 代码位置                            |
+| -------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
+| `optical` 分号拆分去重           | `optical` 可能包含 `A;B;A`，需拆分、去空、去重后生成 `circuitNames`                       | L36-46                              |
+| `enableSubLayer`                 | 添加 `enableSubLayer` 属性启用子图层渲染                                                  | L62-72                              |
+| `refreshDeps`                    | 添加 `shouldRequestErgan` 和 `shouldRequestLocal` 到依赖数组                              | L127, L143                          |
+| `TransmissionAlarmLayerProps`    | 添加 `currentZone` 和 `interval` 属性                                                     | L22-31                              |
+| 分级配置 `layerSettings`         | 新增 `layerSettings` 属性透传分级配置；按 `zoneLevel` 取 `province/region/city` 配置      | L83-94, L60, L157 等                |
+| `refreshDeps` 含 `layerSettings` | 添加 `layerSettings` 到 `useRequest.refreshDeps`，zoneLevel 切换时子图层告警色正确刷新    | L56                                 |
+| `mainLayerColor` / `zIndex`      | `TransmissionAlarmLayer` 读取 `layerSettings[serverCodeName]?.{color, zIndex}` 传入子组件 | L60-70                              |
+| 早期返回 `currentZone` 空        | 添加 `if (!currentZone) return null` 早返，hook 顺序保持                                  | L148-150                            |
+| 修复 zIndex 条件                 | `MapEmergencyTransmission` 中 `if (isNil(zIndex))` → `if (!isNil(zIndex))`                | `MapEmergencyTransmission.tsx` L137 |
 
 ## 9. 常见问题解决方案
 
@@ -417,6 +534,37 @@ const circuitNames = Array.from(
 );
 ```
 
+### 9.5 切换 zoneLevel 后子图层告警色未刷新
+
+**问题**: 用户在省/市/区县之间切换时，主图层颜色 / zIndex 已变化，但子图层告警色（红色等）仍保留上一 zoneLevel 的值。
+
+**根因**: `TransmissionAlarmLayer` 中的 `useRequest.refreshDeps` 缺少 `layerSettings`，导致 `currentLayerSettings` 引用变化时不触发子图层数据重拉。
+
+**解决方案**:
+
+```typescript
+const { data: alarmLayerData } = useRequest(
+    async () => {
+        // ...
+        return getEmergencyTransmissionAlarmLayerDataApi({ serverCodeName, circuitNames, layerSettings });
+    },
+    {
+        // 必须包含 layerSettings，否则 zoneLevel 切换不会触发刷新
+        refreshDeps: [serverCodeName, circuitNames, layerSettings],
+    },
+);
+```
+
+### 9.6 分级配置 key 拼写错误
+
+**问题**: `EMapConfig.emergencyTransmission.layerSettings` 中 key 拼写错误（如 `privince`）会导致 `currentLayerSettings` 返回 `null`，整个分级链路 fallback 到 `emap.ts` 的全局兜底。
+
+**解决方案**:
+
+- 分级配置 key 必须与 `ZoneLevelEnum` 完全一致：`province` / `region` / `city`。
+- 现场配置应使用小写英文 key，避免与组件代码不一致。
+- 排查时可通过 `useEnvironment("EMapConfig.emergencyTransmission.layerSettings")` 在 dev 模式下打印验证。
+
 ## 10. 相关文件
 
 | 文件路径                                                                        | 说明                          |
@@ -428,7 +576,7 @@ const circuitNames = Array.from(
 
 ---
 
-**文档版本**: 2.2
-**最后更新**: 2026-06-09
+**文档版本**: 2.3
+**最后更新**: 2026-06-11
 **维护团队**: GD Emergency Support Team
-**更新内容**: 补充 `optical` 分号拼接拆分、去空、去重规则，避免传输路由子图层缺失或重复请求
+**更新内容**: 融合分级配置（`currentLayerSettings` 按 zoneLevel 透传 `layerSettings` 到 `TransmissionAlarmLayer`），新增 `mainLayerColor` / `zIndex` / 早期返回 / `refreshDeps` 含 `layerSettings` 等变更的说明与配置指南

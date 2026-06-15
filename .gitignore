@@ -29,3 +29,6 @@ logs/
 # OS files
 Thumbs.db
 Desktop.ini
+
+# Commit AI config (contains API keys)
+.commit-ai.json

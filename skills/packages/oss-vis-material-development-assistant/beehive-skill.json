@@ -1,0 +1,13 @@
+{
+  "contentHash": "91c9134455a2006eff8ff6e8112404a0cba8189511e61a12583ed08bdd615430",
+  "files": [
+    "./materials/",
+    "./references/"
+  ],
+  "id": "oss-vis-material-development-assistant",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-06-15T02:31:08.520Z",
+  "version": "0.0.0"
+}

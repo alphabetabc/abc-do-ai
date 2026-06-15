@@ -1,6 +1,12 @@
 {
   "projects": [
     {
+      "id": "3966030b4894",
+      "projectDir": "E:\\oss-fe-git\\phoenix\\oss-visual-material",
+      "label": "可视化平台物料",
+      "addedAt": "2026-06-15T02:19:10.072Z"
+    },
+    {
       "id": "e1a230a3e325",
       "projectDir": "E:\\oss-fe-git\\phoenix\\oss-visual-gd-emergency-support-next",
       "label": "oss-visual-gd-emergency-support-next",

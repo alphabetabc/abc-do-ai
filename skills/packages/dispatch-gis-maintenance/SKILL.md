@@ -24,6 +24,7 @@ tags:
 | 传输路由状态控制 | [点击跳转](#9-传输路由状态控制)   | [MapEmergencyTransmissionView.md](./MapEmergencyTransmissionView.md) |
 | 乡镇退服图例联动 | [点击跳转](#10-乡镇退服图例联动)  | [damageToTownsGisPin.md](./damageToTownsGisPin.md)                   |
 | 添加新预警类型   | [点击跳转](#11-添加新预警类型)    | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 多级视图告警图层配置 | [点击跳转](#12-多级视图告警图层配置) | [layerSettings 配置说明](#12-多级视图告警图层配置) |
 
 ---
 
@@ -248,6 +249,64 @@ useRequest(() => api(), {
 
 ---
 
+## 12. 多级视图告警图层配置
+
+**场景**：需要配置省级/地市级/区县级三级视图的传输路由告警图层（color、alarmColor、legendIcon 等）
+
+**配置位置**：
+
+- 本地开发：`apps/main/public/config/environment-local.json` → `layerSettings` → `province` / `region` / `city`
+- 线上环境：`apps/main/public/config/environment.json` → `layerSettings` → `province` / `region` / `city`
+
+**配置结构**：
+
+每个视图层级下包含以下告警图层（按 zIndex 降序排列）：
+
+| 图层 key | 说明 | 省级视图 | 地市视图 | 区县视图 |
+|----------|------|---------|---------|---------|
+| `省级传输二干告警图层` | 省级传输二干 | 有 | 有（保持默认） | 有（保持默认） |
+| `地市骨干层路由告警图层` | 地市骨干 | 有 | 有 | 有（保持默认） |
+| `区县汇聚层路由告警图层` | 汇聚路由 | 有 | 有 | 有 |
+| `乡镇接入层路由告警图层` | 接入层 | 有 | 有 | 有 |
+
+**每个图层的配置字段**：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `desc` | string | 图层描述名称 |
+| `zIndex` | number | 正常状态图层层级 |
+| `alarmZIndex` | number | 告警状态图层层级 |
+| `alarmGroupSize` | number | 告警聚合大小 |
+| `color` | string | 正常状态颜色标识 |
+| `alarmColor` | string | 告警状态颜色标识（红色系） |
+| `legendIcon` | string | 图例图标文件名 |
+
+**颜色与线径命名规范**：
+
+| 颜色 | 线径 | 命名格式 |
+|------|------|---------|
+| 绿色 (0DFF7A) | 3 | `csyj_green_line_3` |
+| 黄色 (F6BF28) | 1.5 | `csyj_yellow_line_15` |
+| 蓝色 (96C1FF) | 0.5 | `csyj_blue_line_05` |
+| 红色 (FF0000) | 3 | `csyj_red_line_3` |
+| 红色 (FF0000) | 1.5 | `csyj_red_line_15` |
+| 红色 (FF0000) | 0.5 | `csyj_red_line_05` |
+
+**图例图标对应规则**：
+
+| color 颜色 | legendIcon 值 |
+|-----------|--------------|
+| 蓝色系 | `二干.png` |
+| 绿色系 | `骨干层路由.png` |
+| 黄色系 | `汇聚路由.png` |
+
+**关键文件**：
+
+- `apps/main/public/config/environment-local.json`（本地开发配置）
+- `apps/main/public/config/environment.json`（线上环境配置）
+
+---
+
 ## 🎯 常见问题速查
 
 | 问题               | 快速解决方案                           | 详细文档                                                              |
@@ -276,7 +335,7 @@ useRequest(() => api(), {
 
 ---
 
-**文档版本**: 2.1
-**最后更新**: 2026-06-09
+**文档版本**: 2.4
+**最后更新**: 2026-06-12
 **维护团队**: GD Emergency Support Team
-**更新内容**: 补充传输路由 `optical` 分号拆分去重维护规则
+**更新内容**: 新增第12节「多级视图告警图层配置」，记录 province/region/city 三级视图的图层 color、alarmColor、legendIcon 配置规范及颜色命名规则

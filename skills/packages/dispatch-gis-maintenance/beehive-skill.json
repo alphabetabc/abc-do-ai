@@ -1,5 +1,5 @@
 {
-  "contentHash": "fb5270d87fff7db0ba2b731fa454b9bd61ad0b43ebba77925d5e3b9e3ce54796",
+  "contentHash": "059978740714df4b86ff8efa5b9f2a21e45c73e84cfd50438c6e6f1e8c74e66e",
   "files": [
     "./CENTER-GIS.md",
     "./MapEmergencyTransmissionView.md",
@@ -10,6 +10,6 @@
   "targets": [
     "trae"
   ],
-  "updatedAt": "2026-06-09T06:25:07.233Z",
+  "updatedAt": "2026-06-12T08:51:22.882Z",
   "version": "0.0.0"
 }
