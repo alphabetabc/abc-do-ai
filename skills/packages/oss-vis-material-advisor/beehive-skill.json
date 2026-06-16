@@ -1,0 +1,18 @@
+{
+  "contentHash": "afdca339b60203dfd4891566e01b9fc2a17fcdc9042717e9d5790c22d100136c",
+  "files": [
+    "./profiles/",
+    "./references/",
+    "./scripts/",
+    "./examples/",
+    "./materials-catalog.md",
+    "./FAQ.md",
+    "./ROADMAP.md"
+  ],
+  "id": "oss-vis-material-advisor",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-06-16T10:19:14.925Z",
+  "version": "0.0.0"
+}

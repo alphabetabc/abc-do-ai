@@ -1,0 +1,190 @@
+{
+  "name": "digital-card",
+  "title": "数字牌",
+  "category": "数字/指标卡",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "中",
+    "author": "liqingli",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单条 {label, value} 硬编码约定（无 dataModel 映射）",
+        "example": "[{ label: '严重', value: 0 }]",
+        "match_pattern": "dataSource[0].{label, value}",
+        "supports_multi_series": false,
+        "multi_series_key": null,
+        "fields": [
+          { "name": "label", "type": "String", "required": true, "description": "标题文本（硬编码约定，dataModel 未声明）" },
+          { "name": "value", "type": "Number|String", "required": true, "description": "数值内容（硬编码约定，dataModel 未声明）" }
+        ],
+        "private_field": {
+          "name": "label, value",
+          "description": "dataModel dimensions/indicators 均为空数组，组件硬编码 dataSource[0].label/value 读取"
+        }
+      }
+    ],
+    "interactions": [
+      {
+        "type": "none",
+        "trigger": "none",
+        "config_field": "无交互面板（commit: '优化: 去除无内容的交互分组'）",
+        "sub_fields": [],
+        "payload": null,
+        "known_issue": "纯展示组件，无任何交互事件"
+      }
+    ],
+    "visual_configs": {
+      "containerStyle": {
+        "bgColorStart": { "type": "string", "default": "#436570", "description": "背景渐变开始色" },
+        "bgColorEnd": { "type": "string", "default": "#059183", "description": "背景渐变结束色（也用作左边框色）" }
+      },
+      "listItemLabel": {
+        "showLeftBorder": { "type": "boolean", "default": true, "description": "显示/隐藏左边框" },
+        "borderLeftColor": { "type": "string", "description": "⚠️ 左边框颜色（schema 有但组件未使用，见 gotchas § 1）" },
+        "borderLeftWidth": { "type": "number", "default": 4, "description": "左边框宽度" },
+        "paddingLeft": { "type": "number", "default": 15, "description": "左内边距" },
+        "justifyContent": { "type": "string", "default": "start", "options": ["start", "center", "end"], "description": "文字对齐方式" },
+        "color": { "type": "string", "description": "文字颜色（空时回退到 bgColorEnd）" },
+        "fontSize": { "type": "number", "default": 25, "description": "文字大小" },
+        "fontWeight": { "type": "string", "default": "bold", "description": "文字粗细" }
+      },
+      "listItemValue": {
+        "alignItems": { "type": "string", "default": "center", "options": ["flex-start", "center", "flex-end"], "description": "数值对齐方式" },
+        "color": { "type": "string", "default": "#ffffff", "description": "字体颜色" },
+        "fontSize": { "type": "number", "default": 40, "description": "字体字号" },
+        "fontWeight": { "type": "string", "default": "normal", "description": "字体粗细" }
+      }
+    },
+    "default_values": {
+      "config.title": "数字牌",
+      "config.width": 150,
+      "config.height": 150,
+      "config.left": 15,
+      "config.top": 15,
+      "config.containerStyle.bgColorStart": "#436570",
+      "config.containerStyle.bgColorEnd": "#059183",
+      "config.listItemLabel.showLeftBorder": true,
+      "config.listItemLabel.borderLeftColor": "#1CAB88",
+      "config.listItemLabel.borderLeftWidth": 4,
+      "config.listItemLabel.paddingLeft": 15,
+      "config.listItemLabel.justifyContent": "start",
+      "config.listItemLabel.fontSize": 25,
+      "config.listItemLabel.fontWeight": "bold",
+      "config.listItemLabel.color": "",
+      "config.listItemValue.fontSize": 40,
+      "config.listItemValue.color": "#ffffff",
+      "config.listItemValue.alignItems": "center",
+      "config.listItemValue.fontWeight": "normal"
+    }
+  },
+  "business_scenarios": [
+    "大屏故障等级指标牌（严重/重要/次要/提示 配渐变色）",
+    "运维监控实时告警数（带颜色警示）",
+    "业务核心指标展示（订单总数、用户总数）",
+    "仪表盘数字卡片（带左边框装饰）",
+    "大屏数据看板的辅助数字标签"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "中", "reason": "同分类指标卡，digital-flop 多了 TWEEN 翻牌动画，但数据格式不同（数字牌无 id/render/suffix）" },
+      { "material": "normal-label", "cost": "低", "reason": "作为标题/说明独立展示" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-bar / echarts-pie", "reason": "数据格式完全不同（{label,value} 单条 vs 数组）" }
+    ],
+    "note": "纯展示型指标卡，无交互能力；适合作为大屏中的'装饰性数字'使用"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.4,
+    "weighted_total": 3.4,
+    "breakdown": {
+      "business_description": 3.0,
+      "scenario_coverage": 2.5,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 2.5,
+      "doc_completeness": 5.0,
+      "composability": 3.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.0：dataModel 中 dimensions/indicators 均为空数组，字段'label'和'value'是硬编码约定（dataModel 没声明），dataModel 描述'echarts饼图/玫瑰图,指标数据返回的是分类指标数'是模板描述（推测从其他物料复用）；fieldLabel 全部为空，业务方需靠代码或文档知道有 label/value 字段。",
+      "2. 场景覆盖度 2.5：仅 1 个简单场景（单条 {label, value} + 渐变背景 + 左边框 + 数值），不支持多数据项、不支持维度、不支持动态样式切换；适合做装饰性数字卡，缺少翻牌/趋势/级别等高级特性。",
+      "3. 配置完备度 3.5：3 个 FormCollapse 分组（背景/标题/数值）+ 10+ 个配置项（bgColorStart/End、showLeftBorder、borderLeftColor/Width、paddingLeft、justifyContent、color、fontSize、fontWeight、alignItems 等）；有 x-reactions 但都是简单数值/颜色选择器，缺联动；默认值完整（4 个色值 + 3 个尺寸 + 2 个对齐），开箱即用。",
+      "4. 数据契约清晰度 2.5：dataModel 完全为空，字段约定靠代码硬编码（dataSource[0].label/value），新增字段无 schema 面板可映射；dataType 全部为 String（value 实际应为 number）；无空数据保护（空 dataSource 会崩溃，见 gotchas § 2）。",
+      "5. 文档完整度 5.0：5+1 全套齐全 + doc/README.md + doc/CHANGELOG.md；gotchas 详细记录 6 个真实坑点（borderLeftColor 未使用、dataSource[0] 无空值保护、标题颜色回退、渐变方向固定、Class 组件风格不一致、调试技巧）。",
+      "6. 可组合性 3.0：纯展示型，无交互事件，与其他物料组合代价中等（数据格式不通用）；适合做仪表盘装饰卡片。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.containerStyle (bgColorStart/End)", "config.listItemValue (color/fontSize)"],
+    "data_required": ["label (标题文本)", "value (数值)"],
+    "optional_fields": {
+      "config": [
+        "listItemLabel.showLeftBorder (默认 true)",
+        "listItemLabel.borderLeftColor (⚠️ 组件未使用, 见 gotchas)",
+        "listItemLabel.borderLeftWidth (默认 4)",
+        "listItemLabel.paddingLeft (默认 15)",
+        "listItemLabel.justifyContent (默认 start)",
+        "listItemLabel.color (空时回退到 bgColorEnd)",
+        "listItemValue.alignItems (默认 center)",
+        "listItemValue.fontWeight (默认 normal)"
+      ],
+      "data": []
+    },
+    "assumptions": [
+      "使用默认渐变背景色（#436570 → #059183）",
+      "使用默认左边框（showLeftBorder: true, width: 4）",
+      "单条数据（dataSource 长度 1）",
+      "纯展示无交互"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 2, "minutes": 5, "description": "默认渐变 + 标题 + 数值 + 左边框" },
+      "typical": { "config_items": 6, "data_fields": 2, "minutes": 12, "description": "自定义渐变色 + 自定义字号/对齐 + 颜色警示" },
+      "full": { "config_items": 10, "data_fields": 2, "minutes": 25, "description": "全部 3 个 FormCollapse 分组深度配置 + 主题色协调" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: ⚠️ borderLeftColor 字段在 schema 存在但组件未使用（硬编码使用 bgColorEnd），属于无效配置项",
+    "gotchas.md § 2: ⚠️ dataSource[0] 无空值保护，空数组/未定义时直接访问 .label/.value 会导致组件崩溃",
+    "gotchas.md § 3: 标题颜色回退逻辑：空字符串 ''.length === 0 触发回退，显示为 bgColorEnd（可能不符合预期）",
+    "gotchas.md § 4: 渐变方向固定为 linear-gradient(bgColorStart, bgColorEnd) 默认 to bottom，无法配置水平/对角",
+    "gotchas.md § 5: Class 组件 vs 函数组件，与其他物料代码风格不一致",
+    "data-model.md § 5.1: dataModel 为空，数据面板 DATA_CONFIG 不提供字段拖拽映射，用户需手动输入 JSON",
+    "data-model.md § 5.3: 无空数据保护，dataSource 为空数组或 undefined 时触发运行时错误",
+    "data-model.md § 2: dataModel dimensions/indicators 均为空数组，字段约定靠硬编码"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余 4 个物料（bidirectional-progress, normal-label, free-layout-indicators-viewer, dock-menu）"
+  }
+}

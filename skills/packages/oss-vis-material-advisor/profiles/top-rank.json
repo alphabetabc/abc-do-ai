@@ -1,0 +1,153 @@
+{
+  "name": "top-rank",
+  "title": "机房排名",
+  "category": "列表/排行",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": ""
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "简单",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "id+name+value+unit 单系列一维数组",
+        "example": "[{ id: '1', name: '项目A', value: 1000, unit: '万' }]",
+        "match_pattern": "data[*].{id, name, value, unit}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "id", "type": "string", "required": true, "description": "数据唯一标识" },
+          { "name": "name", "type": "string", "required": true, "description": "名称（机房/项目等）" },
+          { "name": "value", "type": "string(实际number)", "required": true, "description": "数值" },
+          { "name": "unit", "type": "string", "required": false, "description": "单位" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "config_field": "doc 提到支持点击派发，但 index.jsx 中未实现 interaction.dispatch",
+        "description": "⚠️ doc 描述支持点击派发，但 index.jsx 中并未注册 onClick 事件或 interaction.dispatch（代码与文档不一致）",
+        "known_issue": "doc 提到的'点击排名项时向外派发数据'功能在当前代码中未实现，可能是文档超前或功能未完成"
+      }
+    ],
+    "visual_configs": {
+      "itemStyle": {
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "marginTop": { "type": "number", "description": "item 之间的上边距（除第一项外）" },
+        "backgroundImage": { "type": "string", "description": "默认背景图" },
+        "indexSize": { "type": "number", "description": "排名序号圆的尺寸" },
+        "indexBgColor": { "type": "string" },
+        "indexBorderColor": { "type": "string" }
+      },
+      "itemsSet": {
+        "description": "按 index 单独配置的特殊样式（背景图、序号色、文字色），数组下标对应 dataSource 的下标",
+        "itemSetting": {
+          "backgroundImage": { "type": "string" },
+          "indexBgColor": { "type": "string" },
+          "indexBorderColor": { "type": "string" },
+          "color": { "type": "string" }
+        }
+      },
+      "indexFontStyle": { "type": "object", "description": "排名数字字体样式" },
+      "nameFontStyle": { "type": "object", "description": "名称字体样式" },
+      "valueFontStyle": { "type": "object", "description": "数值字体样式" },
+      "unitFontStyle": { "type": "object", "description": "单位字体样式" }
+    },
+    "default_values": {
+      "config.itemStyle.indexSize": 24,
+      "config.itemStyle.borderWidth": "2px",
+      "config.itemStyle.borderStyle": "solid"
+    }
+  },
+  "business_scenarios": [
+    "机房 Top N 排名展示（标题'机房排名'）",
+    "项目排名（项目A/项目B/项目C）",
+    "城市 GDP 排名",
+    "销量排行 Top N",
+    "性能指标 Top N",
+    "支持 Top 1 / Top 2 / Top 3 单独配样式（金银铜牌风格）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡可作'总数'显示，top-rank 显示 Top N，两者是常见组合" },
+      { "material": "normal-label", "cost": "低", "reason": "标题独立" },
+      { "material": "decoration/*", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [],
+    "note": "top-rank 是纯展示物料，无交互，组合时主要靠其他物料提供数据源和交互"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.4,
+    "weighted_total": 3.4,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.0,
+      "config_completeness": 3.0,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 3.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：物料名'机房排名'业务化（虽是机房特定，但'排名'语义通用），dataModel 字段（id/name/value/unit）业务化程度高，doc 字段说明表格清晰。",
+      "2. 场景覆盖度 3.0：核心场景是'排名展示'，通过 itemsSet 数组支持 Top 1/2/3 等特殊样式（金银铜牌）。但场景较单一，没有滚动/分页/搜索/排序等扩展。",
+      "3. 配置完备度 3.0：itemStyle + itemsSet + 4 套字体样式（index/name/value/unit），但配置项数量不算多（约 10+ 字段），无滚动/分页/总数显示等大屏常用配置。",
+      "4. 数据契约清晰度 3.5：dataModel 4 字段（id/name/value/unit）业务化，有完整 doc 字段说明表格。但 ① oss-material.json.dataModel 空字符串与 dataModel.json 实际存在矛盾；② doc 数据示例写了 'rank' 字段但 dataModel 未声明（code 也未使用），doc/code 不一致。",
+      "5. 文档完整度 3.0：有详细 doc/README.md（含配置项/数据示例/字段说明/派发参数示例），但 5+1 文档全部缺失。",
+      "6. 可组合性 4.0：与 digital-flop + decoration 组合是大屏标准 Top N 模式，组合代价低。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 4,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 10,
+    "breakdown": {
+      "config_minutes": 4,
+      "data_minutes": 6,
+      "custom_minutes": 0
+    },
+    "config_required": ["itemStyle.width", "itemStyle.height", "nameFontStyle", "valueFontStyle"],
+    "data_required": ["id", "name", "value"],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 2, "minutes": 5, "description": "Top 5 + 默认样式 + 数字+名称两列" },
+      "typical": { "config_items": 6, "data_fields": 3, "minutes": 12, "description": "Top 10 + Top1-3 金银铜样式 + 数字+名称+单位三列" },
+      "full": { "config_items": 9, "data_fields": 4, "minutes": 20, "description": "Top N + itemsSet 全配置 + 自定义背景图" }
+    },
+    "assumptions": [
+      "使用默认数据数组（无 API 拉取）",
+      "无交互（doc 提到点击但代码未实现）",
+      "无滚动/分页"
+    ]
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在",
+    "doc 数据示例写了 'rank' 字段（[{\"id\": \"1\", \"rank\": 1, ...}]），但 dataModel 未声明 rank 字段，index.jsx 也未使用 → 文档/代码不一致",
+    "doc 提到'点击排名项时向外派发数据'，但 index.jsx 中并未注册 onClick 事件或 interaction.dispatch → 文档/代码不一致（功能未实现或文档超前）",
+    "doc 提到'支持排名变化动画效果'，但 index.jsx 中无任何动画相关代码",
+    "代码 100 行内极简实现，无 componentDidUpdate/useEffect/hooks，性能开销极低 → 优点",
+    "5+1 文档建议补：README（概述+itemsSet 用法）+ gotchas.md（doc/code 不一致清单）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "10 个画像全部生成完毕，下一步生成 profiles/README.md 总索引"
+  }
+}

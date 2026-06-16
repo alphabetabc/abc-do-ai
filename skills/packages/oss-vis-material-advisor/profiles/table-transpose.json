@@ -1,0 +1,192 @@
+{
+  "name": "table-transpose",
+  "title": "转置表格",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json"
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "zw",
+    "deprecated_files": [
+      "./schema.ts 中 groupSet 表头组配置已注释掉（line 52-125 整段）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "通用 field-1/field-2/field-3 模板",
+        "example": "[{ 'field-1': '标清', 'field-2': 1.91, 'field-3': '0.02', 'field-4': '0.04', id: '0' }, ...]",
+        "match_pattern": "data[*].{field-1|field-2|field-3|...}",
+        "fields": [
+          { "name": "field-1", "type": "String", "required": false, "description": "维度/标签列（如节目源）" },
+          { "name": "field-2+", "type": "Number|String", "required": false, "description": "指标列，可配 digitalFlop / enum / plainText" },
+          { "name": "id", "type": "String", "required": true, "description": "rowKey（fieldNameForKey 默认为 id）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "row_click",
+        "trigger": "click_row",
+        "config_field": "interactions.rowClickData",
+        "sub_fields": ["rowClickData（行数据/默认选中行传参）"],
+        "behavior": "行单击事件派发，可配置派发参数"
+      },
+      {
+        "type": "cell_click",
+        "trigger": "click_cell",
+        "config_field": "interactions.dynamicEvents",
+        "sub_fields": ["dynamicEvents[]（多事件定义）"],
+        "behavior": "单元格级派发事件，支持 dynamicEvents 通用事件系统"
+      },
+      {
+        "type": "data_refresh",
+        "trigger": "auto_timer",
+        "config_field": "dataConfig.isRefresh + refreshTime",
+        "sub_fields": ["isRefresh", "refreshTime（秒）"],
+        "behavior": "支持数据自动刷新（最小间隔 1s）"
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "columns": {
+          "type": "Array<Object>",
+          "description": "列字段配置（ObjectArray）",
+          "sub_fields": [
+            "dataIndex（字段名）",
+            "title（列标题）",
+            "width（列宽）",
+            "align（对齐方式）",
+            "contentShowType（plainText | digitalFlop | enumMap 等）",
+            "contentProps.textStyle / levels / enums"
+          ]
+        },
+        "headerStyle": {
+          "type": "object",
+          "description": "表头样式",
+          "sub_fields": ["backgroundColor", "fontWeight", "color", "fontSize", "fontFamily", "width", "textWidth", "textAlign"]
+        },
+        "rowSetting": {
+          "type": "object",
+          "description": "行配置",
+          "sub_fields": ["fieldNameForKey", "width", "color", "fontSize", "fontFamily", "height", "precision（翻牌器位数）"]
+        }
+      },
+      "rich_content": {
+        "digitalFlop": "columns.contentShowType=digitalFlop + contentProps.levels 颜色阈值",
+        "enumMap": "columns.contentShowType=plainText + contentProps.enums 枚举映射"
+      }
+    },
+    "default_values": {
+      "config.headerStyle.fontSize": 16,
+      "config.rowSetting.height": 60,
+      "config.rowSetting.fieldNameForKey": "id",
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "转置展示（如指标横向、维度纵向）— 适合 KQI 表格、节目源质量等",
+    "多指标横向对比表格（数字翻牌器 levels 颜色阈值）",
+    "枚举值映射展示（包名/会员类型/套餐等级）",
+    "单元格级交互（dynamicEvents 派发）",
+    "数据自动刷新（5min 刷新间隔，适合监控类大屏）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table / pagination-table / table-fixedColumns", "cost": "高", "reason": "同区域都是表格类，但转置表格与常规表格列结构不同（行/列转置），不可同区域" },
+      { "material": "Modal/Drawer 全局组件", "cost": "零", "reason": "通过 dynamicEvents 配置派发目标" },
+      { "material": "dock-menu / 按钮类", "cost": "低", "reason": "通过订阅外部显隐状态可联动" }
+    ],
+    "incompatible_with": [
+      { "material": "table（同区域）", "cost": "高", "reason": "自渲染整个表格，与 table 不可同区域" },
+      { "material": "drilldown-table / pagination-table / table-detail / table-fixedColumns（同区域）", "cost": "高", "reason": "都是平行表格组件，不可同区域" }
+    ],
+    "note": "table-transpose 是'转置场景'专项表格，与常规表格列结构相反（指标为列、维度为行），是表格类中专项场景的典型代表"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.5,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：标题'转置表格'是表格类专项场景的描述，但 defaultValue 用的是 field-1/field-2/field-3 占位符，业务化程度一般；典型业务是 KQI 表格、节目源质量监控等。",
+      "2. 场景覆盖度 3.5：覆盖转置展示 + 翻牌器颜色阈值 + 枚举值映射 + 单元格级派发 + 数据自动刷新 4-5 种典型变体。",
+      "3. 配置完备度 4.0：3 大 FormCollapse 分组（表格列字段/表头设置/行设置）+ 翻牌器 levels 颜色阈值 + 字体/对齐/字号等 10+ 配置项 + 字段联动（compactSeperator 依赖 compact）。",
+      "4. 数据契约清晰度 3.0：dataModel.json 的 3 个 indicator 都是 field1/field2/field3 通用占位名，业务化不足；defaultValue 中 field-1~field-4 也是占位符；oss-material.json.dataModel 字段为空字符串。",
+      "5. 文档完整度 3.5：doc/readme.md 应有配置截图；但缺 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。",
+      "6. 可组合性 3.5：与 Modal/Drawer 零代价（dynamicEvents 派发）；与其他表格不能同区域组合；转置场景的'特殊列结构'使得数据准备成本高于常规表格。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 4,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 12,
+    "breakdown": {
+      "config_minutes": 7,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.columns（含 dataIndex / title / width / contentShowType）",
+      "config.rowSetting.fieldNameForKey（默认 id）",
+      "config.headerStyle（字号/颜色/背景）"
+    ],
+    "data_required": [
+      "dataSource（数组，每行含 rowKey）",
+      "列字段对应数据（如 field-1 / field-2）",
+      "翻牌器字段（如有 levels 配置需提供数值）",
+      "枚举值字段（如有 enums 配置需提供 key）"
+    ],
+    "optional_fields": {
+      "config": ["contentProps.levels（颜色阈值）", "contentProps.enums（枚举映射）", "headerStyle.fontWeight/textAlign"],
+      "data": ["contentShowType 对应类型的字段值"]
+    },
+    "assumptions": [
+      "使用默认 rowKey=id",
+      "列内容默认 plainText",
+      "数据 5min 自动刷新"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 3, "minutes": 8, "description": "默认 + 简单列（plainText）" },
+      "typical": { "config_items": 4, "data_fields": 4, "minutes": 12, "description": "翻牌器 + 枚举值 + 数据刷新" },
+      "full": { "config_items": 6, "data_fields": 5, "minutes": 20, "description": "完整样式 + 多级颜色阈值 + 自定义事件" }
+    }
+  },
+  "_validation_notes": [
+    "schema.ts 中 groupSet（表头组）配置整段被注释（line 52-125），意味着多列分组功能当前不可用",
+    "dataModel.json 的 3 个 indicator 都是 field1/field2/field3 通用占位，需要在 schema columns.dataIndex 中绑定真实字段",
+    "oss-material.json.dataModel 字段为空字符串（应填 './dataModel.json'）",
+    "contentShowType 支持 plainText / digitalFlop，可结合 levels 颜色阈值做翻牌器效果",
+    "翻牌器 levels 颜色按 number 阈值分段（降序匹配，第一个 number<=value 的 level 生效）",
+    "rowKey 字段名由 rowSetting.fieldNameForKey 决定（默认 id）",
+    "dataConfig.refreshTime 单位是秒，最小 1s"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "继续为 transfer-table / alarm-window-card 生成画像"
+  }
+}

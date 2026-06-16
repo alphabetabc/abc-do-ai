@@ -1,0 +1,223 @@
+{
+  "name": "transfer-table",
+  "title": "表格穿梭框",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json"
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中高",
+    "author": "闫志峰",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "key/title/checked 通用格式",
+        "example": "[{ key: '1', title: '财政厅' }, { key: '2', title: '财政厅', checked: '1' }, ...]",
+        "match_pattern": "data[*].{key|title|checked}",
+        "fields": [
+          { "name": "key", "type": "String", "required": true, "description": "行唯一标识（rowKey）" },
+          { "name": "title", "type": "String", "required": true, "description": "显示名称" },
+          { "name": "checked", "type": "String", "required": false, "description": "是否默认选中（'1' = 选中）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "transfer_move",
+        "trigger": "click_transfer_button",
+        "config_field": "config.transferProps（标题/搜索/最大行数/颜色）",
+        "sub_fields": [
+          "titles.leftTitle/rightTitle",
+          "showSearch + searchFields",
+          "maxField（右侧最大行数）",
+          "backgroundColor/fontColor/fontSize",
+          "selBackgroundColor/selFontColor",
+          "showSaveIcon + saveIconSize"
+        ],
+        "behavior": "左右穿梭框移动（基础 Transfer 行为）"
+      },
+      {
+        "type": "transfer_search",
+        "trigger": "input_search_keyword",
+        "config_field": "config.transferProps.showSearch + searchFields",
+        "sub_fields": ["showSearch", "searchFields（多个用逗号分隔）"],
+        "behavior": "支持字段搜索（受 showSearch 控制）"
+      },
+      {
+        "type": "transfer_change",
+        "trigger": "onChange",
+        "config_field": "interactions.onChangeEvent",
+        "sub_fields": ["onChangeEvent（事件名）"],
+        "behavior": "穿梭框值改变时触发事件，事件回调中 value 是右侧所有已选值"
+      },
+      {
+        "type": "transform_function",
+        "trigger": "onChange",
+        "config_field": "config.transformFn",
+        "sub_fields": ["transformFn（MonacoEditor 编辑，new Function 参数）"],
+        "behavior": "变化处理函数，对右侧已选值做二次处理（如：转 JSON、转大写、加前缀等）"
+      },
+      {
+        "type": "save_api",
+        "trigger": "click_save_button",
+        "config_field": "customDataSourceApiConfig + config.transferProps.showSaveIcon",
+        "sub_fields": [
+          "customDataSourceApiConfig.api（POST）",
+          "showSaveIcon + saveIconSize"
+        ],
+        "behavior": "支持保存右侧已选数据到后端（POST API）"
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "columns": {
+          "type": "Array<Object>",
+          "description": "列字段（disableStyleSettings=true，不允许单独样式）",
+          "sub_fields": ["dataIndex", "title"]
+        },
+        "tableProps": {
+          "type": "object",
+          "description": "表格基础属性",
+          "sub_fields": ["rowKey", "size（default/middle/small）", "scroll.x/y"]
+        },
+        "transferProps": {
+          "type": "object",
+          "description": "穿梭框样式属性",
+          "sub_fields": [
+            "titles（左/右标题）",
+            "showSearch + searchFields",
+            "maxField（右侧最大行数，0 = 不限）",
+            "backgroundColor / fontColor / fontSize",
+            "selBackgroundColor / selFontColor",
+            "showSaveIcon + saveIconSize"
+          ]
+        },
+        "transformFn": {
+          "type": "string",
+          "description": "变化处理函数（MonacoEditor 编辑）",
+          "default": "function transform(value) { return value }"
+        }
+      }
+    },
+    "default_values": {
+      "config.tableProps.rowKey": "key",
+      "config.tableProps.size": "default",
+      "config.transferProps.showSearch": false,
+      "config.transferProps.showSaveIcon": false,
+      "config.transferProps.fontSize": 16,
+      "customDataSourceApiConfig.dataType": "api",
+      "customDataSourceApiConfig.api.mode": "post"
+    }
+  },
+  "business_scenarios": [
+    "多选配置场景（指标选择、字段订阅、权限分配）",
+    "需要二次处理的穿梭（如：转 JSON、加密、添加前缀）",
+    "需要持久化已选数据的场景（保存到后端）",
+    "支持搜索过滤的穿梭（多字段搜索）",
+    "需要最大可选数量限制的场景（maxField）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table / pagination-table（同区域）", "cost": "高", "reason": "都是表格类组件，但 transfer-table 是带穿梭的复合组件" },
+      { "material": "GlobalApi 提交 + 后端存储", "cost": "低", "reason": "通过 customDataSourceApiConfig 可直接对接保存接口" },
+      { "material": "事件系统 / dynamicEvents", "cost": "低", "reason": "通过 onChangeEvent 触发下游业务" }
+    ],
+    "incompatible_with": [
+      { "material": "table（同区域）", "cost": "高", "reason": "自渲染整个表格+穿梭框" },
+      { "material": "其他表格类物料", "cost": "高", "reason": "不可同区域组合" }
+    ],
+    "note": "transfer-table 是'复合型'物料：左侧表格 + 穿梭按钮 + 右侧表格，能力较专一（多选+保存），不适合做'展示'类场景"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.7,
+    "weighted_total": 3.7,
+    "breakdown": {
+      "business_description": 3.0,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 3.5,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.0：标题'表格穿梭框'是组件化描述（'穿梭框'是 antd 术语），业务化中等；典型业务是订阅/权限/字段选择。",
+      "2. 场景覆盖度 3.5：覆盖穿梭 + 搜索 + 最大行数 + 二次处理 + 保存 + 颜色定制 5-6 种变体；只支持单穿梭结构（不能多分组穿梭）。",
+      "3. 配置完备度 4.5：3 大 FormCollapse 分组（列字段/表格样式属性/穿梭框样式属性）+ 事件处理（transformFn MonacoEditor）+ saveApi 独立配置 + 20+ 配置项。",
+      "4. 数据契约清晰度 3.5：dataModel.json 有 key/title/checked 业务化字段；defaultValue 给出了财政厅示例；缺完整 mock 数据集；oss-material.json.dataModel 字段为空字符串。",
+      "5. 文档完整度 3.5：doc/readme.md 应有配置截图；缺 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。",
+      "6. 可组合性 3.5：与 GlobalApi 提交低代价（customDataSourceApiConfig）；与其他表格不能同区域；与 dynamicEvents 事件系统低代价（onChangeEvent）。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 10,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.columns（key/title 列）",
+      "config.tableProps.rowKey（默认 key）",
+      "config.transferProps.titles（左/右标题）",
+      "config.transferProps.showSearch（如启用搜索）",
+      "config.transformFn（如需二次处理）"
+    ],
+    "data_required": [
+      "dataSource（key/title 数组）",
+      "checked（默认选中项，'1' = 选中）",
+      "rowKey 字段"
+    ],
+    "optional_fields": {
+      "config": [
+        "transferProps.maxField（最大行数限制）",
+        "transferProps.backgroundColor/fontColor（样式定制）",
+        "transferProps.showSaveIcon + customDataSourceApiConfig（保存接口）"
+      ],
+      "data": ["searchFields 对应字段（搜索功能）"]
+    },
+    "assumptions": [
+      "使用默认 rowKey=key",
+      "不启用搜索 / 不启用保存",
+      "transformFn 默认 return value（不做处理）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 3, "minutes": 10, "description": "默认 + 简单穿梭" },
+      "typical": { "config_items": 5, "data_fields": 3, "minutes": 15, "description": "穿梭 + 搜索 + 二次处理" },
+      "full": { "config_items": 8, "data_fields": 3, "minutes": 25, "description": "完整样式 + 搜索 + 保存接口 + 复杂 transform" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 字段为空字符串（应填 './dataModel.json'）",
+    "transformFn 是 MonacoEditor 编辑的 JS 字符串，运行时会作为 new Function() 参数执行（注意 XSS 风险）",
+    "transferProps.maxField 是右侧最大行数（0 表示不限），但 schema 中 min=0 实际可能不允许设置负数",
+    "customDataSourceApiConfig 默认 mode=post，与 dataConfig.api 默认 mode=get 不同（保存和读取使用不同 API）",
+    "searchFields 支持多字段用逗号分隔，但需与 data 字段名严格匹配",
+    "dataModel.indicators 第三个字段是 checked（String 类型，'1' = 选中），不是 Boolean",
+    "schema.ts 中使用了 disableStyleSettings=true，列不允许单独配置样式（统一用 tableProps 表格级样式）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "继续为 alarm-window-card 生成画像"
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "name": "echarts-map",
+  "title": "echarts平面地图",
+  "category": "地图",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": ""
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "省/地市/区县多指标地图数据",
+        "example": "[{ name: '哈尔滨市', value1: 123, value2: 456, value3: 789, value4: 987, level1: 0, level2: 1, level3: 1, level4: 0, id: '-257096336', parent: '153199949', num: 4 }]",
+        "match_pattern": "data[*].{name, value1~4, level1~4, id, parent, num}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "name", "type": "String", "required": true, "description": "地市或区县名称" },
+          { "name": "value1", "type": "String(实际number)", "required": false, "description": "数值1" },
+          { "name": "value2", "type": "String(实际number)", "required": false, "description": "数值2" },
+          { "name": "value3", "type": "String(实际number)", "required": false, "description": "数值3" },
+          { "name": "value4", "type": "String(实际number)", "required": false, "description": "数值4" },
+          { "name": "subValue1~4", "type": "String", "required": false, "description": "子数值1~4（dataModel 声明但 doc 未演示）" },
+          { "name": "level1", "type": "String", "required": false, "description": "value1 的等级（标记颜色）" },
+          { "name": "level2", "type": "String", "required": false, "description": "value2 的等级" },
+          { "name": "level3", "type": "String", "required": false, "description": "value3 的等级" },
+          { "name": "level4", "type": "String", "required": false, "description": "value4 的等级" },
+          { "name": "id", "type": "String", "required": true, "description": "地市或区县id" },
+          { "name": "parent", "type": "String", "required": true, "description": "父级id（省id或地市id）" },
+          { "name": "num", "type": "String", "required": false, "description": "气泡数值显示个数，最多4" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "drilldown",
+        "trigger": "click",
+        "config_field": "drilldown (待 schema 确认)",
+        "description": "支持点击地图下钻及事件派发，地图下钻默认传参 { regionId, regionName }，省级可下钻到地市，地市不下钻",
+        "behavior": "省级可下钻到地市级，地市级不下钻；可下钻到区县层（需配置）"
+      },
+      {
+        "type": "modal",
+        "trigger": "click",
+        "description": "支持弹窗交互"
+      },
+      {
+        "type": "data_source_switch",
+        "trigger": "click",
+        "description": "支持数据源切换按钮（0=演示数据，1=真实数据），通过复制变量名订阅字段实现"
+      },
+      {
+        "type": "return_to_previous",
+        "trigger": "click",
+        "description": "支持返回按钮返回上一图层"
+      }
+    ],
+    "visual_configs": {
+      "map": {
+        "areaColor": { "type": "object", "description": "地图区域色" },
+        "borderColor": { "type": "string", "description": "地图外轮廓" },
+        "label": { "type": "object", "component": "VisualTextStyle" }
+      },
+      "indicator": {
+        "show": { "type": "boolean", "description": "指标显示" },
+        "layout": { "type": "string", "options": ["垂直", "水平"], "description": "指标排列方向" },
+        "label": { "type": "object", "description": "指标字体样式" }
+      },
+      "background": { "size": { "type": "object", "description": "指标背景尺寸" } },
+      "tooltip": { "show": { "type": "boolean" }, "backgroundColor": { "type": "string" }, "borderColor": { "type": "string" } },
+      "back_button": { "description": "支持点击返回按钮返回上一图层" },
+      "data_switch_button": { "description": "数据源切换按钮配置" },
+      "margin": { "left": { "type": "string" }, "top": { "type": "string" }, "right": { "type": "string" }, "bottom": { "type": "string" } }
+    },
+    "default_values": {
+      "note": "main 指向 index.jsx（非 tsx），运行时表现与 schema 字段映射需进一步读 schema.ts 确认"
+    }
+  },
+  "business_scenarios": [
+    "省级行政区划业务覆盖度地图（如黑龙江移动网络制式覆盖）",
+    "地市级指标分布图（多指标 + 等级颜色）",
+    "区县层级下钻地图（数据钻取）",
+    "省级指标卡（4 个 value 并列）",
+    "数据源切换场景（演示数据 / 真实数据）",
+    "弹窗下钻详情：点击区域弹出 Modal/Drawer"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "中", "reason": "数字卡可作地图配套 KPI，但数据格式需对齐（地图用 value1~4，flop 用单 value）" },
+      { "material": "top-rank", "cost": "中", "reason": "地市排行可作地图补充" },
+      { "material": "normal-label", "cost": "低", "reason": "标题独立" },
+      { "material": "decoration/*", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [],
+    "note": "地图组件使用自定义数据源，由物料自己接管数据请求，平台不对其进行控制 → 跨物料数据流依赖度高，组合时需提前规划数据流"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.7,
+    "weighted_total": 3.7,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.0,
+      "composability": 3.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段贴近地图业务（地市名称/父级id/4 套指标+4 套级别/气泡数），fieldLabel 业务化（'地市或区县id'/'父级id,省id或地市id'）。但 value1~4 + level1~4 共 8 字段名偏技术化，业务上要解释'4 组指标+等级'才懂。",
+      "2. 场景覆盖度 4.0：覆盖省级 + 地市级 + 区县级 + 下钻 + 数据源切换 + 弹窗下钻，地图场景完整。",
+      "3. 配置完备度 4.0：doc 显示 9+ 配置分组（地图设置/标签引线/悬浮提示/指标字体背景/数据源切换/返回按钮/边距/地图样式/地图外轮廓/文本标签/指标），配置项数量充足。",
+      "4. 数据契约清晰度 3.0：dataModel 字段业务化，有完整 mock 和服务端示例。但 ① oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在；② dataType 全部标 String（实际应是 number）；③ subValue1~4 字段在 dataModel 声明但 doc 未演示使用；④ 默认数据 5min 刷新一次但 schema 中不一定暴露。",
+      "5. 文档完整度 3.0：有详细 doc/readme.md（含配置项截图/数据模板/服务端示例/数据源切换说明），但 5+1 文档全部缺失（materials/echarts-map/ 不存在）。",
+      "6. 可组合性 3.0：与 digital-flop/top-rank 组合时需数据格式对齐（value1~4 vs 单 value），组合代价中。地图组件自己接管数据请求，与平台其他物料的数据流对接需要额外适配。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 8,
+    "needs_custom_dev": true,
+    "custom_dev_minutes": 30,
+    "estimated_minutes": 51,
+    "breakdown": {
+      "config_minutes": 5,
+      "data_minutes": 16,
+      "custom_minutes": 30
+    },
+    "config_required": ["map.areaColor", "map.borderColor", "indicator.show", "tooltip.show", "drilldown settings"],
+    "data_required": ["name", "value1", "level1", "value2", "level2", "id", "parent", "num"],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 5, "minutes": 15, "description": "省级地图 + 单指标 + 默认样式" },
+      "typical": { "config_items": 8, "data_fields": 12, "minutes": 40, "description": "省级地图 + 4 指标 + 4 等级 + 下钻配置 + 悬浮提示" },
+      "full": { "config_items": 15, "data_fields": 17, "minutes": 75, "description": "省-地市下钻 + 数据源切换 + 返回按钮 + 弹窗" }
+    },
+    "assumptions": [
+      "使用默认省级地图 GeoJSON",
+      "省级下钻到地市一级（不到区县）",
+      "无数据源切换（演示数据）",
+      "无返回按钮（下钻一层即可）"
+    ]
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在且 doc 中也引用了完整 dataModel",
+    "dataModel 字段 dataType 全部为 String（实际应为 number，如 value1、level1、num）",
+    "subValue1~4 字段在 dataModel 中声明，但 doc/readme.md 的数据示例和服务端示例中均未演示其使用",
+    "地图组件使用自定义数据源，物料自己接管数据请求 → 跨物料组合时数据流需额外适配",
+    "默认数据 5min 刷新一次（doc 说明），但 schema 是否暴露此配置待确认",
+    "无 5+1 文档（materials/echarts-map/ 目录不存在），仅 doc/readme.md",
+    "5+1 文档建议补：README（概述+核心能力）+ schema.md（配置面板详解）+ component-logic.md（map.jsx + index.jsx 渲染流程）+ data-model.md（数据契约）+ gotchas.md（常见坑）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余待生成画像：table、top-rank"
+  }
+}

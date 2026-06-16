@@ -1,0 +1,189 @@
+{
+  "name": "drilldown-table-2",
+  "title": "下钻表格2",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": ["./index.less"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "yanzhifeng",
+    "deprecated_files": [
+      { "path": "index.less", "reason": "样式块较少，主要依赖 oss-ui Table 默认样式" }
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "11 个 columns + 3 个下钻字段（与 drilldown-table 同 schema）",
+        "example": "[{ policyPlatform: '财政厅1', serverCount: 36, CPURate: 40, ..., detailViewItemId: 'x', detailViewPageId: 'y', detailViewPageArgs: '{...}' }, ...]",
+        "match_pattern": "data[*].{columns_01..columns_11, detailViewItemId, detailViewPageId, detailViewPageArgs}",
+        "fields": [
+          { "name": "columns_01..columns_11", "type": "String", "required": true, "description": "11 个通用列字段" },
+          { "name": "detailViewItemId / detailViewPageId / detailViewPageArgs", "type": "String", "required": true, "description": "下钻字段（同 drilldown-table）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "dynamic_event",
+        "trigger": "click_cell_or_row",
+        "config_field": "interaction.defined.dynamicEvents",
+        "sub_fields": ["clickKey", "effect (Modal|Drawer|Cell|Row|CheckBoxCell|Dispatch)"],
+        "behavior": "新的事件派发机制（基于 props.interaction.dispatch），支持 6 种 effect 类型",
+        "key_diff_vs_drilldown_table": "本组件用 interaction.dispatch + designer.prefix.dynamicEventPrefix 派发到全局事件总线；drilldown-table 用内部 useState 控制 Modal 显隐"
+      },
+      {
+        "type": "more_modal",
+        "trigger": "click_more_button",
+        "config_field": "config.moreSet",
+        "sub_fields": ["open", "setting.modalPositionLeft/Top", "setting.modalWidth/Height", "headerStyleModal", "rowSettingModal"]
+      },
+      {
+        "type": "data_carousel",
+        "trigger": "setInterval",
+        "config_field": "config.dataCarousel",
+        "sub_fields": ["open", "dataLength", "speed"]
+      },
+      {
+        "type": "checkbox_cell",
+        "trigger": "click_checkbox",
+        "config_field": "interaction.defined.dynamicEvents[clickKey=X].effect",
+        "sub_fields": ["CheckBoxCell"],
+        "behavior": "支持多选数据派发（join 字符串），用于批量操作"
+      },
+      {
+        "type": "copy_support",
+        "trigger": "onCopy_event",
+        "behavior": "支持 Ctrl+C 复制表格数据为 Tab 分隔格式（处理 .data-cell 元素）"
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "headerStyle": {
+          "isMaxWidth": { "type": "boolean", "default": false, "description": "是否使用 Scrollbar 包裹（横向滚动）" },
+          "borderHideHeader": { "type": "boolean", "default": false, "description": "无表头模式" }
+        },
+        "moreSet": {
+          "headerStyleModal": { "type": "object", "description": "更多弹窗内的表头样式（覆盖）" },
+          "rowSettingModal": { "type": "object", "description": "更多弹窗内的行设置（覆盖）" }
+        },
+        "tooltipStyle": { "type": "object", "description": "表格 tooltip 样式" }
+      }
+    },
+    "default_values": {
+      "config.title": "下钻表格2",
+      "config.width": 500,
+      "config.height": 300,
+      "config.moreSet.open": true,
+      "config.dataCarousel.open": false,
+      "interaction.defined.dynamicEvents": "[]（动态事件需用户配置）"
+    }
+  },
+  "business_scenarios": [
+    "需要动态事件总线的下钻表格（Modal/Drawer/Cell/Row/CheckBoxCell 多效果）",
+    "支持多选复选框的批量操作表格",
+    "带'更多'弹窗 + 自定义弹窗内表头/行样式",
+    "支持横向滚动 + 无表头模式（isMaxWidth + borderHideHeader）",
+    "需要 Ctrl+C 复制表格数据的场景"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table", "cost": "零", "reason": "内部直接 import '../table'，复用 table 渲染" },
+      { "material": "drilldown-table", "cost": "零", "reason": "姐妹组件，schema 结构基本一致（仅事件派发机制不同）" },
+      { "material": "digital-flop", "cost": "低", "reason": "列内容支持 digitalFlop 同 drilldown-table" },
+      { "material": "Modal/Drawer 全局组件", "cost": "低", "reason": "通过 dynamicEvents 配置派发目标" }
+    ],
+    "incompatible_with": [
+      { "material": "drilldown-table（同区域）", "cost": "高", "reason": "两者功能重叠，不应在同一区域同时使用；选其一即可" }
+    ],
+    "note": "drilldown-table-2 是 drilldown-table 的事件总线升级版（支持 dynamicEvents + 6 种 effect），其余功能几乎一致"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.8,
+    "weighted_total": 3.8,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 4.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 与 drilldown-table 完全一致，通用列名（columns_01..columns_11）；标题'下钻表格2'偏技术无业务感；与 drilldown-table 同源容易被误用。",
+      "2. 场景覆盖度 4.5：覆盖 5 种 effect（Modal/Drawer/Cell/Row/CheckBoxCell/Dispatch）+ 更多弹窗 + 轮播 + 复制，比 drilldown-table 场景更多。",
+      "3. 配置完备度 4.0：与 drilldown-table schema 基本一致（8 个 FormCollapse），额外多了 tooltipStyle / borderHideHeader / isMaxWidth。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名通用，⚠️ oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在；⚠️ schema 中 detailView* 字段缺失（与 drilldown-table 不一致），下钻靠父级传入的 itemData。",
+      "5. 文档完整度 3.5：仅有 doc/readme.md + doc/CHANGELOG.md，缺少 5+1 文档；但有 16 张截图（image-2022-10-28）展示了完整配置流程。",
+      "6. 可组合性 4.0：与 drilldown-table / table / digital-flop / decoration 均低代价组合；事件总线架构使组件能联动全局 Modal/Drawer。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 9,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 22,
+    "breakdown": {
+      "config_minutes": 15,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.title",
+      "config.tableTitle",
+      "config.columns",
+      "config.rowSetting.fieldNameForKey",
+      "config.moreSet.open + setting",
+      "config.dataCarousel.open + dataLength + speed",
+      "interaction.defined.dynamicEvents（如果需要点击派发）",
+      "interaction.defined.configurableEvent.drilldownEvent.show + effect（如果需要下钻）"
+    ],
+    "data_required": [
+      "至少 11 个列字段（columns_01..columns_11）",
+      "detailViewItemId / detailViewPageId / detailViewPageArgs（如果需要下钻）"
+    ],
+    "optional_fields": {
+      "config": ["headerStyle.isMaxWidth", "headerStyle.borderHideHeader", "tooltipStyle"],
+      "data": ["列内容数字 / 状态枚举值"]
+    },
+    "assumptions": [
+      "使用 dynamicEvents 事件总线（如果不需要可省略）",
+      "下钻通过父级传入 detailView* 字段触发",
+      "使用 defaultValue 主题（蓝色政务云）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 3, "minutes": 15, "description": "单表 + 默认样式" },
+      "typical": { "config_items": 8, "data_fields": 4, "minutes": 25, "description": "下钻 + 轮播 + 复选框 + 事件总线" },
+      "full": { "config_items": 12, "data_fields": 5, "minutes": 40, "description": "全部 5 种 effect + 复制支持 + 自定义 tooltip" }
+    }
+  },
+  "_validation_notes": [
+    "dataModel 字段命名（columns_01..columns_11）与 schema columns.dataIndex 解耦，需要用户配置时绑定实际字段",
+    "schema 中没有 detailView* 字段定义（与 drilldown-table 不同），下钻依赖父级传入的 itemData.detailView*",
+    "dynamicEvents 事件总线架构需要 designer.prefix.dynamicEventPrefix 配合，外部使用方需先配置全局事件",
+    "index.less 中样式定义较少，弹窗样式主要靠 oss-ui Modal 默认 + 少量 custom",
+    "标题'下钻表格2'命名偏临时（很可能有'下钻表格3'计划），建议改为'事件总线表格'等业务化命名"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余表格（expandable-table, pagination-table, table-detail, table-fixedColumns, table-transpose, transfer-table, alarm-window-card）继续生成"
+  }
+}

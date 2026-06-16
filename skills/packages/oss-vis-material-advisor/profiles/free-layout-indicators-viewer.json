@@ -1,0 +1,220 @@
+{
+  "name": "free-layout-indicators-viewer",
+  "title": "自由布局指标",
+  "category": "容器/布局",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": [
+      "./components/IndItem.tsx",
+      "./components/StyledGradient.tsx"
+    ],
+    "static_assets": [
+      "./public/static/images/free-layout-indicators-viewer/default-bg.png"
+    ]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "高",
+    "author": "xmw",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多元素数组（按 indicatorId 与 points[].id 匹配）",
+        "example": "[{ indicatorId: 'id-1', indicatorName: '应急人员', indicatorValue: 115, indicatorUnit: '个', indicatorType: '' }, { indicatorId: 'id-2', indicatorName: '应急队伍出动数', indicatorValue: 5, indicatorUnit: '', indicatorType: '' }, ...]",
+        "match_pattern": "dataSource[*].{indicatorId, indicatorName, indicatorValue, indicatorUnit, indicatorType}",
+        "supports_multi_series": true,
+        "multi_series_key": "indicatorId",
+        "fields": [
+          { "name": "indicatorId", "type": "String", "required": true, "description": "指标 id，与 points[].id 严格匹配（找不到则该点不渲染）" },
+          { "name": "indicatorName", "type": "String", "required": true, "description": "指标名称" },
+          { "name": "indicatorValue", "type": "Number|String", "required": true, "description": "指标值，dataType 是 String 但实际是 number" },
+          { "name": "indicatorUnit", "type": "String", "required": false, "description": "单位文本" },
+          { "name": "indicatorType", "type": "String", "required": false, "description": "⚠️ 类型字段，dataModel 声明但组件未使用（gotchas § 4）" }
+        ],
+        "private_field": null
+      }
+    ],
+    "interactions": [
+      {
+        "type": "none",
+        "trigger": "none",
+        "config_field": "无交互面板（schema.ts 末尾 defineInteractionSchema 被注释）",
+        "sub_fields": [],
+        "payload": null,
+        "known_issue": "⚠️ 交互面板未启用，eventUISetting 只控制事件层尺寸，未绑定 onClick（gotchas § 6）"
+      }
+    ],
+    "visual_configs": {
+      "layout": {
+        "disableBackground": { "type": "boolean", "description": "是否禁用背景" },
+        "background": { "type": "string", "component": "Background", "description": "背景图片（为空时使用 default-bg.png 静态资源）" },
+        "points": { "type": "array", "component": "MonacoEditor", "description": "布局点数组，每项 {id, left, top}（支持百分比和绝对像素），通过 MonacoEditor 编辑" },
+        "pointSize": { "type": "object", "component": "Size", "description": "每个指标的尺寸（用于事件层 eventUISetting）" }
+      },
+      "indicatorValueSetting": {
+        "offsetY": { "type": "number", "description": "垂直方向的偏移" },
+        "fontSetting": { "type": "object", "description": "字体配置（fontStyle + enableGradient + gradientColors 渐变）" }
+      },
+      "indicatorNameSetting": {
+        "width": { "type": "number", "description": "宽度（控制自动换行）" },
+        "offsetY": { "type": "number", "description": "垂直方向的偏移" },
+        "fontSetting": { "type": "object", "description": "字体配置（含渐变）" }
+      },
+      "indicatorUnitSetting": {
+        "fontSetting": { "type": "object", "description": "字体配置（含渐变）" }
+      },
+      "indicatorItemSetting": {
+        "items": {
+          "type": "array",
+          "component": "ArrayCollapse",
+          "description": "指标个性配置数组（按 filterKey 匹配）",
+          "item_fields": {
+            "filterKey": { "type": "string", "description": "过滤条件，多个 indicatorId 用英文逗号分隔（⚠️ 空格敏感，gotchas § 3）" },
+            "background": { "type": "string", "component": "Background", "description": "背景图片" },
+            "backgroundSize": { "type": "object", "component": "Size", "description": "背景图片尺寸" }
+          }
+        }
+      }
+    },
+    "default_values": {
+      "config.title": "自由布局指标",
+      "config.width": 1060,
+      "config.height": 150,
+      "config.left": 15,
+      "config.top": 15,
+      "config.layout.points": "[9 个点 (id-1 ~ id-9)，百分比/像素混合坐标]",
+      "config.indicatorValueSetting.fontSetting.fontStyle.fontSize": 36,
+      "config.indicatorValueSetting.fontSetting.fontStyle.color": "#020D1B",
+      "config.indicatorValueSetting.fontSetting.fontStyle.fontWeight": 400,
+      "config.indicatorValueSetting.fontSetting.fontStyle.fontFamily": "YouSheBiaoTiHei-2",
+      "config.indicatorValueSetting.fontSetting.fontStyle.lineHeight": 1.1,
+      "config.indicatorValueSetting.fontSetting.enableGradient": true,
+      "config.indicatorUnitSetting.fontSetting.fontStyle.fontSize": 16,
+      "config.indicatorUnitSetting.fontSetting.fontStyle.color": "#fff",
+      "config.indicatorUnitSetting.fontSetting.fontStyle.fontFamily": "Microsoft YaHei",
+      "config.indicatorNameSetting.width": 70,
+      "config.indicatorNameSetting.fontSetting.fontStyle.fontSize": 14,
+      "config.indicatorNameSetting.fontSetting.fontStyle.fontWeight": "bold"
+    }
+  },
+  "business_scenarios": [
+    "大屏背景图 + 多个 KPI 卡片精确定位（应急指挥/工业监控/能源调度大屏）",
+    "自定义背景图 + 自由位置 + 渐变数字（YouSheBiaoTiHei 等艺术字）",
+    "个性化背景图覆盖（indicatorItemSetting 数组对部分指标独立配图）",
+    "9 点典型场景（应急人员、应急队伍出动、应急站点启用、通信车数、油机数 等组合）",
+    "纯展示型多指标总览（不需交互，纯大屏视觉）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "normal-label", "cost": "低", "reason": "作为背景图外的补充文本标签" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "digital-flop", "reason": "dataModel 字段不同（indicatorId/Name/Value/Unit vs value/render/suffix），无法直接对接" },
+      { "material": "digital-card", "reason": "dataModel 为空（仅 label/value），无法对接多指标" },
+      { "material": "echarts-bar / echarts-pie / bidirectional-progress", "reason": "dataModel 完全不兼容" }
+    ],
+    "note": "高复杂度容器型物料，自身就是一个'迷你仪表盘'，常作为大屏核心组件独立使用"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 5.0,
+      "composability": 2.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 5 指标命名业务化（indicatorId/Name/Value/Unit/Type），fieldLabel 中文标注清晰（'指标id'/'指标名称'/'指标值'/'单位'/'类型（数据中可以没有字段）'）；默认数据 9 条'应急人员/队伍/站点/通信车/油机'典型应急场景，业务贴合度高。",
+      "2. 场景覆盖度 3.0：5 个 FormCollapse 分组（布局/指标值/指标名/指标单位/指标个性配置）+ 渐变文字 + 个性化背景图 + 自由坐标，可覆盖大屏多 KPI 场景；但单物料固定，无点击下钻/动态切换等能力。",
+      "3. 配置完备度 4.5：5 大 FormCollapse 分组 + MonacoEditor 编辑坐标点 + compositionFontStyle() 工厂生成字体配置 + ArrayCollapse 个性化配置 + 静态资源默认背景；配置项 20+（坐标、字体、渐变、个性化背景、pointSize 等），但使用 compositionFontStyle 工厂保证了一致性。",
+      "4. 数据契约清晰度 3.5：dataModel 字段业务化命名 + fieldLabel 详细描述；但有 3 处瑕疵：① indicatorType 字段未使用（dataModel 声明但组件未读取）② 严格匹配 indicatorId，找不到则该点不渲染（静默失败，无提示）③ filterKey 解析对空格敏感（'id-1, id-2' 含空格匹配失败）。",
+      "5. 文档完整度 5.0：5+1 全套齐全 + doc/readme.md + doc/CHANGELOG.md + 7 张示例图；gotchas 详细记录 11 个真实坑点（静态资源依赖、数据不全静默不渲染、filterKey 空格敏感、indicatorType 未使用、容器尺寸 0.01、eventUISetting 未实现、data-name 钩子、useLatest 包装、styled-components 必传字段、调试技巧）。",
+      "6. 可组合性 2.0：dataModel 字段独特（indicatorId/Name/Value/Unit/Type）与其他物料不兼容；自身是一个完整的'迷你仪表盘'，独立使用为主；静态资源强依赖（default-bg.png 路径与物料名绑定），重命名会破坏构建；与 normal-label/border 装饰低代价组合但意义不大。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 25,
+    "breakdown": {
+      "config_minutes": 15,
+      "data_minutes": 10,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.title",
+      "config.layout.background (背景图，必填或依赖 default-bg.png)",
+      "config.layout.points (MonacoEditor 配置坐标点数组)"
+    ],
+    "data_required": [
+      "indicatorId (与 points[].id 一一对应)",
+      "indicatorName (名称)",
+      "indicatorValue (数值)",
+      "indicatorUnit (单位)"
+    ],
+    "optional_fields": {
+      "config": [
+        "layout.disableBackground (默认 false)",
+        "layout.pointSize (Size)",
+        "indicatorValueSetting (offsetY + fontSetting 渐变)",
+        "indicatorNameSetting (width + offsetY + fontSetting)",
+        "indicatorUnitSetting (fontSetting)",
+        "indicatorItemSetting (ArrayCollapse, 按 filterKey 配个性化背景)"
+      ],
+      "data": [
+        "indicatorType (⚠️ 组件未使用, 可不填)"
+      ]
+    },
+    "assumptions": [
+      "使用默认背景图（default-bg.png 静态资源）",
+      "使用 9 个默认坐标点（id-1 ~ id-9）",
+      "使用默认渐变样式（蓝→白渐变 + 36px YouSheBiaoTiHei 字体）",
+      "9 条数据与 9 个坐标点一一对应",
+      "无个性化背景图配置"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 4, "minutes": 25, "description": "默认背景 + 9 个默认坐标点 + 9 条数据" },
+      "typical": { "config_items": 10, "data_fields": 4, "minutes": 50, "description": "自定义背景图 + 自定义坐标 + 渐变字体 + 部分指标个性化背景" },
+      "full": { "config_items": 20, "data_fields": 4, "minutes": 90, "description": "完整背景设计 + 自定义坐标 + 三组独立字体渐变 + 多组个性化背景" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: ⚠️ 静态资源 default-bg.png 路径强依赖：getMaterialImageUrl 第三个参数 'static/images/free-layout-indicators-viewer' 必须与物料名一致，重命名物料时需同步 3 处（oss-material.json.name + 资源目录 + index.tsx 字符串）",
+    "gotchas.md § 2: ⚠️ dataSource 不全时部分点不渲染（dataItem 找不到时 return null 静默），无 console.warn 提示",
+    "gotchas.md § 3: ⚠️ filterKey 解析对空格敏感（split(',') 不 trim），'id-1, id-2' 含空格匹配失败",
+    "gotchas.md § 4: ⚠️ indicatorType 字段 dataModel 声明但组件未使用，data 中默认全为空串，建议从 dataModel 移除或扩展为'类型化样式'",
+    "gotchas.md § 5: ⚠️ IndItem 容器 width: 0.01; height: 0.01 + transform: translate3d(-50%, -50%, 0) 实现'坐标点为圆心'定位，调试时检查尺寸会困惑",
+    "gotchas.md § 6: ⚠️ eventUISetting 钩子只控制事件层尺寸，未绑定 onClick；交互面板 defineInteractionSchema 被注释",
+    "gotchas.md § 7: data-name='position-point' 是 CSS 钩子，业务方可用属性选择器 [data-name='position-point'] 选中",
+    "gotchas.md § 8: useLatest 包装的 latestProps 实际只用了 designer 字段（合理设计）",
+    "gotchas.md § 9: styled-components $font 必须有完整字段（createCssStringFromStyles 期望完整 fontStyle）",
+    "data-model.md § 4.1: 严格匹配 point.id === dataItem.indicatorId（字符串比较），找不到则该点不渲染",
+    "data-model.md § 4.2: filterKey 格式要求英文逗号分隔无空格，例 'id-1,id-2,id-3'",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在并被 import，行为无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余 1 个物料（dock-menu）"
+  }
+}

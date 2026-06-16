@@ -1,0 +1,242 @@
+{
+  "name": "dock-menu",
+  "title": "程序坞菜单",
+  "category": "容器/布局",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": ["./type.d.ts", "./assets.js"]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "高",
+    "author": "hyy",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多元素数组（key/url/title 三字段）",
+        "example": "[{ key: '1', url: '/workspace/preview?sceneId=128', title: '地市保障场景' }, { key: '2', url: '/workspace/preview?sceneId=156', title: '区域保障场景' }]",
+        "match_pattern": "dataSource[*].{key, url, title}",
+        "supports_multi_series": false,
+        "multi_series_key": null,
+        "fields": [
+          { "name": "key", "type": "String|Number", "required": true, "description": "菜单 key（与 commonStyle.activeKey.toString() 匹配）" },
+          { "name": "url", "type": "String", "required": true, "description": "点击跳转的 URL（window.location.assign）" },
+          { "name": "title", "type": "String", "required": true, "description": "菜单项显示名称" }
+        ],
+        "private_field": {
+          "name": "icon",
+          "description": "type.d.ts 中 DockItem.icon 字段（预留），实际组件未使用，前缀图标来自 schema 的 prefix.prefixImg 全局配置（详见 gotchas § 6）"
+        }
+      }
+    ],
+    "interactions": [
+      {
+        "type": "navigate",
+        "trigger": "click",
+        "config_field": "无 schema 交互配置（onItemClick 内联）",
+        "sub_fields": ["onItemClick(url, isActive)"],
+        "payload": "item.url (window.location.assign)",
+        "known_issue": "非开发模式 + 非选中项 + url 存在才跳转（设计态不跳转）；已选中项不跳转"
+      },
+      {
+        "type": "hover",
+        "trigger": "mouseenter / mouseleave",
+        "config_field": "无 schema 交互配置（onMouseEnter/Leave 内联）",
+        "sub_fields": ["hotZone.position (left/right)", "hotZone.width (展开宽度)", "hotZone.hideWidth (隐藏宽度)"],
+        "payload": "showInner boolean（true=展开，false=隐藏）",
+        "known_issue": "设计态 mode='development' 时 hover 交互被禁用（预期行为，避免干扰编辑）"
+      }
+    ],
+    "visual_configs": {
+      "commonStyle": {
+        "width": { "type": "number", "default": null, "description": "展开宽度" },
+        "hideWidth": { "type": "number", "default": null, "description": "隐藏宽度" },
+        "activeKey": { "type": "string", "default": "1", "description": "默认选中项 ID（与 dataSource[*].key 匹配）" },
+        "backgroundColor": { "type": "string", "default": "rgba(115, 131, 137, 0.5)", "description": "菜单背景色" },
+        "hotZone": {
+          "position": { "type": "string", "default": "left", "options": ["left", "right"], "description": "热区位置（屏幕左/右侧）" },
+          "width": { "type": "number", "default": 80, "description": "展开宽度" },
+          "hideWidth": { "type": "number", "default": null, "description": "隐藏宽度" }
+        }
+      },
+      "baseStyle (默认设置)": {
+        "size": { "type": "object", "description": "元素尺寸 width/height" },
+        "margin": { "type": "object", "description": "元素边距 marginTop/Right/Bottom/Left" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle", "description": "元素文本" },
+        "lineHeight": { "type": "number", "description": "元素行高" },
+        "border": { "type": "object", "description": "元素边框 (borderStyle/Width/Color/Radius)" },
+        "backgroundType": { "type": "string", "options": ["image", "color"], "description": "元素背景类型" },
+        "backgroundColor": { "type": "string", "description": "背景颜色" },
+        "backgroundImg": { "type": "object", "component": "Background", "description": "背景图片" },
+        "backgroundRepeat": { "type": "string", "default": "full", "options": ["full", "no-repeat", "repeat-x", "repeat-y", "repeat"], "description": "背景重复（'full' 是自定义值=100% 100%）" },
+        "prefix": {
+          "show": { "type": "boolean", "description": "前缀开关" },
+          "prefixMargin": { "type": "object", "description": "前缀边距" },
+          "prefixImg": { "type": "object", "component": "Background", "description": "前缀图片" },
+          "size": { "type": "object", "description": "前缀尺寸 width/height" }
+        }
+      },
+      "activeStyle (选中设置)": {
+        "size": { "type": "object" },
+        "margin": { "type": "object" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" },
+        "lineHeight": { "type": "number" },
+        "border": { "type": "object" },
+        "backgroundType": { "type": "string" },
+        "backgroundColor": { "type": "string" },
+        "backgroundImg": { "type": "object" },
+        "backgroundRepeat": { "type": "string" },
+        "prefix": { "type": "object" }
+      }
+    },
+    "default_values": {
+      "config.title": "程序坞菜单",
+      "config.width": 300,
+      "config.height": 1078,
+      "config.left": 1566,
+      "config.top": 1,
+      "config.activeKey": 1,
+      "config.commonStyle.hotZone.height": null,
+      "config.commonStyle.hotZone.width": 80,
+      "config.commonStyle.hotZone.position": "left",
+      "config.commonStyle.backgroundColor": "rgba(115, 131, 137, 0.5)",
+      "config.commonStyle.activeKey": "1",
+      "config.baseStyle.textStyle.fontFamily": "Microsoft YaHei",
+      "config.baseStyle.textStyle.fontWeight": "bold",
+      "config.baseStyle.textStyle.fontSize": 14,
+      "config.baseStyle.prefix.show": true,
+      "config.baseStyle.prefix.prefixImg.url": "ShaanxiUnicom_youpingzhuangshi.png",
+      "config.baseStyle.prefix.width": 30,
+      "config.baseStyle.prefix.height": 30,
+      "config.baseStyle.width": 120,
+      "config.baseStyle.height": 30,
+      "config.baseStyle.lineHeight": 0,
+      "config.baseStyle.backgroundType": "image",
+      "config.baseStyle.backgroundImg.url": "ShaanxiUnicom_dmjtf.png",
+      "config.baseStyle.backgroundRepeat": "full",
+      "config.activeStyle.textStyle.fontFamily": "Microsoft YaHei",
+      "config.activeStyle.textStyle.fontWeight": "bold",
+      "config.activeStyle.textStyle.fontSize": 15,
+      "config.activeStyle.prefix.prefixImg.url": "水波纹.png",
+      "config.activeStyle.prefix.width": 20,
+      "config.activeStyle.prefix.height": 20,
+      "config.activeStyle.prefix.show": true,
+      "config.activeStyle.width": 120,
+      "config.activeStyle.height": 30,
+      "config.activeStyle.lineHeight": 0,
+      "config.activeStyle.backgroundType": "image",
+      "config.activeStyle.backgroundImg.url": "ShaanxiUnicom_youpingbiankuang.png",
+      "config.activeStyle.backgroundRepeat": "full"
+    }
+  },
+  "business_scenarios": [
+    "大屏页面间导航（地市保障 / 区域保障 / 综合保障 等场景切换）",
+    "侧边工具栏/程序坞式菜单（左侧悬停展开）",
+    "快捷链接入口（多个子系统跳转）",
+    "选中状态高亮 + 跳转到不同大屏/工作台",
+    "屏幕右侧/左侧热区悬停触发的导航菜单"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "normal-label", "cost": "低", "reason": "作为菜单标题/品牌名独立展示" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-bar / echarts-pie / digital-flop / digital-card / bidirectional-progress / free-layout-indicators-viewer", "reason": "导航菜单与图表/指标卡是不同定位，组合意义不大；dataModel 也不兼容" }
+    ],
+    "note": "独立的导航容器，独立使用为主；常作为大屏的'入口'或'导航条'"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.0,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 5.0,
+      "composability": 2.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 3 字段（key/url/title）业务命名清晰，fieldLabel 中文标注（'菜单key'/'URl'/'名称'）简明；默认数据 2 条'地市保障场景/区域保障场景'典型大屏导航场景；commonStyle.activeKey 用法直观。",
+      "2. 场景覆盖度 3.0：hover 展开/隐藏（屏幕左/右侧）+ 选中高亮（默认/选中两套独立样式）+ 4 种背景类型（image/color + 5 种 repeat 模式）+ 前缀图标（图片 + 4 边距 + 尺寸）+ 边框 + 文本样式 + 行高 + 边距，配置变体丰富但场景仍聚焦'侧边导航'。",
+      "3. 配置完备度 4.0：3 个 FormCollapse 分组（通用/默认设置/选中设置）+ commonStyle 工厂复用（默认/选中两套共用 size/margin/textStyle/border/background/prefix 共 9 个配置项）+ 热区设置（position/width/hideWidth）；x-reactions 联动 3+ 处（backgroundType→color/img/repeat）；默认值丰富。",
+      "4. 数据契约清晰度 3.5：dataModel 3 字段标注清晰；但有 2 处瑕疵：① type.d.ts 中 DockItem.icon 字段预留但组件未使用（数据驱动图标未实现）② 默认 activeKey 值为 1（数字）但 schema 注释说对应 id 字段值（字符串），匹配时 .toString() 兼容。",
+      "5. 文档完整度 5.0：5+1 全套齐全 + doc/readme.md + doc/CHANGELOG.md + 1 张示例图；gotchas 详细记录 8 个真实坑点（设计态 hover 禁用、activeKey 类型兼容、选中项不跳转、backgroundRepeat 'full' 自定义值、默认背景图资源依赖、type.d.ts 与实际不一致、调试技巧、最佳实践）。",
+      "6. 可组合性 2.0：导航容器独立使用为主；dataModel 字段（key/url/title）与其他物料不兼容；默认依赖静态资源（ShaanxiUnicom_dmjtf.png / 水波纹.png 等陕西联通主题资源），资源缺失时无报错但图不显示。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 4,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 12,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.title",
+      "config.commonStyle.activeKey (默认选中项)",
+      "config.commonStyle.hotZone (热区位置/宽度)",
+      "config.baseStyle + config.activeStyle (默认/选中两套完整样式)"
+    ],
+    "data_required": [
+      "key (菜单 key, 唯一)",
+      "url (跳转目标)",
+      "title (菜单名称)"
+    ],
+    "optional_fields": {
+      "config": [
+        "commonStyle.width/hideWidth (展开/隐藏宽度)",
+        "commonStyle.backgroundColor (菜单背景色)",
+        "baseStyle.backgroundImg/activeStyle.backgroundImg (默认/选中背景图)",
+        "baseStyle.prefix.prefixImg/activeStyle.prefix.prefixImg (默认/选中前缀图标)"
+      ],
+      "data": []
+    },
+    "assumptions": [
+      "使用默认热区配置（屏幕左侧，width=80）",
+      "使用默认 backgroundRepeat='full' 铺满",
+      "使用默认 baseStyle/activeStyle（含陕西联通默认资源）",
+      "至少 2 条数据用于测试选中切换"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 4, "data_fields": 3, "minutes": 15, "description": "默认热区 + 默认 baseStyle/activeStyle + 2 条数据" },
+      "typical": { "config_items": 10, "data_fields": 3, "minutes": 35, "description": "自定义热区 + 自定义背景图 + 自定义前缀 + 3+ 条数据" },
+      "full": { "config_items": 25, "data_fields": 3, "minutes": 70, "description": "完全自定义两套样式 + 5+ 种背景类型组合 + 5+ 条数据" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: ⚠️ 设计态 hover 交互被禁用（mode === 'development'），预览模式才能看到展开效果",
+    "gotchas.md § 2: activeKey 类型兼容问题：schema 默认值 number 1 vs 用户输入 string '1'，用 .toString() 兼容，dataSource[*].key 需同样能被 .toString()",
+    "gotchas.md § 3: 选中项不跳转（!!!isActive 判断），但若 activeKey 匹配逻辑出错会导致选中项也跳转",
+    "gotchas.md § 4: backgroundRepeat 'full' 是自定义值（=background-size: 100% 100%; background-repeat: no-repeat），其他值直接映射 CSS background-repeat",
+    "gotchas.md § 5: ⚠️ 默认背景图资源依赖（ShaanxiUnicom_dmjtf.png / 水波纹.png / ShaanxiUnicom_youpingbiankuang.png / ShaanxiUnicom_youpingzhuangshi.png），通过 getImageUrl 加载，依赖 env+constants 上下文，资源缺失无报错但图不显示",
+    "gotchas.md § 6: ⚠️ type.d.ts 中 DockItem.icon 字段预留但组件未使用，前缀图标来自 schema 全局配置（非数据驱动）",
+    "data-model.md § 4.1: 严格匹配 activeKey.toString() === item.key，字符串比较",
+    "data-model.md § 4.2: 跳转条件：非开发模式 + 非选中项 + url 存在",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在并被 import，行为无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "全部 7 个物料画像生成完成，可进入 review/批量阶段"
+  }
+}

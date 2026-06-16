@@ -1,0 +1,200 @@
+{
+  "name": "expandable-table",
+  "title": "下挂表格",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": ["./index.less"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "刘贤良",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "父-子两层数据（parentIdField 标识父/子关系）",
+        "example": "[{ id: '1', name: '一级分类', value: 1000, children: [{ id: '1-1', name: '二级A', value: 500 }, ...] }, ...]",
+        "match_pattern": "data[*].{id, name, value, children?}",
+        "fields": [
+          { "name": "id", "type": "String", "required": true, "description": "行唯一标识（fieldNameForKey 配置）" },
+          { "name": "name", "type": "String", "required": false, "description": "名称（默认 dataIndex）" },
+          { "name": "value", "type": "String/Number", "required": false, "description": "数值（默认 dataIndex）" },
+          { "name": "children", "type": "Array", "required": false, "description": "子级数据（json 数据源时直接展开）" }
+        ],
+        "dual_source_modes": [
+          { "mode": "json", "description": "dataSource 直接含 children 字段，组件按 parentIdField 自动构建父子关系" },
+          { "mode": "api", "description": "首次只请求父级，点击 + 时按 apiParentIdField 重新请求子级" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "row_expand_collapse",
+        "trigger": "click_+_icon",
+        "config_field": "config.expandable.rowExpandable",
+        "sub_fields": ["rowExpandable（开关）", "setting.iconColor", "setting.apiParentIdField", "setting.parentIdField", "setting.expandBackgroundColor"],
+        "precondition": "rowExpandable === true + rowSetting.fieldNameForKey 配置"
+      },
+      {
+        "type": "row_click",
+        "trigger": "click_row",
+        "config_field": "config.rowSetting.clickEffect.open + interaction.defined.rowClickData",
+        "sub_fields": ["clickEffect.open", "clickEffect.style", "rowClickData", "rowSetting.defaultSelectField"]
+      },
+      {
+        "type": "cell_click_dispatch",
+        "trigger": "click_cell",
+        "config_field": "interaction.defined.dynamicEvents[clickKey=X].effect",
+        "sub_fields": ["Modal", "Drawer", "Dispatch", "CheckBoxCell"]
+      },
+      {
+        "type": "rich_content_render",
+        "trigger": "render_cell",
+        "config_field": "columns[].contentShowType",
+        "sub_options": [
+          { "value": "plainText", "description": "普通文本，支持 controlByOtherField 控制颜色 / tooltip" },
+          { "value": "digitalFlop", "description": "数字翻牌（用 DigitalFlop 组件），levels 配置颜色阈值" },
+          { "value": "capsule", "description": "胶囊（颜色+文字），enums 配置 key-color-text 映射" },
+          { "value": "icon", "description": "图标（icon/antdIcon/customIconComp）" }
+        ]
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "headerStyle": { "type": "object", "description": "表头背景色 / 字号 / 颜色" },
+        "rowSetting": {
+          "fieldNameForKey": { "type": "string", "required": true },
+          "height": { "type": "number", "default": 40 },
+          "oddRowBg": { "type": "color" },
+          "evenRowBg": { "type": "color" },
+          "borderColor": { "type": "color" },
+          "clickEffect": { "type": "object" }
+        },
+        "expandable": {
+          "rowExpandable": { "type": "boolean", "default": true, "description": "是否启用行展开" },
+          "setting": {
+            "iconColor": { "type": "color", "description": "+ / - 图标颜色" },
+            "apiParentIdField": { "type": "string", "default": "parentId", "description": "API 模式下请求子级的 parent id 字段名" },
+            "parentIdField": { "type": "string", "default": "parentId", "description": "json 模式下标识父级关系的字段名（值为空表示父级）" },
+            "expandBackgroundColor": { "type": "color", "description": "子行背景色" }
+          }
+        }
+      }
+    },
+    "default_values": {
+      "config.expandable.rowExpandable": true,
+      "config.expandable.setting.iconColor": "#0097C9",
+      "config.expandable.setting.apiParentIdField": "parentId",
+      "config.expandable.setting.parentIdField": "parentId",
+      "config.rowSetting.clickEffect.open": true,
+      "interaction.defined.dynamicEvents": "[]"
+    }
+  },
+  "business_scenarios": [
+    "组织架构树（公司 → 部门 → 员工）",
+    "设备层级（机房 → 机柜 → 设备）",
+    "权限树（角色 → 权限）",
+    "父子数据展示（API 模式按需加载子级）",
+    "多列分组 + 列内容丰富（数字翻牌/胶囊/图标/文本）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "零", "reason": "内部直接 import '../digital-flop'，列内容可使用数字翻牌" },
+      { "material": "table", "cost": "高", "reason": "本组件独立渲染（不依赖 table），与 table 不可同区域使用" },
+      { "material": "drilldown-table / drilldown-table-2", "cost": "高", "reason": "三者是平行表格组件（都 import table 或自渲染），不可同区域" },
+      { "material": "Modal/Drawer 全局组件", "cost": "低", "reason": "通过 dynamicEvents 配置派发目标" }
+    ],
+    "incompatible_with": [
+      { "material": "table（同区域）", "cost": "高", "reason": "本组件自渲染整个表格，与 table 同时使用会冲突" }
+    ],
+    "note": "expandable-table 是独立渲染的表格组件（含表头+表体），与 drilldown-table 等依赖 table 的组件结构不同"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.2,
+    "weighted_total": 4.2,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 5.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 3.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段（id/name/value/children）业务化程度高（id=数据唯一标识, name=名称, value=数值, children=子级），贴近'组织架构'/'设备层级'等真实业务。defaultValue 给出了完整的列配置（CPURate/memoryRate 用 digitalFlop + levels 颜色阈值）。",
+      "2. 场景覆盖度 5.0：覆盖 5 种典型表格场景：① 父-子层级（展开/收起）② 行点击效果 ③ 单元格点击派发 ④ 列内容丰富（4 种 contentShowType）⑤ 动态加载（apiParentIdField 按需请求）。",
+      "3. 配置完备度 4.5：expandable/headerStyle/rowSetting/columns(含 4 种 contentShowType + contentProps)/groupSet 5 大配置；groupSet 兼容旧数据（columns 有 group 自动推断分组）；默认选中第一条（defaultSelectFirst）。",
+      "4. 数据契约清晰度 3.5：dataModel 字段命名业务化（id/name/value/children），有 rowProperties 描述；⚠️ oss-material.json.dataModel 是空字符串；⚠️ apiParentIdField 默认值是 'parentId'，但 json 模式 defaultValue 没体现 children 字段（实际 defaultValue 用的就是单层结构）。",
+      "5. 文档完整度 3.0：仅有 doc/readme.md + doc/CHANGELOG.md，缺少 5+1 文档；有 6 张截图（image-2022-09-28）展示父子展开效果。",
+      "6. 可组合性 4.0：与 digital-flop 零代价（直接 import）；与全局 Modal/Drawer 通过 dynamicEvents 低代价组合；与 table/drilldown-table 不可同区域组合（结构冲突）。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 6,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 10,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.columns（含 dataIndex / title / width / contentShowType / contentProps）",
+      "config.rowSetting.fieldNameForKey（必填）",
+      "config.expandable.rowExpandable（true/false）",
+      "config.expandable.setting.parentIdField（json 模式）或 apiParentIdField（api 模式）"
+    ],
+    "data_required": [
+      "id（fieldNameForKey 字段值）",
+      "name + value（默认列）",
+      "children（json 模式）或 父级 id（api 模式）"
+    ],
+    "optional_fields": {
+      "config": ["groupSet（多列分组）", "rowSetting.clickEffect（行点击高亮）", "expandable.setting.expandBackgroundColor"],
+      "data": ["contentShowType 需要的额外字段（如 levels / enums）"]
+    },
+    "assumptions": [
+      "使用默认 4 种 contentShowType 中的 1-2 种（不混用全部 4 种）",
+      "json 模式：dataSource 包含 children 字段",
+      "api 模式：父级 API 单独请求，子级按 parentIdField 按需请求",
+      "列宽通过 columns[].width 配置"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 2, "minutes": 10, "description": "单层表格 + 默认样式" },
+      "typical": { "config_items": 6, "data_fields": 3, "minutes": 20, "description": "父子展开 + 数字翻牌列 + 行点击" },
+      "full": { "config_items": 10, "data_fields": 5, "minutes": 35, "description": "全部 4 种 contentShowType + 复选框 + 动态事件" }
+    }
+  },
+  "_validation_notes": [
+    "expandable-table 自渲染整个表格（不 import table），与 drilldown-table 不可同区域使用",
+    "groupSet 兼容旧数据逻辑（columns 有 group 自动推断分组），但与 groupSetProps 同时存在时优先用 props",
+    "json 模式下父级判断：!item[parentIdField] 视为父级（即 parentIdField 字段值为空/false/undefined）",
+    "api 模式下首次只请求父级，点击 + 时按 apiParentIdField 重新请求子级，请求参数自动加 [apiParentIdField]: id",
+    "默认选中第一条逻辑：rowSetting.defaultSelectFirst === true 时，第一次渲染自动触发 onClickRef",
+    "DigitalFlop 默认 props 已硬编码（白底、字号 18），如需调整需在 columns.contentProps 中覆盖",
+    "数据格式有两种模式（json / api），schema 中通过 dataType 字段切换，组件行为差异较大"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余表格（pagination-table, table-detail, table-fixedColumns, table-transpose, transfer-table, alarm-window-card）继续生成"
+  }
+}

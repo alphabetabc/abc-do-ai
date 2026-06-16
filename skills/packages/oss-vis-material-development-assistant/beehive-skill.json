@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "contentHash": "91c9134455a2006eff8ff6e8112404a0cba8189511e61a12583ed08bdd615430",
-=======
-  "contentHash": "7c0b8d898acb7d0eaf3a68a0dfe765bfcf34cf2a4f7d6ccc344cfeca35235675",
->>>>>>> c8d8659 (feat: 123)
+  "contentHash": "50c33f8547803a142a0194f80db32a0887e69a10027f3020f4b965bd4ce3bb83",
   "files": [
     "./materials/",
     "./references/"
@@ -12,6 +8,6 @@
   "targets": [
     "trae"
   ],
-  "updatedAt": "2026-06-15T02:31:08.520Z",
+  "updatedAt": "2026-06-16T10:19:17.664Z",
   "version": "0.0.0"
 }

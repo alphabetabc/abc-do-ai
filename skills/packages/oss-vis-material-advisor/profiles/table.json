@@ -1,0 +1,184 @@
+{
+  "name": "table",
+  "title": "表格",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": ""
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": null,
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "deprecated_files": [],
+    "note": "无独立 dataModel.json，schema 中使用 generic 字段（field-1/2/3），与 echarts-pie 通用模式一致"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "通用字段-值数组（schema 配置列字段映射）",
+        "example": "[{ 'field-1': '财政厅', 'field-2': 36, 'field-3': '0', id: '0' }]",
+        "match_pattern": "data[*].{任意字段，schema 中由 columns[*].dataIndex 映射}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "<任意>", "type": "any", "required": false, "description": "字段名由 schema 的 columns[].dataIndex 配置决定，无固定 dataModel 约束" },
+          { "name": "id", "type": "String", "required": false, "description": "数据主键（doc 中展示），用于 rowKey 匹配" },
+          { "name": "rowKey", "type": "String", "required": false, "description": "代码中用于 activeRowKeyField 匹配（index.jsx:212）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "row_click",
+        "trigger": "click",
+        "config_field": "interaction.defined.rowClickData",
+        "description": "行点击派发：派发当前行数据（默认选中第一个，可通过 defaultSelectFirst 开启）"
+      },
+      {
+        "type": "column_click",
+        "trigger": "click",
+        "config_field": "dynamicEvents[].clickKey",
+        "description": "列单击事件：通过 dynamicEvents 配置指定列触发 Modal/Drawer/Dispatch"
+      },
+      {
+        "type": "cell_click",
+        "trigger": "click",
+        "config_field": "compositionAction.dynamicActions[].activeColumnField + activeRowKeyField",
+        "description": "单元格单击：可指定列字段+行字段组合，固定某个单元格进行事件派发，支持 Cell/Modal 两种效果"
+      },
+      {
+        "type": "checkbox",
+        "trigger": "click",
+        "description": "checkbox 单元格（contentShowType=checkbox）支持选中事件，通过 props.onCheckChange 回调"
+      }
+    ],
+    "visual_configs": {
+      "columns": {
+        "dataIndex": { "type": "string", "required": true, "description": "列字段映射到 dataSource 的字段名" },
+        "title": { "type": "string", "description": "列标题" },
+        "width": { "type": "number", "description": "列宽度" },
+        "align": { "type": "string", "options": ["left", "center", "right"] },
+        "contentShowType": {
+          "type": "string",
+          "options": ["plainText", "digitalFlop", "capsule", "icon", "checkbox"],
+          "description": "单元格 5 种展示形式"
+        },
+        "contentProps": { "type": "object", "description": "展示形式的具体配置（数字卡/胶囊/图标/checkbox 各异）" },
+        "group": { "type": "string", "description": "列所属分组（用于表头组合）" }
+      },
+      "groupSet": {
+        "groupName": { "type": "string" },
+        "compact": { "type": "boolean", "description": "是否聚合展示" },
+        "compactSeperator": { "type": "string", "default": "/", "description": "聚合字段间分隔符" }
+      },
+      "headerStyle": {
+        "headBorderRadius": { "type": "number", "default": 0 },
+        "isMaxWidth": { "type": "boolean", "description": "表头列宽是否按 content 总和自适应" }
+      },
+      "rowSetting": {
+        "height": { "type": "number" },
+        "fieldNameForKey": { "type": "string", "description": "数据中作为唯一 key 的字段" },
+        "borderWidth/borderStyle/borderColor": { "type": "object" },
+        "oddRowBg/evenRowBg": { "type": "string", "description": "奇偶行背景" },
+        "oddRowBr/evenRowBr": { "type": "string" },
+        "clickEffect": { "type": "object", "description": "点击高亮效果（style 字段）" },
+        "defaultSelectFirst": { "type": "boolean", "description": "默认选中第一行" },
+        "defaultSelectField": { "type": "string", "description": "默认选中时派发的字段" }
+      },
+      "tooltipStyle": { "type": "object" }
+    },
+    "default_values": {
+      "config.headerStyle.headBorderRadius": 0,
+      "config.headerStyle.isMaxWidth": false,
+      "config.rowSetting.height": 40,
+      "config.rowSetting.borderWidth": 1,
+      "config.rowSetting.clickEffect.open": false
+    }
+  },
+  "business_scenarios": [
+    "通用数据列表展示（任意字段列）",
+    "多级表头表格（columns.group 配合 groupSet）",
+    "单元格嵌入数字卡（含等级变色 + 趋势图标）",
+    "状态胶囊展示（contentShowType=capsule）",
+    "图标列展示（contentShowType=icon）",
+    "行点击派发 + 单元格点击派发 + 列点击派发三种交互组合",
+    "可钻取表格（点击 Modal 打开详情）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "echarts-bar/echarts-pie", "cost": "中", "reason": "表格可作图表下钻的目标（点击行派发 → 图表接收过滤参数），数据格式需对齐" },
+      { "material": "digital-flop", "cost": "低", "reason": "表格内部已 import DigitalFlop，单元格 contentShowType=digitalFlop 是原生支持" },
+      { "material": "normal-label", "cost": "低", "reason": "标题独立" },
+      { "material": "drilldown-table/drilldown-table-2", "cost": "低", "reason": "drilldown-table 直接 import 该组件（index.jsx:9 注释说明）" }
+    ],
+    "incompatible_with": [],
+    "note": "表格通用性极强，columns 完全 schema 化，几乎可消费任何数据源（只要 schema 列定义匹配）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.8,
+    "weighted_total": 3.8,
+    "breakdown": {
+      "business_description": 3.0,
+      "scenario_coverage": 5.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 2.5,
+      "doc_completeness": 3.0,
+      "composability": 4.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.0：物料名'表格'业务化但过于通用；schema 中字段（contentShowType/contentProps/compositionAction）偏技术；default 数据示例用 'field-1/2/3' 占位字段名，业务理解成本高。",
+      "2. 场景覆盖度 5.0：5 种 contentShowType（plainText/digitalFlop/capsule/icon/checkbox）+ 3 种点击交互（行/列/单元格）+ 多级表头 + 奇偶行 + 点击高亮，场景覆盖非常完整，几乎能应付所有大屏表格需求。",
+      "3. 配置完备度 4.5：columns 列表完全 schema 化（title/width/align/contentShowType/contentProps/group），groupSet 支持多级表头聚合/展开，rowSetting 奇偶行/边框/点击效果丰富，配置项数量充足。",
+      "4. 数据契约清晰度 2.5：无独立 dataModel.json（dataModel 字段空），数据契约完全由 schema 隐式决定；doc 数据模板用 'field-1'/'field-2' 占位，PM 看不出业务字段名是什么；存在 rowKey 字段隐式约定。",
+      "5. 文档完整度 3.0：有详细 doc/readme.md（4 张配置截图 + 数据模板 + 交互说明），但 5+1 文档全部缺失（materials/table/ 不存在）。",
+      "6. 可组合性 4.5：与 digital-flop 原生集成（单元格数字卡）；drilldown-table 直接 import 该组件；几乎可消费任何 dataSource 格式（schema 化列定义）；与图表配合时下钻派发链路成熟。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 0,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 3,
+    "breakdown": {
+      "config_minutes": 3,
+      "data_minutes": 0,
+      "custom_minutes": 0
+    },
+    "config_required": ["columns（至少 1 列，dataIndex 必填）", "rowSetting.height", "headerStyle.headBorderRadius"],
+    "data_required": ["列字段由 columns[].dataIndex 决定，无固定 dataModel 约束"],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 0, "minutes": 5, "description": "3 列 plainText 表格 + 默认样式" },
+      "typical": { "config_items": 8, "data_fields": 0, "minutes": 20, "description": "5-8 列 + 1-2 种 contentShowType（数字卡/胶囊）+ 行点击派发" },
+      "full": { "config_items": 18, "data_fields": 0, "minutes": 50, "description": "多级表头 + 全 contentShowType + 行+列+单元格三种交互 + 钻取弹窗" }
+    },
+    "assumptions": [
+      "dataSource 已是数组格式",
+      "无需多级表头（columns.group 不填）",
+      "行点击派发即可满足交互"
+    ]
+  },
+  "_validation_notes": [
+    "无独立 dataModel.json（oss-material.json.dataModel 空字符串），数据契约完全由 schema 隐式决定",
+    "doc 数据模板使用 'field-1'/'field-2' 占位字段名，业务理解成本高 → 建议 doc 增加典型业务字段示例",
+    "表格内部 import DigitalFlop（index.jsx:9）实现单元格数字卡，但未在 doc 中明确说明",
+    "drilldown-table / drilldown-table-2 是直接 import 该组件（index.jsx:9 注释），意味着改动 table 会影响所有衍生表格物料",
+    "代码中 applyBorderRadius 直接操作 DOM（index.jsx:311），对 SSR 不友好，但当前物料不涉及",
+    "5+1 文档建议补：README（概述+contentShowType 详解）+ component-logic.md（5 种 contentShowType 实现细节）+ data-model.md（generic 字段约定）+ gotchas.md（与 drilldown-table 联动坑）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余待生成画像：top-rank"
+  }
+}

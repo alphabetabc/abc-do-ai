@@ -1,0 +1,165 @@
+{
+  "name": "normal-label",
+  "title": "基础标签",
+  "category": "文本/标签/标题",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "中",
+    "author": "hyy",
+    "deprecated_files": [
+      {
+        "path": "index.less",
+        "reason": "空文件，组件完全依赖内联 style，无 className 绑定"
+      }
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单条 {labelText} 对象（单文本）",
+        "example": "[{ labelText: '文本内容' }]",
+        "match_pattern": "dataSource[0].labelText",
+        "supports_multi_series": false,
+        "multi_series_key": null,
+        "fields": [
+          { "name": "labelText", "type": "String", "required": true, "description": "标签显示的文本内容" }
+        ],
+        "private_field": null
+      }
+    ],
+    "interactions": [
+      {
+        "type": "none",
+        "trigger": "none",
+        "config_field": "无交互面板（schema.fields 只有 config + renderDataConfig）",
+        "sub_fields": [],
+        "payload": null,
+        "known_issue": "纯展示组件，无任何交互事件"
+      }
+    ],
+    "visual_configs": {
+      "common": {
+        "textStyle": {
+          "type": "object",
+          "component": "VisualTextStyle",
+          "description": "文本样式（color/fontFamily/fontWeight/fontSize/lineHeight/letterSpacing），禁用 textAlign（disableTextAlign: true）"
+        }
+      }
+    },
+    "default_values": {
+      "config.title": "基础标签",
+      "config.width": 300,
+      "config.height": 300,
+      "config.left": 15,
+      "config.top": 15,
+      "config.common.textStyle.color": "rgba(214, 250, 255, 1)",
+      "config.common.textStyle.fontFamily": "Microsoft YaHei",
+      "config.common.textStyle.fontWeight": "bold",
+      "config.common.textStyle.fontSize": 14,
+      "config.common.textStyle.lineHeight": null
+    }
+  },
+  "business_scenarios": [
+    "大屏标题/区块名称（'核心指标区'/'实时监控'）",
+    "数据看板说明文字（'更新时间：2026-06-16 10:00'）",
+    "静态文本标签（'单位：人'/'占比：%'）",
+    "数据源动态文本（API 返回的当前时间/用户名/状态）",
+    "仪表盘分组标题（'今日告警'/'待办事项'）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "echarts-bar / echarts-pie", "cost": "低", "reason": "作为图表的标题/单位标签独立展示" },
+      { "material": "digital-flop / digital-card", "cost": "低", "reason": "作为指标的辅助说明/标题" },
+      { "material": "bidirectional-progress", "cost": "低", "reason": "作为中间标签的替代或补充" },
+      { "material": "free-layout-indicators-viewer", "cost": "低", "reason": "作为背景图上的辅助文字" },
+      { "material": "dock-menu", "cost": "低", "reason": "作为导航菜单旁的标题" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [],
+    "note": "纯文本组件，零依赖，是仪表盘中最常用的辅助元素"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.0,
+      "config_completeness": 3.0,
+      "data_contract_clarity": 4.0,
+      "doc_completeness": 5.0,
+      "composability": 5.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 单字段 labelText 业务命名清晰，fieldLabel '文本' 简明；defaultValue '文本内容' 直观；VisualTextStyle 组件支持常见字体/颜色/大小/行高/字重，PM 可在面板中直接调整。",
+      "2. 场景覆盖度 3.0：仅 1 个功能（纯文本展示），无变体（不支持前缀/后缀/多行/换行控制/截断）；适合做静态或动态文本，但若需要多行/超链接/图标等需另选组件。",
+      "3. 配置完备度 3.0：1 个 FormCollapse 分组（基础设置）含 1 个 VisualTextStyle（color/fontFamily/fontWeight/fontSize/lineHeight/letterSpacing，禁用 textAlign）；配置项少但精简；默认值完整（颜色/字体/粗细/字号/行高）。",
+      "4. 数据契约清晰度 4.0：dataModel 1 指标 labelText 标注清晰（fieldLabel='文本'+ rowProperties format），无维度；数据格式简单易懂；唯一字段无歧义；dataSource[0] 读取容错（可选链）。",
+      "5. 文档完整度 5.0：5+1 全套齐全 + doc/readme.md + doc/CHANGELOG.md；gotchas 详细记录 6 个真实坑点（空数据容错、disableTextAlign 影响、lineHeight null、index.less 空文件、dataSource[0] 单条限制、默认值需重新拖入）。",
+      "6. 可组合性 5.0：纯文本零依赖，可与所有其他物料组合（图表/数字/进度/布局/菜单）作为辅助标题；通用 width/height 暴露标准配置；业务上是最常用的'装饰元素'。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 1,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 2,
+    "breakdown": {
+      "config_minutes": 1,
+      "data_minutes": 1,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title (物料标题)", "config.common.textStyle (颜色/字体)"],
+    "data_required": ["labelText (文本内容)"],
+    "optional_fields": {
+      "config": [
+        "common.textStyle.fontWeight (粗细)",
+        "common.textStyle.fontSize (字号)",
+        "common.textStyle.fontFamily (字体)",
+        "common.textStyle.lineHeight (行高, 默认 null)"
+      ],
+      "data": []
+    },
+    "assumptions": [
+      "使用默认字体（Microsoft YaHei bold 14px）",
+      "使用默认颜色（rgba(214, 250, 255, 1)）",
+      "静态文本或简单 API 文本"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 1, "data_fields": 1, "minutes": 2, "description": "默认样式 + 静态文本" },
+      "typical": { "config_items": 3, "data_fields": 1, "minutes": 6, "description": "自定义颜色/字体/字号 + 动态文本（API）" },
+      "full": { "config_items": 5, "data_fields": 1, "minutes": 10, "description": "VisualTextStyle 全部字段 + 动态文本 + 容器尺寸调整" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: dataSource 为空时渲染空白不报错（可选链 dataSource?.[0]?.labelText 返回 undefined）",
+    "gotchas.md § 2: ⚠️ VisualTextStyle 禁用了 textAlign（disableTextAlign: true），用户无法在面板中调整对齐方式",
+    "gotchas.md § 3: lineHeight 默认值为 null，某些浏览器可能导致行高表现不一致",
+    "gotchas.md § 4: ⚠️ index.less 是空文件，组件无 class 样式，完全依赖内联 style（'section' 和 'span' 无 className 绑定）",
+    "gotchas.md § 5: 组件硬编码 dataSource[0]，多元素数组时只展示第一条",
+    "gotchas.md § 6: schema 修改 defaultValue 后，已存在的物料不会自动更新，需要重新拖入",
+    "data-model.md § 6.2: 仅支持 1 个 indicator 字段 labelText，无 dimensions，单条数据限制",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在并被 import，行为无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余 2 个物料（free-layout-indicators-viewer, dock-menu）"
+  }
+}

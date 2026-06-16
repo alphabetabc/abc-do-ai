@@ -1,0 +1,212 @@
+{
+  "name": "echarts-pie",
+  "title": "饼环图(echarts)",
+  "category": "图表/ECharts",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": ["./options.ts"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "中",
+    "author": "郝营营",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单维度分类-数值对（单系列一维数组）",
+        "example": "[{ name: '传输原因', value: 400, unit: '个', id: '' }, { name: '设备原因', value: 300, unit: '个', id: '' }, { name: '停电原因', value: 200, unit: '个', id: '' }, { name: '其他原因', value: 100, unit: '个', id: '' }]",
+        "match_pattern": "data[*].{name, value, unit, id}",
+        "supports_multi_series": false,
+        "multi_series_key": null,
+        "fields": [
+          { "name": "name", "type": "String", "required": true, "description": "扇区名称（分类名）" },
+          { "name": "value", "type": "Number", "required": true, "description": "扇区数值，组件按 value 升序排序" },
+          { "name": "unit", "type": "String", "required": false, "description": "数值单位（组件未使用，仅声明供 dataModel 映射）" },
+          { "name": "id", "type": "String", "required": false, "description": "指标 ID，用于点击事件派发" }
+        ],
+        "private_field": null
+      }
+    ],
+    "interactions": [
+      {
+        "type": "drilldown",
+        "trigger": "click",
+        "config_field": "interactions.defined.configurableEvent.drilldownEvent",
+        "sub_fields": ["show", "effect (Modal|Drawer)", "modalSet (params/drilldownItemFields/position/size/mask/closable)", "drawerSet (placement/width/height)"],
+        "payload_fields": ["id", "name", "value"],
+        "known_issue": "下钻开关开启时派发参数面板被 x-reactions 禁用，下钻和派发参数互斥（见 gotchas § 5）"
+      },
+      {
+        "type": "dispatch",
+        "trigger": "click",
+        "config_field": "interactions.defined.{onClickId, onClickName, onClickValue}",
+        "sub_fields": ["onClickId", "onClickName", "onClickValue"],
+        "payload": "data.id / data.name / data.value",
+        "known_issue": "与下钻配置互斥"
+      }
+    ],
+    "visual_configs": {
+      "chart": {
+        "roseType": { "type": "boolean", "default": true, "description": "玫瑰图模式（实心/环/玫瑰三态）" },
+        "centerX": { "type": "string", "default": "50%", "description": "中心横坐标（百分比或像素）" },
+        "centerY": { "type": "string", "default": "50%", "description": "中心纵坐标" },
+        "innerRadius": { "type": "string", "default": "25%", "description": "内半径（控制环图空心程度）" },
+        "outerRadius": { "type": "string", "default": "80%", "description": "外半径" },
+        "startAngle": { "type": "number", "default": 0, "description": "起始角度 [0,360]" },
+        "minAngle": { "type": "number", "default": 0, "description": "最小扇区角度" },
+        "customColors": { "type": "boolean", "default": true, "description": "是否使用自定义渐变填充色（必须为 true 才生效）" },
+        "color": { "type": "array", "default": "[4 段线性渐变：蓝→深青 / 橙→棕 / 青→深青 / 深蓝→墨蓝]", "description": "渐变填充色数组" }
+      },
+      "legend": {
+        "show": { "type": "boolean", "default": true },
+        "type": { "type": "string", "default": "plain", "options": ["plain", "scroll"] },
+        "icon": { "type": "string", "default": "circle", "options": ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"] },
+        "orient": { "type": "string", "default": "horizontal", "options": ["horizontal", "vertical"] },
+        "left": { "type": "string", "default": "auto" },
+        "top": { "type": "string", "default": "auto" },
+        "right": { "type": "string", "default": "auto" },
+        "bottom": { "type": "string", "default": "auto" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" }
+      },
+      "label": {
+        "show": { "type": "boolean", "default": true },
+        "position": { "type": "string", "default": "outside", "options": ["outside", "inside", "center"] },
+        "alignTo": { "type": "string", "default": "labelLine", "options": ["none", "labelLine", "edge"], "description": "对齐方式（仅 outside 可见）" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" },
+        "rich": { "type": "object", "description": "富文本：name 分类名称样式" }
+      },
+      "labelLine": {
+        "show": { "type": "boolean", "default": true },
+        "smooth": { "type": "boolean", "default": false },
+        "length": { "type": "string", "default": null, "description": "第一段引导线长度" },
+        "length2": { "type": "string", "default": null, "description": "第二段引导线长度" }
+      },
+      "tooltip": {
+        "show": { "type": "boolean", "default": true },
+        "name": { "type": "string", "default": "故障判断", "description": "设置到 series[0].name（图表标题），不是 tooltip title" },
+        "backgroundColor": { "type": "string" },
+        "borderColor": { "type": "string" },
+        "borderWidth": { "type": "number" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" }
+      }
+    },
+    "default_values": {
+      "config.title": "饼环图(echarts)",
+      "config.width": 498,
+      "config.height": 401,
+      "config.left": 476,
+      "config.top": 354.5,
+      "config.chart.roseType": true,
+      "config.chart.centerX": "50%",
+      "config.chart.centerY": "50%",
+      "config.chart.innerRadius": "25%",
+      "config.chart.outerRadius": "80%",
+      "config.chart.customColors": true,
+      "config.chart.color": "[4段线性渐变]",
+      "config.label.show": true,
+      "config.label.position": "outside",
+      "config.label.alignTo": "labelLine",
+      "config.label.textStyle": {},
+      "config.labelLine.show": true,
+      "config.tooltip.show": true,
+      "config.tooltip.name": "故障判断"
+    }
+  },
+  "business_scenarios": [
+    "故障原因占比（传输/设备/停电/其他）",
+    "告警分类分布（紧急/重要/次要/提示）",
+    "业务类型收入占比",
+    "运营商网络制式占比（2G/3G/4G/5G）",
+    "客户结构分类（VIP/普通/潜在）",
+    "环图空心区展示品牌/总数（中央标题+占比环）",
+    "大屏可点击下钻明细：点击扇区弹出 Modal/Drawer 展示详情"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡消费独立 dataSource，可与饼图并列展示同主题数据" },
+      { "material": "normal-label", "cost": "低", "reason": "标题标签独立无依赖" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" },
+      { "material": "echarts-bar", "cost": "低", "reason": "同分类图表，按场景分用（饼图占比/条形图排名）" }
+    ],
+    "incompatible_with": [],
+    "note": "单系列单维度设计，组合场景中应避免与同主题多维度图表并列（同主题用 echarts-bar 即可）"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.3,
+    "weighted_total": 4.3,
+    "breakdown": {
+      "business_description": 4.2,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 4.0,
+      "doc_completeness": 5.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.2：dataModel 字段命名（dimension_name/value/unit/name/id）业务化程度高，fieldLabel 中文标注（'维度名称'/'指标值'/'指标单位'/'指标标题'/'指标id'）清晰；默认数据为'传输原因/设备原因/停电原因/其他原因'典型故障分布场景，业务贴合度高。",
+      "2. 场景覆盖度 4.0：饼图/环图/玫瑰图三态 + 自定义渐变 + 多种位置和对齐 + 引导线 + 下钻 + 派发，可覆盖占比展示、环图品牌区、玫瑰图分级等 4-5 个典型变体；扣分因不支持多系列分组，单维度限制使其无法处理堆叠占比。",
+      "3. 配置完备度 4.5：5 个 FormCollapse 分组（图形/图例/标签/标签引导线/悬浮提示）+ 4 处 x-reactions 联动（color→customColors、position→alignTo、show→子配置、labelLine.smooth 等）；默认值丰富（roseType=true、自定义 4 段渐变、label.textStyle={}、tooltip.name='故障判断'），开箱即用。",
+      "4. 数据契约清晰度 4.0：dataModel 1 维度 + 4 指标语义清晰，有 rowProperties/format 描述，defaultValue 提供 4 条完整 mock 包含所有字段；扣分因 unit/name 字段在组件代码中未实际使用（仅声明），dataType 全部为 String 但 value 实际应为 number。",
+      "5. 文档完整度 5.0：5+1 全套（README/schema/component-logic/data-model/common-tasks/gotchas）齐全 + doc/README.md + doc/CHANGELOG.md；gotchas 详细记录 5 个真实坑点（sort 修改原数组、空数组误判成功、textStyle 覆盖 rich.name、下钻与派发互斥、默认值空对象）。",
+      "6. 可组合性 4.0：与同分类 echarts-bar、数字卡、装饰边框均低代价组合；通用 width/height/title 暴露标准配置；与多系列图表组合时需注意单系列限制（同主题下应优先选 echarts-bar）。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 7,
+    "breakdown": {
+      "config_minutes": 3,
+      "data_minutes": 4,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.chart.color (4 段渐变)"],
+    "data_required": ["name (分类名)", "value (数值)"],
+    "optional_fields": {
+      "config": ["chart.roseType (默认 true 玫瑰图)", "chart.innerRadius/outerRadius (调整环图)", "label.position (默认 outside)", "tooltip.name (默认 '故障判断')"],
+      "data": ["id (点击派发用)", "unit (单位，组件未使用)"]
+    },
+    "assumptions": [
+      "使用默认 4 段渐变蓝色→橙色系",
+      "开启玫瑰图模式（roseType: true）",
+      "无需下钻交互（或仅启用 Modal）",
+      "无需派发参数"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 7, "description": "单系列 + 默认渐变 + 玫瑰图模式" },
+      "typical": { "config_items": 6, "data_fields": 3, "minutes": 18, "description": "自定义渐变 + 标签位置定制 + 引导线调整 + 派发 id" },
+      "full": { "config_items": 15, "data_fields": 4, "minutes": 42, "description": "全部 5 个 FormCollapse 分组深度配置 + 下钻 Modal + 派发参数" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: options.ts 中 data.sort 修改原数组，多渲染时序错乱（实际代码已用 [...data].sort 修复）",
+    "gotchas.md § 2: 空数组 [] 被视为 SUCCESS，空数据时无错误提示",
+    "gotchas.md § 3: textStyle 展开顺序导致覆盖 rich.name 的默认样式（fontSize: 16, color: #999）",
+    "gotchas.md § 4: defaultValue.label.textStyle = {} 空对象导致 VisualTextStyle 面板空白（options.ts 有 defaultLabel 兜底）",
+    "gotchas.md § 5: 下钻开关开启时派发参数面板被 x-reactions 禁用，下钻与派发互斥",
+    "data-model.md § 5.3: dataType 全为 String，value 实际应为 number",
+    "data-model.md § 6.2: unit/name 字段在组件代码中未实际使用（仅 dataModel 声明）",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在且被 schema.ts 顶部 import，行为无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余 6 个物料（digital-flop, digital-card, bidirectional-progress, normal-label, free-layout-indicators-viewer, dock-menu）"
+  }
+}

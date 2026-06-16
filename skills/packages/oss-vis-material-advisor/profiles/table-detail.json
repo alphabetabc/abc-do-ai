@@ -1,0 +1,198 @@
+{
+  "name": "table-detail",
+  "title": "明细表格",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": [
+      "./schema/interactions.ts",
+      "./hooks/useScroll.tsx",
+      "./components/cell/index.tsx",
+      "./components/cell/constants.ts",
+      "./components/styled/index.tsx",
+      "./components/pagination/index.tsx",
+      "./components/export-btn/index.ts"
+    ]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "谢名伟",
+    "deprecated_files": [
+      { "path": "components/export-btn/index.ts", "reason": "复用 ../export-btn 物料的样式 exportBtnStyle 变量；本组件内未独立实现 export 功能" }
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "7 个通用列（columns_01..columns_07）+ 自定义 dataSource",
+        "example": "[{ columns_01: 'val1', columns_02: 'val2', ... }, ...]",
+        "match_pattern": "data[*].{columns_01..columns_07, ...}",
+        "fields": [
+          { "name": "columns_01..columns_07", "type": "String", "required": true, "description": "7 个通用列字段（与 drilldown-table 命名风格一致）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "server_pagination",
+        "trigger": "click_pagination",
+        "config_field": "config.paginationSetting",
+        "sub_fields": ["enable", "pageSize", "enablePageSizer", "customPageSize"],
+        "behavior": "使用 useViewItemDataPagination hook 从服务端分页获取数据（与 pagination-table 不同，更标准化）"
+      },
+      {
+        "type": "row_click",
+        "trigger": "click_row",
+        "config_field": "rowSetting.clickEffect.open",
+        "sub_fields": ["clickEffect.open", "clickEffect.style"]
+      },
+      {
+        "type": "cell_click",
+        "trigger": "click_cell",
+        "config_field": "interaction.defined.dynamicEvents[clickKey=X].effect",
+        "sub_fields": ["Modal", "Drawer", "Cell", "Dispatch"]
+      },
+      {
+        "type": "cell_checkbox",
+        "trigger": "click_checkbox",
+        "config_field": "interaction.defined.dynamicEvents[clickKey=X].effect",
+        "sub_fields": ["CheckBoxCell"],
+        "known_issue": "onCheckChange 函数体是空实现（'暂时没有实现check这个功能'），需后续补全"
+      },
+      {
+        "type": "sticky_scroll",
+        "trigger": "scroll",
+        "config_field": "config.scrollSetting",
+        "sub_fields": ["scrollY"],
+        "behavior": "通过 useScroll hook 实现分页栏 + 表头双向粘性滚动"
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "headerStyle": { "type": "object", "description": "表头背景色 / 字号 / 颜色 / 高度" },
+        "columns": { "type": "Array<Object>", "description": "列配置（ProTable 标准）" },
+        "rowSetting": { "type": "object", "description": "行配置" },
+        "groupSet": { "type": "object", "description": "多列分组" },
+        "otherStyleSetting": { "type": "object", "description": "其他样式（自渲染元素）" },
+        "paginationSetting": {
+          "enable": { "type": "boolean", "default": true },
+          "pageSize": { "type": "number", "default": 50 },
+          "enablePageSizer": { "type": "boolean", "default": true },
+          "customPageSize": { "type": "number", "default": 50 }
+        }
+      },
+      "rich_content": {
+        "CellRenderer": "基于 components/cell/index.tsx，支持 5 种列内容（数字/胶囊/图标/状态色/文本）"
+      }
+    },
+    "default_values": {
+      "config.paginationSetting.enable": true,
+      "config.paginationSetting.pageSize": 50,
+      "config.paginationSetting.enablePageSizer": true,
+      "config.paginationSetting.customPageSize": 50
+    }
+  },
+  "business_scenarios": [
+    "标准化的服务端分页表格（useViewItemDataPagination hook）",
+    "带 CellRenderer 的多类型列内容（5 种类型）",
+    "带粘性滚动的明细表格（useScroll）",
+    "带 rowClick / cellClick 派发的事件总线",
+    "ProTable + 二次封装的明细表格（适合数据量较大的业务）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table", "cost": "零", "reason": "用 oss-ui ProTable 实现，列结构与 table 兼容" },
+      { "material": "export-btn", "cost": "零", "reason": "components/export-btn 复用 export-btn 物料的样式" },
+      { "material": "Modal/Drawer 全局组件", "cost": "低", "reason": "通过 dynamicEvents 配置派发目标" }
+    ],
+    "incompatible_with": [
+      { "material": "drilldown-table / pagination-table", "cost": "高", "reason": "table-detail 自渲染 ProTable + useViewItemDataPagination 服务端分页，与其他分页表格不能同区域" }
+    ],
+    "note": "table-detail 是基于 oss-ui ProTable 的明细表格，'更标准'的表格实现"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 4.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 3.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 字段（columns_01..columns_07）命名通用；标题'明细表格'贴近业务（适合数据量较大的明细展示）；与 pagination-table 命名风格一致。",
+      "2. 场景覆盖度 4.5：覆盖服务端分页（useViewItemDataPagination）+ 粘性滚动（useScroll）+ 5 种列内容（CellRenderer）+ 行/单元格点击派发 + 多列分组（groupSet）共 5+ 业务场景。",
+      "3. 配置完备度 4.5：基于 oss-ui ProTable 标准配置，paginationSetting 4 字段（enable / pageSize / enablePageSizer / customPageSize），其他分组（设置/列字段/表头组/表头/行设置/其他样式/分页设置）覆盖完整。",
+      "4. 数据契约清晰度 3.5：dataModel 仅 7 个通用列（columns_01..columns_07），但实际使用时通过 schema columns 绑定任意字段；⚠️ oss-material.json.dataModel 是空字符串；⚠️ 内部 onCheckChange 是空实现（'暂时没有实现check这个功能'）。",
+      "5. 文档完整度 3.5：有 doc/readme.md + 10 张截图（image-20230725 系列）；缺 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。",
+      "6. 可组合性 4.0：与 table / export-btn / Modal/Drawer 均低代价组合；ProTable 标准化使组件容易嵌入到 ProTable 生态。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 4,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 12,
+    "breakdown": {
+      "config_minutes": 8,
+      "data_minutes": 4,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.paginationSetting.enable",
+      "config.paginationSetting.pageSize",
+      "config.columns（含 dataIndex / title / width）",
+      "config.rowSetting.fieldNameForKey"
+    ],
+    "data_required": [
+      "dataSource（数组）",
+      "dataConfig.api（如果用服务端分页）"
+    ],
+    "optional_fields": {
+      "config": ["groupSet（多列分组）", "headerStyle / rowSetting.clickEffect（样式）", "scrollSetting（粘性滚动）"],
+      "data": ["列内容字段（按 contentShowType）"]
+    },
+    "assumptions": [
+      "使用 useViewItemDataPagination 服务端分页（标准化 hook）",
+      "后端接口遵守 hook 约定的 request/response 格式",
+      "列内容通过 components/cell/index.tsx 渲染（支持 5 种）",
+      "使用默认 pageSize 50"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 2, "minutes": 10, "description": "默认分页 + 简单列" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 15, "description": "分页 + 多列内容 + 粘性滚动" },
+      "full": { "config_items": 8, "data_fields": 2, "minutes": 25, "description": "全部 5 种列内容 + 行点击 + 单元格派发" }
+    }
+  },
+  "_validation_notes": [
+    "dataModel 字段命名（columns_01..columns_07）与 schema columns.dataIndex 解耦，需要在 schema 中绑定",
+    "onCheckChange 函数体是空实现（'暂时没有实现check这个功能'），需后续补全（注释里已写）",
+    "使用 oss-ui ProTable + useViewItemDataPagination hook，分页逻辑由 hook 处理（不是简单 props）",
+    "useScroll hook 实现粘性滚动（分页栏 + 表头双向粘性）",
+    "components/export-btn 是样式导出（exportBtnStyle），不是真正的 export 功能",
+    "其他样式分组（otherStyleSetting）用于自渲染元素的样式，schema 中可配置",
+    "schema 拆分到 schema.ts（主）和 schema/interactions.ts（交互子配置）两个文件"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余表格（table-fixedColumns / table-transpose / transfer-table / alarm-window-card）继续生成"
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "name": "pagination-table",
+  "title": "分页列表",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": [
+      "./components/visual-table/index.jsx",
+      "./components/RealTableRows.jsx",
+      "./components/RenderIcon.jsx",
+      "./components/Capsule.jsx",
+      "./components/DigitalFlopCell.jsx",
+      "./components/PlainTextCell.jsx"
+    ]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "hyy",
+    "deprecated_files": [
+      { "path": "components/visual-table/index.jsx", "reason": "self-rendered table, internally defined; not a wrapper of ../table" }
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "服务端分页响应（自定义入参/出参格式）",
+        "example_request": "{ pageIndex: 2, pageSize: 10, sortField: 'id', sortOrder: 'asc' }",
+        "example_response": "{ code: 0, data: { data: [{ ID_1: 706006321, NAME_1: 'BRAS数量', VALUE: '373' }], columns: [{ dataIndex, title }], pagination: { current, pageSize, total } } }",
+        "match_pattern": "response.data.{data, columns, pagination}",
+        "fields": [
+          { "name": "pageIndex", "type": "Number", "required": true, "description": "当前页码（入参）" },
+          { "name": "pageSize", "type": "Number", "required": true, "description": "每页记录数（入参）" },
+          { "name": "sortField", "type": "String", "required": false, "description": "排序字段（入参）" },
+          { "name": "sortOrder", "type": "String", "required": false, "description": "排序方向 asc/desc（入参）" },
+          { "name": "data.data", "type": "Array<Object>", "required": true, "description": "当前页数据行" },
+          { "name": "data.columns", "type": "Array<{dataIndex, title}>", "required": false, "description": "返回字段信息（可选）" },
+          { "name": "data.pagination", "type": "{current, pageSize, total}", "required": true, "description": "分页元数据（数值可为 0）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "pagination",
+        "trigger": "click_pagination",
+        "config_field": "config.paginationSetting",
+        "sub_fields": ["pageSize", "theme (dark|light)", "show"],
+        "behavior": "内置分页栏 + 排序 + 主题切换 + 显示/隐藏分页栏"
+      },
+      {
+        "type": "sort",
+        "trigger": "click_header",
+        "config_field": "schema.columns[].sortable",
+        "behavior": "列头点击排序，按 sortField/sortOrder 传给后端"
+      },
+      {
+        "type": "row_click",
+        "trigger": "click_row",
+        "config_field": "interaction.defined.dynamicEvents",
+        "sub_fields": ["Modal", "Drawer", "Cell", "Row", "CheckBoxCell"]
+      },
+      {
+        "type": "cell_click",
+        "trigger": "click_cell",
+        "config_field": "interaction.defined.dynamicEvents[clickKey=X].effect",
+        "sub_fields": ["Modal", "Drawer", "Cell", "Dispatch"]
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "headerStyle": { "type": "object", "description": "表头背景色 / 字号 / 颜色 / 高度" },
+        "columns": { "type": "Array<Object>", "description": "列配置（含 width / contentShowType / group / sortable）" },
+        "rowSetting": { "type": "object", "description": "行配置（fieldNameForKey / height / oddRowBg / evenRowBg / border / clickEffect）" },
+        "groupSet": { "type": "object", "description": "多列分组（聚合展示 / 分隔符）" }
+      },
+      "paginationSetting": {
+        "pageSize": { "type": "number", "default": 10, "description": "每页记录数" },
+        "theme": { "type": "string", "default": "dark", "options": ["dark", "light"] },
+        "show": { "type": "boolean", "default": true, "description": "是否显示分页栏" }
+      },
+      "rich_content": {
+        "plainText": "PlainTextCell（普通文本）",
+        "digitalFlop": "DigitalFlopCell（数字翻牌）",
+        "capsule": "Capsule（胶囊）",
+        "icon": "RenderIcon（图标）"
+      }
+    },
+    "default_values": {
+      "config.paginationSetting.pageSize": 10,
+      "config.paginationSetting.theme": "dark",
+      "config.paginationSetting.show": true,
+      "dataSource.pagination": "{ current: 1, pageSize: 10, total: 0 }"
+    }
+  },
+  "business_scenarios": [
+    "需要分页 + 排序的服务端大表格（如监控流水、订单列表）",
+    "需要分页栏主题切换的深色/浅色大屏",
+    "列内容多样化（数字翻牌/胶囊/图标/普通文本）",
+    "需要按列排序的服务端表格（点击列头传 sortField + sortOrder）",
+    "4 种列内容渲染（plainText / digitalFlop / capsule / icon）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table", "cost": "零", "reason": "本组件基于 table 扩展（分页 + 排序），结构同源" },
+      { "material": "drilldown-table / drilldown-table-2", "cost": "零", "reason": "列内容支持相同 contentShowType 系列" },
+      { "material": "digital-flop", "cost": "零", "reason": "通过 components/DigitalFlopCell.jsx 内部引用" },
+      { "material": "Modal/Drawer 全局组件", "cost": "低", "reason": "通过 dynamicEvents 配置派发目标" }
+    ],
+    "incompatible_with": [
+      { "material": "expandable-table", "cost": "中", "reason": "expandable-table 自渲染整个表格（无分页），分页表格需要走服务端分页" }
+    ],
+    "note": "pagination-table 是 table 的服务端分页扩展，与 table / drilldown-table 不能同区域"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.2,
+    "weighted_total": 4.2,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 3.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel description 自承'当前数据结构不足以描述，详细返回值及入参格式见说明文档'，README 给出完整 request/response 模板（pageIndex/pageSize/sortField/sortOrder + data.{data, columns, pagination}），业务描述力较好但依赖人工文档。",
+      "2. 场景覆盖度 4.5：覆盖分页 + 排序 + 主题切换 + 显示/隐藏 + 4 种列内容渲染 + 行/单元格点击派发，场景丰富度比 table 高。",
+      "3. 配置完备度 4.5：6 大 FormCollapse 分组（设置/列字段/表头组/表头/行设置/分页设置），分页设置含 pageSize / theme / show 三维度；行/列 clickEffect 联动。",
+      "4. 数据契约清晰度 3.5：⚠️ dataModel 完全为空（description 明确说不足以描述），但 README 给出详细 request/response 模板；建议把 README 的数据结构补到 dataModel.json 中。⚠️ oss-material.json.dataModel 是空字符串；⚠️ sortField/sortOrder 仅在入参时需要（出参无）。",
+      "5. 文档完整度 3.5：有 doc/readme.md + 4 张截图（排序字段设置/深色/浅色/显示隐藏）+ 完整接口示例；缺 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。",
+      "6. 可组合性 4.0：与 table / drilldown-table 零代价组合（同源）；与 digital-flop 零代价（内部 import）；与 Modal/Drawer 低代价（dynamicEvents）。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 6,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 8,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.paginationSetting.pageSize",
+      "config.paginationSetting.theme (dark|light)",
+      "config.paginationSetting.show",
+      "config.columns（含 sortable 配置排序列）",
+      "config.rowSetting.fieldNameForKey"
+    ],
+    "data_required": [
+      "pageIndex / pageSize（请求参数）",
+      "data.data（当前页数据）",
+      "data.columns（列信息，可选）",
+      "data.pagination.current / pageSize / total（分页元数据）",
+      "可选：sortField / sortOrder（排序请求参数）"
+    ],
+    "optional_fields": {
+      "config": ["groupSet（多列分组）", "headerStyle / rowSetting.clickEffect（样式）"],
+      "data": ["列内容 fields（按 contentShowType）"]
+    },
+    "assumptions": [
+      "后端支持分页参数 pageIndex / pageSize",
+      "后端支持排序参数 sortField / sortOrder",
+      "返回结构遵守 { code, data: { data, columns?, pagination } } 约定",
+      "使用默认深色分页栏（dark theme）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 4, "minutes": 10, "description": "默认分页 + 单列内容" },
+      "typical": { "config_items": 5, "data_fields": 6, "minutes": 18, "description": "排序 + 主题切换 + 多列内容" },
+      "full": { "config_items": 8, "data_fields": 6, "minutes": 30, "description": "全部分组 + 列内容 + 行点击派发" }
+    }
+  },
+  "_validation_notes": [
+    "dataModel 字段是空（description 自承不足以描述），需要从 README 模板补全",
+    "后端返回结构必须严格遵守 { code, data: { data, columns?, pagination: { current, pageSize, total } } } 约定",
+    "排序通过点击列头触发，sortable 列需在 schema.columns 中配置",
+    "Pagination 主题切换只影响分页栏样式，不影响表格本身",
+    "页大小可在 schema 中配置，但分页栏的实际页大小受后端返回的 pagination.pageSize 控制",
+    "dataSource 状态用 useSetState 管理（{ data, pagination }），切换页码时合并更新",
+    "⚠️ components/visual-table 是自渲染组件（不是 import '../table'），是本组件的私有表格"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余表格（table-detail / table-fixedColumns）继续生成"
+  }
+}

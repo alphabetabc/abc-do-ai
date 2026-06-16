@@ -1,5 +1,5 @@
 {
-  "contentHash": "5412eb39db72084786a92b37a269b43a6c778a9665aa4b5aeb340f4d00d297ff",
+  "contentHash": "357dc4bdcf84584e80184a03dbe5f30b499895970adb3e58783dff339cd2b42e",
   "files": [
     "./api-reference.md",
     "./config-reference.md",
@@ -9,5 +9,6 @@
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-06-16T05:59:28.504Z",
   "version": "0.0.0"
 }

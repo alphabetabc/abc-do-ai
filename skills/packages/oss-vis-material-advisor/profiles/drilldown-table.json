@@ -1,0 +1,204 @@
+{
+  "name": "drilldown-table",
+  "title": "下钻表格",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": ["./index.less"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "谢名伟",
+    "deprecated_files": [
+      { "path": "index.less", "reason": "大量 CSS 块被注释掉（自定义表格样式），目前依赖 oss-ui Table 默认样式" }
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "11 个 columns + 3 个下钻字段",
+        "example": "[{ policyPlatform: '财政厅1', serverCount: 36, CPURate: 40, memoryRate: 40, firstLevelAlarm: 2, secondLevelAlarm: 2, policyPlatformId: '0', detailViewItemId: 'x', detailViewPageId: 'y', detailViewPageArgs: '{...}' }, ...]",
+        "match_pattern": "data[*].{columns_01..columns_11, detailViewItemId, detailViewPageId, detailViewPageArgs}",
+        "fields": [
+          { "name": "columns_01..columns_11", "type": "String", "required": true, "description": "11 个通用列字段（dataModel 命名为 columns_01..columns_11，实际 dataIndex 由 schema columns 配置决定）" },
+          { "name": "detailViewItemId", "type": "String", "required": true, "description": "下钻接口 viewItemId，从父级接口数据中读取" },
+          { "name": "detailViewPageId", "type": "String", "required": true, "description": "下钻接口 viewPageId" },
+          { "name": "detailViewPageArgs", "type": "String", "required": true, "description": "下钻接口参数 JSON 字符串（注意：服务端返回的是单引号，组件内部 JSON.parse 需 replace 单引号为双引号）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "drilldown_modal",
+        "trigger": "click_row",
+        "config_field": "config.drilldownSet",
+        "sub_fields": ["open", "setting.titleField", "setting.fieldNameForKey", "setting.modalPositionLeft/Top", "setting.modalWidth/Height", "setting.columns"],
+        "payload_fields": ["整行 raw data"],
+        "precondition": "open + detailViewItemId + detailViewPageId + detailViewPageArgs 都存在 + dataConfig.dataType === 'api'"
+      },
+      {
+        "type": "more_modal",
+        "trigger": "click_more_button",
+        "config_field": "config.moreSet",
+        "sub_fields": ["open", "setting.modalPositionLeft/Top", "setting.modalWidth/Height"],
+        "precondition": "moreSet.open === true"
+      },
+      {
+        "type": "data_carousel",
+        "trigger": "setInterval",
+        "config_field": "config.dataCarousel",
+        "sub_fields": ["open", "dataLength", "speed"],
+        "behavior": "按 dataLength 分页，每 speed 秒切到下一页，循环显示"
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "title": { "type": "string", "default": "政务云", "description": "表格标题" },
+        "headerStyle": {
+          "backgroundColor": { "type": "color", "default": "#0D285C" },
+          "fontWeight": { "type": "string", "default": "normal" },
+          "color": { "type": "color", "default": "#00DEFF" },
+          "fontSize": { "type": "number", "default": 16 },
+          "fontFamily": { "type": "string", "default": "PangMenZhengDao" },
+          "height": { "type": "number", "default": 24 }
+        },
+        "rowSetting": {
+          "fieldNameForKey": { "type": "string", "required": true, "default": "policyPlatformId" },
+          "height": { "type": "number", "default": 38 },
+          "color": { "type": "color", "default": "#E5E5E5" },
+          "fontSize": { "type": "number", "default": 14 },
+          "oddRowBg": { "type": "color", "default": "rgba(2,62,171,0)" },
+          "evenRowBg": { "type": "color", "default": "rgba(2,62,171,0.1)" },
+          "borderColor": { "type": "color", "default": "rgba(255,255,255,0.2)" },
+          "borderWidth": { "type": "number", "default": 1 },
+          "borderStyle": { "type": "string", "default": "dashed", "options": ["solid", "dotted", "double", "dashed"] },
+          "clickEffect": { "type": "object", "description": "点击行高亮样式" }
+        }
+      }
+    },
+    "default_values": {
+      "config.title": "下钻表格",
+      "config.width": 500,
+      "config.height": 300,
+      "config.tableTitle": "政务云",
+      "config.rowSetting.height": 38,
+      "config.rowSetting.fieldNameForKey": "policyPlatformId（必填）",
+      "config.dataCarousel.open": true,
+      "config.dataCarousel.speed": 30,
+      "config.dataCarousel.dataLength": 5,
+      "config.moreSet.open": true,
+      "config.drilldownSet.open": true,
+      "dataConfig.dataType": "api",
+      "dataConfig.api.mode": "post",
+      "dataConfig.isRefresh": true,
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "政务云平台多级资源监控（财政厅 → 服务器）",
+    "运维监控：父级设备列表 → 点击下钻到设备详情",
+    "带'更多'的列表展示：超过 dataLength 自动轮播",
+    "多列分组：性能 + 告警（groupSet 实现）",
+    "列内容多样化：数字翻牌（digitalFlop）+ 普通文本"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table", "cost": "零", "reason": "内部直接 import '../table'，是 table 的超集（更复杂）" },
+      { "material": "drilldown-table-2", "cost": "零", "reason": "同一作者的姐妹组件，功能几乎一致，仅事件派发机制不同" },
+      { "material": "digital-flop", "cost": "低", "reason": "列内容支持 contentShowType=digitalFlop，columns.contentProps 复用 digital-flop 配置" },
+      { "material": "normal-label", "cost": "低", "reason": "标题标签独立无依赖" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "expandable-table", "cost": "中", "reason": "expandable-table 是独立渲染（不 import table），结构不同；两者都实现行下钻但 expandable-table 用 + / - 切换子行，本组件用 Modal 弹窗" }
+    ],
+    "note": "drilldown-table 是基于 table 的扩展（带 Modal + 轮播），不能与 table 同时使用（同区域）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段（columns_01..columns_11）命名通用，fieldLabel 是'列1/列2'，需要用户在 schema 中配置 columns.dataIndex 绑定实际字段。defaultValue 给出了政务云完整场景，title='政务云'贴近业务。",
+      "2. 场景覆盖度 4.5：覆盖表格 + 下钻 + 轮播 + 更多 + 分组（groupSet）+ 列内容多样化（digitalFlop/plainText）6 个业务变体，是表格类中场景最丰富的之一。",
+      "3. 配置完备度 4.5：8 个 FormCollapse 分组（设置/列字段/表头组/表头/行设置/数据轮播/更多/下钻），下钻本身还有 7 个子字段，2 个 x-reactions 联动开关。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名通用（columns_01..columns_11）降低了业务语义，但 indicator 列表暴露了 3 个下钻字段。⚠️ oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在；⚠️ detailViewPageArgs 服务端返回单引号需组件内部处理（JSON.parse 前的 replace）。",
+      "5. 文档完整度 3.0：仅有 doc/README.md + doc/CHANGELOG.md，缺少 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。README 内容主要描述树形展开/收起，但实际实现是 Modal 下钻，文档与实现不一致。",
+      "6. 可组合性 4.0：与 table / drilldown-table-2 / digital-flop / normal-label / decoration 均低代价组合；展开收起图标无边框 / 列内容多样化需 columns.contentProps 配合。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 8,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 25,
+    "breakdown": {
+      "config_minutes": 18,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.title",
+      "config.tableTitle",
+      "config.columns（含 dataIndex / title / width / contentShowType）",
+      "config.rowSetting.fieldNameForKey",
+      "config.dataCarousel.open + dataLength + speed",
+      "config.moreSet.open + setting",
+      "config.drilldownSet.open + setting.titleField + columns"
+    ],
+    "data_required": [
+      "至少 11 个列字段（columns_01..columns_11 的实际数据）",
+      "detailViewItemId / detailViewPageId / detailViewPageArgs（下钻必备）"
+    ],
+    "optional_fields": {
+      "config": ["groupSet（多列分组）", "headerStyle（表头样式）", "rowSetting.clickEffect（行点击高亮）"],
+      "data": ["列内容数字（contentShowType=digitalFlop 时需要）"]
+    },
+    "assumptions": [
+      "使用默认 Modal 弹窗样式（无自定义）",
+      "dataConfig.dataType = 'api'（下钻需要重新请求接口）",
+      "下钻接口遵守 detailViewItemId/detailViewPageId/detailViewPageArgs 约定",
+      "使用 defaultValue 中的 rowSetting / headerStyle（政务云蓝色主题）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 3, "minutes": 18, "description": "单表 + 下钻 + 默认样式" },
+      "typical": { "config_items": 8, "data_fields": 4, "minutes": 28, "description": "下钻 + 轮播 + 更多 + 分组" },
+      "full": { "config_items": 12, "data_fields": 5, "minutes": 45, "description": "全部 8 个 FormCollapse 分组 + digitalFlop 列内容 + 自定义 Modal 位置" }
+    }
+  },
+  "_validation_notes": [
+    "README.md 描述的'树形展开/收起'功能与实际实现（Modal 下钻）不符，是文档陈旧问题",
+    "index.less 中大量自定义表格样式被注释（.oss-ui-table-tbody, .custom-table-body），目前依赖 oss-ui Table 默认样式",
+    "dataModel 字段命名（columns_01..columns_11）通用化但与 schema 中 columns.dataIndex 解耦，是设计上的 trade-off",
+    "detailViewPageArgs 服务端单引号 → 组件内部 replace 单引号为双引号后 JSON.parse，是隐性约定",
+    "下钻 Modal 高度（modalHeight）不包含标题栏，需要预留 ~50px 标题栏高度",
+    "dataCarousel.speed 单位是秒，组件内部 × 1000 转毫秒（与 getRefreshTime 等约定一致）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余表格（pagination-table, table-detail, table-fixedColumns, table-transpose, transfer-table, alarm-window-card）继续生成"
+  }
+}

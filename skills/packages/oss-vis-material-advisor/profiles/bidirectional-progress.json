@@ -1,0 +1,235 @@
+{
+  "name": "bidirectional-progress",
+  "title": "横向柱形图",
+  "category": "进度/加载",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": [
+      "./components/progress/index.tsx",
+      "./components/progress/ContainerStyle.ts"
+    ]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "中",
+    "author": "qinshaoyang",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单条 7 字段对象（左右双指标 + 标题）",
+        "example": "{ label: '数据1', leftData: 230, leftUnit: 'GB', leftMax: 500, rightData: 400, rightUnit: 'MB', rightMax: 500 }",
+        "match_pattern": "dataSource[0].{label, leftData, leftUnit, leftMax, rightData, rightUnit, rightMax}",
+        "supports_multi_series": false,
+        "multi_series_key": null,
+        "fields": [
+          { "name": "label", "type": "String", "required": true, "description": "中间标题文本" },
+          { "name": "leftData", "type": "Number|String", "required": true, "description": "左侧数据值（用于百分比计算，dataType 是 String 但实际是 number）" },
+          { "name": "leftUnit", "type": "String", "required": false, "description": "左侧数据单位" },
+          { "name": "leftMax", "type": "Number|String", "required": true, "description": "左侧数据最大值（百分比基准）" },
+          { "name": "rightData", "type": "Number|String", "required": true, "description": "右侧数据值" },
+          { "name": "rightUnit", "type": "String", "required": false, "description": "右侧数据单位" },
+          { "name": "rightMax", "type": "Number|String", "required": true, "description": "右侧数据最大值" }
+        ],
+        "private_field": null
+      }
+    ],
+    "interactions": [
+      {
+        "type": "none",
+        "trigger": "none",
+        "config_field": "无交互面板（schema.fields 只有 config + renderDataConfig）",
+        "sub_fields": [],
+        "payload": null,
+        "known_issue": "纯展示组件，无点击事件、无下钻、无派发参数"
+      }
+    ],
+    "visual_configs": {
+      "labelConfig": {
+        "labelSize": { "type": "object", "component": "Size", "description": "中间标题尺寸" },
+        "labelFontStyle": { "type": "object", "component": "VisualTextStyle", "description": "中间标题文本" }
+      },
+      "leftConfig": {
+        "dataMax": { "type": "number", "description": "数据最大值（百分比基准，可被数据 leftMax 覆盖）" },
+        "color1": { "type": "string", "description": "开始颜色（渐变起）" },
+        "color2": { "type": "string", "description": "结束颜色（渐变末）" },
+        "width": { "type": "number", "description": "柱子长度" },
+        "strokeWidth": { "type": "number", "description": "柱子宽度" },
+        "valueFontStyle": { "type": "object", "component": "VisualTextStyle", "description": "值文本" },
+        "unitFontStyle": { "type": "object", "component": "VisualTextStyle", "description": "单位文本" },
+        "labelMargin": { "type": "number", "description": "文字与柱子间距" },
+        "border": { "type": "object", "component": "Border", "description": "边框" },
+        "showObliqueLineBg": { "type": "boolean", "description": "显示背景斜线" },
+        "obliqueLineDirection": { "type": "string", "options": ["left", "right"], "description": "斜线方向（/ 或 \\）" },
+        "obliqueLineColor": { "type": "string", "description": "斜线颜色" },
+        "active": { "type": "boolean", "description": "开启激活动效（status='active'）" }
+      },
+      "rightConfig": {
+        "dataMax": { "type": "number", "description": "数据最大值" },
+        "color1": { "type": "string", "description": "开始颜色" },
+        "color2": { "type": "string", "description": "结束颜色" },
+        "width": { "type": "number", "description": "柱子长度" },
+        "strokeWidth": { "type": "number", "description": "柱子宽度" },
+        "valueFontStyle": { "type": "object", "component": "VisualTextStyle" },
+        "unitFontStyle": { "type": "object", "component": "VisualTextStyle" },
+        "labelMargin": { "type": "number", "description": "文字与柱子间距" },
+        "border": { "type": "object", "component": "Border" },
+        "showObliqueLineBg": { "type": "boolean" },
+        "obliqueLineDirection": { "type": "string", "options": ["left", "right"] },
+        "obliqueLineColor": { "type": "string" },
+        "active": { "type": "boolean" }
+      }
+    },
+    "default_values": {
+      "config.title": "横向柱形图",
+      "config.width": 600,
+      "config.height": 100,
+      "config.left": 15,
+      "config.top": 15,
+      "config.labelConfig.labelSize.width": 100,
+      "config.labelConfig.labelFontStyle.color": "#fff",
+      "config.labelConfig.labelFontStyle.fontSize": 14,
+      "config.leftConfig.color1": "#108ee9",
+      "config.leftConfig.color2": "#87d068",
+      "config.leftConfig.width": 200,
+      "config.leftConfig.strokeWidth": 20,
+      "config.leftConfig.valueFontStyle.color": "#fff",
+      "config.leftConfig.valueFontStyle.fontSize": 14,
+      "config.leftConfig.unitFontStyle.color": "#fff",
+      "config.leftConfig.unitFontStyle.fontSize": 14,
+      "config.leftConfig.showObliqueLineBg": true,
+      "config.leftConfig.active": true,
+      "config.leftConfig.border.borderWidth": 1,
+      "config.leftConfig.border.borderColor": "#d7d300",
+      "config.leftConfig.border.borderStyle": "solid",
+      "config.leftConfig.obliqueLineDirection": "left",
+      "config.leftConfig.obliqueLineColor": "#ffffff7e",
+      "config.leftConfig.labelMargin": 10,
+      "config.rightConfig.color1": "#108ee9",
+      "config.rightConfig.color2": "#87d068",
+      "config.rightConfig.width": 200,
+      "config.rightConfig.strokeWidth": 20,
+      "config.rightConfig.valueFontStyle.color": "#fff",
+      "config.rightConfig.valueFontStyle.fontSize": 14,
+      "config.rightConfig.unitFontStyle.color": "#fff",
+      "config.rightConfig.unitFontStyle.fontSize": 14,
+      "config.rightConfig.showObliqueLineBg": true,
+      "config.rightConfig.active": true,
+      "config.rightConfig.border.borderWidth": 1,
+      "config.rightConfig.border.borderColor": "#d7d300",
+      "config.rightConfig.border.borderStyle": "solid",
+      "config.rightConfig.obliqueLineDirection": "right",
+      "config.rightConfig.obliqueLineColor": "#ffffff7e",
+      "config.rightConfig.labelMargin": 10
+    }
+  },
+  "business_scenarios": [
+    "磁盘使用量对比（已用 vs 剩余）",
+    "流量上下行对比（上传 MB vs 下载 MB）",
+    "网络流量监控（流入 vs 流出）",
+    "实时性能指标对比（响应时间 vs 错误率）",
+    "业务量环比对比（今日 vs 昨日）",
+    "中间标签 + 双向进度的'XY 轴'式展示"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource，可展示总量；横向柱形图展示双向比例" },
+      { "material": "normal-label", "cost": "低", "reason": "作为辅助标题/说明" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-bar / echarts-pie", "reason": "双向进度条不是多分类图表，组合意义不大" }
+    ],
+    "note": "独特的'双向'形态适合对比场景，不能简单替换为普通进度条"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 4.0,
+      "doc_completeness": 5.0,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 7 字段命名业务化（label/leftData/leftUnit/leftMax/rightData/rightUnit/rightMax），fieldLabel 中文标注（'中间标题'/'左侧数据'/'左侧单位'/'左侧最大值'/'右侧数据'/'右侧单位'/'右侧最大值'）非常清晰，PM 可直接看懂；默认数据'数据1' + 230GB/400MB 对比场景典型。",
+      "2. 场景覆盖度 3.5：双向进度条形态独特，斜线背景/激活动效/边框/反向/单位文本/值文本 等 6+ 视觉变体；扣分因仅 1 条数据（dataSource[0]），不支持多组数据并排，且没有交互能力。",
+      "3. 配置完备度 4.5：3 个 FormCollapse 分组（标题/左侧/右侧）每侧 12 个配置项（数据最大值、开始颜色、结束颜色、宽度、strokeWidth、值文本、单位文本、文字间距、边框、斜线开关、斜线方向、斜线颜色、激活动效）；使用 Size/VisualTextStyle/Border 等通用组件；默认值丰富（默认蓝绿渐变 + 黄色边框 + 白色斜线）。",
+      "4. 数据契约清晰度 4.0：dataModel 字段业务化命名 + fieldLabel 详细描述 + rowProperties + format；扣分因 dataType 全部为 String（leftData/leftMax 实际应为 number）+ dataMax 字段被解构但组件只读了一次（spread 后被覆盖）+ 数据多源时只取第一条。",
+      "5. 文档完整度 5.0：5+1 全套齐全 + doc/readme.md + doc/CHANGELOG.md + 5 张示例图；gotchas 详细记录 6 个真实坑点（CSS transform 反转副作用、百分比超 100% 边界、斜线浏览器兼容、styled-components props 传递、String 数值计算 NaN 风险、labelSize 缺 height）。",
+      "6. 可组合性 3.5：双向形态独特，组合中应作为'数据对比'主视觉；与数字卡/标签/边框可低代价组合；不支持多组数据并排使其在大屏中常需多个实例堆叠。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 7,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 10,
+    "breakdown": {
+      "config_minutes": 3,
+      "data_minutes": 7,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.title",
+      "config.leftConfig.color1 + color2 (左右渐变色)",
+      "config.rightConfig.color1 + color2"
+    ],
+    "data_required": [
+      "label (中间标题)",
+      "leftData, leftUnit, leftMax (左侧3字段)",
+      "rightData, rightUnit, rightMax (右侧3字段)"
+    ],
+    "optional_fields": {
+      "config": [
+        "labelConfig (标题尺寸/文本)",
+        "leftConfig/rightConfig (柱子长度/宽度/边框/斜线/激活动效 - 共 12 项可选)",
+        "labelSize.height (⚠️ 默认值被注释, 见 gotchas § 6)"
+      ],
+      "data": []
+    },
+    "assumptions": [
+      "使用默认蓝绿渐变（#108ee9 → #87d068）",
+      "启用斜线背景 + 激活动效",
+      "单条数据（dataSource 长度 1）",
+      "dataMax 留空，由数据 leftMax/rightMax 决定百分比"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 7, "minutes": 10, "description": "默认渐变 + 标题 + 7 字段数据" },
+      "typical": { "config_items": 8, "data_fields": 7, "minutes": 22, "description": "自定义左右渐变 + 边框 + 斜线 + 字号 + 间距" },
+      "full": { "config_items": 24, "data_fields": 7, "minutes": 50, "description": "左右 12 项 + 标题 + 字体细节全部深度配置" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: ⚠️ CSS transform: scale(-1, 1) 反转会同时反转斜线和文本，已通过 reverse 时取反角度 + 额外 transform 再反转文本修复",
+    "gotchas.md § 2: 百分比超 100% 时进度条溢出容器，标签定位用 width+labelMargin 但柱子本身仍超出，建议 schema 限制 dataMax ≥ 实际数据",
+    "gotchas.md § 3: 斜线背景使用 linear-gradient + background-size: 7px 7px 在不同浏览器有差异",
+    "gotchas.md § 4: styled-components ContainerStyle 的 border/obliqueLineColor props 必须显式传递，漏传导致样式无效",
+    "gotchas.md § 5: ⚠️ dataType 全部为 String，组件直接做除法计算（leftData / leftMax），非数字字符串（如 '230GB'）会得到 NaN",
+    "gotchas.md § 6: labelSize.height 默认值被注释，中间标题宽度不够时可能截断或换行",
+    "data-model.md § 5.2: 不支持多维度，dataType 全部为 String，仅使用 dataSource[0]",
+    "index.tsx:9: console.log(config, dataSource) 调试日志未删除",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在并被 import，行为无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余 3 个物料（normal-label, free-layout-indicators-viewer, dock-menu）"
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "name": "table-fixedColumns",
+  "title": "固定列表格",
+  "category": "表格",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": [
+      "./components/styled-table.tsx",
+      "./components/defaultSettings.ts",
+      "./components/ToggeVisible.tsx",
+      "./components/custom/index.tsx",
+      "./components/cell/CustomCell.tsx",
+      "./components/cell/Capsule.tsx"
+    ]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "xmw",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "通用字段 + rowKey",
+        "example": "[{ 'field-1': '财政厅', 'field-2': 36, 'field-3': '0', id: '0' }, ...]",
+        "match_pattern": "data[*].{任意字段}",
+        "fields": [
+          { "name": "任意字段", "type": "any", "required": false, "description": "列字段名由 schema columns.dataIndex 决定" },
+          { "name": "rowKey", "type": "String", "required": true, "description": "行唯一标识（用于事件派发 + 显隐控制）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "fixed_columns",
+        "trigger": "auto",
+        "config_field": "config.fixedColumnsSetting",
+        "sub_fields": ["leftColumns（左侧固定列数）", "rightColumns（右侧固定列数）"],
+        "behavior": "支持左右双向固定列（滚动时固定列保持可见）"
+      },
+      {
+        "type": "show_hide_table",
+        "trigger": "click_visible_button",
+        "config_field": "config.settingVisible",
+        "sub_fields": ["enable", "visibleButton.text/style", "hiddenButton.text/style"],
+        "behavior": "内置显隐操作按钮（通过 ToggleVisible 组件）；支持外部订阅显隐状态"
+      },
+      {
+        "type": "row_click",
+        "trigger": "click_row",
+        "config_field": "rowSetting.clickEffect.open",
+        "sub_fields": ["clickEffect.open", "clickEffect.style"]
+      },
+      {
+        "type": "cell_click",
+        "trigger": "click_cell",
+        "config_field": "interaction.defined.dynamicEvents[clickKey=X].effect",
+        "sub_fields": ["Modal", "Drawer", "Cell", "Dispatch"],
+        "advanced": "Modal 效果支持 activeColumnField + activeRowKeyField 过滤条件（用逗号分隔多值）"
+      },
+      {
+        "type": "subscribe_visible_state",
+        "trigger": "external_dispatch",
+        "config_field": "interaction.defined.dynamicEvents",
+        "behavior": "支持订阅外部组件的显隐派发事件，控制本表格显隐"
+      }
+    ],
+    "visual_configs": {
+      "table": {
+        "headerStyle": { "type": "object", "description": "表头背景色 / 字号 / 颜色 / 高度" },
+        "columns": { "type": "Array<Object>", "description": "列配置" },
+        "rowSetting": { "type": "object", "description": "行配置" },
+        "groupSet": { "type": "object", "description": "多列分组（兼容旧数据）" },
+        "fixedColumnsSetting": {
+          "leftColumns": { "type": "number", "default": 0, "description": "左侧固定列数" },
+          "rightColumns": { "type": "number", "default": 0, "description": "右侧固定列数" }
+        },
+        "settingVisible": {
+          "enable": { "type": "boolean", "default": false, "description": "是否启用内置显隐按钮" },
+          "visibleButton": { "type": "object", "description": "显示按钮的 text / style" },
+          "hiddenButton": { "type": "object", "description": "隐藏按钮的 text / style" }
+        },
+        "scrollSetting": { "type": "object", "description": "表格滚动设置（高度 / 横向滚动）" }
+      },
+      "rich_content": {
+        "Capsule": "components/cell/Capsule.tsx（胶囊）",
+        "CustomCell": "components/cell/CustomCell.tsx（自定义列内容，含 levels 颜色阈值）"
+      }
+    },
+    "default_values": {
+      "config.fixedColumnsSetting.leftColumns": 0,
+      "config.fixedColumnsSetting.rightColumns": 0,
+      "config.settingVisible.enable": false,
+      "config.rowSetting.clickEffect.open": false
+    }
+  },
+  "business_scenarios": [
+    "列数较多需要左右固定列的表格（横向滚动时固定列保持可见）",
+    "需要显隐控制的多列表格（如通过外部按钮显示/隐藏）",
+    "复杂列内容（胶囊 + 自定义列内容）",
+    "Modal 派发带 activeColumnField / activeRowKeyField 过滤条件的精确控制",
+    "订阅外部显隐状态，实现跨组件联动显隐"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "table", "cost": "中", "reason": "table-fixedColumns 自渲染整个表格，不依赖 table 物料；但列结构兼容" },
+      { "material": "Modal/Drawer 全局组件", "cost": "零", "reason": "通过 dynamicEvents 配置派发目标，支持 activeColumnField / activeRowKeyField 过滤" },
+      { "material": "dock-menu / 按钮类", "cost": "低", "reason": "通过订阅外部显隐状态可联动 dock-menu 的菜单按钮" }
+    ],
+    "incompatible_with": [
+      { "material": "table（同区域）", "cost": "高", "reason": "本组件自渲染整个表格，与 table 同时使用会冲突" },
+      { "material": "drilldown-table / pagination-table / table-detail（同区域）", "cost": "高", "reason": "都是平行表格组件，不可同区域" }
+    ],
+    "note": "table-fixedColumns 是'固定列'专项表格，自带显隐控制，是表格类中交互最丰富的之一"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.3,
+    "weighted_total": 4.3,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 5.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 4.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段为空（仅 rowProperties），但 defaultValue 给出了 field-1/field-2/field-3 通用模板，标题'固定列表格'非常业务化（一听就知道是固定列场景）。",
+      "2. 场景覆盖度 5.0：覆盖左右固定列 + 显隐控制（内置 + 外部订阅）+ 行/单元格点击 + 复杂 Modal 过滤（activeColumnField / activeRowKeyField）+ 滚动设置 + 5 种 FormCollapse 分组共 6+ 业务场景。",
+      "3. 配置完备度 4.5：6 大 FormCollapse 分组（列字段/表头组/表头/行设置/表格滚动/表格显隐操作）+ fixedColumnsSetting（leftColumns/rightColumns）+ settingVisible（visibleButton/hiddenButton 样式）。",
+      "4. 数据契约清晰度 3.5：dataModel 字段为空，defaultValue 是通用 field-1/field-2 模板；⚠️ oss-material.json.dataModel 是空字符串；⚠️ 实际字段名由 schema columns.dataIndex 决定，dataModel 没办法列出真实字段。",
+      "5. 文档完整度 4.0：doc/readme.md 有 14 张截图（image-2024-06-11 系列），完整展示列字段/表头组/表头/行设置/滚动/显隐等所有配置；缺 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。",
+      "6. 可组合性 4.0：与 Modal/Drawer 零代价（dynamicEvents 派发）；与 dock-menu/按钮类低代价（订阅显隐状态）；与其他表格不能同区域组合。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 12,
+    "breakdown": {
+      "config_minutes": 8,
+      "data_minutes": 4,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.columns（含 dataIndex / title / width）",
+      "config.rowSetting.fieldNameForKey",
+      "config.fixedColumnsSetting.leftColumns + rightColumns",
+      "config.settingVisible.enable（可选）"
+    ],
+    "data_required": [
+      "dataSource（数组，每行含 rowKey）",
+      "rowKey 字段（用于显隐控制）"
+    ],
+    "optional_fields": {
+      "config": ["groupSet（多列分组）", "headerStyle / rowSetting.clickEffect（样式）", "settingVisible.visibleButton/hiddenButton（自定义按钮）"],
+      "data": ["列内容字段（按 contentShowType）"]
+    },
+    "assumptions": [
+      "使用默认 0 固定列（即不固定）",
+      "不启用内置显隐按钮（settingVisible.enable = false）",
+      "列内容通过 components/cell 渲染（支持 Capsule / CustomCell）",
+      "Modal 派发带 activeColumnField / activeRowKeyField 过滤（避免误触发）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 2, "minutes": 8, "description": "默认 + 简单列" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 15, "description": "左右固定列 + 显隐按钮 + 单元格派发" },
+      "full": { "config_items": 8, "data_fields": 2, "minutes": 25, "description": "全部 6 个 FormCollapse + 复杂 Modal 过滤" }
+    }
+  },
+  "_validation_notes": [
+    "dataModel 字段为空（无 dimensions/indicators），需通过 schema columns.dataIndex 绑定实际字段",
+    "fixedColumnsSetting.leftColumns + rightColumns 数字累加不能超过总列数",
+    "settingVisible 内置显隐时 interaction 订阅必须为空（否则冲突）",
+    "Modal 派发时 activeColumnField / activeRowKeyField 用逗号分隔多值，过滤条件支持空判断",
+    "ToggleVisible 组件实现显隐控制，支持内部 / 外部两种模式",
+    "rowKey 字段在派发事件中通过 itemData['rowKey'] 访问（约定字段名）",
+    "components/cell/CustomCell.tsx 自定义列内容，支持 levels 颜色阈值（与 expandable-table 类似）",
+    "dataSource 缺 rowKey 时显隐控制会失效（但不影响其他交互）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余表格（table-transpose / transfer-table / alarm-window-card）继续生成"
+  }
+}

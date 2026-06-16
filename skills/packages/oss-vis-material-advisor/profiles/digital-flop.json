@@ -1,0 +1,239 @@
+{
+  "name": "digital-flop",
+  "title": "数字翻牌器",
+  "category": "数字/指标卡",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": [
+      "./types.ts",
+      "./schema-parts/defaultValues.ts",
+      "./components/value-renderer.tsx",
+      "./components/RootStyled.tsx",
+      "./components/CompPrefixTpl.tsx",
+      "./components/CompSuffixTpl.tsx",
+      "./components/TrendIcon.tsx"
+    ]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "中",
+    "author": "谢名伟",
+    "deprecated_files": []
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单指标单对象（单元素数组或单对象）",
+        "example": "{ id: 1, value: 123, render: 1, suffix: '' }",
+        "match_pattern": "dataSource[0] | dataSource.{value, render, suffix, id}",
+        "supports_multi_series": false,
+        "multi_series_key": null,
+        "fields": [
+          { "name": "value", "type": "Number", "required": true, "description": "指标值，TWEEN 翻牌动画的目标值" },
+          { "name": "render", "type": "Number", "required": false, "description": "级别值，匹配 isLevel.itemsSet[].level（用于分级配色）" },
+          { "name": "suffix", "type": "String", "required": false, "description": "动态后缀（覆盖 schema 中的 suffix.text）" },
+          { "name": "id", "type": "Number|String", "required": false, "description": "⚠️ dataModel 未声明，点击事件派发依赖此字段" }
+        ],
+        "private_field": {
+          "name": "id",
+          "description": "dataModel 未声明，组件隐式依赖（详见 gotchas § 2）"
+        }
+      }
+    ],
+    "interactions": [
+      {
+        "type": "drilldown",
+        "trigger": "click",
+        "config_field": "interactions.defined.configurableEvent.clickEvent",
+        "sub_fields": ["show", "effect (Modal|Drawer|Window|WindowSelf)", "modalSet/drawerSet/windowSet (params/drilldownItemFields/position/size/mask/closable)"],
+        "payload": "整行 dataSource（data: { visible: true, ...dataSource }）",
+        "known_issue": "Window/WindowSelf 两种 effect 是数字翻牌器独有，比 echarts-bar/pie 多"
+      },
+      {
+        "type": "dispatch",
+        "trigger": "click",
+        "config_field": "interactions.defined.onClickId",
+        "sub_fields": ["onClickId"],
+        "payload": "dataSource.id（dataModel 未声明，详见 gotchas § 2）",
+        "known_issue": "与下钻互斥（dispatch 与 clickEvent.show 互斥）"
+      }
+    ],
+    "visual_configs": {
+      "textStyleEnhance": {
+        "textGradientColor": {
+          "show": { "type": "boolean", "description": "使用文本渐变色（独立于数字色）" },
+          "color": { "type": "array", "component": "CssGradientColor", "description": "渐变色数组" }
+        }
+      },
+      "number": {
+        "numberLength": { "type": "number", "description": "数据长度" },
+        "precision": { "type": "number", "description": "小数点后的位数" },
+        "numberAbs": { "type": "boolean", "description": "数值显示正数（取绝对值）" },
+        "groupSeparator": {
+          "show": { "type": "boolean", "description": "千分位开关" },
+          "separator": { "type": "string", "description": "千分位分隔符" }
+        },
+        "size": { "type": "object", "description": "数字尺寸宽高" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" },
+        "textGap": { "type": "number", "default": 5, "description": "文字间隔" },
+        "flopType": { "type": "string", "default": "normal", "options": ["normal", "classics"], "description": "翻牌器类型（普通/经典带背景）" },
+        "backgroundImage": { "type": "string", "description": "背景图片（仅 classics 模式可见）" },
+        "backgroundColor": { "type": "string", "description": "背景颜色（仅 classics 模式可见）" },
+        "backgroundRadius": { "type": "number", "description": "背景圆角（仅 classics 模式可见）" },
+        "animation": {
+          "show": { "type": "boolean", "description": "动画开关" },
+          "duration": { "type": "number", "description": "动画时长" }
+        }
+      },
+      "trend": {
+        "show": { "type": "boolean", "description": "趋势开关" },
+        "position": { "type": "string", "default": "right", "options": ["left", "right"], "description": "趋势显示位置（在 prefix 还是 suffix）" },
+        "threshold": { "type": "number", "description": "趋势判定临界值" },
+        "iconSelect": { "type": "string", "description": "趋势图标（↑ / +/- / custom）" },
+        "iconColorSettings": {
+          "syncToNumber": { "type": "boolean", "description": "趋势色影响数值颜色" },
+          "up": { "type": "string", "description": "上升趋势色" },
+          "down": { "type": "string", "description": "下降趋势色" }
+        },
+        "isLevel": {
+          "show": { "type": "boolean", "description": "级别渲染开关" },
+          "itemsSet": { "type": "array", "description": "级别渲染条目（level/color/iconWidth/iconImage）" }
+        }
+      },
+      "prefix": {
+        "text": { "type": "string", "description": "前缀内容" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" }
+      },
+      "suffix": {
+        "text": { "type": "string", "description": "后缀内容" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" },
+        "syncToSuffix": { "type": "boolean", "description": "数值颜色影响后缀颜色" }
+      }
+    },
+    "default_values": {
+      "config.title": "数字翻牌器",
+      "config.width": 200,
+      "config.height": 80,
+      "config.left": 15,
+      "config.top": 15,
+      "config.opacity": 100,
+      "config.number.flopType": "normal",
+      "config.number.textGap": 5,
+      "config.number.textStyle.fontFamily": "默认",
+      "config.trend.position": "right",
+      "config.trend.iconColorSettings.up": "#3f8600",
+      "config.trend.iconColorSettings.down": "#cf1322"
+    }
+  },
+  "business_scenarios": [
+    "大屏核心 KPI 指标卡（订单总数、用户总数、销售额），带翻牌动画",
+    "运维监控实时指标（在线率、CPU 使用率、告警数），可配趋势 + 级别配色",
+    "应急场景分级指标（红色=紧急/橙色=警告/绿色=正常），用 isLevel 自动配色",
+    "单一数字 + 趋势图标的指标卡（'今日新增 1,234 ↑5%'）",
+    "点击下钻打开 Modal/Drawer 查看详情，或打开新窗口跳转",
+    "经典模式带背景图的数字展示（游戏/活动主题）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-card", "cost": "中", "reason": "同分类指标卡，数据源格式不同（digital-flop 单对象 vs digital-card 单条 {label,value}），不能直接对接" },
+      { "material": "free-layout-indicators-viewer", "cost": "高", "reason": "dataModel 不一致，free-layout 需要 indicatorId 多元素数组，无法直接替换" },
+      { "material": "normal-label", "cost": "低", "reason": "作为标签/标题独立展示" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-bar / echarts-pie", "reason": "数据格式完全不同（多元素数组 vs 单对象）" }
+    ],
+    "note": "单指标单对象的设计限制使其在多指标仪表盘场景中需要多实例堆叠"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.5,
+      "scenario_coverage": 4.2,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 5.0,
+      "composability": 3.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.5：dataModel 字段命名（value/render/suffix）业务化且 fieldLabel 中文标注（'指标值'/'级别,支持分级呈现颜色'/'后缀显示内容'）非常清晰；'render' 字段的描述'支持分级呈现颜色'是业务方直接能懂的术语；默认数据为 {id:1, value:123, render:1, suffix:''} 单指标场景贴合。",
+      "2. 场景覆盖度 4.2：4 种下钻效果（Modal/Drawer/Window/WindowSelf 是独有）+ 双翻牌器模式（normal/classics）+ 趋势图标（↑/+/-/custom）+ 级别渲染 + 文本渐变 + 千分位 + 动画 + 趋势阈值判定，覆盖核心 KPI、运维监控、应急分级、统计指标等 5+ 变体。",
+      "3. 配置完备度 4.5：5 大分组（样式增强/数字/趋势/前缀/后缀）+ 数字格式化子分组（精度/绝对值/千分位）+ 趋势图标颜色设置 + 级别渲染数组（ArrayCollapse）4 级嵌套；x-reactions 联动 5+ 处（flopType→backgroundImage/Color/Radius、iconSelect→common/custom、isLevel.show→itemsSet）；默认值丰富。",
+      "4. 数据契约清晰度 3.0：dataModel 1 维 3 指标标注清晰（value/render/suffix），但有 3 个显著瑕疵：① 隐式字段 id（未在 dataModel 声明但点击事件派发依赖）② 隐式字段 enableRemoveEndZero / fontSkew（schema 完全未声明，组件读取）③ oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在；dataType 全部为 String（value/render 实际应为 number）。",
+      "5. 文档完整度 5.0：5+1 全套齐全 + doc/readme.md + doc/CHANGELOG.md；gotchas 详细记录 11 个真实坑点（dataSource 单对象、隐式 id、隐式 enableRemoveEndZero/fontSkew、根 class 不一致、TWEEN RAF 单例、useValueRenderer 不重置、prefix 渲染条件、趋势阈值相等、根 class 兼容性、调试技巧）。",
+      "6. 可组合性 3.0：单指标单对象的设计限制使其在多指标仪表盘场景中难以直接与其他多元素数组物料组合；与同分类 digital-card 数据格式不同需要适配；Window/WindowSelf 是独有交互（其他图表类物料没有 window 跳转）。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 1,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 8,
+    "breakdown": {
+      "config_minutes": 4,
+      "data_minutes": 4,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.number.flopType", "config.number.size (width/height)"],
+    "data_required": ["value (必填)"],
+    "optional_fields": {
+      "config": [
+        "number.precision (小数位)",
+        "number.groupSeparator (千分位)",
+        "number.textStyle (字体)",
+        "trend.show + trend.threshold + trend.iconSelect (趋势)",
+        "trend.isLevel.itemsSet (级别渲染数组)",
+        "prefix.text (前缀)",
+        "suffix.text (后缀)"
+      ],
+      "data": [
+        "render (级别, 配合 isLevel 使用)",
+        "suffix (动态后缀, 覆盖 schema 配置)",
+        "id (点击派发用, ⚠️ 需手动加字段)"
+      ]
+    },
+    "assumptions": [
+      "使用 default normal 翻牌器模式（无背景图）",
+      "无需趋势图标（关闭 trend.show）",
+      "无需级别渲染（关闭 isLevel.show）",
+      "无需下钻交互",
+      "单对象数据源（或单元素数组）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 1, "minutes": 8, "description": "普通模式 + 单数字 + 默认字体" },
+      "typical": { "config_items": 7, "data_fields": 2, "minutes": 22, "description": "普通模式 + 千分位 + 精度 + 趋势图标 + 前缀" },
+      "full": { "config_items": 18, "data_fields": 4, "minutes": 55, "description": "经典模式 + 文本渐变 + 趋势阈值 + 级别渲染数组 + 4 种下钻效果" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1: ⚠️ dataSource 是单对象不是数组，组件自动兼容但多元素数组会被截断（dataModel dimensions: []）",
+    "gotchas.md § 2: ⚠️ 隐式字段 id（dataModel 未声明），点击事件派发依赖 dataSource.id，schema 中只声明 onClickId 字段映射名",
+    "gotchas.md § 3: ⚠️ 隐式字段 enableRemoveEndZero 和 config.number.fontSkew，schema 完全未声明，组件通过 [key:string]:any 透传，无法在面板配置",
+    "gotchas.md § 4: 根 class 是 'visual-base-digital-flop' 与物料名 'digital-flop' 不一致，全局样式覆盖注意",
+    "gotchas.md § 5: TWEEN RAF 循环是模块级单例，stop() 函数实际为空函数（stopFlag = false），无停止逻辑",
+    "gotchas.md § 6: useValueRenderer 不会重置（useMemo deps=[]），动态切换 flopType 不生效靠 useEffect updateStyle",
+    "gotchas.md § 7: prefix.text 为空且无趋势时 prefix 不渲染（prefixVisible 条件）",
+    "gotchas.md § 8: 趋势阈值相等时无图标（data === threshold 时 tendency 保持 null，表示'中性'）",
+    "data-model.md § 4: dataModel 中 dimensions: [] 容易让人误解为支持维度，dataType 全部为 String（value/render 实际应为 number）",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在并被 import，行为无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "next_step": "剩余 5 个物料（digital-card, bidirectional-progress, normal-label, free-layout-indicators-viewer, dock-menu）"
+  }
+}

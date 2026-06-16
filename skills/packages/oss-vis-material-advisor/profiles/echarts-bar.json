@@ -1,0 +1,224 @@
+{
+  "name": "echarts-bar",
+  "title": "多系列条形图(echarts)",
+  "category": "图表/ECharts",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json",
+    "supporting_files": ["./options.ts"]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": true,
+    "complexity": "中",
+    "author": "hyy",
+    "deprecated_files": [
+      {
+        "path": "index.jsx",
+        "reason": "orphan file, oss-material.json.main 指向 index.tsx，index.jsx 实现的是双轴图逻辑（与当前横向条形图无关）"
+      },
+      {
+        "path": "index.less",
+        "reason": "空文件，import 已被注释，所有样式由 ECharts option 内联控制"
+      }
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多系列横向条形（2维度+3指标）",
+        "example": "[{ dimensionName: '2G', compareType: '小区数(万)', indicatorId: 1, indicatorValue: 15, unit: '万' }, ...]",
+        "match_pattern": "data[*].{dimensionName, compareType, indicatorId, indicatorValue}",
+        "supports_multi_series": true,
+        "multi_series_key": "compareType",
+        "fields": [
+          { "name": "dimensionName", "type": "String", "required": true, "description": "Y轴类目，会 _.uniq 去重" },
+          { "name": "compareType", "type": "String", "required": false, "description": "多系列分组键；存在时按此分组生成 series；data[0] 是否存在此字段决定走多系列还是单系列分支" },
+          { "name": "indicatorId", "type": "String", "required": false, "description": "联动ID（点击事件 onClickId 派发来源）" },
+          { "name": "indicatorValue", "type": "String(实际number)", "required": true, "description": "Y轴数据值，ECharts 数值" },
+          { "name": "indicatorUnit", "type": "String", "required": false, "description": "单位（当前组件未使用此字段，dataModel 已声明但未消费）" }
+        ],
+        "private_field": {
+          "name": "__rawData__",
+          "description": "options.ts 注入的原始数据对象；ECharts 不识别但保留在 data 对象上，用于点击事件读取全量字段"
+        }
+      }
+    ],
+    "interactions": [
+      {
+        "type": "drilldown",
+        "trigger": "click",
+        "config_field": "interactions.defined.configurableEvent.drilldownEvent",
+        "sub_fields": ["show", "effect (Modal|Drawer)", "params", "drilldownItemFields", "position", "size", "mask", "closable"],
+        "payload_fields": ["id", "name", "value"],
+        "known_issue": "dataModel 无 id 字段 → onClickId 派发永远为 undefined（详见 gotchas.md § 4）"
+      },
+      {
+        "type": "modal_or_drawer",
+        "trigger": "click",
+        "config_field": "interactions.defined.configurableEvent.clickEvent",
+        "sub_fields": ["show", "effect (Modal|Drawer)"],
+        "payload": "整行 raw data"
+      }
+    ],
+    "visual_configs": {
+      "chart": {
+        "barMaxWidth": { "type": "number", "default": 16, "description": "图形最大宽度" },
+        "customColors": { "type": "boolean", "default": true, "description": "是否使用用户自定义渐变色（必须为 true 才生效，见 gotchas § 6）" },
+        "color": { "type": "array", "default": "[{ 渐变: 蓝→青 }, { 渐变: 橙→黄 }]", "description": "渐变填充色数组" },
+        "borderRadius": { "type": "object", "default": "{top:0,right:8,bottom:8,left:0}" },
+        "showBackground": { "type": "boolean", "default": true },
+        "backgroundColor": { "type": "string", "default": "rgba(82, 168, 255, 0.1)" },
+        "showBarDecal": { "type": "boolean", "default": false },
+        "barDecalSetting": { "type": "object", "description": "图案填充，rotation 是度数（options.ts 内部转弧度）" }
+      },
+      "label": {
+        "show": { "type": "boolean", "default": true },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" },
+        "colorInherit": { "type": "boolean", "default": true, "description": "标签文字与图形同色" },
+        "position": { "type": "string", "default": "outside", "options": ["outside", "top", "left", "right", "bottom", "inside", "insideLeft/Right/Top/Bottom", "insideTopLeft/Right/BottomLeft/Right"] },
+        "width": { "type": "number", "default": 200, "description": "标签宽度（仅 outside 位置生效）" },
+        "padding": { "type": "array", "default": "[{left:-5,top:-20,right:0,bottom:0}, {left:-5,top:20,right:0,bottom:0}]" }
+      },
+      "xAxis": {
+        "showAxisLine": { "type": "boolean", "default": false },
+        "axisLineSetting": { "type": "object" },
+        "showAxisLabel": { "type": "boolean", "default": true },
+        "axisLabel": { "type": "object", "component": "VisualTextStyle" },
+        "max": { "type": "number", "default": 20 }
+      },
+      "yAxis": {
+        "showAxisLine": { "type": "boolean", "default": false },
+        "axisLineSetting": { "type": "object" },
+        "axisLabel": { "type": "object", "component": "VisualTextStyle" }
+      },
+      "grid": {
+        "show": { "type": "boolean", "default": false },
+        "containLabel": { "type": "boolean", "default": false },
+        "left/right/top/bottom": { "type": "string", "default": "{left:'30',top:'0',right:'60',bottom:'0'}" }
+      },
+      "legend": {
+        "show": { "type": "boolean", "default": true },
+        "type": { "type": "string", "default": "plain", "options": ["plain", "scroll"] },
+        "icon": { "type": "string", "default": "rect", "options": ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"] },
+        "orient": { "type": "string", "default": "horizontal" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" }
+      },
+      "tooltip": {
+        "show": { "type": "boolean", "default": true },
+        "backgroundColor": { "type": "string" },
+        "borderColor": { "type": "string" },
+        "borderWidth": { "type": "number" },
+        "textStyle": { "type": "object", "component": "VisualTextStyle" }
+      }
+    },
+    "default_values": {
+      "config.title": "metaInfo.title（多系列条形图(echarts)）",
+      "config.width": 498,
+      "config.height": 401,
+      "config.chart.barMaxWidth": 16,
+      "config.chart.customColors": true,
+      "config.chart.showBackground": true,
+      "config.chart.backgroundColor": "rgba(82, 168, 255, 0.1)",
+      "config.chart.borderRadius": "{top:0,right:8,bottom:8,left:0}",
+      "config.legend.show": true,
+      "config.label.show": true,
+      "config.label.colorInherit": true,
+      "config.label.position": "outside",
+      "config.grid.show": false,
+      "config.tooltip.show": true,
+      "config.xAxis.max": 20
+    }
+  },
+  "business_scenarios": [
+    "横向多维对比：小区数 vs 基站数（同维度多系列）",
+    "运营商网络制式对比（2G/3G/4G/5G）",
+    "运维监控：各类型设备数量横向条形",
+    "指标排名 Top10（单系列）",
+    "部门业绩横向对比（单系列）",
+    "库存数量预警（横向条形 + 渐变色）",
+    "下钻详情：点击柱子弹出 Modal/Drawer 显示明细"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡消费独立 dataSource，可与本图表并列展示同主题数据" },
+      { "material": "normal-label", "cost": "低", "reason": "标题标签独立无依赖" },
+      { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" },
+      { "material": "echarts-pie", "cost": "低", "reason": "同分类图表，数据格式可独立，按场景分用" }
+    ],
+    "incompatible_with": [],
+    "note": "echarts-bar 自身配置较完整，与常见配套物料组合代价均低"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.2,
+    "weighted_total": 4.2,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 5.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段（dimensionName/compareType/indicatorId/indicatorValue）业务化程度中等，fieldLabel 标注清晰（'维度名称(Y轴)'/'指标值(Y轴数据)'），但字段名偏技术。默认数据是 2G/4G/5G 运营商场景，业务贴合度尚可。",
+      "2. 场景覆盖度 4.0：单系列 + 多系列两种模式，可覆盖排行、对比、分组对比 3-4 种典型业务；缺少双向对比（推荐 echarts-pie 处理占比，echarts-bar 处理排名）。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组（图形/标签/X轴/Y轴/网格/图例/悬浮提示）+ 数据 + 交互三面板；7+ 个 x-reactions 联动开关；默认值丰富（width/height/colors/legend/label/grid/tooltip/xAxis.max 都有 default），开箱即用。",
+      "4. 数据契约清晰度 3.5：dataModel 字段命名业务化、有 rowProperties/format 描述、defaultValue 提供完整 mock。但有 2 处瑕疵：① oss-material.json.dataModel 字段是空字符串（与 dataModel.json 实际存在矛盾）；② dataModel 声明了 indicatorUnit 但组件未消费，且默认数据中多了 unit 字段也未声明。",
+      "5. 文档完整度 5.0：5+1 全套（README/schema/component-logic/data-model/common-tasks/gotchas）齐全 + doc/readme.md 自带用户文档，且 gotchas.md 详细记录了 8 个真实坑点（孤儿文件、id 派发无效、customColors 开关、rotation 度数等）。",
+      "6. 可组合性 4.0：与同分类 echarts-pie、数字卡、装饰边框均低代价组合；通用 width/height/title 暴露标准配置。少量扣分因 dataModel 私有字段（__rawData__）不通用，跨物料数据对接需要知道此约定。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 6,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 4,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.chart.color"],
+    "data_required": ["dimensionName", "indicatorValue"],
+    "optional_fields": {
+      "config": ["width", "height", "label.show", "legend.show", "tooltip.show"],
+      "data": ["compareType (多系列)", "indicatorId (联动用)", "indicatorUnit (单位，未消费)"]
+    },
+    "assumptions": [
+      "使用默认横向条形 + 默认渐变色（蓝→青/橙→黄）",
+      "无需下钻交互（或仅 Modal）",
+      "无多系列分组（单 dimensionName）",
+      "Y 轴文本使用默认白色"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 6, "description": "单系列 + 默认样式" },
+      "typical": { "config_items": 5, "data_fields": 3, "minutes": 16, "description": "多系列 + 自定义渐变 + 标签定制" },
+      "full": { "config_items": 12, "data_fields": 4, "minutes": 38, "description": "全部 6 个 FormCollapse 分组深度配置 + 下钻 + Modal" }
+    }
+  },
+  "_validation_notes": [
+    "gotchas.md § 1 提示 index.jsx 是孤儿文件（实现的是双轴图逻辑），已记入 basic.deprecated_files",
+    "gotchas.md § 4 提示 data.id 派发无效（dataModel 无 id 字段），已记入 capabilities.interactions.known_issue",
+    "gotchas.md § 6 提示 customColors=false 时用户色失效，已记入 visual_configs.chart.customColors 描述",
+    "data-model.md § 5.2 提示 indicatorUnit 字段已声明但未消费，已在 data_formats.fields 中标注",
+    "oss-material.json.dataModel 是空字符串但 dataModel.json 实际存在且被 schema.ts 顶部 import，行为上无影响但元信息有误"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "为剩余 10 个物料（7 docs + 3 high-freq）生成画像，跑通后即可批量"
+  }
+}

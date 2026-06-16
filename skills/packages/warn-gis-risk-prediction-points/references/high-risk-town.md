@@ -183,3 +183,42 @@ suggestion = `该区县物资储备有${row.bagNum}台卫星电话，${row.oilEn
 - 如果调整省级统计卡片挂载位置，需要检查 `attachmentRootGetter`。
 - 退服趋势图依赖 `dataTime`、`regionName`、`areaName/cityName`、`townName` 参数。
 - 卡片展开高度设置为 630px，容纳表格（300px）和趋势图（285px）加间距。
+
+## 已知问题与待办
+
+### API 替换计划：getHighRiskTownInfoCardApi → getEmergencyRiskTownshipsInfoApi
+
+**状态**：方案已确认可行，待执行
+
+**背景**：InfoCard.tsx 中省级统计卡片数据源 `getHighRiskTownInfoCardApi`（viewItemId: `high-risk-city-detail`）计划替换为 `getEmergencyRiskTownshipsInfoApi`（viewItemId: `emergency-risk-townships-info`）。
+
+**可行性分析**：
+
+| 对比项     | 旧 API                   | 新 API                                 |
+| ---------- | ------------------------ | -------------------------------------- |
+| 参数       | 无                       | `{ dataTime?: string }`（可选）        |
+| 返回值     | `rows[]`（数组）         | `{ rows, columns }`（对象）            |
+| 字段兼容性 | `bagNum`, `oilEngineNum` | `satellitePackages`, `mobileOilEngine` |
+
+**需要修改的文件**：
+
+1. **InfoCard.tsx**：
+    - import 从 `getHighRiskTownInfoCardApi` 改为 `getEmergencyRiskTownshipsInfoApi`
+    - `onSuccess` 中从 `res.rows` 取数据
+
+2. **presets.tsx**（`getTableDataSource` 中）：
+    - `row.bagNum` → `row.satellitePackages`
+    - `row.oilEngineNum` → `row.mobileOilEngine`
+
+**待确认问题**：
+
+- `dataTime` 来源未知：`RiskPredictionPoints` 组件链（`WarnGis` → `RiskPredictionPoints` → `HighRiskTownProvinceInfoCard`）目前没有 `dataTime` prop。但新 API 的 `dataTime` 是可选参数，不传也能正常调用。
+
+## 更新日志
+
+| 版本  | 日期       | 变更说明                                                                                             |
+| ----- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| 1.3.0 | 2026-06-16 | 增加"已知问题与待办"章节，记录 getHighRiskTownInfoCardApi 替换方案分析                               |
+| 1.2.0 | 2026-06-09 | 主文档增加 Presets 总体说明；各子模块 reference 文档增加交互、请求、响应、presets 详细说明           |
+| 1.1.0 | 2026-06-09 | 增加 `references/` 目录，将 Weather、WeatherWarning、WaterWarning、HighRiskTown 四个业务组件拆分描述 |
+| 1.0.0 | 2026-05-19 | 初始版本，包含天气、气象预警、水情预警、高风险乡镇功能                                               |

@@ -1,0 +1,208 @@
+{
+  "name": "alarm-window-card",
+  "title": "订阅告警流水窗",
+  "category": "告警",
+  "version": "develop",
+  "scanned_at": "2026-06-16",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json"
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "孙寰哲",
+    "deprecated_files": [],
+    "external_dependencies": [
+      "告警系统（告警项目配置节点）",
+      "配置中心（alarm-window.json）",
+      "用户权限服务（visualMaterialAlarmWndowCard）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "filterId/filterName/moduleId 过滤器列表",
+        "example": "[{ filterId: '-103918235', filterName: '统计服务-范围-双维度', moduleId: '1' }, ...]",
+        "match_pattern": "data[*].{filterId|filterName|moduleId}",
+        "fields": [
+          { "name": "filterId", "type": "String", "required": true, "description": "过滤器 ID（告警系统唯一标识）" },
+          { "name": "filterName", "type": "String", "required": true, "description": "过滤器名称（业务名称）" },
+          { "name": "moduleId", "type": "String", "required": true, "description": "过滤器 moduleId（模块标识）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "alarm_subscribe",
+        "trigger": "select_filter",
+        "config_field": "interactions.subscribe.{province_id, region_id, city_id, professional_type, int_id, network_type_top, network_type, org_severity}",
+        "sub_fields": [
+          "province_id（省份）",
+          "region_id（区域）",
+          "city_id（城市）",
+          "professional_type（专业类型）",
+          "int_id（专业 ID）",
+          "network_type_top / network_type（网络类型）",
+          "org_severity（严重级别）"
+        ],
+        "behavior": "支持订阅告警系统的 8 个核心维度参数（与告警项目相同的配置节点方式）"
+      },
+      {
+        "type": "theme_switch",
+        "trigger": "auto",
+        "config_field": "config.style.theme",
+        "sub_fields": ["light（浅色）", "darkblue（深蓝）", "dark（暗黑）"],
+        "behavior": "支持 3 种皮肤切换"
+      },
+      {
+        "type": "scale_adapt",
+        "trigger": "auto",
+        "config_field": "config.style.isScale",
+        "sub_fields": ["isScale（boolean）"],
+        "behavior": "启用后随背景画布缩放自适应大小（需画布开启缩放功能）"
+      },
+      {
+        "type": "button_auth",
+        "trigger": "config",
+        "config_field": "config.style.isAlarmAuth",
+        "sub_fields": ["isAlarmAuth", "user permission key: visualMaterialAlarmWndowCard"],
+        "behavior": "启用后按用户权限控制按钮可见性（需先配置 visualMaterialAlarmWndowCard 权限）"
+      },
+      {
+        "type": "remote_config",
+        "trigger": "init",
+        "config_field": "config.style.url",
+        "sub_fields": ["url（配置文件地址）"],
+        "behavior": "支持远程加载告警窗配置文件（默认客户端静态文件，可指向配置中心）"
+      }
+    ],
+    "visual_configs": {
+      "card": {
+        "style": {
+          "type": "object",
+          "description": "样式与功能配置",
+          "sub_fields": [
+            "title（显示标题）",
+            "theme（light / darkblue / dark）",
+            "url（远程配置地址）",
+            "isScale（是否缩放）",
+            "isAlarmAuth（是否启用按钮权限）"
+          ]
+        }
+      }
+    },
+    "default_values": {
+      "config.style.theme": "light",
+      "config.style.isScale": false,
+      "config.style.isAlarmAuth": false,
+      "config.title": "订阅告警流水窗"
+    }
+  },
+  "business_scenarios": [
+    "运维监控大屏（订阅告警流水的告警窗）",
+    "网络质量监控大屏（订阅网络告警 / 性能告警）",
+    "需要按省份/区域/专业过滤的告警订阅",
+    "多用户权限分级（按钮按权限显示/隐藏）",
+    "多皮肤适配（亮色 / 深蓝 / 暗黑，适应不同大屏主题）",
+    "远程配置告警窗（不同项目使用不同配置）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "告警系统 / 配置中心", "cost": "零", "reason": "本身就是告警系统的可视化大屏入口" },
+      { "material": "GlobalApi 提交（订阅参数）", "cost": "低", "reason": "8 个 subscribe 参数对接告警订阅 API" },
+      { "material": "权限服务", "cost": "零", "reason": "isAlarmAuth 启用后直接对接用户权限服务" }
+    ],
+    "incompatible_with": [
+      { "material": "其他表格类物料（同区域）", "cost": "高", "reason": "自渲染告警窗卡（包含独立 UI）" },
+      { "material": "未配置权限的项目", "cost": "高", "reason": "启用 isAlarmAuth 后需先配置 visualMaterialAlarmWndowCard 权限" }
+    ],
+    "note": "alarm-window-card 是'告警系统专项组件'，与告警项目深度耦合；业务专一（订阅告警流水），不适合做普通表格展示"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.1,
+    "weighted_total": 4.1,
+    "breakdown": {
+      "business_description": 5.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 4.0,
+      "doc_completeness": 3.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 5.0：标题'订阅告警流水窗'是纯业务化命名（一看就知道是订阅告警流水的窗），dataModel 的 filterId/filterName/moduleId 都是告警系统业务字段，业务描述力极高。",
+      "2. 场景覆盖度 4.0：覆盖告警订阅（8 个核心维度）+ 3 种皮肤 + 缩放自适应 + 权限控制 + 远程配置 5 类典型场景；不支持告警趋势图等扩展。",
+      "3. 配置完备度 3.5：仅 1 个 FormCollapse 分组（样式）+ 5 个配置项（title/theme/url/isScale/isAlarmAuth）；配置项数量较少，但 5 个都是关键业务开关；无字段联动。",
+      "4. 数据契约清晰度 4.0：dataModel 字段全部业务化（filterId/filterName/moduleId）；defaultValue 给出了'统计服务-范围-双维度'示例；缺完整的 8 个 subscribe 参数示例。",
+      "5. 文档完整度 3.5：doc/readme.md 应有告警窗配置截图 + 与告警项目对接说明；缺 schema/component-logic/data-model/common-tasks/gotchas 5+1 文档。",
+      "6. 可组合性 4.0：与告警系统 / 配置中心零代价（业务深度耦合）；与 GlobalApi 提交低代价（8 个 subscribe 参数）；与权限服务零代价（isAlarmAuth 启用后自动对接）。"
+    ],
+    "scored_at": "2026-06-16"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 7,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": [
+      "config.style.title（显示标题）",
+      "config.style.theme（皮肤：light/darkblue/dark）",
+      "config.style.url（远程配置文件地址，可选）"
+    ],
+    "data_required": [
+      "filterId（过滤器 ID）",
+      "filterName（过滤器名称）",
+      "moduleId（过滤器 moduleId）"
+    ],
+    "optional_fields": {
+      "config": [
+        "style.isScale（是否缩放，需画布支持）",
+        "style.isAlarmAuth（是否启用按钮权限，需先配置权限）"
+      ],
+      "interactions": [
+        "subscribe.province_id / region_id / city_id / professional_type / int_id / network_type_top / network_type / org_severity（8 个订阅参数）"
+      ]
+    },
+    "assumptions": [
+      "使用默认 light 皮肤",
+      "不启用缩放（isScale=false）",
+      "不启用按钮权限（isAlarmAuth=false）",
+      "使用客户端默认 alarm-window.json 配置文件"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 1, "data_fields": 3, "minutes": 8, "description": "默认 + 简单过滤器列表" },
+      "typical": { "config_items": 3, "data_fields": 3, "minutes": 15, "description": "皮肤切换 + 远程配置 + 8 个订阅参数" },
+      "full": { "config_items": 5, "data_fields": 3, "minutes": 25, "description": "完整样式 + 缩放 + 权限 + 完整订阅参数 + 远程配置" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 字段为空字符串（应填 './dataModel.json'）",
+    "config.style.url 默认值是空字符串，意味着默认使用客户端静态文件 static/components-config/alarm-window.json",
+    "isScale 启用需要画布支持缩放设置（background canvas scale），否则可能不生效",
+    "isAlarmAuth 启用需要先在用户权限服务配置 visualMaterialAlarmWndowCard 权限（注意拼写：Wndow 而非 Window，是原代码中存在的拼写错误）",
+    "interactions.subscribe 有 8 个核心参数（province_id/region_id/city_id/professional_type/int_id/network_type_top/network_type/org_severity），与告警项目配置节点完全一致",
+    "theme 字段支持 3 种：light / darkblue / dark，但 schema 中类型是 string，需手动输入正确枚举值（无 Select 控件）",
+    "本组件业务专一（告警系统），groupId=5（在 materials 分组下），category 实际应为'告警'而非'表格'"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "manual demo run",
+    "next_step": "本批 3 个表格类物料画像已完成，更新 catalog/roadmap/README"
+  }
+}
