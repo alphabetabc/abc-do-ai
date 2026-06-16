@@ -1,4 +1,11 @@
 {
   "name": "beehive-skills-workspace",
+<<<<<<< HEAD
   "private": true
+=======
+  "private": true,
+  "scripts": {
+    "changelog": "node ../scripts/update-changelog.mjs"
+  }
+>>>>>>> c8d8659 (feat: 123)
 }

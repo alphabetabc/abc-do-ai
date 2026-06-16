@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "commit": "node scripts/commit.mjs"
+    "commit": "node scripts/commit.mjs",
+    "commit:auto": "node scripts/commit.mjs --auto",
+    "changelog": "node ./scripts/update-changelog.mjs"
   },
   "keywords": [],
   "author": "",

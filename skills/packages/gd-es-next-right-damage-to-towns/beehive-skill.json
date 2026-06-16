@@ -1,0 +1,13 @@
+{
+  "contentHash": "5412eb39db72084786a92b37a269b43a6c778a9665aa4b5aeb340f4d00d297ff",
+  "files": [
+    "./api-reference.md",
+    "./config-reference.md",
+    "./exit-service-detail.md"
+  ],
+  "id": "gd-es-next-right-damage-to-towns",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

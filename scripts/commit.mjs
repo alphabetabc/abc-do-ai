@@ -24,6 +24,10 @@ import { execSync } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, basename, extname, dirname } from 'node:path';
+import { updateChangelog } from './update-changelog.mjs';
+
+const CHANGELOG_FILE = 'skills/CHANGELOG.md';
+const CHANGELOG_COMMIT_MSG = 'chore: update changelog';
 
 // ─── 工具函数 ───────────────────────────────────────────
 
@@ -122,7 +126,12 @@ function extractSkillName(filePath) {
  * 读取 skill 元信息（从 beehive-skill.json）
  */
 function readSkillMeta(skillName) {
-  const metaPath = resolve(process.cwd(), SKILLS_DIR, skillName, SKILL_META_FILE);
+  const metaPath = resolve(
+    process.cwd(),
+    SKILLS_DIR,
+    skillName,
+    SKILL_META_FILE
+  );
   if (existsSync(metaPath)) {
     try {
       return JSON.parse(readFileSync(metaPath, 'utf-8'));
@@ -166,7 +175,14 @@ function groupFilesBySkill(files) {
     const skillName = extractSkillName(f.file);
     if (skillName) {
       if (!groups[skillName]) {
-        groups[skillName] = { skillName, files: [], hasMeta: false, hasDoc: false, hasStorage: false, isNew: false };
+        groups[skillName] = {
+          skillName,
+          files: [],
+          hasMeta: false,
+          hasDoc: false,
+          hasStorage: false,
+          isNew: false,
+        };
       }
       groups[skillName].files.push(f);
       const base = basename(f.file);
@@ -327,7 +343,10 @@ function describeSkillChanges(group) {
   if (group.hasDoc) detail.push('文档');
   if (group.hasMeta) detail.push('配置');
   const otherFiles = group.files.filter(
-    (f) => basename(f.file) !== SKILL_DOC_FILE && basename(f.file) !== SKILL_META_FILE && !f.file.includes(STORAGE_DIR),
+    (f) =>
+      basename(f.file) !== SKILL_DOC_FILE &&
+      basename(f.file) !== SKILL_META_FILE &&
+      !f.file.includes(STORAGE_DIR)
   );
   if (otherFiles.length > 0) detail.push(`${otherFiles.length} 个其他文件`);
 
@@ -356,7 +375,9 @@ function ruleBasedGenerate(diff) {
 
   const hasSkillChanges = skillGroups.length > 0;
   const hasOnlySkillChanges = hasSkillChanges && nonSkillFiles.length === 0;
-  const hasStorageOnly = hasSkillChanges && skillGroups.every((g) => g.hasStorage && g.files.length === 1);
+  const hasStorageOnly =
+    hasSkillChanges &&
+    skillGroups.every((g) => g.hasStorage && g.files.length === 1);
 
   // 场景 1：纯 storage 发布（打包产物）
   if (hasStorageOnly && hasOnlySkillChanges) {
@@ -375,7 +396,11 @@ function ruleBasedGenerate(diff) {
 
   // 场景 2：新增 skill 模块
   const newSkills = skillGroups.filter((g) => g.isNew && g.hasDoc && g.hasMeta);
-  if (newSkills.length > 0 && nonSkillFiles.length === 0 && skillGroups.every((g) => g.isNew)) {
+  if (
+    newSkills.length > 0 &&
+    nonSkillFiles.length === 0 &&
+    skillGroups.every((g) => g.isNew)
+  ) {
     type = 'feat';
     const names = newSkills.map((g) => {
       const fm = readSkillFrontmatter(g.skillName);
@@ -385,7 +410,11 @@ function ruleBasedGenerate(diff) {
       messages.push(`新增 skill「${names[0]}」`);
       const fm = readSkillFrontmatter(newSkills[0].skillName);
       if (fm?.description) {
-        messages.push(fm.description.length > 60 ? fm.description.slice(0, 60) + '...' : fm.description);
+        messages.push(
+          fm.description.length > 60
+            ? fm.description.slice(0, 60) + '...'
+            : fm.description
+        );
       }
     } else {
       messages.push(`新增 ${names.length} 个 skill: ${names.join('、')}`);
@@ -429,42 +458,77 @@ function ruleBasedGenerate(diff) {
     messages.push('回滚之前的提交');
   }
   // docs
-  else if (allFiles.every((f) => /\.(md|mdx|txt|rst)$/.test(f)) || allFiles.every((f) => f.includes('doc') || f.includes('readme'))) {
+  else if (
+    allFiles.every((f) => /\.(md|mdx|txt|rst)$/.test(f)) ||
+    allFiles.every((f) => f.includes('doc') || f.includes('readme'))
+  ) {
     type = 'docs';
-    if (diff.newFiles.length > 0) messages.push(`新增文档: ${diff.newFiles.map((f) => basename(f)).join(', ')}`);
-    if (diff.modifiedFiles.length > 0) messages.push(`更新文档: ${diff.modifiedFiles.map((f) => basename(f)).join(', ')}`);
-    if (diff.deletedFiles.length > 0) messages.push(`删除文档: ${diff.deletedFiles.map((f) => basename(f)).join(', ')}`);
+    if (diff.newFiles.length > 0)
+      messages.push(
+        `新增文档: ${diff.newFiles.map((f) => basename(f)).join(', ')}`
+      );
+    if (diff.modifiedFiles.length > 0)
+      messages.push(
+        `更新文档: ${diff.modifiedFiles.map((f) => basename(f)).join(', ')}`
+      );
+    if (diff.deletedFiles.length > 0)
+      messages.push(
+        `删除文档: ${diff.deletedFiles.map((f) => basename(f)).join(', ')}`
+      );
   }
   // test
-  else if (allFiles.every((f) => /test|spec|__test__|\.test\.|\.spec\./.test(f))) {
+  else if (
+    allFiles.every((f) => /test|spec|__test__|\.test\.|\.spec\./.test(f))
+  ) {
     type = 'test';
     messages.push('更新测试用例');
   }
   // ci
-  else if (allFiles.every((f) => /ci|github|gitlab|\.yml$|\.yaml$|dockerfile|jenkins/.test(f))) {
+  else if (
+    allFiles.every((f) =>
+      /ci|github|gitlab|\.yml$|\.yaml$|dockerfile|jenkins/.test(f)
+    )
+  ) {
     type = 'ci';
     messages.push('更新 CI/CD 配置');
   }
   // build
-  else if (allFiles.every((f) => /package\.json|pnpm-lock|tsconfig|webpack|vite|rollup|build/.test(f))) {
+  else if (
+    allFiles.every((f) =>
+      /package\.json|pnpm-lock|tsconfig|webpack|vite|rollup|build/.test(f)
+    )
+  ) {
     type = 'build';
     messages.push('更新项目配置');
   }
   // style
-  else if (allFiles.every((f) => /\.(css|scss|less|json|prettierrc|eslintrc)$/.test(f))) {
+  else if (
+    allFiles.every((f) => /\.(css|scss|less|json|prettierrc|eslintrc)$/.test(f))
+  ) {
     type = 'style';
     messages.push('调整代码格式');
   }
   // 有新增文件
-  else if (diff.newFiles.length > 0 && diff.stats.insertions > diff.stats.deletions * 2) {
+  else if (
+    diff.newFiles.length > 0 &&
+    diff.stats.insertions > diff.stats.deletions * 2
+  ) {
     type = 'feat';
     const newNames = diff.newFiles.map((f) => basename(f, extname(f)));
-    messages.push(newNames.length <= 3 ? `新增 ${newNames.join(', ')}` : `新增 ${newNames.length} 个文件`);
+    messages.push(
+      newNames.length <= 3
+        ? `新增 ${newNames.join(', ')}`
+        : `新增 ${newNames.length} 个文件`
+    );
   }
   // 修改为主
   else if (diff.modifiedFiles.length > 0) {
     const modNames = diff.modifiedFiles.map((f) => basename(f, extname(f)));
-    messages.push(modNames.length <= 3 ? `更新 ${modNames.join(', ')}` : `更新 ${modNames.length} 个文件`);
+    messages.push(
+      modNames.length <= 3
+        ? `更新 ${modNames.join(', ')}`
+        : `更新 ${modNames.length} 个文件`
+    );
   }
 
   if (messages.length === 0) {
@@ -551,7 +615,9 @@ async function aiGenerate(diff) {
 
     if (!response.ok) {
       const errText = await response.text();
-      printWarn(`AI API 返回错误 (${response.status}): ${errText.slice(0, 200)}`);
+      printWarn(
+        `AI API 返回错误 (${response.status}): ${errText.slice(0, 200)}`
+      );
       return null;
     }
 
@@ -575,9 +641,229 @@ async function aiGenerate(diff) {
   }
 }
 
+// ─── CLI / 自动提交 ───────────────────────────────────────
+
+function parseCliArgs(argv) {
+  return {
+    auto: argv.includes('--auto') || argv.includes('-y'),
+    skipChangelog: argv.includes('--no-changelog'),
+    push: argv.includes('--push'),
+  };
+}
+
+function extractCommitSubject(commitMsg) {
+  const match = commitMsg.match(/^(\w+)(?:\([^)]*\))?:\s*(.+)$/);
+  return match ? match[2] : commitMsg;
+}
+
+function ensureGitRepo() {
+  try {
+    exec('git rev-parse --is-inside-work-tree');
+  } catch {
+    printError('当前目录不是 Git 仓库');
+    process.exit(1);
+  }
+}
+
+function stageChangesExcludingChangelog() {
+  let stagedFiles;
+  try {
+    stagedFiles = exec('git diff --cached --name-only');
+  } catch {
+    stagedFiles = '';
+  }
+
+  if (!stagedFiles) {
+    printInfo('暂存区为空，自动执行 git add .');
+    exec('git add .');
+  }
+
+  try {
+    exec(`git restore --staged -- ${CHANGELOG_FILE}`);
+  } catch {
+    // changelog 未暂存时可忽略
+  }
+
+  try {
+    return exec('git diff --cached --name-only');
+  } catch {
+    return '';
+  }
+}
+
+function performCommit(commitMsg) {
+  const escapedMsg = commitMsg.replace(/"/g, '\\"');
+  exec(`git commit -m "${escapedMsg}"`);
+}
+
+async function syncChangelog(commitMsg) {
+  const title = extractCommitSubject(commitMsg);
+  const result = await updateChangelog({
+    message: title,
+    rootDir: process.cwd(),
+  });
+
+  if (!result.updated) {
+    printInfo('Changelog 无新增内容，跳过');
+    return false;
+  }
+
+  printSuccess(`Changelog 已更新 (${result.commitCount} 条提交)`);
+  exec(`git add -- ${CHANGELOG_FILE}`);
+  performCommit(CHANGELOG_COMMIT_MSG);
+  return true;
+}
+
+async function pushCurrentBranch() {
+  try {
+    printInfo('正在推送...');
+    let branch;
+    try {
+      branch = exec('git branch --show-current');
+    } catch {
+      branch = exec('git rev-parse --abbrev-ref HEAD');
+    }
+    exec(`git push origin ${branch}`);
+    printSuccess(`已推送到 origin/${branch}`);
+  } catch (e) {
+    printError(`推送失败: ${e.message}`);
+    process.exit(1);
+  }
+}
+
+function printDiffSummary(diff) {
+  println(`\n\x1b[1m本次变更:\x1b[0m`);
+  println('');
+
+  if (diff.skillGroups.length > 0) {
+    for (const g of diff.skillGroups) {
+      const meta = readSkillMeta(g.skillName);
+      const fm = readSkillFrontmatter(g.skillName);
+      const label = fm?.name || g.skillName;
+      const ver = meta?.version ? ` \x1b[90mv${meta.version}\x1b[0m` : '';
+      let action;
+      if (g.hasStorage) {
+        action = '\x1b[35m发布\x1b[0m';
+      } else if (g.isNew) {
+        action = '\x1b[32m新增\x1b[0m';
+      } else {
+        action = '\x1b[33m更新\x1b[0m';
+      }
+      const details = [];
+      if (g.hasDoc) details.push('文档');
+      if (g.hasMeta) details.push('配置');
+      const otherCount = g.files.filter(
+        (f) =>
+          basename(f.file) !== SKILL_DOC_FILE &&
+          basename(f.file) !== SKILL_META_FILE &&
+          !f.file.includes(STORAGE_DIR)
+      ).length;
+      if (otherCount > 0) details.push(`其他 ${otherCount} 个文件`);
+      const detailStr =
+        details.length > 0 && !g.hasStorage
+          ? ` \x1b[90m(${details.join('、')})\x1b[0m`
+          : '';
+      println(`  ${action} skill「\x1b[1m${label}\x1b[0m」${ver}${detailStr}`);
+    }
+    if (diff.nonSkillFiles.length > 0) {
+      println('');
+      println(`  \x1b[90m其他文件:\x1b[0m`);
+      for (const f of diff.nonSkillFiles) {
+        const statusColors = {
+          A: '\x1b[32m新增\x1b[0m',
+          M: '\x1b[33m修改\x1b[0m',
+          D: '\x1b[31m删除\x1b[0m',
+          R: '\x1b[36m重命名\x1b[0m',
+        };
+        const s = statusColors[f.status] || f.status;
+        println(`    ${s} ${f.file}`);
+      }
+    }
+  } else {
+    const added = diff.files.filter((f) => f.status === 'A');
+    const modified = diff.files.filter((f) => f.status === 'M');
+    const deleted = diff.files.filter((f) => f.status === 'D');
+    const renamed = diff.files.filter((f) => f.status === 'R');
+
+    if (added.length > 0) {
+      println(
+        `  \x1b[32m新增\x1b[0m ${added.map((f) => basename(f.file)).join('、')}`
+      );
+    }
+    if (modified.length > 0) {
+      println(
+        `  \x1b[33m修改\x1b[0m ${modified.map((f) => basename(f.file)).join('、')}`
+      );
+    }
+    if (deleted.length > 0) {
+      println(
+        `  \x1b[31m删除\x1b[0m ${deleted.map((f) => basename(f.file)).join('、')}`
+      );
+    }
+    if (renamed.length > 0) {
+      println(
+        `  \x1b[36m重命名\x1b[0m ${renamed.map((f) => basename(f.file)).join('、')}`
+      );
+    }
+  }
+  println('');
+}
+
+async function runAutoCommit(options) {
+  println('\n\x1b[1m🤖 Git Auto Commit\x1b[0m\n');
+  ensureGitRepo();
+
+  const stagedFiles = stageChangesExcludingChangelog();
+  if (!stagedFiles) {
+    printError('没有任何可提交的变更');
+    process.exit(1);
+  }
+
+  printInfo('正在分析变更...');
+  const diff = analyzeDiff();
+  printDiffSummary(diff);
+
+  const generated = ruleBasedGenerate(diff);
+  const commitScope = inferScope(diff);
+  const scopeStr = commitScope ? `(${commitScope})` : '';
+  const commitMsg = `${generated.type}${scopeStr}: ${generated.message}`;
+
+  println(`\x1b[1m提交信息:\x1b[0m \x1b[33m${commitMsg}\x1b[0m`);
+
+  try {
+    performCommit(commitMsg);
+    printSuccess(`提交成功: ${commitMsg}`);
+    println(`  ${exec('git log --oneline -1')}`);
+  } catch (e) {
+    printError(`提交失败: ${e.message}`);
+    process.exit(1);
+  }
+
+  if (!options.skipChangelog) {
+    try {
+      await syncChangelog(commitMsg);
+    } catch (e) {
+      printError(`Changelog 更新失败: ${e.message}`);
+      process.exit(1);
+    }
+  }
+
+  if (options.push) {
+    await pushCurrentBranch();
+  }
+
+  println('\n\x1b[1m🎉 完成！\x1b[0m\n');
+}
+
 // ─── 主流程 ─────────────────────────────────────────────
 
 async function main() {
+  const options = parseCliArgs(process.argv);
+  if (options.auto) {
+    await runAutoCommit(options);
+    return;
+  }
+
   println('\n\x1b[1m🤖 Git Smart Commit Helper\x1b[0m\n');
 
   // 1. 检查 Git 仓库
@@ -640,17 +926,28 @@ async function main() {
       if (g.hasDoc) details.push('文档');
       if (g.hasMeta) details.push('配置');
       const otherCount = g.files.filter(
-        (f) => basename(f.file) !== SKILL_DOC_FILE && basename(f.file) !== SKILL_META_FILE && !f.file.includes(STORAGE_DIR),
+        (f) =>
+          basename(f.file) !== SKILL_DOC_FILE &&
+          basename(f.file) !== SKILL_META_FILE &&
+          !f.file.includes(STORAGE_DIR)
       ).length;
       if (otherCount > 0) details.push(`其他 ${otherCount} 个文件`);
-      const detailStr = details.length > 0 && !g.hasStorage ? ` \x1b[90m(${details.join('、')})\x1b[0m` : '';
+      const detailStr =
+        details.length > 0 && !g.hasStorage
+          ? ` \x1b[90m(${details.join('、')})\x1b[0m`
+          : '';
       println(`  ${action} skill「\x1b[1m${label}\x1b[0m」${ver}${detailStr}`);
     }
     if (diff.nonSkillFiles.length > 0) {
       println('');
       println(`  \x1b[90m其他文件:\x1b[0m`);
       for (const f of diff.nonSkillFiles) {
-        const statusColors = { A: '\x1b[32m新增\x1b[0m', M: '\x1b[33m修改\x1b[0m', D: '\x1b[31m删除\x1b[0m', R: '\x1b[36m重命名\x1b[0m' };
+        const statusColors = {
+          A: '\x1b[32m新增\x1b[0m',
+          M: '\x1b[33m修改\x1b[0m',
+          D: '\x1b[31m删除\x1b[0m',
+          R: '\x1b[36m重命名\x1b[0m',
+        };
         const s = statusColors[f.status] || f.status;
         println(`    ${s} ${f.file}`);
       }
@@ -663,16 +960,24 @@ async function main() {
     const renamed = diff.files.filter((f) => f.status === 'R');
 
     if (added.length > 0) {
-      println(`  \x1b[32m新增\x1b[0m ${added.map((f) => basename(f.file)).join('、')}`);
+      println(
+        `  \x1b[32m新增\x1b[0m ${added.map((f) => basename(f.file)).join('、')}`
+      );
     }
     if (modified.length > 0) {
-      println(`  \x1b[33m修改\x1b[0m ${modified.map((f) => basename(f.file)).join('、')}`);
+      println(
+        `  \x1b[33m修改\x1b[0m ${modified.map((f) => basename(f.file)).join('、')}`
+      );
     }
     if (deleted.length > 0) {
-      println(`  \x1b[31m删除\x1b[0m ${deleted.map((f) => basename(f.file)).join('、')}`);
+      println(
+        `  \x1b[31m删除\x1b[0m ${deleted.map((f) => basename(f.file)).join('、')}`
+      );
     }
     if (renamed.length > 0) {
-      println(`  \x1b[36m重命名\x1b[0m ${renamed.map((f) => basename(f.file)).join('、')}`);
+      println(
+        `  \x1b[36m重命名\x1b[0m ${renamed.map((f) => basename(f.file)).join('、')}`
+      );
     }
   }
   println('');
@@ -684,7 +989,10 @@ async function main() {
   if (hasAiConfig) {
     modeOptions.push({ label: '🤖 AI 生成（智能分析 diff）', value: 'ai' });
   } else {
-    modeOptions.push({ label: '🤖 AI 生成（需配置 .commit-ai.json）', value: 'ai' });
+    modeOptions.push({
+      label: '🤖 AI 生成（需配置 .commit-ai.json）',
+      value: 'ai',
+    });
   }
   modeOptions.push({ label: '✏️  手动输入', value: 'manual' });
 
@@ -747,10 +1055,15 @@ async function main() {
     if (action.value === 'edit') {
       // 允许分别编辑 type / scope / message
       const typeObj = COMMIT_TYPES.find((t) => t.value === commitType);
-      const newType = await select(`提交类型 (当前: ${commitType}):`, COMMIT_TYPES);
+      const newType = await select(
+        `提交类型 (当前: ${commitType}):`,
+        COMMIT_TYPES
+      );
       commitType = newType.value;
 
-      const newScope = await ask(`scope (当前: ${commitScope || '无'}，回车保持): `);
+      const newScope = await ask(
+        `scope (当前: ${commitScope || '无'}，回车保持): `
+      );
       if (newScope) commitScope = newScope;
 
       const newMsg = await ask(`提交信息 (当前: ${commitMessage}，回车保持): `);
@@ -765,9 +1078,13 @@ async function main() {
       const regenerated = ruleBasedGenerate(diff);
       commitMessage = regenerated.message;
       commitScope = inferScope(diff);
-      println(`  新提交信息: \x1b[33m${commitType}(${commitScope}): ${commitMessage}\x1b[0m`);
+      println(
+        `  新提交信息: \x1b[33m${commitType}(${commitScope}): ${commitMessage}\x1b[0m`
+      );
 
-      const editMsg = await ask('需要修改提交信息吗？(回车跳过 / 输入新信息): ');
+      const editMsg = await ask(
+        '需要修改提交信息吗？(回车跳过 / 输入新信息): '
+      );
       if (editMsg) commitMessage = editMsg;
     }
   } else {
