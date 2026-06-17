@@ -1,0 +1,144 @@
+{
+  "name": "oss-chart-plots-series-bar",
+  "title": "分组条形图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 13,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssBarPlotChart)",
+    "uses_data_status": "DataStatus（多系列检查）",
+    "unique_features": [
+      "isGroup=true 多系列分组",
+      "DataStatus 单系列时报错（要求多系列）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多系列分组条形（Y维度 + X指标 + s系列）",
+        "example": "[{ y: '北京', x: 100, s: 'A产品' }, { y: '北京', x: 80, s: 'B产品' }, ...]",
+        "match_pattern": "data[*].{y, x, s}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "Y轴类目" },
+          { "name": "compareType", "type": "String", "required": true, "description": "多系列分组键" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "X轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "xAxis": "PLOTS_SCHEMA.AXIS_IND",
+      "yAxis": "PLOTS_SCHEMA.AXIS_DIM（去掉 gridLine）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "style": "PLOTS_SCHEMA.STYLE_STROKE.bar (柱子样式)",
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "分组条形图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "多产品对比：多个产品/服务在不同地区/部门的对比",
+    "时间序列分组：多产品销售额随季度变化",
+    "多渠道对比：线上/线下/批发/零售多渠道",
+    "多部门业绩：各部门/团队业绩对比",
+    "多维度交叉：地区 × 产品类别 交叉对比"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/bar", "cost": "低", "reason": "单系列变多系列分组" },
+      { "material": "oss-chart-plots/stack-bar", "cost": "低", "reason": "分组 vs 堆叠切换" },
+      { "material": "oss-chart-plots/series-column", "cost": "中", "reason": "横竖版多系列分组" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 oss-chart-plots/bar 的多系列分组版本（isGroup=true）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 4 字段业务化（dimension_name/compareType/indicator_value/indicator_unit），与 series-column 物料同构。",
+      "2. 场景覆盖度 3.5：覆盖多产品/多渠道/多部门/多维度交叉等典型场景。",
+      "3. 配置完备度 3.5：基础配置齐全 + 多系列分组（isGroup=true）；比 bar 物料多了多系列能力，比 stack-bar 多了分组。",
+      "4. 数据契约清晰度 3.0：dataModel 字段清晰但 ① dataType 错标；② DataStatus 单系列时报错（line 60-61）需保证多系列。",
+      "5. 文档完整度 2.0：无 doc/ 目录。",
+      "6. 可组合性 4.0：与 bar / stack-bar / series-column 物料数据格式完全同构。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 7,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.fill"],
+    "data_required": ["dimension_name", "indicator_value", "compareType"],
+    "optional_fields": {
+      "config": ["width", "height", "valueLabel.show", "tooltip.show"],
+      "data": ["indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "至少 2 个系列（否则 DataStatus 报错）",
+      "使用默认色",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 3, "minutes": 7, "description": "多系列分组条形 + 默认样式" },
+      "typical": { "config_items": 5, "data_fields": 3, "minutes": 15, "description": "自定义柱色 + 标签" },
+      "full": { "config_items": 9, "data_fields": 3, "minutes": 28, "description": "完整样式 + 标签 + 悬浮提示 + 图例" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（indicator_value 应为 Number）",
+    "DataStatus 单系列时报错（line 60-61）需保证多系列",
+    "isMultiSeries 判断逻辑 `props.dataSource.length === 0` 视为 true（与 line 物料类似）",
+    "dataModel 中 title_text/title_value 字段在 defaultValue 演示但代码未消费",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 series-column 画像"
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "name": "nine-grid",
+  "title": "文字标签（九宫格）",
+  "category": "容器/布局",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中高",
+    "author": "郝营营",
+    "groupId": 4,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / defineInteractionSchema（@Common）",
+    "uses_hoc": "无（oss-ui Card/Carousel/Tooltip/DataStatus + Row/Col）",
+    "plot_library": "oss-ui (antd)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "分组列表式（title + titleId + belongTo + content[].{name,value,unit}）",
+        "example": "[{title:'DZM',titleId:1,belongTo:[1,2],content:[{name:'vCentrex AS',value:1,unit:'台'}]}]",
+        "match_pattern": "data[*].{title, titleId, belongTo, content[].{name, value, unit}}",
+        "supports_multi_series": true,
+        "fields": [
+          { "name": "id", "type": "STRING", "required": false, "description": "指标ID" },
+          { "name": "name", "type": "STRING", "required": false, "description": "指标名" },
+          { "name": "value", "type": "INTEGER", "required": false, "description": "指标值" },
+          { "name": "unit", "type": "STRING", "required": false, "description": "指标单位" },
+          { "name": "belongTo", "type": "STRING", "required": false, "description": "指标归属（如省份ID）" },
+          { "name": "groupId", "type": "STRING", "required": false, "description": "分组ID" },
+          { "name": "groupName", "type": "STRING", "required": false, "description": "分组名" }
+        ],
+        "match_logic": "dataType==='json' 直接使用 dataSource；其他类型则按 groupName 分组聚合（getFieldValue 大小写不敏感）"
+      }
+    ],
+    "interactions": [
+      { "type": "cardClick", "trigger": "click", "payload": "card.data {title, titleId, belongTo, content, groupParam1/2/3}", "note": "onContentClick → clickEvent Modal/Drawer 或 dispatchInteraction（groupId→titleId, belongTo, groupParam1/2/3）" },
+      { "type": "tooltipHover", "trigger": "hover", "payload": "card.content[]", "note": "Tooltip 弹窗显示完整 content 列表（lineNum 行/屏）" },
+      { "type": "carouselAutoplay", "trigger": "interval", "payload": "n/a", "note": "Carousel autoplay 滚动展示（默认每 2 个一屏）" }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT + transform.rotate + opacity + background",
+      "title": "getCompTitle",
+      "common (全局配置)": {
+        "rowsNum": "NumberPicker 行数（默认 3）",
+        "colNum": "NumberPicker 列数（默认 3）",
+        "rowSpace": "NumberPicker 行间距（默认 10）",
+        "colSpace": "NumberPicker 列间距（默认 10）",
+        "borderRadius": "NumberPicker 圆角半径",
+        "bgColor": "ColorPicker 背景颜色",
+        "border": "Border 边框样式",
+        "fontStyle": "VisualTextStyle 标题文本样式",
+        "valueLabel": "VisualTextStyle 内容文本样式"
+      },
+      "popup (弹窗与滚动)": {
+        "bubble": "Switch 弹窗显隐",
+        "autoplay": "Switch 滚动开关",
+        "bgColor": "ColorPicker 弹窗颜色",
+        "bubbleHeight": "NumberPicker 弹窗高度",
+        "opacity": "NumberPicker 弹窗透明度（0-1, step 0.1）",
+        "lineNum": "NumberPicker 滚动内容行数（1-9, step 1）",
+        "textStyle": "VisualTextStyle 弹窗文本样式"
+      }
+    },
+    "default_values": {
+      "config.title": "文字标签",
+      "config.width": 1106,
+      "config.height": 350,
+      "config.common.rowsNum": 3,
+      "config.common.colNum": 3,
+      "config.common.rowSpace": 10,
+      "config.common.colSpace": 10,
+      "config.common.borderRadius": 0,
+      "config.common.bgColor": "#022f4d",
+      "config.common.fontStyle": "{ fontSize: 14, color: '#FFF', fontWeight: 'bold', fontFamily: 'Microsoft YaHei' }",
+      "config.common.valueLabel": "{ fontSize: 12, color: '#FFF', fontWeight: 'normal', fontFamily: 'Microsoft YaHei' }",
+      "config.popup.bubble": true,
+      "config.popup.autoplay": true,
+      "config.popup.bgColor": "#011a2a",
+      "config.popup.opacity": 0.9,
+      "config.popup.lineNum": 2,
+      "dataConfig.json": "[{title:'DZM',titleId:1,belongTo:[1,2],content:[{name,value,unit}...]}, ...] 9 个分组（NFV 信创场景）"
+    }
+  },
+  "business_scenarios": [
+    "广东 NFV 信创大屏：9 类核心网元（vCentrex AS/CG/vSCP AS/vIPSMGW/CAT AS/vDNS/vMME/vSAEGWC/vCG/vPCRF/PCF）资源统计九宫格",
+    "机房/资源池监控：9 区域资源数对比",
+    "应用系统清单：9 个应用 + 详情弹窗（Tooltip + Click）",
+    "省份/城市对比：多城市数据九宫格",
+    "可缩放卡片网格：rowsNum×colNum 自定义网格（不只是 3x3）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "ellipse-layout-indicator", "cost": "中", "reason": "网格布局 vs 椭圆布局风格选择" },
+      { "material": "scene-over-view-hlj", "cost": "中", "reason": "场景概览作为父级 + 九宫格作为子区域" },
+      { "material": "drilldown-table", "cost": "低", "reason": "九宫格卡片可下钻到表格" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰" }
+    ],
+    "incompatible_with": [],
+    "note": "基于 oss-ui Card + Row/Col 的网格布局，支持 Tooltip 弹窗 + Carousel 滚动 + clickEvent 下钻"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 7 字段业务化清晰（id/name/value/unit/belongTo/groupId/groupName），但 value 标 INTEGER 实际支持任意类型；groupName 字段在 json 模式下是直接子属性。",
+      "2. 场景覆盖度 3.5：rowsNum×colNum 自由配置网格（3x3 是默认），支持 Tooltip 弹窗 + Carousel 滚动 + clickEvent 下钻，场景丰富。",
+      "3. 配置完备度 4.0：2 个 FormCollapse 分组（全局配置/弹窗滚动）+ x-reactions 联动（modalSet/drawerSet）；配置粒度细。",
+      "4. 数据契约清晰度 3.0：dataModel 7 字段但 json 模式实际只用 title/titleId/belongTo/content[*].name/value/unit；其他字段仅供非 json 模式分组聚合使用。",
+      "5. 文档完整度 3.0：doc/CHANGELOG.md + doc/README.md + 6 张图片，但无 5+1 文档。",
+      "6. 可组合性 4.0：与椭圆布局/场景概览/下钻表格均可组合；可作为子区域嵌入任何大屏。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 18,
+    "breakdown": {
+      "config_minutes": 9,
+      "data_minutes": 9,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.common", "config.popup"],
+    "data_required": ["title", "titleId", "belongTo", "content[].name/value/unit"],
+    "optional_fields": {
+      "config": ["transform.rotate", "opacity", "interactions.configurableEvent.clickEvent"],
+      "data": ["groupId", "groupName", "groupParam1/2/3", "id", "name", "unit"]
+    },
+    "assumptions": [
+      "dataType==='json' 时 title/titleId/belongTo/content[*] 必填",
+      "dataType!=='json' 时 groupName/groupId/content[*] 必填（自动按 groupName 分组）",
+      "rowsNum × colNum 决定网格数量，data 数量应 ≤ rowsNum × colNum"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 4, "minutes": 18, "description": "3x3 网格 + 默认样式 + 弹窗+滚动" },
+      "typical": { "config_items": 10, "data_fields": 4, "minutes": 35, "description": "3x3 网格 + 自定义行/列间距 + 边框 + 字体" },
+      "full": { "config_items": 20, "data_fields": 7, "minutes": 60, "description": "完整 2 FormCollapse + 下钻弹窗配置 + 滚动定制 + 7 字段全提供" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在",
+    "dataModel 中 dataType 大小写不一致（'STRING' vs 'String'）",
+    "dataModel 7 字段中 groupName 字段在 json 模式下不消费（仅非 json 模式分组）",
+    "tooltipVisible 函数对 one.map 渲染有冗余（无空值守卫，isEmpty 已处理）",
+    "点击事件同时支持 clickEvent（Modal/Drawer）和默认 dispatchInteraction（groupId→titleId 等映射）",
+    "css .9% + rowGap* (rowsNum-1) 算法处理间距边界"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 scene-over-view-hlj / telescoping-board"
+  }
+}

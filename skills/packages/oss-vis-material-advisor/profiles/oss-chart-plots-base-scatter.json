@@ -1,0 +1,147 @@
+{
+  "name": "oss-chart-plots-base-scatter",
+  "title": "基础散点图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 20,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssScatterPlotChart)",
+    "uses_common_constants": "DEFAULT_COLORS from @Common/constants"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多系列散点（X类目 + Y数值 + z标签 + s系列）",
+        "example": "[{ x: 'A', y: 80, z: '优秀', s: '组1' }, { x: 'B', y: 60, z: '中等', s: '组2' }, ...]",
+        "match_pattern": "data[*].{x, y, z, s}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "compareType", "type": "String", "required": false, "description": "多系列分组键" },
+          { "name": "indicator_label", "type": "String", "required": false, "description": "数据点标签（z 字段）" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（dataConverter 注释了 u 字段未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND（含 min/max range）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL（formatter 返回 z 标签）",
+      "style": {
+        "customColors": "[{ colorField: string, color: string }] - 当 colorField 存在时按 s 字段匹配颜色",
+        "shape": "Select (circle/square/diamond/triangle)",
+        "size": "NumberPicker (点大小)",
+        "fillOpacity": "SliderWithNumber",
+        "stroke": { "color": "ColorPicker", "width": "NumberPicker" }
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP（formatter 返回 z/y 组合）",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "基础散点图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "数据分布：用户群体多维分布（身高体重/收入支出）",
+    "多维分类对比：按系列分组的多组数据点（如不同产品的销量-利润分布）",
+    "异常点检测：识别数据中的离群点",
+    "相关性分析：两个变量的相关性可视化",
+    "分类标签展示：每个点带 z 标签（indicator_label），如标注数据点名称"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/radar", "cost": "中", "reason": "多维数据，散点 vs 雷达视角" },
+      { "material": "oss-chart-plots/line", "cost": "低", "reason": "X/Y 轴同构" },
+      { "material": "normal-label", "cost": "低", "reason": "数据点说明" }
+    ],
+    "incompatible_with": [],
+    "note": "dataModel 字段比其他 oss-chart-plots 物料多 1 个 indicator_label（z 字段）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.5,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段业务化（4 个字段含 indicator_label 用于点标签），最完整；dataType 错标是常见问题。",
+      "2. 场景覆盖度 4.0：支持单系列 + 多系列 + 自定义颜色按 s 字段映射 + 数据点形状/大小/描边全覆盖；典型多维分析场景。",
+      "3. 配置完备度 3.5：基础配置齐全 + customColors 支持 colorField 按 s 匹配 + shape/size/fillOpacity 完整；但比 area/line 缺少 point 专属分组（point 散点就是主体）。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰（4 个字段各有明确用途），但 ① dataType 错标；② indicator_unit 字段在 dataConverter 注释了 u 字段（line 168）未消费。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/readme.md 存在 + doc/images 5 张示例图。",
+      "6. 可组合性 3.5：与其他同系列物料数据格式略不同（多 1 个 indicator_label/z 字段），跨物料对接需适配。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 8,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 6,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.shape"],
+    "data_required": ["dimension_name", "indicator_value", "indicator_label"],
+    "optional_fields": {
+      "config": ["width", "height", "style.customColors", "style.size", "tooltip.show"],
+      "data": ["compareType (多系列)", "indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "使用默认形状（circle）",
+      "无多系列（单系列）",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 3, "minutes": 8, "description": "单系列散点 + 默认样式" },
+      "typical": { "config_items": 5, "data_fields": 4, "minutes": 18, "description": "多系列散点 + 自定义色 + 标签" },
+      "full": { "config_items": 9, "data_fields": 4, "minutes": 30, "description": "完整样式 + 多系列 + 形状 + 描边 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "dataConverter 注释了 u 字段（indicator_unit）映射（line 168），schema 声明但代码未消费",
+    "dataType 错标（indicator_value 应为 Number）",
+    "dataModel 字段（dimension_name/compareType/indicator_label/indicator_value/indicator_unit）全部用 snake_case，与 oss-chart-plots 其他物料混用 snake/camel 风格不统一",
+    "schema.ts 中 baseInfo 注释区未清理（line 30-56）",
+    "oss-material.json.dataModel 是空字符串",
+    "代码内 hasStyleStyleFillOpacity 字段名错写（line 28 `$$_do_not_use_this_property_color_$$`），应是开发期调试用"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 histogram 画像"
+  }
+}

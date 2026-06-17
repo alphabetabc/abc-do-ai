@@ -1,0 +1,180 @@
+{
+  "name": "oss-chart-plots-series-area",
+  "title": "多系列面积",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./schema-parts/indicatorPointer.ts"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "谢名伟",
+    "groupId": 16,
+    "uses_common_schema": "PLOTS_SCHEMA（部分）",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssAreaPlotChart + G2)",
+    "uses_interaction_hook": "useInteraction + usePersistActions（点击事件）",
+    "uses_data_status": "DataStatus（空数据/单系列保护）",
+    "uses_utils": "useMemorizedObjectDebounce + seriesColors + data + gradientColor + DEFAULT_COLORS",
+    "uses_indicator_pointer": "indicatorPointer (按 x 值匹配自定义样式)",
+    "uses_schema_parts": "schema-parts/indicatorPointer.ts（拆分的 schema 段）",
+    "unique_features": [
+      "indicatorPointer 按 x 值匹配自定义样式（颜色/标签/线/线文本）",
+      "isStack 堆叠面积图 + isPercent 百分比堆叠",
+      "annotations 自定义标注（线/文本+背景）",
+      "X/Y 轴浮动文字（textX/textY 浮动 div）",
+      "DataStatus 数据状态保护（单系列时报错）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多系列面积（X维度 + Y指标 + s系列）",
+        "example": "[{ x: 'Q1', y: 100, s: '产品A' }, { x: 'Q1', y: 80, s: '产品B' }, ...]",
+        "match_pattern": "data[*].{x, y, s}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "compareType", "type": "String", "required": true, "description": "多系列分组键" },
+          { "name": "indicator_id", "type": "String", "required": false, "description": "指标 ID" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" },
+          { "name": "minRange", "type": "String", "required": false, "description": "Y轴最小值（来自首行 data[0]）" },
+          { "name": "maxRange", "type": "String", "required": false, "description": "Y轴最大值（来自首行 data[0]）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "payload": "data + designer.utils.getDesignerOriginData(dataUtils.getOriginData(...))",
+        "note": "useInteraction 钩子绑定 click 事件，抛出 data + originData 合并对象"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM + axisTickLine + gridLine + textX 浮动文字 + indicatorPointer",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND + textY 浮动文字 + range autoregulation",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL + 气泡效果（isBubble）",
+      "areaStyle": {
+        "isStack": "Switch (堆叠)",
+        "isPercent": "Switch (百分比堆叠)",
+        "smooth": "Switch",
+        "lineWidth": "NumberPicker",
+        "lineColor": "ColorPicker 数组 (多系列线色)",
+        "areaColor": "ColorPicker 数组 (多系列渐变)",
+        "fillOpacity": "SliderWithNumber",
+        "shadowColor/OffsetY/Blur": "阴影效果"
+      },
+      "point": "PLOTS_SCHEMA.STYLE_STROKE.point",
+      "legend": "PLOTS_SCHEMA.LEGEND + marker 样式 + defaultStatus 隐藏",
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "indicatorPointer": {
+        "show": "Switch",
+        "settings": "[{value, valueStyle, enableLine, lineStyle, lineText}] - 按 value 匹配 x 标签自定义样式"
+      }
+    },
+    "default_values": {
+      "config.title": "多系列面积",
+      "config.areaStyle.isStack": "默认 true（堆叠）",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "多产品趋势：多个产品销售额随时间变化（堆叠看总量 + 多线看各产品）",
+    "占比堆叠：各部门成本占比堆叠（isPercent=true 百分比堆叠）",
+    "指标突出：特定 x 值用 indicatorPointer 突出显示（如峰值/异常）",
+    "多维时间序列：温度/湿度/气压多指标时间序列",
+    "业务大盘：核心指标多组对比"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/area", "cost": "中", "reason": "同 area 物料多系列版本" },
+      { "material": "oss-chart-plots/line", "cost": "中", "reason": "折线变面积" },
+      { "material": "oss-chart-plots/stack-area", "cost": "极低", "reason": "堆叠多系列面积" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 oss-chart-plots 系列中功能最丰富的多系列面积图（indicatorPointer + 渐变 + 阴影 + 浮动文字 + annotations）"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 7 字段业务化（dimension_name/compareType/indicator_id/indicator_value/indicator_unit/minRange/maxRange），最完整；fieldLabel 中文业务化。",
+      "2. 场景覆盖度 4.5：覆盖多产品趋势/占比堆叠/指标突出/多维时间序列/业务大盘 5 大类场景；indicatorPointer 是独家能力。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组 + 堆叠/百分比 + 渐变 + 阴影 + 浮动文字 + annotations + indicatorPointer；配置颗粒度最细。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰，有 rowProperties 描述；瑕疵 ① dataType 错标（indicator_value 应为 Number）。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md + doc/images 9 张示例图（+1 jpg）。",
+      "6. 可组合性 4.0：与 area 物料数据格式同构（多 1 个 compareType/indicator_id），跨物料对接相对容易。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 4,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 18,
+    "breakdown": {
+      "config_minutes": 8,
+      "data_minutes": 10,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.areaStyle.isStack", "config.legend", "config.areaStyle.lineColor"],
+    "data_required": ["dimension_name", "indicator_value", "compareType"],
+    "optional_fields": {
+      "config": ["areaStyle.isPercent", "indicatorPointer.show", "point.visible", "valueLabel.show"],
+      "data": ["indicator_id (联动用)", "minRange/maxRange (Y轴自适应)", "indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "至少 2 个系列（堆叠或多系列）",
+      "使用默认渐变色",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 4, "data_fields": 3, "minutes": 18, "description": "多系列堆叠面积 + 默认样式" },
+      "typical": { "config_items": 8, "data_fields": 3, "minutes": 35, "description": "多系列 + 渐变 + indicatorPointer + 标签" },
+      "full": { "config_items": 15, "data_fields": 5, "minutes": 70, "description": "完整样式 + 渐变 + indicatorPointer + 浮动文字 + annotations + click 下钻" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（indicator_value 应为 Number）",
+    "schema.ts 顶部有 indicatorPointer 拆分到 schema-parts/（架构合理）",
+    "uses 大量外部包（@fedx-vis/plots/@fedx-vis/designer-types/oss-ui）",
+    "useMemorizedObjectDebounce 是高阶能力（300ms 节流），配置时无需关心",
+    "renderKey 自增计数器（line 78-104），可能影响性能",
+    "indicatorPointer 配置复杂（settings 数组中每个元素需 5 个字段）",
+    "dataConverter 中 dataUtils.assignOriginData(result, d)（line 486）保留原始数据用于下钻",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 series-bar 画像"
+  }
+}

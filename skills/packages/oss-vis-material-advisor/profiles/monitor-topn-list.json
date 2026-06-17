@@ -1,0 +1,180 @@
+{
+    "name": "monitor-topn-list",
+    "title": "热门场景Top",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json",
+        "supporting_files": ["./styles.js"]
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中高",
+        "author": "yangxingxiang"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "场景分组 TopN（sceneId + 多个指标行）",
+                "example": "[{ sceneId: '1', sceneName: '大唐不夜城', sceneIconId: 'xxx.png', id: '1', name: '流量', value: 2.6, unit: 'TB', yoyValue: 18.3, yoyTrend: -1, qoqValue: 3.7, qoqTrend: -1 }, ...]",
+                "match_pattern": "data[*].{sceneId, sceneName, sceneIconId, id, name, value, unit, yoyValue, yoyTrend, qoqValue, qoqTrend}",
+                "note": "代码内 groupBy(sceneId) 自动分组；data 实际是扁平数组，按 sceneId 字段聚合",
+                "fields": [
+                    { "name": "sceneId", "type": "String", "required": true, "description": "场景ID（分组键）" },
+                    { "name": "sceneName", "type": "String", "required": true, "description": "场景名" },
+                    { "name": "sceneIconId", "type": "String", "required": false, "description": "场景图片ID（依赖静态资源）" },
+                    { "name": "id", "type": "String", "required": true, "description": "指标ID（行内）" },
+                    { "name": "name", "type": "String", "required": true, "description": "指标名" },
+                    { "name": "value", "type": "Number(实际)", "required": true, "description": "指标值" },
+                    { "name": "unit", "type": "String", "required": false, "description": "单位" },
+                    { "name": "yoyValue", "type": "Number(实际)", "required": false, "description": "同比值" },
+                    { "name": "yoyTrend", "type": "Number", "required": false, "description": "同比趋势（1=升/-1=降）" },
+                    { "name": "qoqValue", "type": "Number(实际)", "required": false, "description": "环比值" },
+                    { "name": "qoqTrend", "type": "Number", "required": false, "description": "环比趋势" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "row_highlight_dispatch",
+                "trigger": "setInterval (轮播定时器到点 + currentIndex 变化)",
+                "config_field": "interactions.defined.{rowHighlightId, rowHighlightName}",
+                "behavior": "轮播切换时派发 sceneId/sceneName（注意：与 carousel-list 不同的是派发 scene 而非行指标）"
+            }
+        ],
+        "visual_configs": {
+            "carouselSet": {
+                "topNumber": { "type": "string", "default": 5, "description": "TopN 设置（实际是 string 类型，dataModel 未约束 number）" },
+                "slidesToShow": { "type": "number", "default": 2, "description": "面板呈现数量（Carousel 同时显示几个场景）" },
+                "direction": { "type": "string", "default": "right", "options": ["right (上下)", "bottom (左右)"] },
+                "speed": { "type": "number", "default": 3000 },
+                "autoplaySpeed": { "type": "number", "default": 5000 },
+                "autoplay": { "type": "boolean", "default": false }
+            },
+            "dotsConfig": {
+                "dots": { "type": "boolean", "default": false },
+                "width/height/left/top": { "type": "number" },
+                "direction": { "type": "string", "default": "row", "options": ["row", "column"] },
+                "color": { "type": "string", "default": "rgb(27, 236, 202)" }
+            },
+            "style": {
+                "width": { "type": "number", "default": 631 },
+                "height": { "type": "number", "default": 279 },
+                "iconWidth": { "type": "number", "default": 274.66 },
+                "iconHeight": { "type": "number", "default": 165.66 }
+            },
+            "nameFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle + isCustomColors + customColors" },
+            "valueFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle" },
+            "trendOneFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle (同比)" },
+            "trendTwoFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle (环比) + trendUpIcon + trendDownIcon" },
+            "trendIconStyle": {
+                "trendUpIcon": { "type": "string", "description": "上升图标覆盖；缺省时使用 material 静态资源 up.png" },
+                "trendDownIcon": { "type": "string", "description": "下降图标覆盖；缺省时使用 down.png" }
+            },
+            "slickConfig": {
+                "isSlickHeight": { "type": "boolean", "default": false, "description": "嵌套到分组时高度异常可开启" },
+                "slickListHeight": { "type": "number", "default": 550 },
+                "slickTrackHeight": { "type": "number", "default": 275 }
+            }
+        },
+        "default_values": {
+            "config.title": "热门场景Top",
+            "config.width": 631,
+            "config.height": 850,
+            "config.carouselSet.topNumber": 5,
+            "config.carouselSet.slidesToShow": 2,
+            "config.carouselSet.direction": "right",
+            "config.carouselSet.autoplay": false,
+            "config.dotsConfig.color": "rgb(27, 236, 202)"
+        }
+    },
+    "business_scenarios": [
+        "网络热门场景 Top 监控（场景=大唐不夜城/大唐芙蓉园/机场场景等）",
+        "场景级多指标对比（流量/人流量/话务量，含同比/环比）",
+        "运营商场景化运维监控（多场景轮播展示）",
+        "按场景聚合的 TopN 排行（含趋势图标）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-map", "cost": "中", "reason": "sceneId 派发可绑定地图区域，但 carousel-list/notice 风格一致（皆 rowHighlight）" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "decoration/border1~12", "cost": "中", "reason": "组件内置 monitor-bg.png 背景，与装饰边框可能冲突" }
+        ],
+        "incompatible_with": [],
+        "note": "数据扁平但代码 groupBy(sceneId) 聚合，PM 需了解数据预处理"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.7,
+        "weighted_total": 3.7,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 3.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='热门场景Top' + 字段(sceneId/sceneName/yoyValue/qoqValue) 业务化贴近运营商场景化监控。",
+            "2. 场景覆盖度 3.5：覆盖轮播+TopN+同比/环比+趋势图标+分组聚合；场景集中在运营商场景监控。",
+            "3. 配置完备度 4.5：8 个 FormCollapse 分组（轮播/指示点/样式/4 个字体/趋势图标/嵌入分组）+ 联动；默认值丰富。",
+            "4. 数据契约清晰度 3.5：dataModel 11 个字段全声明且 fieldLabel 业务化（'场景Id/场景名称/同比值/同比趋势'），⚠️ dataType 全 String 但 value 实际为 number；topNumber schema 是 string 但 default 5（实际是 number）。",
+            "5. 文档完整度 2.0：仅有 doc/README.md + doc/CHANGELOG.md，缺 5+1 文档。",
+            "6. 可组合性 3.0：内嵌 monitor-bg.png 背景 + 4 个子样式组件，与装饰边框组合需注意层级。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 6,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 18,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 12,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.carouselSet.slidesToShow"],
+        "data_required": ["sceneId", "sceneName", "id", "name", "value", "unit"],
+        "optional_fields": {
+            "config": ["carouselSet.autoplay/speed", "dotsConfig.*", "style.iconWidth/Height", "字体颜色", "趋势图标覆盖"],
+            "data": ["sceneIconId (场景图片)", "yoyValue/qoqValue (同比环比)", "yoyTrend/qoqTrend (趋势方向)"]
+        },
+        "assumptions": [
+            "使用默认 5 场景 TopN",
+            "使用默认 monitor-bg.png 背景",
+            "无趋势图标覆盖（用默认 up.png/down.png）",
+            "无 rowHighlight 派发"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 6, "minutes": 18, "description": "默认轮播 + 2 场景/页 + 6 字段" },
+            "typical": { "config_items": 5, "data_fields": 9, "minutes": 28, "description": "自定义轮播/指示点 + 完整同比/环比 + 趋势图标" },
+            "full": { "config_items": 10, "data_fields": 11, "minutes": 50, "description": "全部 8 个 FormCollapse 分组 + rowHighlightId/Name 派发" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel 字段 11 个，dataType 全 String 但 value/yoyValue/qoqValue 实际为 number",
+        "carouselSet.topNumber schema 是 string 但 default 5 是 number，类型不一致",
+        "carouselSet.direction 'right'/'bottom' 命名与 carousel-notice 一致（同样反直觉）",
+        "代码中 _.groupBy(data, 'sceneId') 隐式聚合，data 实际是扁平数组，schema 未明示该约定",
+        "dataModel.json 中无 isUseDimensionParams 字段，schema 引用了 dataModel.dataModelDefinition.header.dimensions 但此字段为 null（详见 echarts-gauge 模式）",
+        "carouselList 的 carouselSet.autoplay=false 默认，需要手动开启才能轮播",
+        "rowHighlightId 派发的是 sceneId 而非指标 id，订阅方需注意"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

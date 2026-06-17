@@ -1,0 +1,157 @@
+{
+  "name": "business-scale",
+  "title": "业务规模",
+  "category": "数字/指标卡",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./getOptions.ts"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "zw",
+    "groupId": 5,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / defineInteractionSchema（@Common）",
+    "uses_hoc": "无（直接 ReactECharts）",
+    "plot_library": "@fedx-vis/react-echarts"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（id + name + value1/level1 + value2/level2）",
+        "example": "[{ id: 1, name: '业务A', value1: 80, level1: 'warning', value2: 50, level2: 'normal' }]",
+        "match_pattern": "data[*].{id, name, value1, level1, value2, level2}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "id", "type": "String", "required": false, "description": "唯一标识" },
+          { "name": "name", "type": "String", "required": true, "description": "业务名称" },
+          { "name": "value1", "type": "String(实际number)", "required": true, "description": "指标值1" },
+          { "name": "level1", "type": "String", "required": false, "description": "级别1（normal/warning/error 等，决定颜色）" },
+          { "name": "value2", "type": "String(实际number)", "required": false, "description": "指标值2" },
+          { "name": "level2", "type": "String", "required": false, "description": "级别2" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "rowClick",
+        "trigger": "click",
+        "payload": "data 中点击行的完整对象"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT（width/height/left/top/background）",
+      "title": "getCompTitle",
+      "chart": {
+        "barCategoryGap": "柱子间距",
+        "label": {
+          "textStyle": "标签文本（VisualTextStyle）",
+          "paddingX/paddingY": "label 偏移",
+          "totalStyle.textStyle": "总数文本",
+          "alarmStyle": "告警文本"
+        },
+        "backgroundImage": "通过 getImageUrl(config.chart.chartBg) 渲染背景图（隐式字段，未在 schema 显式声明）"
+      }
+    },
+    "default_values": {
+      "config.title": "业务规模",
+      "config.width": 500,
+      "config.height": 300,
+      "config.chart.barCategoryGap": 30,
+      "dataConfig.json": "无 defaultValue 示例（仅 dataModel 占位）"
+    }
+  },
+  "business_scenarios": [
+    "业务规模概览：多个业务的指标值 + 告警级别对比",
+    "KPI 列表：每个业务的 value1/value2 + 告警等级可视化",
+    "业务保障：重大活动时多业务指标监控 + 告警等级",
+    "运维巡检：批量业务健康度展示（normal/warning/error）",
+    "数据中心：机房/设备的双指标（容量+使用率）规模展示"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "echarts-pie", "cost": "中", "reason": "替代方案" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示单个总量" },
+      { "material": "alarm-window-card", "cost": "中", "reason": "告警订阅联动" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料与 echarts-bar 类似但增加了告警等级（level1/level2）维度，适合需要多指标+告警的运维场景"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 6 字段业务化（id/name/value1/level1/value2/level2），双指标 + 双级别设计合理；defaultValue 缺失示例。",
+      "2. 场景覆盖度 3.5：覆盖多业务 KPI + 告警等级 1 大类场景，比 business-quality 多 1 个指标维度。",
+      "3. 配置完备度 4.0：barCategoryGap + label.textStyle + totalStyle + alarmStyle 多组配置，颗粒度细。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名清楚，但 dataType 全部错标 String（value1/value2 应为 Number）。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md + 1 张示例图，但无 5+1 文档。",
+      "6. 可组合性 4.0：与告警窗联动性高；与数字卡、边框无依赖。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 5,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 18,
+    "breakdown": {
+      "config_minutes": 6,
+      "data_minutes": 12,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.chart.barCategoryGap", "config.chart.label.textStyle"],
+    "data_required": ["name", "value1", "level1", "value2", "level2"],
+    "optional_fields": {
+      "config": ["width", "height", "chart.chartBg (背景图)", "chart.label.totalStyle", "chart.label.alarmStyle"],
+      "data": ["id (内部用)"]
+    },
+    "assumptions": [
+      "至少 2 个业务条目",
+      "value1/value2 必须是 number（实际 dataModel 标 String）",
+      "level 决定颜色（normal=绿/warning=黄/error=红）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 5, "minutes": 18, "description": "双指标 + 默认级别" },
+      "typical": { "config_items": 8, "data_fields": 5, "minutes": 35, "description": "完整标签 + 告警文本 + 背景图" },
+      "full": { "config_items": 15, "data_fields": 5, "minutes": 60, "description": "完整样式 + 背景图 + 告警等级定制" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串",
+    "dataModel 中 6 个字段 dataType 全部错标 String（value1/value2 应为 Number）",
+    "schema.ts 顶部有 chartBg 字段被注释（50+ 行）",
+    "backgroundImageUrl 通过 getImageUrl(config?.chart?.chartBg) 获取（隐式字段，未在 schema 声明）",
+    "useEffect 实际为空（eslint-disable-next-line）",
+    "defaultValue.dataConfig.json 缺失",
+    "schema 中无 5+1 文档"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 indicator-display / number-level-indicate"
+  }
+}

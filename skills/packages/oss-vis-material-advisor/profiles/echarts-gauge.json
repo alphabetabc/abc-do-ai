@@ -1,0 +1,142 @@
+{
+    "name": "echarts-gauge",
+    "title": "高级仪表盘",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.tsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.tsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "极高",
+        "author": "zw"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "仪表盘指标（id + name + value）",
+                "example": "[{ id: '1', name: '接通率', value: 85 }, { id: '2', name: '掉线率', value: 5 }]",
+                "match_pattern": "dataSource[*].{id, name, value}",
+                "note": "dataSource 直接赋给 config.chart.series[0/1].data（line 60-61），是直接数据注入",
+                "fields": [
+                    { "name": "id", "type": "String", "required": false, "description": "指标 ID（schema 声明但 formatter 内可能用）" },
+                    { "name": "name", "type": "String", "required": true, "description": "指标名称" },
+                    { "name": "value", "type": "Number", "required": true, "description": "指标值" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "series[].startAngle/endAngle": { "type": "number", "default": "200/-20", "description": "仪表盘起止角度" },
+            "series[].min/max": { "type": "number", "default": "0/100" },
+            "series[].splitNumber": { "type": "number", "default": 10 },
+            "series[].progress": {
+                "show/width": "进度条显隐 + 宽度",
+                "itemStyle.color": { "type": "ColorGroup", "description": "进度条颜色（linear/radial 渐变 + colorStops）" }
+            },
+            "series[].pointer": {
+                "show/length/width": "指针显隐 + 长度 + 宽度",
+                "itemStyle.color": "指针颜色"
+            },
+            "series[].axisLine": {
+                "show/lineStyle.color (ArrayCards)": "轴线显隐 + 渐变颜色"
+            },
+            "series[].axisTick": { "show": "刻度显隐" },
+            "series[].splitLine": { "show/distance/length/lineStyle.width/color": "分隔线" },
+            "series[].axisLabel": "轴标签",
+            "series[].title": { "show/offsetX/offsetY/style": "标题" },
+            "series[].detail": { "show/width/height/offsetX/offsetY/style/unitStyle/unit": "详情" }
+        },
+        "default_values": {
+            "config.title": "高级仪表盘",
+            "config.width": 400,
+            "config.height": 400,
+            "config.chart.series[0].startAngle": 200,
+            "config.chart.series[0].endAngle": -20,
+            "config.chart.series[0].min": 0,
+            "config.chart.series[0].max": 100,
+            "config.chart.series[0].splitNumber": 10
+        },
+        "ui_features": "data 直接覆盖到 config.chart.series[0/1].data（line 60-61），是配置与数据耦合；formatOption 通过 lodash.map 深度处理 itemStyle/title/detail/axisLine/progress 字段（line 13-56）；shouldSetOption 自定义 diff 函数支持 function 对比（line 74-81）；multi-series 通过 ArrayCards 配置；import 自 @fedx-vis/react-echarts（外部依赖）。"
+    },
+    "business_scenarios": [
+        "KPI 仪表盘（接通率/掉线率等单指标）",
+        "多 series 复合仪表盘（环+进度条+指针）",
+        "需要 axisLine 渐变色按指标值分段",
+        "需要 pointer + detail + title 三件套完整仪表"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "ind-list-echarts-gauge", "cost": "中", "reason": "仪表盘列表版（carousel + gauge）" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡 + 仪表盘组合" }
+        ],
+        "incompatible_with": [],
+        "note": "echarts-gauge 是单/多仪表盘，ind-list-echarts-gauge 是其列表版；schema 独立"
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "grade": "A",
+        "score": 4.0,
+        "weighted_total": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='高级仪表盘' 业务化。",
+            "2. 场景覆盖度 4.5：覆盖单/多 series + 进度条 + 指针 + 轴线渐变 + 刻度 + 分隔线 + 标题 + 详情。",
+            "3. 配置完备度 4.5：ArrayCards 增删 series + FormCollapse 嵌套配置 + 颜色渐变 ArrayCards；依赖 @fedx-vis/react-echarts。",
+            "4. 数据契约清晰度 2.5：dataModel 3 字段（id/name/value）；⚠️ id 字段未消费；data 直接覆盖到 config 是隐式约定。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 4.0：可与数字卡、列表仪表盘组合。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 1,
+        "data_fields_to_provide": 3,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 30,
+        "breakdown": { "config_minutes": 20, "data_minutes": 10, "custom_minutes": 0 },
+        "config_required": ["config.title"],
+        "data_required": ["name", "value"],
+        "optional_fields": {
+            "config": ["series 完整配置（startAngle/endAngle/min/max/splitNumber/progress/pointer/axisLine/axisTick/splitLine/axisLabel/title/detail）"],
+            "data": ["id（未使用）"]
+        },
+        "assumptions": [
+            "使用默认 200/-20 角度 + 0/100 范围",
+            "无指针",
+            "无进度条"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 1, "data_fields": 2, "minutes": 30, "description": "默认仪表盘 + 2 字段" },
+            "typical": { "config_items": 5, "data_fields": 3, "minutes": 60, "description": "自定义颜色 + 指针 + 进度条" },
+            "full": { "config_items": 30, "data_fields": 3, "minutes": 120, "description": "全部 series 字段 + 多 series" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel 中 id 字段声明但代码未消费（line 60-61 直接覆盖到 series.data）",
+        "data 直接覆盖到 config.chart.series[0/1].data 是隐式约定（line 60-61）",
+        "formatOption 处理 title.style 时删除 style 后展开其他字段（line 22-27）",
+        "formatter 中用 '{value|value}{unit|unit}' rich text 需配合 detail.unitStyle（line 33-37）",
+        "shouldSetOption 自定义 diff 函数支持 function 对比（line 74-81）",
+        "注释中 // import { DataStatus } from 'oss-ui';  // import { getOption } from './options';  // import './index.less'; 残留",
+        "import 自 @fedx-vis/designer-types 和 @fedx-vis/react-echarts（外部依赖）",
+        "groupId=13"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

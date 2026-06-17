@@ -1,0 +1,150 @@
+{
+    "name": "vertical-list",
+    "title": "垂直列表",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "简单",
+        "author": "liqingli"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "键值对垂直列表（id + label + value）",
+                "example": "[{ id: 1, label: '所属', value: 'room1' }, { id: 2, label: '名称', value: '矮货架' }, ...]",
+                "match_pattern": "dataSource[*].{id, label, value}",
+                "note": "⚠️ dataModel.json 中 header.dimensions 和 header.indicators 均为空数组（无任何字段声明），实际使用靠 schema 隐式约定",
+                "fields": [
+                    { "name": "id", "type": "Number(实际)", "required": true, "description": "行 key（React 渲染必需，key={key_${id}_${index}}）" },
+                    { "name": "label", "type": "String(实际)", "required": true, "description": "左侧标签文字" },
+                    { "name": "value", "type": "String(实际)", "required": true, "description": "右侧值文字" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "listContainer": {
+                "showLeftBorder": { "type": "boolean", "default": true, "description": "是否显示左边框" },
+                "borderLeftColor": { "type": "string", "default": "rgba(124,121,115,1)" },
+                "borderLeftWidth": { "type": "number", "default": 2 },
+                "paddingLeft": { "type": "number", "default": 15 }
+            },
+            "listItemLabel": {
+                "color": { "type": "string", "default": "#1CAB88" },
+                "fontSize": { "type": "number", "default": 16 },
+                "fontWeight": { "type": "string", "default": "normal" }
+            },
+            "listItemValue": {
+                "color": { "type": "string", "default": "#FFFFFF" },
+                "fontSize": { "type": "number", "default": 16 }
+            }
+        },
+        "default_values": {
+            "config.title": "垂直列表",
+            "config.width": 300,
+            "config.height": 300,
+            "config.listContainer.showLeftBorder": true,
+            "config.listContainer.borderLeftColor": "rgba(124, 121, 115, 1)",
+            "config.listContainer.borderLeftWidth": 2,
+            "config.listContainer.paddingLeft": 15,
+            "config.listItemLabel.color": "#1CAB88",
+            "config.listItemLabel.fontSize": 16,
+            "config.listItemValue.color": "#FFFFFF",
+            "config.listItemValue.fontSize": 16
+        },
+        "ui_features": "极简 Class 组件（无 hooks，无 useEffect），纯展示物料；左边框通过 inline style 设置（line 16-19）；item 布局为 flex/inline（未在 CSS 中显式设置）。"
+    },
+    "business_scenarios": [
+        "设备详情展示（所属/名称/型号/编号等属性）",
+        "机房/资源属性面板",
+        "通用键值对信息列表",
+        "大屏右侧详情面板"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-bar", "cost": "低", "reason": "echarts-bar 选数据点 → vertical-list 显示该数据点属性详情" },
+            { "material": "echarts-map", "cost": "低", "reason": "echarts-map 选 region → vertical-list 显示该 region 属性" },
+            { "material": "table-detail", "cost": "低", "reason": "table-detail 选行 → vertical-list 显示该行属性" },
+            { "material": "tree-list", "cost": "低", "reason": "tree-list 选节点 → vertical-list 显示该节点属性" }
+        ],
+        "incompatible_with": [],
+        "note": "vertical-list 是纯展示详情面板物料；不适用滚动/分页/搜索，复杂详情建议用 table-detail"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.4,
+        "weighted_total": 3.4,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 2.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='垂直列表' 业务化清晰，defaultValue 演示贴近设备详情场景。",
+            "2. 场景覆盖度 2.5：仅支持键值对展示 + 左边框 + 3 个字体配置；无滚动/分页/搜索/排序/图标/状态。",
+            "3. 配置完备度 3.5：3 个 FormCollapse 分组（列表框/标签/数据）；⚠️ listItemValue 缺 fontWeight 字段（line 109-131）。",
+            "4. 数据契约清晰度 2.5：dataModel header 完全为空（dimensions/indicators 都是 []），实际字段靠 schema 隐式约定；dataType 无任何声明。",
+            "5. 文档完整度 2.0：仅 commit 描述，无 doc/readme.md。",
+            "6. 可组合性 4.0：作为详情面板与 echarts-map/table/tree-list 多种物料联动，组合代价低。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 3,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 5,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 3,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.listItemLabel.color"],
+        "data_required": ["id", "label", "value"],
+        "optional_fields": {
+            "config": ["listContainer.showLeftBorder/borderLeftColor/borderLeftWidth/paddingLeft", "listItemLabel.fontSize/fontWeight", "listItemValue.color/fontSize"],
+            "data": []
+        },
+        "assumptions": [
+            "无图标/状态/链接",
+            "无滚动/分页",
+            "无点击派发"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 3, "minutes": 5, "description": "默认左边框 + 3 字段" },
+            "typical": { "config_items": 4, "data_fields": 3, "minutes": 12, "description": "自定义边框 + 标签/值颜色" },
+            "full": { "config_items": 8, "data_fields": 3, "minutes": 20, "description": "全部 3 个 FormCollapse 分组 + 完整字体" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel.json 中 header.dimensions 和 header.indicators 均为空数组（无任何字段声明）",
+        "dataModel.json 中 dataModelDefinition.name/title/description/author 全部为空字符串",
+        "oss-material.json.dataModel 是空字符串",
+        "代码中 this.props.dataSource 未做空数组保护，!this.props.dataSource.length 可正常但 null/undefined 会抛错（line 21）",
+        "listItemValue 配置组无 fontWeight 字段（line 108-132）但 defaultValue 也未提供",
+        "无 doc/ 目录，无 5+1 文档",
+        "fnGetStyle 方法冗余（line 5-7），直接 this.props.config[key] 即可"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

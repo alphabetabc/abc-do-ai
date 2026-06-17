@@ -1,0 +1,136 @@
+{
+    "name": "baidu-map",
+    "title": "百度地图打点",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "基于百度地图API的GIS打点可视化组件，支持网元标注、告警分级、点击下钻和自定义ToolTip",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "neType", "type": "String", "required": true, "description": "网元类型分类ID（基站/重保/应急人车/覆盖类型）" },
+            { "name": "neTypeName", "type": "String", "description": "网元类型名称" },
+            { "name": "type", "type": "String", "default": "point", "description": "打点类型" },
+            { "name": "siteName", "type": "String", "required": true, "description": "网元名称" },
+            { "name": "alarmLevel", "type": "String", "default": "0", "description": "告警级别（0正常/1预警/2告警/3严重）" },
+            { "name": "siteCode", "type": "String", "required": true, "description": "网元唯一标识" },
+            { "name": "longitude", "type": "String", "required": true, "description": "经度" },
+            { "name": "latitude", "type": "String", "required": true, "description": "纬度" },
+            { "name": "neState", "type": "String", "description": "网元状态" },
+            { "name": "people", "type": "String", "description": "联系人" },
+            { "name": "telephone", "type": "String", "description": "联系方式" },
+            { "name": "plate_number", "type": "String", "description": "车辆牌照" },
+            { "name": "region_id", "type": "String", "description": "地市ID" },
+            { "name": "region_name", "type": "String", "description": "地市名称" },
+            { "name": "district", "type": "String", "description": "区域描述" },
+            { "name": "address", "type": "String", "description": "地址" },
+            { "name": "imgPath", "type": "String", "description": "自定义图标路径（可选）" }
+        ],
+        "row_count": "多行，每行一个网元点",
+        "data_source": "DynamicData 支持多数据源转换映射"
+    },
+    "visual_config": {
+        "base_config": {
+            "ak": { "type": "string", "default": "GPg7Z4TtnAxv0hV98Bu9xW089ku7yseM", "description": "百度地图AK密钥" },
+            "styleId": { "type": "string", "default": "0db13a93d450b6a4a1cec8ea0a447823", "description": "地图样式ID" },
+            "lon": { "type": "number", "default": 118.104883, "description": "中心点经度" },
+            "lat": { "type": "number", "default": 32.840285, "description": "中心点纬度" },
+            "zoom": { "type": "number", "default": 7, "range": "0-99", "description": "初始缩放层级" },
+            "minZoom": { "type": "number", "default": 1, "description": "最小层级" },
+            "maxZoom": { "type": "number", "default": 20, "description": "最大层级" }
+        },
+        "point_config": {
+            "width": { "type": "number", "default": 232, "description": "标注点宽度" },
+            "height": { "type": "number", "default": 50, "description": "标注点高度" },
+            "isShowLabel": { "type": "boolean", "default": true, "description": "是否显示网元名称Label" },
+            "offsetX": { "type": "number", "default": -75, "description": "水平偏移" },
+            "offsetY": { "type": "number", "default": -22, "description": "竖直偏移" }
+        },
+        "tooltip_config": {
+            "isToolBase": { "type": "boolean", "default": true, "description": "是否启用自定义Tip" },
+            "width": { "type": "number", "default": 250 },
+            "height": { "type": "number", "default": 230 },
+            "backgroundType": { "type": "enum", "options": ["image", "color"] },
+            "backgroundColor": { "type": "string", "default": "#00032b" },
+            "backgroundImg": { "type": "string", "description": "Tip背景图" },
+            "backgroundRepeat": { "type": "enum", "options": ["full", "no-repeat", "repeat-x", "repeat-y", "repeat"] },
+            "isShowHeaderImg": { "type": "boolean", "default": true, "description": "显示Header图片" },
+            "headerImg": { "type": "string" },
+            "headerWidth": { "type": "number", "default": 228 },
+            "headerHeight": { "type": "number", "default": 130 },
+            "headerOffsetX": { "type": "number", "default": 11 },
+            "headerOffsetY": { "type": "number", "default": 0 }
+        },
+        "icon_strategy": "根据 neType + alarmLevel 在 IMAGE_PATH/map/{neType}/{alarmLevel}.png 路径下取图标"
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "点击网元点触发下钻弹窗（Modal/Drawer）或派发参数",
+            "configurable_effect": ["Modal", "Drawer"],
+            "drilldown": {
+                "params": "url参数 a=1&b=2",
+                "drilldownItemFields": "从数据项中提取的字段",
+                "modal_set": ["width", "height", "position", "mask", "closable", "closeIcon"],
+                "drawer_set": ["placement", "width", "height", "title", "mask", "closable"]
+            }
+        },
+        "hover": {
+            "type": "tooltip",
+            "description": "悬停显示自定义Tip（el-tooltip-base组件）"
+        }
+    },
+    "business_scenarios": [
+        "网络基站/网元地理分布监控",
+        "应急通信资源（人车）调度展示",
+        "重保场景覆盖范围可视化",
+        "告警分级地图预警"
+    ],
+    "composability": {
+        "compatible_with": [
+            "alarm-window-card（点击网元弹出告警窗口）",
+            "drilldown-table（下钻表格）",
+            "top-rank（Top排行联动）",
+            "digital-flop（数量统计）"
+        ],
+        "replaces": [
+            "echarts-map（更轻量的打点场景）",
+            "oss-chart-map"
+        ],
+        "extends": [
+            "geo-3d-map（需要3D地球时升级）",
+            "oss-chart-fly-line-map（需要迁徙动效时升级）"
+        ]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.6,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "申请百度地图AK",
+            "准备网元数据（基站/告警/坐标）",
+            "配置 baseConfig 中心点与缩放",
+            "配置 pointConfig 标注样式",
+            "可选：配置 toolBaseConfig Tip样式",
+            "配置交互：Modal/Drawer下钻或参数派发"
+        ],
+        "dependencies": ["百度地图AK（外网申请）", "图标素材（按 neType/alarmLevel 组织）"],
+        "estimated_minutes": 30
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串，dataModel.json 中所有数值型字段（如 longitude、latitude、alarmLevel）被声明为 String 类型，与实际使用不一致，需在数据接入时注意类型转换",
+        "dependency_external": "强依赖百度地图API（需AK），不易迁移",
+        "doc_status": "有 doc/README.md 但内容较简单"
+    }
+}

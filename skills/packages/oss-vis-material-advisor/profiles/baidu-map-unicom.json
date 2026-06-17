@@ -1,0 +1,111 @@
+{
+    "name": "baidu-map-unicom",
+    "title": "百度地图打点（联通版）",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "基于百度地图BMapGL（原BMap 3D版）的GIS打点组件，使用命令式API直接管理地图实例，专为联通定制场景",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "neType", "type": "String", "required": true, "description": "网元类型分类ID" },
+            { "name": "neTypeName", "type": "String", "description": "网元类型名称" },
+            { "name": "type", "type": "String", "default": "point", "description": "打点类型" },
+            { "name": "siteName", "type": "String", "required": true, "description": "网元名称" },
+            { "name": "alarmLevel", "type": "String", "default": "0", "description": "告警级别" },
+            { "name": "siteCode", "type": "String", "required": true, "description": "网元唯一标识" },
+            { "name": "longitude", "type": "String", "required": true, "description": "经度" },
+            { "name": "latitude", "type": "String", "required": true, "description": "纬度" },
+            { "name": "neState", "type": "String", "description": "网元状态" },
+            { "name": "people", "type": "String", "description": "联系人" },
+            { "name": "telephone", "type": "String", "description": "联系方式" },
+            { "name": "plate_number", "type": "String", "description": "车辆牌照" },
+            { "name": "region_id", "type": "String", "description": "地市ID" },
+            { "name": "region_name", "type": "String", "description": "地市名称" },
+            { "name": "district", "type": "String", "description": "区域描述" },
+            { "name": "address", "type": "String", "description": "地址" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源转换映射",
+        "_note": "数据模型与 baidu-map 完全相同，复用 schema/dataModel.json"
+    },
+    "visual_config": {
+        "base_config": {
+            "ak": { "type": "string", "description": "百度地图AK（BMapGL）" },
+            "styleId": { "type": "string", "description": "地图样式ID" },
+            "lon": { "type": "number", "description": "中心点经度" },
+            "lat": { "type": "number", "description": "中心点纬度" },
+            "zoom": { "type": "number", "description": "初始缩放层级" },
+            "minZoom": { "type": "number", "description": "最小层级" },
+            "maxZoom": { "type": "number", "description": "最大层级" }
+        },
+        "point_config": {
+            "width": { "type": "number", "default": 232 },
+            "height": { "type": "number", "default": 50 },
+            "isShowLabel": { "type": "boolean", "default": true },
+            "offsetX": { "type": "number", "default": -75 },
+            "offsetY": { "type": "number", "default": -22 }
+        },
+        "tooltip_config": {
+            "isToolBase": { "type": "boolean", "default": true },
+            "width": { "type": "number", "default": 250 },
+            "height": { "type": "number", "default": 230 },
+            "backgroundType": { "type": "enum", "options": ["image", "color"] },
+            "backgroundColor": { "type": "string", "default": "#00032b" },
+            "backgroundImg": { "type": "string" },
+            "backgroundRepeat": { "type": "enum" },
+            "isShowHeaderImg": { "type": "boolean", "default": true },
+            "headerImg": { "type": "string" },
+            "headerWidth": { "type": "number", "default": 228 },
+            "headerHeight": { "type": "number", "default": 130 },
+            "headerOffsetX": { "type": "number", "default": 11 },
+            "headerOffsetY": { "type": "number", "default": 0 }
+        },
+        "render_strategy": "命令式BMapGL API（new BMapGL.Map） + clearOverlays/ addOverlay 手动管理",
+        "icon_strategy": "BMapGL.Icon + map/{neType}/{alarmLevel}.png 路径"
+    },
+    "interactions": {
+        "click": { "type": "dispatch", "description": "点击网元点触发下钻弹窗或参数派发" },
+        "hover": { "type": "tooltip", "description": "悬停显示自定义Tip" }
+    },
+    "business_scenarios": [
+        "联通运营商网络资源管理",
+        "联通场景定制化大屏（专用图标库）",
+        "BMapGL 3D地球打点展示"
+    ],
+    "composability": {
+        "compatible_with": ["alarm-window-card", "drilldown-table", "top-rank", "digital-flop"],
+        "replaces": ["baidu-map（数据/Schema相同，仅渲染实现差异）"],
+        "extends": ["geo-3d-map"],
+        "_note": "与 baidu-map 高度同质，差异仅在底层API（React组件 vs 命令式BMapGL）"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.2,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 3.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "申请BMapGL AK",
+            "准备图标资源（按 neType + alarmLevel 组织）",
+            "配置 baseConfig / pointConfig / toolBaseConfig",
+            "配置交互下钻"
+        ],
+        "dependencies": ["BMapGL外部API", "图标素材"],
+        "estimated_minutes": 30
+    },
+    "_validation_notes": {
+        "duplicate_of": "与 baidu-map 在 schema、dataModel 高度同质，差异在实现方式（React 组件 vs 命令式BMapGL）。选择时建议优先 baidu-map",
+        "doc_status": "无 doc/README.md 内容",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串"
+    }
+}

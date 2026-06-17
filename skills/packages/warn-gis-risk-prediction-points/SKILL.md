@@ -50,20 +50,25 @@ risk-prediction-points/
 
 **职责**：
 
-- 根据地图坐标计算打点像素位置。
-- 为各类详情弹窗提供 Portal 挂载能力。
-- 监听内容变化自动调整 zIndex，确保弹窗展示层级正确。
+- 根据地图坐标计算打点像素位置（通过 `overlayManager.getPixelFromCoordinate`）。
+- 为各类详情弹窗提供 Portal 挂载能力（`OverlayPointContext` + `useOverlayPoint`）。
+- 监听内容变化自动调整 zIndex，确保弹窗展示层级正确（`MutationObserver` 监听 `bottomTipRef` 子节点变化）。
+- 计算 `zoneId`（fallback 逻辑：依次取 `weather.zoneId` → `waterSituation.zoneId` → `highRiskTown.zoneId` → `unknown-zoneId-${useId()}`），用于 `data-overlay-point-root-id` 属性。
 
-## 四个业务组件参考文档
+> 完整说明（Portal 使用、zIndex 自管理、zoneId 兜底、图标布局）见 [references/overlay-point.md](./references/overlay-point.md)。
 
-四个业务组件已拆分到 `references/` 目录维护：
+## 业务组件参考文档
 
-| 组件           | 参考文档                        | 说明                                               |
-| -------------- | ------------------------------- | -------------------------------------------------- |
-| Weather        | `references/weather.md`         | 天气图标、温度展示、天气详情弹窗                   |
-| WeatherWarning | `references/weather-warning.md` | 气象预警图标、预警详情卡片、预警级别映射           |
-| WaterWarning   | `references/water-warning.md`   | 水情预警详情、降雨量详情表格                       |
-| HighRiskTown   | `references/high-risk-town.md`  | 高风险乡镇数量、详情表格、省级统计卡片、退服趋势图 |
+业务组件已拆分到 `references/` 目录维护：
+
+| 组件           | 参考文档                        | 说明                                                         |
+| -------------- | ------------------------------- | ------------------------------------------------------------ |
+| OverlayPoint   | `references/overlay-point.md`   | 打点定位、Portal 管理、zIndex 自管理、zoneId 兜底            |
+| Weather        | `references/weather.md`         | 天气图标、温度展示                                           |
+| WeatherDetail  | `references/weather-detail.md`  | 天气详情 Hook（`useDetail.tsx`）：状态、API、弹窗内容结构    |
+| WeatherWarning | `references/weather-warning.md` | 气象预警图标、预警详情卡片、预警级别映射、点位匹配逻辑       |
+| WaterWarning   | `references/water-warning.md`   | 水情预警详情、降雨量详情表格                                 |
+| HighRiskTown   | `references/high-risk-town.md`  | 高风险乡镇数量、详情表格、省级统计卡片、退服趋势图、已知 bug |
 
 ## Presets 总体说明
 
@@ -98,17 +103,17 @@ risk-prediction-points/
 
 ## API 接口依赖
 
-| API 函数                                  | 模块   | 说明                     | 调用位置                      |
-| ----------------------------------------- | ------ | ------------------------ | ----------------------------- |
-| `getMapWeatherWarningApi`                 | center | 获取天气和气象预警数据   | `index.tsx`                   |
-| `getMapWeatherWarningFeatureDetailApi`    | center | 获取天气详情预报         | `weather/useDetail.tsx`       |
-| `getWaterWarningMapPointsApi`             | center | 获取水情预警和降雨量数据 | `index.tsx`                   |
-| `getWaterWarningDetailCardApi`            | center | 获取水情预警详情         | `water-warning/Water.tsx`     |
-| `getWaterWarningRainfallDetailApi`        | center | 获取降雨量详情           | `water-warning/Rainfall.tsx`  |
-| `getHighRiskTownMapApi`                   | center | 获取高风险乡镇数据       | `index.tsx`                   |
-| `getHighRiskTownMapDetailApi`             | center | 获取高风险乡镇详情       | `high-risk-town/index.tsx`    |
-| `getHighRiskTownInfoCardApi`              | center | 获取省级统计卡片数据     | `high-risk-town/InfoCard.tsx` |
-| `getEmergencyRiskPredictionTrendChartApi` | left   | 获取退服预测趋势图数据   | `high-risk-town/InfoCard.tsx` |
+| API 函数                                  | 模块   | 说明                                                      | 调用位置                      |
+| ----------------------------------------- | ------ | --------------------------------------------------------- | ----------------------------- |
+| `getMapWeatherWarningApi`                 | center | 获取天气和气象预警数据                                    | `index.tsx`                   |
+| `getMapWeatherWarningFeatureDetailApi`    | center | 获取天气详情预报                                          | `weather/useDetail.tsx`       |
+| `getWaterWarningMapPointsApi`             | center | 获取水情预警和降雨量数据                                  | `index.tsx`                   |
+| `getWaterWarningDetailCardApi`            | center | 获取水情预警详情                                          | `water-warning/Water.tsx`     |
+| `getWaterWarningRainfallDetailApi`        | center | 获取降雨量详情                                            | `water-warning/Rainfall.tsx`  |
+| `getHighRiskTownMapApi`                   | center | 获取高风险乡镇数据                                        | `index.tsx`                   |
+| `getHighRiskTownMapDetailApi`             | center | 获取高风险乡镇详情                                        | `high-risk-town/index.tsx`    |
+| `getEmergencyRiskTownshipsInfoApi`        | left   | 获取省级统计卡片数据（替换自 getHighRiskTownInfoCardApi） | `high-risk-town/InfoCard.tsx` |
+| `getEmergencyRiskPredictionTrendChartApi` | left   | 获取退服预测趋势图数据                                    | `high-risk-town/InfoCard.tsx` |
 
 ## 配置依赖
 
@@ -122,18 +127,29 @@ risk-prediction-points/
 
 ```text
 接口数据
-  ├── getMapWeatherWarningApi
-  ├── getWaterWarningMapPointsApi
-  └── getHighRiskTownMapApi
+  ├── getMapWeatherWarningApi      ─→ state.weatherPoints
+  ├── getWaterWarningMapPointsApi   ─→ state.waterWarningPoints
+  └── getHighRiskTownMapApi         ─→ state.highRiskPoints
         ↓
-RiskPredictionPoints 状态管理
+RiskPredictionPoints 状态管理（useSetState + useRequest，pollingInterval = 15min）
         ↓
-labelPoints.points 点位匹配
+渲染阶段：遍历 labelPoints.points
+  ├─ weather        = state.weatherPoints.find(d => d.config.name === point.name)
+  ├─ waterSituation = state.waterWarningPoints.find(d => d.config.name === point.name)
+  └─ highRiskTown   = state.highRiskPoints.find(d => d.config.name === point.name)
         ↓
-OverlayPoint 定位和 Portal 管理
+OverlayPoint 定位（getPixelFromCoordinate）+ Portal 管理（OverlayPointContext）
         ↓
 Weather / WeatherWarning / WaterWarning / HighRiskTown 渲染
+        ↓
+点击交互（详情弹窗、详情表格）通过 overlayPointCtx.createPortal 挂载到底部 portal
+        ↓
+省级高风险乡镇统计卡片（HighRiskTownProvinceInfoCard）通过 createPortal 挂载到 attachmentRoot
 ```
+
+**关键匹配规则**：所有点位数据都通过 `d.config.name === point.name` 匹配。`point.name` 来自 `labelPoints.points[].name`（WFS 图层点位名称）。匹配失败会在控制台输出 `[中屏打点-{天气/水情/高风险}-未命中]` 错误日志。
+
+**关于注释代码**：`index.tsx` 中 L122-L252 存在一段被注释的 `dataSource` 聚合逻辑（按 `zoneId` 合并三个接口到 `group` Map），当前实现已改为 render 阶段 `.find()` 匹配，**该段注释代码为历史实现，已废弃，无需维护**。若需重构点位数据流，可基于当前 `.find()` 方案迭代。
 
 ## 常见维护任务
 
@@ -194,8 +210,10 @@ Weather / WeatherWarning / WaterWarning / HighRiskTown 渲染
 
 ## 更新日志
 
-| 版本  | 日期       | 变更说明                                                                                             |
-| ----- | ---------- | ---------------------------------------------------------------------------------------------------- |
-| 1.2.0 | 2026-06-09 | 主文档增加 Presets 总体说明；各子模块 reference 文档增加交互、请求、响应、presets 详细说明           |
-| 1.1.0 | 2026-06-09 | 增加 `references/` 目录，将 Weather、WeatherWarning、WaterWarning、HighRiskTown 四个业务组件拆分描述 |
-| 1.0.0 | 2026-05-19 | 初始版本，包含天气、气象预警、水情预警、高风险乡镇功能                                               |
+| 版本  | 日期       | 变更说明                                                                                                                                                                    |
+| ----- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.5.0 | 2026-06-17 | 拆分 `OverlayPoint` 和 `WeatherDetail`（`useDetail.tsx`）独立文档；补充数据流图 `.find()` 匹配细节、注释代码说明、OverlayPoint zoneId fallback 机制；修正文档与源码不一致项 |
+| 1.4.0 | 2026-06-16 | API 接口依赖表更新：getHighRiskTownInfoCardApi → getEmergencyRiskTownshipsInfoApi（模块从 center 改为 left）                                                                |
+| 1.2.0 | 2026-06-09 | 主文档增加 Presets 总体说明；各子模块 reference 文档增加交互、请求、响应、presets 详细说明                                                                                  |
+| 1.1.0 | 2026-06-09 | 增加 `references/` 目录，将 Weather、WeatherWarning、WaterWarning、HighRiskTown 四个业务组件拆分描述                                                                        |
+| 1.0.0 | 2026-05-19 | 初始版本，包含天气、气象预警、水情预警、高风险乡镇功能                                                                                                                      |

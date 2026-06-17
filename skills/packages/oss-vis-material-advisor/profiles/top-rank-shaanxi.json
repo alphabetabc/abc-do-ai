@@ -1,0 +1,153 @@
+{
+    "name": "top-rank-shaanxi",
+    "title": "topN排名",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "ZW"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "排名列表（id + name + value + unit）",
+                "example": "[{ name: '网格通', value: '2342', unit: '次' }, ...]",
+                "match_pattern": "dataSource[*].{id, name, value, unit}",
+                "note": "与 top-rank 物料同构，但本物料无 rank 字段；前 3 名按 itemsSet 配置单独渲染",
+                "fields": [
+                    { "name": "id", "type": "string", "required": false, "description": "行ID（schema 声明但代码未消费）" },
+                    { "name": "name", "type": "string", "required": true, "description": "行名称" },
+                    { "name": "value", "type": "string(实际number)", "required": true, "description": "行数值" },
+                    { "name": "unit", "type": "string", "required": false, "description": "单位" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "itemStyle": {
+                "width": { "type": "number", "default": 510, "description": "单项宽度 px" },
+                "height": { "type": "number", "default": 60, "description": "单项高度 px" },
+                "marginTop": { "type": "number", "default": 16, "description": "项间距 px（仅 index≥1 生效）" },
+                "backgroundImage": { "type": "string", "default": "", "description": "默认背景图" },
+                "indexSize": { "type": "number", "default": 50, "description": "序号圆/方块尺寸 px" },
+                "isHideShotBorder": { "type": "boolean", "default": true, "description": "true=实心圆点 + 短边框；false=角标装饰（带 4 角）" }
+            },
+            "itemsSet": {
+                "type": "array",
+                "items": "{ backgroundImage, indexBgColor, indexBorderColor, color, fontStyle (normal|italic|oblique), fontSize }",
+                "description": "前 3 名单独配置（itemsSet[0..2]）；超过 3 个走默认 itemStyle",
+                "default": [
+                    { "color": "#FFB3B3", "fontStyle": "italic", "fontSize": 30 },
+                    { "color": "#FFDCB3", "fontStyle": "italic", "fontSize": 30 },
+                    { "color": "#B3E1FF", "fontStyle": "italic", "fontSize": 30 }
+                ]
+            },
+            "indexFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle" },
+            "nameFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle" },
+            "valueFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle" },
+            "unitFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle" }
+        },
+        "default_values": {
+            "config.title": "topN排名",
+            "config.width": 300,
+            "config.height": 300,
+            "config.itemStyle.width": 510,
+            "config.itemStyle.height": 60,
+            "config.itemStyle.indexSize": 50,
+            "config.itemStyle.isHideShotBorder": true
+        },
+        "ui_features": "与 top-rank 的差异：① 序号支持 isHideShotBorder 切换角标风格 ② itemsSet 含 fontStyle 字段（normal/italic/oblique）③ 默认 italic 风格 ④ 无 itemsSet[index].color 与背景图同时设置（默认无）"
+    },
+    "business_scenarios": [
+        "通用 TopN 排名（机房/网格通/掌厅/手机APP 等）",
+        "陕西联通风格 TopN 排名（中文长名 + 单位）",
+        "前 3 名单独配色 + 斜体高亮",
+        "前 N 名自定义样式（itemsSet 数组按 index 索引）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "echarts-bar", "cost": "低", "reason": "echarts-bar 处理排名 Top10，本组件处理前 3 名独立配色" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [],
+        "note": "与 top-rank 几乎同构（schema 95% 一致），重复维护成本"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.4,
+        "weighted_total": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.0
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='topN排名' 业务化但 'shaanxi' 后缀不直观。",
+            "2. 场景覆盖度 3.5：覆盖 TopN 排名 + 前 3 名单独配色 + 序号角标 + 多字体样式（normal/italic/oblique），与 top-rank 高度重复。",
+            "3. 配置完备度 4.5：6 个 FormCollapse 分组（通用/分项设置/4 个字体样式）+ ArrayCollapse 增删项；默认值丰富。",
+            "4. 数据契约清晰度 3.0：dataModel 4 个字段；⚠️ id 字段 schema 声明但代码未消费；dataType 全 string（其他字段也无 type 约束）。",
+            "5. 文档完整度 2.0：仅有 doc/README.md + doc/CHANGELOG.md，缺 5+1 文档。",
+            "6. 可组合性 3.0：与 top-rank 高度重复，跨物料选择会增加维护成本。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 2,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 10,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 4,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.itemStyle.isHideShotBorder"],
+        "data_required": ["name", "value"],
+        "optional_fields": {
+            "config": ["itemsSet (前 3 名配色)", "indexFontStyle/nameFontStyle/valueFontStyle/unitFontStyle"],
+            "data": ["unit (单位)", "id (未使用)"]
+        },
+        "assumptions": [
+            "使用默认前 3 名斜体配色（红/橙/蓝）",
+            "isHideShotBorder=true 实心圆风格",
+            "无点击派发"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 2, "minutes": 10, "description": "默认样式 + 默认前 3 名配色 + 名称/数值" },
+            "typical": { "config_items": 5, "data_fields": 3, "minutes": 20, "description": "自定义前 3 名配色 + 自定义字体颜色 + 单位" },
+            "full": { "config_items": 10, "data_fields": 4, "minutes": 40, "description": "全部 6 个 FormCollapse 分组 + 角标风格 + 完整字体 + 背景图" }
+        }
+    },
+    "_validation_notes": [
+        "与 top-rank 几乎同构（schema 95% 一致 + 同 dataModel 字段），疑似同一物料的两个变体",
+        "id 字段 schema 声明但代码未消费（line 11 显式未使用）",
+        "dataType 全 string 但 value 实际是数字（'2342' 而非 2342）",
+        "isHideShotBorder 控制序号风格，但切换时无 placeholder 提示，PM 难理解两种风格差异",
+        "valueFontStyle.transform 字段（line 515）schema 未声明，可能是遗留字段",
+        "default.json 字段值是 string 类型（'2342'/'2111'），实际应为 number",
+        "itemsSet 默认值 fontSize=30 偏大，需 PM 调小"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

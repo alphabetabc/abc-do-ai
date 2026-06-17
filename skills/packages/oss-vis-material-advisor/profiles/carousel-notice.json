@@ -1,0 +1,168 @@
+{
+    "name": "carousel-notice",
+    "title": "滚动公告",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.tsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.tsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "李萌"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "公告数据（content + id + level）",
+                "example": "[{ content: '公告内容...', id: 123, level: 1 }, ...]",
+                "match_pattern": "dataSource[*].{content, id, level}",
+                "fields": [
+                    { "name": "content", "type": "String", "required": true, "description": "公告内容（必需）" },
+                    { "name": "id", "type": "Number", "required": true, "description": "公告ID（用于点击派发）" },
+                    { "name": "level", "type": "Number", "required": false, "description": "公告级别，匹配 iconStyleSet 中的级别显示对应图标" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "drilldown",
+                "trigger": "click",
+                "config_field": "interactions.defined.configurableEvent.clickEvent",
+                "sub_fields": ["show (boolean)", "effect (Modal|Drawer)", "params", "drilldownItemFields", "position", "size", "mask", "closable", "title (Drawer)"],
+                "payload": "id (整行 ID)",
+                "known_issue": "clickEvent 派发携带 state.visible=true + state.param=id，但消费方需自行解析 param"
+            }
+        ],
+        "visual_configs": {
+            "content": {
+                "width": { "type": "number", "default": 200, "description": "单项宽度 px" },
+                "height": { "type": "number", "default": 45, "description": "单项高度 px" },
+                "direction": {
+                    "type": "string",
+                    "default": "right",
+                    "options": ["right (上下)", "bottom (左右)"],
+                    "description": "滚动方向（antd Carousel dotPosition），命名略反直觉"
+                },
+                "speed": { "type": "number", "default": 3000, "description": "滚动速度(毫秒)" },
+                "autoplaySpeed": { "type": "number", "default": 5000, "description": "滚动间隔(毫秒)" },
+                "autoplay": { "type": "boolean", "default": true, "description": "是否自动轮播" },
+                "ellipsis": { "type": "boolean", "default": true, "description": "文本超长省略号" },
+                "isCursorHand": { "type": "boolean", "default": false, "description": "点击时鼠标手势" },
+                "textStyle": { "type": "object", "component": "VisualTextStyle" }
+            },
+            "icon": {
+                "image": { "type": "string", "default": "background-34.png", "description": "默认图标（依赖静态资源）" },
+                "size": { "type": "number", "default": 15, "description": "图标大小 px" },
+                "isIconAffix": { "type": "boolean", "default": false, "description": "是否固定图标（不随 level 切换）" },
+                "marginLeft/Right/Top/Bottom": { "type": "number", "default": 0, "description": "图标 4 方向边距" }
+            },
+            "iconStyleSet": {
+                "type": "array",
+                "items": { "image": "string", "size": "number", "level": "number" },
+                "description": "按 level 数值匹配显示对应图标；空数组时所有公告共用 icon.image"
+            }
+        },
+        "default_values": {
+            "config.title": "滚动公告",
+            "config.width": 250,
+            "config.height": 50,
+            "config.content.width": 200,
+            "config.content.height": 45,
+            "config.content.direction": "right",
+            "config.content.speed": 3000,
+            "config.content.autoplaySpeed": 5000,
+            "config.content.autoplay": true,
+            "config.content.ellipsis": true,
+            "config.icon.size": 15,
+            "config.icon.image": "background-34.png"
+        }
+    },
+    "business_scenarios": [
+        "系统公告滚动展示（运维通知、升级提醒）",
+        "不同级别告警按 level 区分图标轮播",
+        "活动/促销信息轮播",
+        "运维提示+Modal/Drawer 下钻详情"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-map", "cost": "中", "reason": "公告 id 派发与地图下钻需对齐 fieldMapping" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [
+            { "material": "table", "cost": "中", "reason": "公告 clickEvent 派发 schema 与 table 不同，跨物料需适配" }
+        ],
+        "note": "依赖静态资源 background-34.png（默认图标），部署到新环境需保证资源可用"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.8,
+        "weighted_total": 3.8,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='滚动公告' + 字段(content/id/level) 业务化，level 字段名业务化。",
+            "2. 场景覆盖度 3.5：覆盖公告轮播 + 按 level 分级图标 + Modal/Drawer 下钻；场景较单一（仅公告）。",
+            "3. 配置完备度 4.5：3 个 FormCollapse 分组（内容/图标/按级别显示配置）+ 完整的 Modal/Drawer 弹窗配置（位置/尺寸/遮罩/关闭按钮/标题/placement）+ x-reactions 联动 effect/placement；默认值丰富。",
+            "4. 数据契约清晰度 3.5：dataModel 字段 3 个全声明且 fieldLabel 业务化（'公告内容/公告id/公告级别'）。⚠️ content 是必需字段但 dataModel 未标 required。",
+            "5. 文档完整度 2.0：仅有 doc/readme.md，缺 5+1 文档。",
+            "6. 可组合性 4.0：与地图/数字卡/装饰边框均低代价；点击派发 clickEvent 是标准 messageCenter 事件，订阅方易对接。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 1,
+        "data_fields_to_provide": 2,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 6,
+        "breakdown": {
+            "config_minutes": 1,
+            "data_minutes": 4,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title"],
+        "data_required": ["content", "id"],
+        "optional_fields": {
+            "config": ["content.speed/autoplaySpeed", "icon.image/size", "iconStyleSet (按 level)"],
+            "data": ["level (按级别显示图标)"]
+        },
+        "assumptions": [
+            "使用默认 antd Carousel 上下滚动",
+            "无按 level 分级图标需求",
+            "无下钻（仅展示）"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 1, "data_fields": 2, "minutes": 6, "description": "默认样式 + 公告轮播" },
+            "typical": { "config_items": 4, "data_fields": 3, "minutes": 14, "description": "自定义图标/速度/高度 + level 分级 + 下钻" },
+            "full": { "config_items": 8, "data_fields": 3, "minutes": 28, "description": "全部 3 个 FormCollapse 分组 + 完整 Modal/Drawer 弹窗配置" }
+        }
+    },
+    "_validation_notes": [
+        "direction 字段名实际对应 antd Carousel 的 dotPosition，且 value='right' 含义是'上下'，与代码注释相反（'上下/左右'），PM 易误解",
+        "默认图标 'background-34.png' 是静态资源依赖，部署环境需保证可用",
+        "content 字段代码中无空保护，直接渲染会崩溃（需 data 层兜底）",
+        "dataModel 未标 content 字段 required，但代码直接读取 item.content 渲染（漏空检查）"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

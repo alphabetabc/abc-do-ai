@@ -40,9 +40,9 @@ glob.sync('src/packages/**/oss-material.json')
 | 状态 / 标签             | 2       | 0          | 2                                 |
 | 边框 / 装饰             | 25      | 0          | 0                                 |
 | 其他                    | 6       | 0          | 0                                 |
-| **合计**                | **146** | **19**     | **36**                            |
+| **合计**                | **146** | **20**     | **36**                            |
 
-> 最后更新：2026-06-16（新增 circular-progress、popover-check、top-rank 三个物料文档）
+> 最后更新：2026-06-17（新增 oss-chart-map 物料文档）
 
 ## 状态说明
 
@@ -56,7 +56,7 @@ glob.sync('src/packages/**/oss-material.json')
 
 ---
 
-## ✅ 已完成 5+1 文档化的物料（19）
+## ✅ 已完成 5+1 文档化的物料（20）
 
 | 物料 | 分类 | 复杂度 | 核心特点 | 关键踩坑 |
 | --- | --- | --- | --- | --- |
@@ -251,7 +251,7 @@ glob.sync('src/packages/**/oss-material.json')
 | `geo-cascader`           | 中     | ⏳ 待补充 | —    |
 | `oss-chart-classify-map` | 高     | ⏳ 待补充 | —    |
 | `oss-chart-fly-line-map` | 高     | ⏳ 待补充 | —    |
-| `oss-chart-map`          | 高     | ⏳ 待补充 | —    |
+| `oss-chart-map`          | 高     | [📄](./oss-chart-map/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
 | `oss-gis`                | 高     | ⏳ 待补充 | —    |
 
 ## 12. 3D / 拓扑（4）

@@ -1,0 +1,141 @@
+{
+  "name": "oss-chart-plots-sankey",
+  "title": "桑基图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "郝营营",
+    "groupId": 21,
+    "uses_common_schema": "无（自定义样式）",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssSankeyPlotChart)",
+    "unique_features": [
+      "三字段数据格式（source/target/value 流向图）",
+      "tooltip 强制 shared=false（避免多节点 tooltip 混乱）",
+      "无 xAxis/yAxis/legend（桑基图不需要）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "桑基图（source + target + value 流向）",
+        "example": "[{ source: 'A', target: 'B', value: 10 }, { source: 'B', target: 'C', value: 5 }, ...]",
+        "match_pattern": "data[*].{source, target, value}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "source", "type": "String", "required": true, "description": "来源节点" },
+          { "name": "target", "type": "String", "required": true, "description": "目标节点" },
+          { "name": "value", "type": "String(实际number)", "required": true, "description": "节点之间关系的权重" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "common": {
+        "color": "ColorPicker 数组 (节点/连边颜色)"
+      },
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "tooltip": {
+        "visible": "Switch",
+        "background": "ColorPicker",
+        "shared": "硬编码 false（@oss-chart 默认是 true，桑基图必须 false）"
+      }
+    },
+    "default_values": {
+      "config.title": "桑基图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "能源流向：能源从源头到终端的流向（如电力从发电→输电→配电→用户）",
+    "用户行为路径：用户从入口到转化的路径（PV→点击→注册→付费）",
+    "资金流：资金在不同账户/部门间的流转",
+    "供应链：原材料→加工→成品→销售的供应链",
+    "数据流转：数据在不同系统间的流转"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/funnel", "cost": "中", "reason": "流程类图表，但桑基是多对多，漏斗是单链路" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总量" }
+    ],
+    "incompatible_with": ["其他 X/Y 轴图表"],
+    "note": "本物料是 oss-chart-plots 系列中数据格式最特殊的（3 字段：source/target/value），与其他物料不兼容"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.0,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.5,
+      "composability": 3.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段（来源节点/目标节点/关系权重）业务语义非常清晰，fieldLabel 都是中文业务化命名。",
+      "2. 场景覆盖度 3.5：覆盖能源/用户路径/资金/供应链 4 大类场景；但桑基图本身用得少，场景受限。",
+      "3. 配置完备度 3.0：配置项少（color 数组 + valueLabel + tooltip），无 xAxis/yAxis/legend；比 pie/rose 配置项少。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰（3 个），但 ① dataType 错标（value 应为 Number）。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md 存在 + doc/images 2 张示例图。",
+      "6. 可组合性 3.0：与其他 X/Y 轴物料数据格式不兼容（3 字段 source/target/value vs X/Y 格式）。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 7,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.common.color"],
+    "data_required": ["source", "target", "value"],
+    "optional_fields": {
+      "config": ["width", "height", "valueLabel.show", "tooltip.visible"]
+    },
+    "assumptions": [
+      "使用默认色板",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 3, "minutes": 7, "description": "桑基图 + 默认色" },
+      "typical": { "config_items": 4, "data_fields": 3, "minutes": 12, "description": "自定义色 + 标签" },
+      "full": { "config_items": 6, "data_fields": 3, "minutes": 18, "description": "完整样式 + 标签 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（value 应为 Number）",
+    "dataConverter 中 source/target 是 String 直接透传，value 字段未强转 Number（line 56 `value: d.value`）",
+    "tooltip 硬编码 shared=false（line 39），PM 配置 tooltip 时无法改为 true（@oss-chart 默认 true）",
+    "defaultValue.dataConfig.json 缺失",
+    "oss-material.json.dataModel 是空字符串"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 word-cloud 画像"
+  }
+}

@@ -1,0 +1,85 @@
+{
+    "name": "geo-cascader",
+    "title": "省地市级联选择框",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "孙寰哲",
+    "scanned_at": "2026-06-17",
+    "description": "省-地市-区县三级级联选择控件，加载静态map-config.json作为下拉数据源，常用于地图区域切换联动",
+    "data_format": {
+        "type": "static_config",
+        "source": "STATIC_PATH/map/map-config.json（外部静态资源）",
+        "format": "JSON 树形数据 [{ id, name, parent, adcode, children }]",
+        "parent_root": "100000（表示根级省份）",
+        "data_model": "无 dataModel.json，依赖外部静态JSON",
+        "_note": "组件本身无数据接入面板，由 loadJSON 拉取"
+    },
+    "visual_config": {
+        "selected_style": {
+            "selectedOutline": { "type": "string", "description": "省ID（限定可选范围）", "default": "" },
+            "width": { "type": "number", "default": 250 },
+            "height": { "type": "number", "default": 36 },
+            "size": { "type": "enum", "options": ["default", "large", "small"], "default": "default" },
+            "popupPlacement": { "type": "enum", "options": ["topLeft", "topRight", "bottomLeft", "bottomRight"], "default": "bottomLeft" },
+            "textStyle": { "type": "object", "x-component": "VisualTextStyle", "description": "文本样式（字号/颜色/粗细）", "default": { "fontSize": 20, "color": "#3ABBE8", "fontWeight": "normal" } },
+            "backgroundColor": { "type": "string", "default": "rgba(33,76,128,0)" },
+            "bordered": { "type": "boolean", "default": false, "description": "显示边线" },
+            "changeOnSelect": { "type": "boolean", "default": true, "description": "选中即改变（无需选完最后一级）" },
+            "allowClear": { "type": "boolean", "default": false, "description": "显示清除按钮" }
+        }
+    },
+    "interactions": {
+        "change": {
+            "type": "dispatch",
+            "description": "选中项变化时派发 select 字段",
+            "event_field": "select",
+            "value_format": "最后一级ID（省/地市/区县ID）"
+        }
+    },
+    "business_scenarios": [
+        "地图区域切换控件（与geo-3d-map配合）",
+        "大屏顶部地理筛选器",
+        "数据按区域过滤的入口"
+    ],
+    "composability": {
+        "compatible_with": [
+            "geo-3d-map（通过 select 事件切换地图中心区域）",
+            "echarts-map",
+            "oss-chart-map",
+            "drilldown-table（按区域过滤表格）"
+        ],
+        "replaces": [
+            "el-cascader（封装好的行政区域级联）",
+            "普通Select（多层级选择场景）"
+        ],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "部署 map-config.json 静态资源到 STATIC_PATH/map/ 下",
+            "配置 selectedStyle 视觉样式",
+            "配置 select 派发参数与其他组件联动"
+        ],
+        "dependencies": ["map-config.json 静态资源（需单独维护行政区域数据）"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "external_dependency": "依赖外部 STATIC_PATH/map/map-config.json 静态资源，需运维/前端配合维护",
+        "missing_data_model": "无 dataModel.json，使用方需自行确认静态资源结构",
+        "doc_status": "有 doc/README.md",
+        "composability_strength": "作为地图区域切换控件，与 geo-3d-map 形成黄金组合"
+    }
+}

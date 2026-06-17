@@ -1,0 +1,170 @@
+{
+  "name": "scene-over-view-hlj",
+  "title": "场景概述",
+  "category": "容器/布局",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "极高",
+    "author": "shz",
+    "groupId": 26,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / defineInteractionSchema（@Common）",
+    "uses_hoc": "无（oss-ui ConfigProvider + DataStatus + 纯 DOM 渲染）",
+    "plot_library": "纯 CSS + 背景图装饰"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "分组列表式（groupId + groupName + name1~4 + value1~5 + level1~5）",
+        "example": "[{groupId:'1',value1:'场景名',value2:'场景描述'},{groupId:'2',name1:'指标',value1:'99.99%',level1:'0'},...] 7 条（groupId 1-7）",
+        "match_pattern": "data[0~6] 按 groupId 索引: dataGroup[1] 标题区, [2]~[7] 指标组（6 个 child-content）",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "groupId", "type": "String", "required": true, "description": "分组ID（1=标题/调度区, 2~7=6 个指标组）" },
+          { "name": "groupName", "type": "String", "required": false, "description": "分组名" },
+          { "name": "name1~4", "type": "String", "required": false, "description": "指标名 1~4" },
+          { "name": "value1~4", "type": "String", "required": true, "description": "指标值 1~4" },
+          { "name": "value5", "type": "String", "required": false, "description": "value5（场景名/调度名）" },
+          { "name": "level1~5", "type": "String", "required": false, "description": "等级 1~5（'0' 正常/'1' 告警）" }
+        ],
+        "match_logic": "dataGroup = _.keyBy(dataSource, 'groupId') → dataGroup[1] 标题区, dataGroup[2~7] 6 个 child-content 块"
+      }
+    ],
+    "interactions": [
+      { "type": "titleClick (onTitleClick)", "trigger": "click", "payload": "sceneName=dataGroup[1].value5", "note": "titleDrilldownEvent 或 titleClickEvent（Modal/Drawer）" },
+      { "type": "dispatchClick (onDispatchClick)", "trigger": "click", "payload": "sceneName=dataGroup[1].value5", "note": "dispatchDrilldownEvent（Modal/Drawer）" },
+      { "type": "childClick (onChildClick)", "trigger": "click", "payload": "sceneName=dataGroup[1].value5", "note": "childDrilldownEvent（Modal/Drawer）；dataGroup[4]~[5] 子项绑定" }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT",
+      "title": "getCompTitle",
+      "11 个样式配置分组 (FormCollapse.CollapsePanel)": {
+        "dispatchStyle": "调度按钮（display/size/margin/backgroundType/backgroundColor/backgroundImg/backgroundRepeat）",
+        "backGroundBaseStyle": "整体背景（size/margin/padding/backgroundType/Color/Img/Repeat）",
+        "leftTopStyle": "左上标题文字（textStyle + 背景）",
+        "leftCenterStyle": "左中背景图（无文字）",
+        "leftBottomStyle": "左下标题文字",
+        "rightGroupNameStyle": "右侧通用指标组名称（textStyle）",
+        "rightNameStyle": "右侧通用指标名称（textStyle）",
+        "rightResourceValueStyle": "右侧资源指标值（textStyle）",
+        "rightValueStyle": "右侧通用指标值（textStyle，绿）",
+        "rightRedValueStyle": "右侧通用指标阈值文字（textStyle，红）",
+        "drillPointerStyle": "下钻指针（titlePointer / childPointer → 鼠标光标 click-pointer）"
+      }
+    },
+    "default_values": {
+      "config.title": "场景概述",
+      "config.width": 875,
+      "config.height": 215,
+      "config.left": 500,
+      "config.top": 500,
+      "config.backGroundBaseStyle.backgroundImg": "85HF2xv9fgsCjXX9SaGPy.png（黑龙江背景）",
+      "config.leftTopStyle.textStyle.color": "rgba(70, 253, 255, 1)",
+      "config.leftTopStyle.backgroundImg": "XqBrN0rZSOgg1VBGrWMml.png",
+      "config.leftCenterStyle.backgroundImg": "fujian-gutian.png（古田背景）",
+      "config.rightValueStyle.color": "#00ff79（绿）",
+      "config.rightRedValueStyle.color": "rgba(255, 106, 106, 1)（红）",
+      "config.dispatchStyle.dispatchDisplay": true,
+      "config.dispatchStyle.backgroundImg": "cNy7I3uFbysO3-Tl3dRxp.png",
+      "dataConfig.json": "[{groupId:1~7 7 条，含 标题区+调度区+6 个 child-content 指标组（性能/告警/资源/接入）}]",
+      "dataConfig.refreshTime": 3600
+    }
+  },
+  "business_scenarios": [
+    "黑龙江网络监控大屏：场景标题 + 调度按钮 + 6 块指标组（性能/告警/资源/接入）",
+    "省市/区域场景概览：场景名+场景描述+6 块分类指标",
+    "指挥中心大屏：核心指标等级染色（绿/红）+ 标题/调度下钻",
+    "运维监控大屏：场景切换 + 性能 KPI + 告警等级高亮",
+    "大屏全局场景：作为子区域嵌入大屏顶部或侧边"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "ellipse-layout-indicator", "cost": "中", "reason": "椭圆布局 vs 场景概述，组合为 '场景标题 + 多指标' 模式" },
+      { "material": "free-layout-indicator-group", "cost": "中", "reason": "自由排布指标组作为子区域" },
+      { "material": "nine-grid", "cost": "中", "reason": "九宫格作为子区域" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰" }
+    ],
+    "incompatible_with": [],
+    "note": "高度定制化的场景概览组件，11 个样式配置分组（黑龙江专用）；数据依赖 groupId 1~7 固定索引"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B-",
+    "score": 3.2,
+    "weighted_total": 3.2,
+    "breakdown": {
+      "business_description": 2.5,
+      "scenario_coverage": 2.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 2.5,
+      "doc_completeness": 2.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 2.5：dataModel 16 字段虽然多但 groupId 1~7 固定索引硬编码（高度定制化黑龙江大屏），通用性差；name1~4/value1~5 字段命名泛化，业务语义弱。",
+      "2. 场景覆盖度 2.5：单一大屏定制组件（黑龙江），11 个样式分组映射 11 个具体 DOM 区域，无法灵活适配其他场景。",
+      "3. 配置完备度 4.5：11 个 FormCollapse 分组（每个 DOM 区域独立配置）+ 3 个点击事件（title/dispatch/child drilldownEvent）+ x-reactions 联动；配置粒度极细。",
+      "4. 数据契约清晰度 2.5：dataModel 16 字段全部错标 String（value/level 应为 Number）；groupId 1~7 固定索引依赖隐式约定。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md + 9 张图片，但无 5+1 文档。",
+      "6. 可组合性 4.0：与各类指标/布局组件可组合作为子区域；但本身定制化强，复用性低。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 11,
+    "data_fields_to_provide": 16,
+    "needs_custom_dev": true,
+    "custom_dev_minutes": 20,
+    "estimated_minutes": 60,
+    "breakdown": {
+      "config_minutes": 25,
+      "data_minutes": 15,
+      "custom_minutes": 20
+    },
+    "config_required": ["config.dispatchStyle", "config.backGroundBaseStyle", "config.leftTopStyle", "config.leftCenterStyle", "config.leftBottomStyle", "config.rightGroupNameStyle", "config.rightNameStyle", "config.rightResourceValueStyle", "config.rightValueStyle", "config.rightRedValueStyle", "config.drillPointerStyle"],
+    "data_required": ["groupId 1~7", "value1~4", "level1~4", "value5"],
+    "optional_fields": {
+      "config": ["title", "width", "height", "left", "top"],
+      "data": ["name1~4", "groupName", "level5"]
+    },
+    "assumptions": [
+      "dataSource 必须提供 groupId 1~7 共 7 条",
+      "groupId 1=标题区, 2~7=6 个 child-content 块（硬编码索引）",
+      "level 字段 '0'=正常（绿）, '1'=告警（红）",
+      "value1~5 实际为 String（dataModel 标 String）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 11, "data_fields": 7, "minutes": 60, "description": "11 样式默认 + 7 条 groupId 1~7 数据" },
+      "typical": { "config_items": 11, "data_fields": 16, "minutes": 90, "description": "11 样式深度定制 + 16 字段全提供" },
+      "full": { "config_items": 11, "data_fields": 16, "minutes": 120, "description": "完整 11 FormCollapse + 3 drilldownEvent + 16 字段 + 全部 level 控制" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在",
+    "dataModel 中所有 value/level 字段错标 String（实际为 Number 或 String）",
+    "dataModel 16 字段对应 groupId 1~7 的硬编码索引，无法灵活扩展",
+    "11 个样式分组一一对应 11 个 DOM 区域（强耦合，不可拆分复用）",
+    "dataConfig.data[0~6] 通过 groupId keyBy 后硬编码引用 dataGroup[1]~[7]",
+    "level 字段 '0'/'1' 字符串与 rightValueStyle/rightRedValueStyle 颜色切换",
+    "使用 INTERACTION_TYPES 常量做 Modal/Drawer 判断（@Src/common/constants）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 telescoping-board"
+  }
+}

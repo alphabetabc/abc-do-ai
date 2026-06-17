@@ -1,0 +1,158 @@
+{
+    "name": "topn-rank",
+    "title": "topn排名",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "李萌"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "TopN 排名（id + title + name + value + percent + unit）",
+                "example": "[{ id: '1', title: 'broadband', name: '宽带', percent: '90%', value: '287', unit: 's' }, ...]",
+                "match_pattern": "dataSource[*].{id, title, name, value, percent, unit}",
+                "note": "title 用于行顶标签，name 用于底部名称，percent 控制进度条宽度（CSS width: ${percent}）",
+                "fields": [
+                    { "name": "id", "type": "string", "required": false, "description": "行ID（schema 声明但代码未消费）" },
+                    { "name": "title", "type": "string", "required": true, "description": "行顶标签（topn-rank 独有，top-rank/top-rank-shaanxi 无此字段）" },
+                    { "name": "name", "type": "string", "required": true, "description": "底部名称" },
+                    { "name": "value", "type": "string(实际number)", "required": true, "description": "行数值" },
+                    { "name": "percent", "type": "string", "required": true, "description": "进度条百分比（含 % 符号，例 '90%'）" },
+                    { "name": "unit", "type": "string", "required": false, "description": "单位" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "itemStyle": {
+                "width": { "type": "number", "default": 300, "description": "单项宽度 px" },
+                "height": { "type": "number", "default": 80, "description": "单项高度 px" },
+                "marginBottom": { "type": "number", "default": 16, "description": "项间距 px" }
+            },
+            "itemColors": {
+                "isGradient": { "type": "boolean", "default": false, "description": "true=每项使用 itemsSet[i].bgColor 渐变；false=使用 colors 数组纯色（默认 DEFAULT_COLORS）" },
+                "colors": { "type": "ColorGroup[]", "description": "纯色模式颜色数组（isGradient=false 时使用）" },
+                "itemsSet": {
+                    "type": "Array<{ itemSetting: { bgColor: BackgroundColor } }>",
+                    "description": "渐变模式分项配置（isGradient=true 时使用），bgColor 支持 linear-gradient",
+                    "default": "未提供 → 回落 DEFAULT_COLORS"
+                }
+            },
+            "indexStyle": {
+                "width": { "type": "number", "default": 50, "description": "序号区宽度 px（影响圆尺寸，width*0.7）" },
+                "fontStyle": { "type": "object", "description": "序号字体样式 VisualTextStyle" }
+            },
+            "progressStyle": {
+                "titleStyle": { "type": "object", "description": "顶部 title 字体样式（topn-rank 独有）" },
+                "nameStyle": { "type": "object", "description": "底部 name 字体样式" },
+                "valueStyle": { "type": "object", "description": "数值字体样式" },
+                "unitStyle": { "type": "object", "description": "单位字体样式" }
+            }
+        },
+        "default_values": {
+            "config.title": "topn排名",
+            "config.width": 300,
+            "config.height": 300,
+            "config.itemStyle.width": 300,
+            "config.itemStyle.height": 80,
+            "config.itemStyle.marginBottom": 16,
+            "config.itemColors.isGradient": false,
+            "config.indexStyle.width": 50
+        },
+        "ui_features": "序号区采用 4 角装饰（border1/border2 交叉布局），与 top-rank 简单圆点和 top-rank-shaanxi 角标不同。进度条同时显示 line（条）和 circle（头），使用相同 backgroundColor/Image。"
+    },
+    "business_scenarios": [
+        "业务 TopN 排名（宽带/固话/魔百和等业务类型排序）",
+        "带顶部 title 标签的多行排名",
+        "带进度条 + 名称 + 数值 + 单位的复合 TopN 展示",
+        "支持渐变（isGradient=true）和纯色（isGradient=false）双模式"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "echarts-bar", "cost": "低", "reason": "echarts-bar 处理横向条形；topn-rank 处理带顶部 title + 进度条" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [],
+        "note": "与 top-rank、top-rank-shaanxi、topn-rank-one 高度同构（schema 80% 重叠），4 个排名物料重复维护成本高"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.5,
+        "weighted_total": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='topn排名' 业务化，但与 top-rank-shaanxi/title=topN排名 命名冲突，PM 难选择。",
+            "2. 场景覆盖度 3.5：覆盖 TopN 排名 + 顶部 title 标签 + 渐变/纯色双模式 + 进度条 + 4 角装饰序号，场景集中。",
+            "3. 配置完备度 4.0：4 个 FormCollapse 分组（通用/颜色/序号/右侧文字）+ ArrayCollapse 增删项；缺少分项 backgroundImage 配置。",
+            "4. 数据契约清晰度 3.0：dataModel 6 个字段；⚠️ id 字段 schema 声明但代码未消费；dataType 全 string（percent 实际需含 % 符号）；无 defaultValue 默认数据不规范（value='287' 应为 287）。",
+            "5. 文档完整度 2.0：仅有 doc/README.md，缺 5+1 文档。",
+            "6. 可组合性 3.5：与 3 个近似排名物料共存，跨物料选择需了解差异点（title 字段、序号风格、itemsSet 字段）。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 3,
+        "data_fields_to_provide": 4,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 12,
+        "breakdown": {
+            "config_minutes": 4,
+            "data_minutes": 8,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.itemStyle.height", "config.indexStyle.width"],
+        "data_required": ["title", "name", "value", "percent"],
+        "optional_fields": {
+            "config": ["itemColors.isGradient (true=渐变)", "itemColors.itemsSet (渐变分项)", "itemColors.colors (纯色数组)", "progressStyle.titleStyle/nameStyle/valueStyle/unitStyle"],
+            "data": ["id (未使用)", "unit (单位)"]
+        },
+        "assumptions": [
+            "isGradient=false 使用默认 DEFAULT_COLORS",
+            "percent 字段需带 % 符号（如 '90%'）",
+            "无点击派发",
+            "无 topNumber 限制（全部渲染）"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 3, "data_fields": 4, "minutes": 12, "description": "默认纯色 + 3 行 + 名称/数值/百分比/title" },
+            "typical": { "config_items": 6, "data_fields": 5, "minutes": 25, "description": "渐变模式 + 自定义 itemsSet + 完整字体" },
+            "full": { "config_items": 10, "data_fields": 6, "minutes": 40, "description": "全部 4 个 FormCollapse 分组 + 渐变分项 + 完整字体" }
+        }
+    },
+    "_validation_notes": [
+        "id 字段 schema 声明但 index.jsx 中未消费（line 7-8 仅解构 itemStyle/itemColors/indexStyle/progressStyle）",
+        "dataType 全 string 但 percent 实际是 '90%'（含 % 符号）需在代码 line 94 拼接为 CSS width 字符串",
+        "defaultValue.json value='287'（带引号）实际应为 number 287",
+        "defaultValue.json id 全是 '1'，无意义（应使用不同值或删字段）",
+        "progressStyle 包含 titleStyle/nameStyle/valueStyle/unitStyle 4 套字体但 defaultValue 中 progressStyle={}，需要 PM 手动配置",
+        "4 个排名类物料（top-rank/top-rank-shaanxi/topn-rank/topn-rank-one）同质化严重，建议统一为一个物料 + 多种皮肤"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

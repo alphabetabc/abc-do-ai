@@ -1,0 +1,147 @@
+{
+  "name": "oss-chart-plots-radar",
+  "title": "雷达图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 18,
+    "uses_common_schema": "PLOTS_SCHEMA（部分）",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssRadarPlotChart)",
+    "uses_common_helper": "EMPTY_ARRAY from @oss-chart/common"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "雷达图（X维度 + Y指标）",
+        "example": "[{ x: '销售', y: 80, s: 'A组' }, { x: '技术', y: 90, s: 'A组' }, ...]",
+        "match_pattern": "data[*].{x, y, s?}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目（雷达维度名）" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值（雷达值）" },
+          { "name": "compareType", "type": "String", "required": false, "description": "多系列分组键（隐式字段，dataModel 未声明）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "yAxis.gridLine.isCircleGrid": "Boolean (圆形网格 vs 多边形网格)",
+      "yAxis.gridLine.alternateColor": "ColorPicker (交替区域填充色)",
+      "radarStyle": {
+        "radius": "NumberPicker (0-1, 雷达图半径比例)",
+        "smooth": "Boolean (线条平滑)",
+        "lineWidth": "NumberPicker",
+        "areaOpacity": "SliderWithNumber (区域透明度)",
+        "color": "ColorPicker 数组"
+      },
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND",
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM（类目轴）"
+    },
+    "default_values": {
+      "config.title": "雷达图",
+      "config.radarStyle.radius": 1,
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "多维度能力评估：员工技能雷达图（销售/技术/沟通/管理...）",
+    "产品多维对比：多个产品在多个维度的得分对比（多系列）",
+    "性能多维监控：服务器多维性能（CPU/内存/磁盘/网络）",
+    "用户画像：用户多维属性分布",
+    "绩效评估：员工/部门多维绩效评估"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/base-scatter", "cost": "中", "reason": "同样多维数据，散点图视角" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示各维度数值" }
+    ],
+    "incompatible_with": [],
+    "note": "dataModel 字段（dimensions/indicators）全是空数组，意味着数据契约需通过 dataConverter 隐式约定"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 2.5,
+      "doc_completeness": 2.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.0：dataModel 字段（dimensions 和 indicators）都是空数组，dataModel 本身是空的；dataConverter 隐式从 dimension_name/indicator_value 取数。",
+      "2. 场景覆盖度 4.0：支持多系列（s=compareType 隐式约定），覆盖多维评估/对比/监控 3 大类场景。",
+      "3. 配置完备度 3.5：基础配置齐全（radarStyle 颜色/半径/平滑/线宽/区域透明度 + 网格圆形 vs 多边形 + 交替区域色）；比 pie/rose 多了网格配置，比 area/line 少了 point 配置。",
+      "4. 数据契约清晰度 2.5：dataModel 字段全空是严重问题——PM 看 dataModel 完全得不到任何信息；只能依赖 dataConverter 推断约定（x=dimension_name, y=indicator_value, s=compareType）。",
+      "5. 文档完整度 2.0：无 doc/ 目录。",
+      "6. 可组合性 4.0：与同系列 line/area 同 dataConverter 模式（x=dimension_name, y=indicator_value），跨物料对接相对容易。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 7,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.radarStyle.color"],
+    "data_required": ["dimension_name", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "radarStyle.radius", "radarStyle.smooth", "yAxis.gridLine.isCircleGrid"],
+      "data": ["compareType (多系列)"]
+    },
+    "assumptions": [
+      "使用默认颜色（DEFAULT_COLORS）",
+      "网格用多边形（非圆形）",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 7, "description": "单系列雷达图 + 默认样式" },
+      "typical": { "config_items": 5, "data_fields": 3, "minutes": 15, "description": "多系列雷达 + 自定义色 + 圆形网格" },
+      "full": { "config_items": 9, "data_fields": 3, "minutes": 30, "description": "完整样式 + 圆形网格 + 交替区域 + 标签" }
+    }
+  },
+  "_validation_notes": [
+    "dataModel.json 中 dimensions 和 indicators 全是空数组（最高严重度：dataModel 本身无信息）",
+    "dataType 错标（indicator_value 应为 Number）",
+    "compareType 字段在 dataModel 中未声明但 dataConverter 读取为 s",
+    "dataConverter 中 indicator_value 强转为 Number（+d.indicator_value），但 dataType 声明为 String",
+    "defaultValue.dataConfig.json 缺失",
+    "oss-material.json.dataModel 是空字符串",
+    "代码 import EMPTY_ARRAY from @oss-chart/common（外部包依赖）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 base-area/base-scatter/histogram/sankey/word-cloud/funnel 画像"
+  }
+}

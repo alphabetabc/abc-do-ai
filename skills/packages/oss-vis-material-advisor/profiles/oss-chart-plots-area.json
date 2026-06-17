@@ -1,0 +1,166 @@
+{
+  "name": "oss-chart-plots-area",
+  "title": "面积图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 16,
+    "uses_common_schema": "PLOTS_SCHEMA (TITLE/AXIS_DIM/AXIS_IND/VALUE_LABEL/LEGEND/TOOLTIP/STYLE_STROKE/DATA_CFG/SCROLLBAR)",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssAreaPlotChart / G2Plot)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单系列面积（X维度 + Y指标）",
+        "example": "[{ x: '1900', y: 13 }, { x: '1910', y: 2 }, ...]",
+        "match_pattern": "data[*].{x, y}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "compareType", "type": "String", "required": false, "description": "多系列分组键（隐式字段，dataModel 未声明）" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "指标单位（未消费）" },
+          { "name": "minRange", "type": "String", "required": false, "description": "Y轴最小值（来自首行 data[0]）" },
+          { "name": "maxRange", "type": "String", "required": false, "description": "Y轴最大值（来自首行 data[0]）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize（4 向）" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM（去掉 gridLine）",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND（含 min/max range autoregulation）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "point": {
+        "visible": "Switch",
+        "shape": "Select (circle/square)",
+        "color": "ColorPicker",
+        "size": "SliderWithNumber",
+        "stroke": "ColorPicker",
+        "strokeWidth": "NumberPicker"
+      },
+      "areaStyle": {
+        "smooth": "Switch (线条平滑)",
+        "lineWidth": "NumberPicker",
+        "lineColor": "ColorPicker",
+        "isAreaColor": "Switch (是否渐变)",
+        "areaColor": "ColorPicker (单色)",
+        "direction": "Select (90=上下 / 360=左右)",
+        "areaColor1/2": "ColorPicker (渐变)"
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP（自定义背景/X-Y别名/标识）",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "面积图",
+      "config.width": 400,
+      "config.height": 250,
+      "config.legend.visible": false,
+      "config.point.visible": false,
+      "config.areaStyle.smooth": false,
+      "config.areaStyle.lineColor": "#67F4F7",
+      "config.tooltip.visible": true,
+      "dataConfig.json": "[{y:13,x:'1900'} ... ]  7 行历史数据示例"
+    }
+  },
+  "business_scenarios": [
+    "时间序列趋势：销售额/流量随时间变化（年份/月份/日）",
+    "累计指标可视化：累计用户数、累计销售额",
+    "多系列趋势对比：多个产品的销售趋势对比（按 compareType 分组）",
+    "数值范围监控：服务器 CPU/内存使用率（配合 minRange/maxRange 自动适配）",
+    "能源消耗趋势：电力、燃气、用水量随时间变化",
+    "温度/湿度监测：环境监测随时间变化"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/line", "cost": "低", "reason": "同 plots 库，X/Y 轴配置同构" },
+      { "material": "oss-chart-plots/bar", "cost": "低", "reason": "同 plots 库，dataConverter 同构" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡可显示趋势首末值" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料 schema 独立（与 bar/line/base-area 80% 同源，但用户已确认 schema 不共享原则）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 字段名业务化（dimension_name/indicator_value）但 dataType 错标为 String（实际 number）；defaultValue 演示为历史年代（1900-1960），与实际业务场景脱节。",
+      "2. 场景覆盖度 4.0：单系列 + 多系列（compareType）双模式，支持 minRange/maxRange 自动范围，足够覆盖趋势/对比/范围监控 3 大类场景。",
+      "3. 配置完备度 4.0：6 个 FormCollapse 分组（普通/xAxis/yAxis/值标签/数据点/面积图样式/悬浮提示）+ title + commonSetting；x-reactions 联动丰富（isAreaColor 切换单色/渐变、point.visible 联动子字段）。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名基本业务化，但有 4 处瑕疵：① dataType 错标 String（实际 number）；② compareType 在 dataModel 中未声明但代码读取；③ minRange/maxRange 字段在 defaultValue.json 中无但代码读取首行 data[0].min/max；④ oss-material.json.dataModel 字段是空字符串。",
+      "5. 文档完整度 2.0：完全无 doc（无 doc/README.md，无 5+1 文档），仅 oss-material.json 的 commit '创建物料: area' 一行说明。",
+      "6. 可组合性 4.0：与同系列 line/bar/column 同构，dataConverter 都将 indicator_value 转 number，跨物料数据对接零成本；与数字卡、边框等无依赖。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 6,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 4,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.areaStyle.lineColor"],
+    "data_required": ["dimension_name", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "xAxis", "yAxis", "valueLabel.show", "tooltip.show", "point.visible"],
+      "data": ["compareType (多系列)", "minRange/maxRange (Y轴自适应)"]
+    },
+    "assumptions": [
+      "使用默认面积色（#67F4F7）",
+      "无 point 标记",
+      "无下钻交互"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 6, "description": "单系列 + 默认渐变" },
+      "typical": { "config_items": 6, "data_fields": 3, "minutes": 18, "description": "多系列 + 自定义渐变 + 标签定制" },
+      "full": { "config_items": 12, "data_fields": 5, "minutes": 40, "description": "全部 FormCollapse 分组深度配置" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在且被 schema.ts 顶部 import",
+    "dataModel 中 indicator_value/indicator_unit 字段 dataType 错标为 String（实际为 number）",
+    "代码读取 data[0]?.min 和 data[0]?.max，但 dataModel 中无 minRange/maxRange 字段在 defaultValue（仅 schema 演示）",
+    "compareType 字段被 dataConverter 读取为 s，但 dataModel 中未声明此字段",
+    "doc/CHANGELOG.md 存在但 doc/README.md 不存在"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 bar/column/line/pie/rose/radar 6 个画像"
+  }
+}

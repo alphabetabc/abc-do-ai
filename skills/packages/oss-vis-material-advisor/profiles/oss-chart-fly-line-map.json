@@ -1,0 +1,99 @@
+{
+    "name": "oss-chart-fly-line-map",
+    "title": "飞线图",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "基于ECharts的迁徙/飞线地图，支持起点-终点连线、中心点高亮、阈值配色与个性化底图",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "string", "description": "点ID（唯一标识）" },
+            { "name": "name", "type": "string", "description": "点名称" },
+            { "name": "value", "type": "string", "description": "数值（驱动阈值配色）" },
+            { "name": "lon", "type": "string", "description": "经度" },
+            { "name": "lat", "type": "string", "description": "纬度" },
+            { "name": "unit", "type": "string", "description": "单位" },
+            { "name": "targetId", "type": "string", "description": "目标点ID（飞线终点）" },
+            { "name": "isCenter", "type": "string", "description": "是否中心点（'1'表示中心）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源转换映射",
+        "logic": "通过targetId构建点对点连线，isCenter=1的点作为中央辐射中心"
+    },
+    "visual_config": {
+        "geo": {
+            "show": { "type": "boolean", "default": true, "description": "底图显示/隐藏（默认世界地图）" },
+            "showCustom": { "type": "boolean", "default": false, "description": "个性化底图（开启后可选用中国地图）" },
+            "mapSettings": { "type": "object", "x-component": "GeoJsonSelect" },
+            "isCenterData": { "type": "boolean", "default": true, "description": "中心点取isCenter=1的数据（false取targetId终点数据）" }
+        },
+        "layer": {
+            "lines": "飞线配置（linesAddition schema-part）",
+            "configurable": ["effect动效", "symbolSize散点大小", "颜色", "线宽", "曲线度"]
+        },
+        "dataRangeConfig": {
+            "showDataRange": { "type": "boolean", "default": false, "description": "是否显示阈值配色" },
+            "fromTargetRange": { "type": "boolean", "default": false, "description": "阈值按targetId终点的value计算" },
+            "dataRangeConfigSet": {
+                "type": "array",
+                "items": { "start": "number", "end": "number", "color": "string" },
+                "description": "阈值分段配置（start>=, end<= value值匹配）"
+            }
+        }
+    },
+    "interactions": {
+        "click": { "type": "dispatch", "description": "点/线点击事件" },
+        "hover": { "type": "highlight", "description": "高亮" }
+    },
+    "business_scenarios": [
+        "人口迁徙/物流迁徙可视化",
+        "资源调度路径展示",
+        "网络流量/连接关系拓扑",
+        "供应链节点辐射图"
+    ],
+    "composability": {
+        "compatible_with": [
+            "geo-3d-map（同场景三维版本）",
+            "oss-chart-classify-map（与散点/区域叠加）",
+            "baidu-map（特定业务打点）"
+        ],
+        "replaces": [
+            "oss-chart-classify-map（无需散点/区域时）"
+        ],
+        "extends": [
+            "geo-3d-map（升级为3D飞线）"
+        ]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备id/targetId/中心点/终点结构的数据",
+            "配置底图（世界/中国）",
+            "配置飞线样式（线宽/动效/颜色）",
+            "可选：配置阈值配色规则",
+            "配置交互"
+        ],
+        "dependencies": ["ECharts", "GeoJSON 底图资源"],
+        "estimated_minutes": 60
+    },
+    "_validation_notes": {
+        "data_relationship": "数据需包含id-targetId关联结构，业务方需自行处理点位匹配",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "有 doc/readme.md 与 changelog",
+        "module": "schema-parts/map-lines.ts 复用 linesAddition"
+    }
+}

@@ -1,0 +1,145 @@
+{
+    "name": "echarts-liquid",
+    "title": "echarts水球图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "李萌"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "水球图（title + label + value + level）",
+                "example": "[{ title: '标题', label: '文本10.5%', value: 0.55, level: 1 }]",
+                "match_pattern": "dataSource[0].{title, label, value, level}",
+                "note": "⚠️ 仅读取 dataSource[0]（line 16/21/33-42），多行数据被忽略；level 用于查找 shapeStyleSet 中对应样式",
+                "fields": [
+                    { "name": "title", "type": "String", "required": false, "description": "显示标题（line 33）" },
+                    { "name": "label", "type": "String", "required": false, "description": "显示文本/单位（line 38/45）" },
+                    { "name": "value", "type": "Number(0-1)", "required": true, "description": "显示比例（line 42 Number(value)）" },
+                    { "name": "level", "type": "Number", "required": false, "description": "级别（匹配 shapeStyleSet 中 level 字段，line 16）" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "chartStyle": {
+                "radius": { "type": "string", "default": "75%" },
+                "color": { "type": "ColorPicker", "description": "水球颜色（fallback）" },
+                "backgroundColor": { "type": "ColorPicker", "description": "水球背景颜色" },
+                "amplitude": { "type": "number", "default": 10, "description": "水球振幅" },
+                "backgroundUrl": { "type": "Background", "description": "背景图片（fallback）" },
+                "width/height": { "type": "number", "default": 500, "description": "水球宽度/高度" },
+                "marginLeft/Right/Top/Bottom": { "type": "number", "description": "水球边距" }
+            },
+            "$shapeStyle.shapeStyleSet": {
+                "type": "Array<{ level, color, backgroundUrl }>",
+                "description": "水球颜色背景按级别显示配置（line 16 通过 level 查找）"
+            },
+            "titleStyle": {
+                "show/x/y/textStyle": "标题位置 + 字体"
+            },
+            "labelStyle": {
+                "show/textStyle": "标签字体"
+            },
+            "outlineStyle": {
+                "borderColor/borderWidth/borderDistance": "边线样式"
+            }
+        },
+        "default_values": {
+            "config.title": "echarts水球图",
+            "config.width": 500,
+            "config.height": 500,
+            "config.chartStyle.radius": "75%",
+            "config.chartStyle.color": "rgba(43,142,254,1)",
+            "config.chartStyle.backgroundColor": "rgba(0,202,148,0.12)",
+            "config.chartStyle.amplitude": 10,
+            "config.titleStyle.show": true,
+            "config.labelStyle.show": true
+        },
+        "ui_features": "依赖 echarts-liquidfill 外部包（line 3 import 'echarts-liquidfill'）；ConfigProvider prefixCls='oss-ui'（line 65）；div 容器背景图通过 getImageUrl 拼接（line 21）；只读 dataSource[0] 限制多行数据。"
+    },
+    "business_scenarios": [
+        "完成度/进度百分比水球展示",
+        "KPI 仪表单指标百分比",
+        "按级别切换水球颜色（绿/黄/红）",
+        "需要背景图的水球装饰"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "bidirectional-progress", "cost": "低", "reason": "进度类替代（横向 vs 圆形）" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡 + 水球" },
+            { "material": "echarts-gauge", "cost": "中", "reason": "仪表盘替代（弧形 vs 圆形）" }
+        ],
+        "incompatible_with": [],
+        "note": "echarts-liquid 是单值百分比水球，依赖 echarts-liquidfill 外部包"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.4,
+        "weighted_total": 3.4,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='echarts水球图' 业务化。",
+            "2. 场景覆盖度 3.0：仅单值百分比 + 级别切换 + 背景图；不支持多 series。",
+            "3. 配置完备度 4.0：5 个 FormCollapse 分组（图形/按级别/标题/文本/边线）+ ArrayCollapse 增删 shapeStyleSet。",
+            "4. 数据契约清晰度 3.0：dataModel 4 字段；⚠️ 多行数据被忽略（仅读 [0]）；level 隐式约定 shapeStyleSet。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 3.5：通用百分比水球。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 1,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 5,
+        "breakdown": { "config_minutes": 3, "data_minutes": 2, "custom_minutes": 0 },
+        "config_required": ["config.title", "config.chartStyle.radius"],
+        "data_required": ["value"],
+        "optional_fields": {
+            "config": ["chartStyle.color/backgroundColor/amplitude/backgroundUrl", "chartStyle.width/height/margin*", "$shapeStyle.shapeStyleSet（按 level 切换）", "titleStyle.show + x/y/textStyle", "labelStyle.show + textStyle", "outlineStyle 完整"],
+            "data": ["title（顶部标题）", "label（中央文本）", "level（级别切换）"]
+        },
+        "assumptions": ["使用默认蓝色水球 + 默认边距", "无 level 切换", "无背景图"],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 1, "minutes": 5, "description": "默认蓝色 + 1 字段 value" },
+            "typical": { "config_items": 6, "data_fields": 4, "minutes": 15, "description": "完整字体 + level 切换 + 背景图" },
+            "full": { "config_items": 12, "data_fields": 4, "minutes": 30, "description": "全部 5 个 FormCollapse 分组 + 完整配置" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel 字段与代码读取一致（title/label/value/level）",
+        "dataSource[0] 限制，多行数据被忽略（line 16/21/33-42）",
+        "level 通过 _.find 查找 shapeStyleSet（line 16）",
+        "dataType 全 String 但 value 实际需为 number 0-1（line 42 Number() 强转）",
+        "依赖外部包 echarts-liquidfill（line 3）",
+        "ConfigProvider prefixCls='oss-ui' 强制覆盖（line 65）",
+        "backgroundUrl 需 getImageUrl 处理（line 21）",
+        "无 doc/README.md",
+        "groupId=33"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

@@ -1,0 +1,146 @@
+{
+    "name": "dual-axes-chart",
+    "title": "双轴图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "高",
+        "author": "杨兴相"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "双轴分组图（dimension_name + groupName + name + value + unit）",
+                "example": "[{ dimension_name: 'all', groupName: 'g1', name: 'a-1', value: 130, unit: 'ms' }, ...]",
+                "match_pattern": "dataSource[*].{dimension_name, groupName, name, value, unit}",
+                "note": "⚠️ schema 极复杂（200KB+），dataModel 与代码行为强耦合；通过 _.groupBy(dataSource, 'groupName') 分组，前 2 组分别绑左右轴（line 282-302）",
+                "fields": [
+                    { "name": "dimension_name", "type": "String", "required": false, "description": "维度名称（dataModel 声明但代码未读）" },
+                    { "name": "groupName", "type": "String", "required": true, "description": "分组名（决定 bar/line 绑定）" },
+                    { "name": "name", "type": "String(实际)", "required": true, "description": "X 轴类目" },
+                    { "name": "value", "type": "Number(实际)", "required": true, "description": "数值" },
+                    { "name": "unit", "type": "String", "required": false, "description": "单位" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "xAxis": {
+                "visible/axisLine/axisTickLine/axisLabel": "完整 X 轴配置（gridLine/style/width/color）"
+            },
+            "yAxisLeft/yAxisRight": {
+                "range.autoregulation": { "type": "boolean", "description": "自适应 min/max" },
+                "range.min/max": { "type": "number", "description": "自定义范围" },
+                "axisLine/axisTickLine/gridLine/axisLabel/name": "完整 Y 轴配置"
+            },
+            "columnStyle": {
+                "width": { "type": "number", "default": 20 },
+                "fill/fillOpacity/stroke/borderRadius": "柱样式"
+            },
+            "lineStyle": {
+                "smooth": { "type": "boolean", "description": "平滑曲线" },
+                "color": { "type": "ColorPicker", "description": "线条/渐变 area 颜色" },
+                "lineWidth": { "type": "number" }
+            },
+            "legend": {
+                "visible/pLeft/pTop/symbol/textStyle": "图例位置/图标/字体"
+            },
+            "tooltip": {
+                "visible/tooltipTitle.textStyle": "悬浮提示"
+            },
+            "titleStyle": {
+                "title/textStyle": "标题"
+            }
+        },
+        "default_values": {
+            "config.title": "双轴图",
+            "config.width": 400,
+            "config.height": 400
+        },
+        "ui_features": "前 2 个 groupName 分别绑柱图（yAxisIndex: 0）与面积折线（yAxisIndex: 1）；X 轴双层（hidden 同步 + 显式 bottom）；leftMax/leftMin 通过 autoregulation 自动从 dataLeft 计算（line 138-141）；config.tooltip['g2-tooltip'].background/opacity 读 g2 风格字段（line 254-255）。"
+    },
+    "business_scenarios": [
+        "数量+增长率柱+线对比",
+        "时序多类目多指标复合",
+        "需要 g2 风格 tooltip 背景",
+        "需要面积渐变（areaStyle 渐变从 line 颜色到黑）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-line-dual-x", "cost": "中", "reason": "双轴但单 series" },
+            { "material": "cone-bar-line", "cost": "中", "reason": "柱+线但单轴" }
+        ],
+        "incompatible_with": [],
+        "note": "dual-axes-chart 是 groupBy 双系列绑双轴的特例，schema 极复杂（200KB+）"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.5,
+        "weighted_total": 3.5,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 3.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='双轴图' 业务化。",
+            "2. 场景覆盖度 3.5：覆盖双轴双 series（柱+面积线）+ 自适应范围 + g2 tooltip。",
+            "3. 配置完备度 4.5：schema 极复杂（200KB+），左右轴/柱/线/legend/tooltip/title 全部独立配置。",
+            "4. 数据契约清晰度 2.5：dataModel 5 字段；⚠️ dimension_name 声明但代码未读；groupName 决定绑定是隐式约定（line 282）。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 3.0：仅支持前 2 个 groupName（线+柱），不易扩展。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 3,
+        "data_fields_to_provide": 4,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 20,
+        "breakdown": { "config_minutes": 10, "data_minutes": 10, "custom_minutes": 0 },
+        "config_required": ["config.title", "config.xAxis", "config.yAxisLeft/yAxisRight"],
+        "data_required": ["groupName", "name", "value"],
+        "optional_fields": {
+            "config": ["columnStyle.width/fill/stroke", "lineStyle.smooth/color/lineWidth", "legend.visible/position", "tooltip 配置", "titleStyle"],
+            "data": ["unit（未使用）", "dimension_name（未使用）"]
+        },
+        "assumptions": [
+            "前 2 个 groupName 顺序固定为 [柱, 面积线]",
+            "使用 autoregulation 自动适配范围",
+            "X/Y 轴默认显隐配置"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 3, "data_fields": 4, "minutes": 20, "description": "默认双轴 + 4 字段" },
+            "typical": { "config_items": 8, "data_fields": 4, "minutes": 45, "description": "自定义范围 + 柱+线样式 + 完整图例" },
+            "full": { "config_items": 20, "data_fields": 4, "minutes": 90, "description": "全部 schema 字段（200KB+）" }
+        }
+    },
+    "_validation_notes": [
+        "schema.ts 文件大小 200KB+ 是项目中最大的，PM 配置体验差",
+        "dataModel 声明 dimension_name 字段但代码中无引用（line 12-56 仅用 groupName/name/value/unit）",
+        "前 2 个 groupName 顺序固定为 [柱, 面积线]，多 series 不支持",
+        "line 159 双轴 X 轴（hidden 同步 + 显式 bottom）增加渲染开销",
+        "config.tooltip['g2-tooltip'].background/opacity 读 g2 风格字段命名不一致",
+        "autoregulation 计算 leftMax/rightMax 时仅取第 0/1 组数据（line 138/158）",
+        "无 doc/README.md",
+        "groupId=16"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

@@ -1,0 +1,142 @@
+{
+  "name": "oss-chart-plots-rose",
+  "title": "玫瑰图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 14,
+    "uses_common_schema": "PLOTS_SCHEMA（部分）",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssRosePlotChart)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "玫瑰图（type 类目 + count 数值）",
+        "example": "[{ type: '北京', count: 100 }, { type: '上海', count: 80 }, ...]",
+        "match_pattern": "data[*].{type, count}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "compareType", "type": "String", "required": true, "description": "类目名" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "style": {
+        "radius": "NumberPicker (外半径)",
+        "innerRadius": "NumberPicker (内半径)",
+        "fillOpacity": "SliderWithNumber (填充透明度)",
+        "stroke": {
+          "borderColor": "ColorPicker (描边颜色)",
+          "borderWidth": "NumberPicker (描边宽度)"
+        },
+        "color": "未消费（roseStyleResolve 中已注释 color: opt.color）"
+      },
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "玫瑰图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "南丁格尔玫瑰图：各产品销售额分布（半径体现数值）",
+    "周期性数据：方向/角度分布（如各时段流量）",
+    "分类对比 + 视觉冲击：需要比饼图更醒目的场景（玫瑰图角度相同但半径不同）",
+    "市场份额：竞品市场占比（视觉上更鲜明）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/pie", "cost": "极低", "reason": "dataModel 完全同构（type/count），可零成本切换" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总量" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 pie 物料的姐妹图（视觉风格不同，数据格式完全相同）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.0,
+      "composability": 4.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 与 pie 完全同构（type/count），业务语义清晰；缺 ① dataType 错标。",
+      "2. 场景覆盖度 3.5：玫瑰图视觉冲击强，但通常用 pie 替代；当需要角度分布时是首选。场景比 pie 略少。",
+      "3. 配置完备度 3.5：缺少渐变配置（与 pie 相比 isGradient 缺失）、缺少 statistic 中心统计、color 字段在 roseStyleResolve 中已被注释；总体配置比 pie 简单。",
+      "4. 数据契约清晰度 3.5：dataModel 字段最少，命名清晰；① dataType 错标。",
+      "5. 文档完整度 2.0：无 doc/ 目录。",
+      "6. 可组合性 4.5：与 pie 数据完全相同，可零成本切换。",
+      "7. 扣分：style.color 字段被注释（代码 line 15 `// color: opt.color`），schema 声明但代码不使用。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style"],
+    "data_required": ["compareType", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "style.innerRadius", "style.fillOpacity", "valueLabel.show"],
+      "data": ["indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "使用默认 G2 配色",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "玫瑰图 + 默认样式" },
+      "typical": { "config_items": 4, "data_fields": 2, "minutes": 10, "description": "玫瑰图 + 自定义内/外半径 + 标签" },
+      "full": { "config_items": 7, "data_fields": 2, "minutes": 20, "description": "玫瑰图 + 完整样式 + 标签 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "roseStyleResolve 中 color 字段被注释（line 15），schema 声明但代码不使用",
+    "dataType 错标（indicator_value 应为 Number）",
+    "缺少渐变配置（与 pie 相比）",
+    "缺少 statistic 中心统计（与 pie 相比）",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 radar 画像"
+  }
+}

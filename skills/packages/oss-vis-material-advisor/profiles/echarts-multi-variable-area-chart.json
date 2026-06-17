@@ -1,0 +1,151 @@
+{
+    "name": "echarts-multi-variable-area-chart",
+    "title": "多变量面积图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.tsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.tsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "极高",
+        "author": "xmw"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "多变量面积图（type + typeLabel + x + y + unit）",
+                "example": "[{ type: '双向平均时延', x: 'a-1', y: '33', unit: 'ms' }, { type: '丢包率', x: 'a-9', y: '39', unit: '%' }]",
+                "match_pattern": "dataSource[*].{type, typeLabel, x, y, unit}",
+                "note": "type 是主类目，typeLabel 是显示标签，y 是字符串数字（line 8 字符串）",
+                "fields": [
+                    { "name": "type", "type": "String", "required": true, "description": "主类目（line 35 读取 0.type）" },
+                    { "name": "typeLabel", "type": "String", "required": false, "description": "类型标签（用于轴文字同步）" },
+                    { "name": "x", "type": "String", "required": true, "description": "X 轴类目" },
+                    { "name": "y", "type": "String(实际数字)", "required": true, "description": "数值（JSON 中是字符串）" },
+                    { "name": "unit", "type": "String", "required": false, "description": "单位" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "subscribe_xAxisText",
+                "trigger": "外部订阅",
+                "config_field": "subscribe.xAxisText",
+                "behavior": "外部输入 X 轴文字（优先级最高，覆盖 syncActiveTypeToAxisText）"
+            },
+            {
+                "type": "subscribe_yAxisText",
+                "trigger": "外部订阅",
+                "config_field": "subscribe.yAxisText",
+                "behavior": "外部输入 Y 轴文字（优先级最高）"
+            },
+            {
+                "type": "subscribe_activeType",
+                "trigger": "外部订阅",
+                "config_field": "subscribe.activeType",
+                "behavior": "外部输入当前激活的 type（覆盖 defaultActiveType）"
+            },
+            {
+                "type": "action_syncActiveTypeToAxisText",
+                "trigger": "配置启用",
+                "config_field": "panels[0].syncActiveTypeToAxisText.show + xAxisText/yAxisText",
+                "behavior": "同步激活类型的值到轴标记（字段名 type/unit/typeLabel）"
+            }
+        ],
+        "visual_configs": {
+            "commonSettings.defaultActiveType": "默认高亮类型",
+            "activeOptions": "高亮选项",
+            "grid": "绘图网格",
+            "xAxis": "X 轴",
+            "yAxis": "Y 轴",
+            "seriesLine": "系列线",
+            "tooltip": "悬浮提示",
+            "graphicTextGroup": "图形文本组"
+        },
+        "default_values": {
+            "config.title": "多变量面积图",
+            "config.width": 900,
+            "config.height": 500
+        },
+        "ui_features": "schema 拆为 schema-part/* 多个子文件（activeOptions/grid/xAxis/yAxis/seriesLine/tooltip/graphicTextGroup）；useDataSource/useOptions/useActiveStyle 是 ./options 拆分 hooks；replaceMerge=['series', 'xAxis', 'graphic'] 局部替换（line 94）；import 自 @fedx-vis/designer-types 和 @fedx-vis/react-echarts（外部依赖）；dataConfig.useDataStatusSwitch=true（schema 60）；3 个外部订阅 + 1 个同步 action。"
+    },
+    "business_scenarios": [
+        "多变量时序面积图（时延/速率/丢包率多个 type）",
+        "需要外部联动 activeType（其他组件高亮某 type）",
+        "需要轴文字与 type 同步（typeLabel 展示）",
+        "需要类型化（多 type）的复合面积图"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-line-dual-x", "cost": "中", "reason": "线图 + 多 type" },
+            { "material": "echarts-bar", "cost": "中", "reason": "多 series 替代" },
+            { "material": "tree-list", "cost": "中", "reason": "tree-list 选节点 → 多变量面积图展示该 type" }
+        ],
+        "incompatible_with": [],
+        "note": "echarts-multi-variable-area-chart 是 type 维度多变量面积图，schema 极复杂（拆分 schema-part/*）"
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "grade": "A",
+        "score": 4.0,
+        "weighted_total": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='多变量面积图' 业务化。",
+            "2. 场景覆盖度 4.5：覆盖多 type 面积 + 3 外部订阅 + 1 同步 action + 拆分 schema-part。",
+            "3. 配置完备度 4.5：8 个 schema-part 拆分（activeOptions/grid/xAxis/yAxis/seriesLine/tooltip/graphicTextGroup/...）+ 3 外部订阅 + 1 action；dataConfig.showDataStatusSwitch=true。",
+            "4. 数据契约清晰度 3.0：dataModel 5 字段（type/typeLabel/x/y/unit）；⚠️ y 字段实际是字符串数字（JSON 中 '33'）。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 4.0：支持外部订阅 activeType，可与 tree-list 深度联动。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 4,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 15,
+        "breakdown": { "config_minutes": 10, "data_minutes": 5, "custom_minutes": 0 },
+        "config_required": ["config.title", "config.commonSettings.defaultActiveType"],
+        "data_required": ["type", "x", "y"],
+        "optional_fields": {
+            "config": ["activeOptions", "grid", "xAxis", "yAxis", "seriesLine", "tooltip", "graphicTextGroup", "subscribe 3 字段", "panels[0].syncActiveTypeToAxisText"],
+            "data": ["typeLabel", "unit"]
+        },
+        "assumptions": ["使用默认 activeType（取 dataSource[0].type）", "无外部订阅", "无 sync action"],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 3, "minutes": 15, "description": "默认多 type + 3 字段" },
+            "typical": { "config_items": 6, "data_fields": 5, "minutes": 30, "description": "自定义 activeType + 完整 series + 同步 action" },
+            "full": { "config_items": 20, "data_fields": 5, "minutes": 60, "description": "全部 8 个 schema-part + 3 订阅 + 1 action" }
+        }
+    },
+    "_validation_notes": [
+        "y 字段在 JSON 中是字符串（'33'），代码中未强转 Number",
+        "schema 拆为 schema-part/* 多文件，配置项分散",
+        "useDataSource/useOptions/useActiveStyle 三个 hooks 在 ./options 拆分",
+        "replaceMerge=['series', 'xAxis', 'graphic'] 局部替换（line 94）",
+        "useLatest 是自定义 hook（@Src/hooks/useLatest）",
+        "import 自 @fedx-vis/designer-types 和 @fedx-vis/react-echarts（外部依赖）",
+        "showDataStatusSwitch=true（schema 60）",
+        "无 doc/README.md",
+        "groupId=13"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

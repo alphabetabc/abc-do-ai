@@ -1,0 +1,180 @@
+{
+  "name": "free-layout-indicator-group",
+  "title": "自由排布指标组",
+  "category": "容器/布局",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./components/ind-item/index.tsx", "./components/ind-background/index.tsx"]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中高",
+    "author": "谢名伟",
+    "groupId": 4,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / renderDataConfig（@Common）",
+    "uses_hoc": "无（自定义 IndItem + IndBackground）",
+    "plot_library": "纯 CSS + IndItem 组件"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（indicatorId + indicatorName + indicatorLevel）",
+        "example": "[{ indicatorName: 'ind-01', indicatorId: 'ind-id-01', indicatorLevel: '0' }, ...]",
+        "match_pattern": "data[*].{indicatorId, indicatorName, indicatorLevel}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "indicatorName", "type": "String", "required": true, "description": "指标名称" },
+          { "name": "indicatorId", "type": "String", "required": true, "description": "指标ID（与 indItemSettings.indicatorId 匹配）" },
+          { "name": "indicatorLevel", "type": "String", "required": true, "description": "指标等级（与 levelColors.key 匹配）" }
+        ],
+        "match_logic": "dataSource.find(d => d.indicatorId === setting.indicatorId)；colorItem = levelColors.find(d => d.key === item.indicatorLevel)"
+      }
+    ],
+    "interactions": [
+      { "type": "itemClick", "trigger": "click", "payload": "{name, id}", "note": "interactionTrigger → interaction.dispatch({data: triggerData})" },
+      { "type": "itemMouseOver", "trigger": "mouseover", "payload": "{name, id}", "note": "激活当前项 + 停止轮播" },
+      { "type": "itemMouseOut", "trigger": "mouseout", "payload": "{name, id}", "note": "可选取消激活 + 恢复轮播（mouseSettings.cancel）" },
+      { "type": "autoLoop", "trigger": "interval", "payload": "next item {name, id}", "note": "loopSettings.enable=true + interval 触发轮播" }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT",
+      "title": "getCompTitle",
+      "indItemSettings (指标配置)": {
+        "type": "ArrayCollapse",
+        "singleItemProperties": {
+          "indicatorId": "Input 指标ID",
+          "font": "VisualTextStyle 文本样式",
+          "enableTextWrap": "Switch 文本换行",
+          "size": "Space(w,h) 尺寸",
+          "position": "Space(left,top) 位置",
+          "padding": "Space(top/bottom/right/left) 内边距"
+        }
+      },
+      "loopSettings (轮播配置)": {
+        "enable": "Switch 启动轮播",
+        "interval": "NumberPicker 间隔时间ms（min=16）"
+      },
+      "activeSettings (高亮配置)": {
+        "type": "Select 高亮类型（scale 缩放）",
+        "scaleSettings": {
+          "scaleRatio": "NumberPicker 缩放比例（min=0）",
+          "duration": "NumberPicker 过渡时间s"
+        },
+        "color": "ColorPicker 高亮颜色"
+      },
+      "indLevelSettings (指标等级配置)": {
+        "levelColors": "LevelSettings 等级颜色数组 [{color, key}]"
+      },
+      "mouseSettings (鼠标移出配置)": {
+        "cancel": "Switch 移出后是否取消高亮"
+      }
+    },
+    "default_values": {
+      "config.title": "自由排布指标组",
+      "config.width": 800,
+      "config.height": 600,
+      "config.indItemSettings": "默认 5 个指标 ind-id-01~05，size 100x100，颜色 #fff",
+      "config.loopSettings.enable": false,
+      "config.loopSettings.interval": 10000,
+      "config.indLevelSettings.levelColors": "[{color:#0098FF,key:0},{color:#f00,key:1}]",
+      "config.activeSettings.type": "scale",
+      "config.activeSettings.scaleSettings.scaleRatio": 1.2,
+      "config.activeSettings.scaleSettings.duration": 0.5,
+      "dataConfig.json": "[{indicatorName:'ind-01',indicatorId:'ind-id-01',indicatorLevel:'0'}] 5 条",
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "运营大屏：5+ 业务指标自由排布（带高亮+轮播）",
+    "告警大屏：多业务告警按等级颜色（红/蓝）+ 轮播高亮",
+    "指挥中心：核心指标轮播展示 + 鼠标悬停暂停",
+    "智慧城市大屏：交通/能源/环境多指标自由布局",
+    "KPI 监控大屏：多业务 KPI 按等级颜色+轮播高亮"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "ellipse-layout-indicator", "cost": "中", "reason": "椭圆布局 vs 自由布局风格选择" },
+      { "material": "free-layout-ind-progress", "cost": "中", "reason": "自由布局（指标组） vs 自由布局（仪表盘）" },
+      { "material": "scene-over-view-hlj", "cost": "中", "reason": "场景概览作为父级 + 指标组作为子区域" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-pie/bar", "reason": "指标组是文本类展示，饼图/柱图是数值对比" }
+    ],
+    "note": "文本类指标自由排布 + 等级颜色 + 轮播高亮 + 鼠标交互的复合容器组件"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 3 字段业务化清晰（indicatorName/Id/Level），但需要和 indItemSettings.indicatorId 双向匹配。",
+      "2. 场景覆盖度 3.5：支持 5+ 指标自由布局 + 轮播高亮 + 鼠标交互，场景较丰富。",
+      "3. 配置完备度 4.0：5 个 FormCollapse 分组（指标配置/轮播/高亮/等级/鼠标移出）+ LevelSettings 等级颜色组件 + x-reactions 联动；配置粒度细。",
+      "4. 数据契约清晰度 3.0：dataModel 3 字段全部错标 String（indicatorLevel 应为 Number）；levelColors.key 类型为 String 与 indicatorLevel String 一致。",
+      "5. 文档完整度 3.0：doc/CHANGELOG.md + doc/readme.md + 5 张图片，但无 5+1 文档。",
+      "6. 可组合性 4.0：与 ellipse-layout-indicator/free-layout-ind-progress 形成 3 种布局风格选择；与场景概览/边框装饰均可组合。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 18,
+    "breakdown": {
+      "config_minutes": 11,
+      "data_minutes": 7,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.indItemSettings", "config.indLevelSettings"],
+    "data_required": ["indicatorId", "indicatorName", "indicatorLevel"],
+    "optional_fields": {
+      "config": ["loopSettings", "activeSettings", "mouseSettings", "indItemSettings[*].font", "indItemSettings[*].padding"],
+      "data": []
+    },
+    "assumptions": [
+      "data 中 indicatorId 必须与 indItemSettings.indicatorId 严格匹配",
+      "indicatorLevel 实际为 String（与 levelColors.key 一致）",
+      "轮播 interval 最小 16ms"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 3, "minutes": 18, "description": "5 指标 + 2 等级颜色 + 默认轮播关闭" },
+      "typical": { "config_items": 15, "data_fields": 3, "minutes": 40, "description": "5 指标全配置（字体/位置/内边距）+ 3 等级颜色 + 轮播+高亮" },
+      "full": { "config_items": 30, "data_fields": 3, "minutes": 75, "description": "完整 FormCollapse + ArrayCollapse + 5 等级颜色 + 轮播/高亮/鼠标全配置" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在",
+    "dataModel 中 indicatorLevel 标 String（实际可能是 Number，与 levelColors.key String 匹配靠隐式转换）",
+    "indItemSettings 默认 value 是 5 个指标 (ind-id-01~05) 而 dataConfig.json 也是 5 个（一致）",
+    "interactionTrigger 使用 interaction.defined.name/id 自定义派发字段名（与默认 clickParams 不同）",
+    "useInterval 轮播实现简单，但 latestState 写法（useRef(state) 然后 current=state）是 React 经典坑"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 nine-grid / scene-over-view-hlj / telescoping-board"
+  }
+}

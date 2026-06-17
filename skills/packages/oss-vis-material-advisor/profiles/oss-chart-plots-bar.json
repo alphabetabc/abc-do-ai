@@ -1,0 +1,153 @@
+{
+  "name": "oss-chart-plots-bar",
+  "title": "基础条形图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 13,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssBarPlotChart)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单系列条形（Y维度 + X指标）",
+        "example": "[{ y: '1951', x: 38 }, { y: '1952', x: 52 }, ...]",
+        "match_pattern": "data[*].{y, x}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "Y轴类目（条形图 Y 为维度）" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "X轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "指标单位（未消费）" },
+          { "name": "title_text", "type": "String", "required": false, "description": "标题名称（未消费）" },
+          { "name": "title_value", "type": "String", "required": false, "description": "标题值（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_IND（值轴）",
+      "yAxis": "PLOTS_SCHEMA.AXIS_DIM（去掉 gridLine）",
+      "valueLabel": { "position": "默认 right（条形图标签通常在右）" },
+      "style": {
+        "width": "NumberPicker (柱子宽度)",
+        "borderRadius": "NumberPicker (圆角)",
+        "fill": "ColorPicker (填充色)",
+        "fillOpacity": "SliderWithNumber (0-1)",
+        "stroke": { "color": "ColorPicker", "width": "NumberPicker" }
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "基础条形图",
+      "config.width": 400,
+      "config.height": 250,
+      "config.legend.visible": false,
+      "config.valueLabel.position": "right",
+      "config.style.fill": "#67F4F7",
+      "config.style.fillOpacity": 0.6,
+      "config.style.stroke.color": "#67F4F7",
+      "config.style.stroke.width": 2,
+      "dataConfig.json": "[{y:'1951',x:38} ... ]  8 行年份数据"
+    }
+  },
+  "business_scenarios": [
+    "横向排名：销售额 Top10（按 Y 轴类目排序）",
+    "类别对比：各产品/部门/地区的数值横向对比",
+    "问卷调查结果可视化：多选项比例横向条形",
+    "库存数量展示：各仓库库存数对比",
+    "人员工时统计：各部门/项目工时对比"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/column", "cost": "低", "reason": "X/Y 轴调换，本质同图" },
+      { "material": "oss-chart-plots/series-bar", "cost": "中", "reason": "多系列分组条形，需加 compareType 字段" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示首末值" }
+    ],
+    "incompatible_with": [],
+    "note": "schema 80% 与 series-bar/stack-bar 同构（X/Y 轴差异 + 是否有 isMultiSeries 标志），但用户确认 schema 应保持独立"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.7,
+    "weighted_total": 3.7,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.0,
+      "composability": 4.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 字段业务化但 dataType 错标；defaultValue 演示 1951-1962 年份示例，与「条形图」业务场景脱节。",
+      "2. 场景覆盖度 3.5：仅支持单系列（不识别 compareType 字段，无 isMultiSeries 标志），所以多系列场景需用 series-bar；场景覆盖 1-2 个业务方向。",
+      "3. 配置完备度 4.0：5 个 FormCollapse 分组 + 柱子样式（width/borderRadius/fill/fillOpacity/stroke）+ title + commonSetting；x-reactions 较少。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名清楚，但 ① dataType 错标；② 4 个 indicators 字段中 title_text/title_value 未被代码消费；③ schema.ts 顶部有大量 baseInfo/layout/divider 等被注释代码（180+ 行死代码）。",
+      "5. 文档完整度 2.0：无 doc/ 目录（仅 doc/CHANGELOG.md），无 5+1 文档。",
+      "6. 可组合性 4.5：与同系列 series-bar/stack-bar/column 共享 dataModel 字段，组合时数据格式完全一致；与数字卡、边框等无依赖。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.fill"],
+    "data_required": ["dimension_name", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "style.borderRadius", "style.fillOpacity", "valueLabel.position"],
+      "data": ["indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "单系列条形（无需 compareType）",
+      "使用默认柱样式（圆角 0 + 透明度 0.6）",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "单系列 + 默认样式" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 12, "description": "自定义柱样式 + 标签" },
+      "full": { "config_items": 9, "data_fields": 2, "minutes": 28, "description": "全部 FormCollapse 深度配置" }
+    }
+  },
+  "_validation_notes": [
+    "schema.ts 顶部 180+ 行 baseInfo/layout 代码被注释（line 28-181），是死代码未清理",
+    "dataModel 中 title_text/title_value 字段在 defaultValue 演示但代码未消费",
+    "dataType 错标（indicator_value 应为 Number）",
+    "dataConverter 显式忽略 compareType 字段（未映射到 s），所以本物料不支持多系列",
+    "oss-material.json.dataModel 是空字符串"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 column/line/pie/rose/radar 画像"
+  }
+}

@@ -1,0 +1,143 @@
+{
+    "name": "oss-gis",
+    "title": "Gis地图",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "yangxingxiang",
+    "scanned_at": "2026-06-17",
+    "description": "基于 fedx-gis（OpenLayers封装） 的二维GIS地图，支持多种瓦片底图（Arcgis/Wmts/XYZ）、双层图例、热力图、绘制工具、圆形视图与自定义Tip",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "neType", "type": "String", "description": "网元类型ID" },
+            { "name": "neTypeName", "type": "String", "description": "网元类型名称" },
+            { "name": "type", "type": "String", "description": "打点类型" },
+            { "name": "siteName", "type": "String", "required": true, "description": "网元名称" },
+            { "name": "alarmLevel", "type": "String", "description": "告警级别" },
+            { "name": "siteCode", "type": "String", "required": true, "description": "网元唯一标识" },
+            { "name": "longitude", "type": "String", "required": true, "description": "经度" },
+            { "name": "latitude", "type": "String", "required": true, "description": "纬度" },
+            { "name": "neState", "type": "String", "description": "网元状态" },
+            { "name": "people", "type": "String", "description": "联系人" },
+            { "name": "telephone", "type": "String", "description": "联系方式" },
+            { "name": "plate_number", "type": "String", "description": "车辆牌照" },
+            { "name": "region_id", "type": "String", "description": "地市ID" },
+            { "name": "region_name", "type": "String", "description": "地市名称" },
+            { "name": "district", "type": "String", "description": "区域描述" },
+            { "name": "isHidden", "type": "String", "description": "站点是否隐藏" },
+            { "name": "isChecked", "type": "String", "description": "网元是否选中" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData + 静态map-config.json",
+        "_note": "数据模型与 baidu-map 高度同质，但oss-gis额外提供isHidden/isChecked"
+    },
+    "visual_config": {
+        "base_config": {
+            "layerMapType": {
+                "type": "enum",
+                "options": [
+                    "TileArcgisRestLayer",
+                    "WmtsTileLayer",
+                    "XYZTileLayer",
+                    "WmtsTileLayerOrigin（安徽地图特例）",
+                    "XYZTileLayerOrigin（山西地图特例）"
+                ],
+                "description": "底图瓦片类型"
+            },
+            "tileArcgisUrl": "Arcgis瓦片底图URL",
+            "wmtsTileUrl": "Wmts瓦片底图URL",
+            "xyzTileLayerUrl": "XYZ瓦片底图URL",
+            "xyzMinResolution": "底图最小分辨率",
+            "xyzTileSize": "底图尺寸",
+            "xyzPixelRatio": "底图高清比例",
+            "tileArcgisTokens": "底图URL额外参数"
+        },
+        "dual_layer_legend": {
+            "primary": "首层图例网元数据",
+            "secondary": "第二层图例网元数据",
+            "neTypeGroup": "图例分组"
+        },
+        "heatmap": {
+            "enabled": "HeatMapLayer",
+            "gradient": "渐变色（默认['#00f', '#f00']）"
+        },
+        "tools": {
+            "DrawFeature": "绘制要素工具",
+            "DrawSelect": "绘制选择工具",
+            "DrawClear": "清除绘制",
+            "FullScreen": "全屏",
+            "CircleView": "圆形视图"
+        },
+        "tooltip": {
+            "toolBaseConfig": "首层Tip（el-tooltip-base）",
+            "customToolTipConfig": "自定义Tip",
+            "secondToolBaseConfig": "第二层Tip",
+            "customSecondToolTipConfig": "第二层自定义Tip",
+            "circleTooltip": "圆形Tip（el-tooltip-circle）"
+        },
+        "titleConfig": "地图顶部标题配置",
+        "lineStyleConfig": "连线样式配置"
+    },
+    "interactions": {
+        "click": { "type": "dispatch", "description": "点击网元点派发数据，支持自定义ClickParams" },
+        "hover": { "type": "tooltip", "description": "悬停Tip（基础/圆形/自定义三种）" },
+        "draw": { "type": "draw", "description": "绘制工具交互" },
+        "legend_filter": { "type": "filter", "description": "图例勾选过滤网元类型" }
+    },
+    "business_scenarios": [
+        "复杂GIS态势大屏（双层图例）",
+        "省市专用地图（安徽/山西特例）",
+        "网络资源运维监控",
+        "应急资源调度可视化",
+        "热力图分析（HeatMapLayer）"
+    ],
+    "composability": {
+        "compatible_with": [
+            "geo-cascader（区域切换）",
+            "drilldown-table",
+            "top-rank",
+            "digital-flop",
+            "alarm-window-card"
+        ],
+        "replaces": [
+            "baidu-map（更专业的GIS能力）",
+            "baidu-map-unicom",
+            "echarts-map"
+        ],
+        "extends": [
+            "geo-3d-map（升级3D）"
+        ]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.7,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "高",
+        "setup_steps": [
+            "选择 layerMapType 并准备瓦片服务URL",
+            "部署 map-config.json 静态资源",
+            "配置图例分组（neTypeGroup）",
+            "准备网元数据（含neType/alarmLevel/siteCode等）",
+            "配置Tip样式（三种Tip可选）",
+            "可选：配置热力图、绘制工具"
+        ],
+        "dependencies": ["fedx-gis (OpenLayers封装)", "瓦片底图服务", "map-config.json"],
+        "estimated_minutes": 90
+    },
+    "_validation_notes": {
+        "complexity": "配置项非常丰富（baseConfig + toolBaseConfig + customToolTipConfig + secondToolBaseConfig + ...），学习成本高",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "有 doc/README.md + CHANGELOG.md",
+        "tooltip_variants": "提供三种Tip组件（base/circle/custom），适合不同业务场景",
+        "schema_file": "使用 schema.formily.ts 而非 schema.ts（命名差异）"
+    }
+}

@@ -1,0 +1,155 @@
+{
+    "name": "geo-3d-map",
+    "title": "3D地图",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "孙寰哲",
+    "scanned_at": "2026-06-17",
+    "description": "省/地市/区县三级3D立体地图，支持多层级下钻、纹理贴图、相机视角控制、自动轮播与高度气泡图",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "required": true, "description": "地市或区县ID" },
+            { "name": "name", "type": "String", "required": true, "description": "地市或区县名称" },
+            { "name": "value", "type": "String", "description": "数值（驱动气泡高度/颜色）" },
+            { "name": "level", "type": "String", "description": "级别（0省/1地市/2区县）" },
+            { "name": "parent", "type": "String", "description": "父级ID（省/地市ID）" }
+        ],
+        "row_count": "多行，地理层级数据",
+        "data_source": "DynamicData 多数据源转换映射",
+        "_note": "value 实际为数值，dataModel 声明为 String"
+    },
+    "visual_config": {
+        "map_layer": {
+            "mapsettings": {
+                "type": "GeoJsonSelect",
+                "description": "底图GeoJSON选择器（省/地市GeoJson资源）",
+                "permission_check": "权限模式下隐藏（permission === true）"
+            },
+            "enableTexture": { "type": "boolean", "default": true, "description": "是否显示纹理贴图" },
+            "textureUrl": { "type": "string", "description": "纹理图片URL" },
+            "textureRepeat": { "type": "number", "default": 1, "description": "纹理重复次数" }
+        },
+        "camera": {
+            "adjustCamera": { "type": "number", "default": 1, "description": "相机边距" },
+            "delaySetCameraOffset": { "type": "number", "default": 3000, "description": "相机延迟时间(毫秒)" },
+            "defaultCameraPositionX": { "type": "number", "default": 0 },
+            "defaultCameraPositionY": { "type": "number", "default": -5 },
+            "defaultCameraPositionZ": { "type": "number", "default": 0 },
+            "maxAzimuthAngle": { "type": "number", "default": 0.25, "description": "相机俯仰最大角度" },
+            "minAzimuthAngle": { "type": "number", "default": -0.25, "description": "相机俯仰最小角度" },
+            "maxPolarAngle": { "type": "number", "default": 0.5, "description": "相机仰角最大角度" },
+            "minPolarAngle": { "type": "number", "default": 0.5, "description": "相机仰角最小角度" }
+        },
+        "bubble": {
+            "scaleFactor1": { "type": "number", "default": 1, "description": "首层气泡大小" },
+            "scaleFactor2": { "type": "number", "default": 0.25, "description": "第二层气泡大小" },
+            "ratio1": { "type": "number", "default": 1, "description": "首层比例大小" },
+            "ratio2": { "type": "number", "default": 0.25, "description": "第二层比例大小" }
+        },
+        "text": {
+            "showAreaName": { "type": "boolean", "default": true, "description": "是否显示区域名称" },
+            "fontSize": { "type": "number", "default": 12 },
+            "fontColor": { "type": "string", "default": "#ffffff" }
+        },
+        "background": {
+            "showBackground": { "type": "boolean", "default": true, "description": "是否显示背景转盘" },
+            "backgroundColor": { "type": "string" },
+            "backgroundScale": { "type": "number" }
+        },
+        "region_color": {
+            "topColor": { "type": "string", "default": "rgba(8,118,167,0.8)", "description": "区域顶部颜色" },
+            "sideColor": { "type": "string", "default": "rgba(8,70,167,0.7)", "description": "区域侧面颜色" },
+            "highlightColor": { "type": "string", "default": "rgba(255, 210, 28, 0.3)" },
+            "highlightMarkerColor": { "type": "string", "default": "#ffcfc5", "description": "高亮气泡颜色" },
+            "areaHighLightLineColor": { "type": "string", "default": "#fdd66c" },
+            "areaHighLightLineWidth": { "type": "number", "default": 3 },
+            "customColors": { "type": "array", "description": "气泡配色（按level映射）", "x-component": "ColorGroup" }
+        },
+        "lighting": {
+            "ambientLightColor": { "type": "string", "default": "#7af4ff" },
+            "ambientLightIntensity": { "type": "number", "default": 5 },
+            "directionalLightColor": { "type": "string", "default": "#7af4ff" },
+            "directionalLightIntensity": { "type": "number", "default": 2 },
+            "directionalLightDistance": { "type": "number", "default": 5 }
+        },
+        "particle": {
+            "particleColor": { "type": "string", "default": "#00ccff", "description": "粒子效果颜色" }
+        },
+        "autoplay": {
+            "autoplay": { "type": "boolean", "default": false, "description": "自动轮播" },
+            "autoplaySpeed": { "type": "number", "default": 3, "description": "3D起伏次数后切换" },
+            "autoplayMarginLeft": { "type": "number", "default": 0 },
+            "autoplayMarginTop": { "type": "number", "default": 0 }
+        },
+        "back_button": {
+            "backMarginLeft": { "type": "number", "default": 50, "description": "返回按钮距左" },
+            "backMarginTop": { "type": "number", "default": 0, "description": "返回按钮距上" }
+        }
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "选中地图区域派发选中项id",
+            "event_field": "select"
+        },
+        "drilldown": {
+            "type": "navigation",
+            "description": "通过parent/id结构实现省→地市→区县三级下钻"
+        }
+    },
+    "business_scenarios": [
+        "省级/地市级3D地理态势",
+        "数据可视化大屏核心地图（带数值气泡）",
+        "区域指标分布热力展示",
+        "领导驾驶舱地理视角"
+    ],
+    "composability": {
+        "compatible_with": [
+            "geo-cascader（省地市切换联动）",
+            "top-rank（区域排行联动）",
+            "drilldown-table（下钻后表格）",
+            "digital-flop（区域指标统计）",
+            "indicator-display（区域指标卡）"
+        ],
+        "replaces": [
+            "echarts-map（更炫的3D效果）",
+            "oss-chart-map",
+            "oss-gis"
+        ],
+        "extends": [
+            "oss-chart-fly-line-map（在3D地图上叠加迁徙线）"
+        ]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 3.0
+        }
+    },
+    "build_cost": {
+        "complexity": "高",
+        "setup_steps": [
+            "准备GeoJSON底图资源（省/地市）",
+            "准备地图纹理图片（如需）",
+            "配置 mapStyle 区域颜色、相机、灯光等",
+            "组织数据为id/name/level/parent层级结构",
+            "配置 customColors 气泡配色",
+            "配置交互下钻（与geo-cascader联动）"
+        ],
+        "dependencies": ["GeoJSON底图资源", "Three.js/WebGL底座", "纹理图片"],
+        "estimated_minutes": 120
+    },
+    "_validation_notes": {
+        "complexity": "3D地图组件，配置项非常丰富（30+），但缺少默认示例，业务接入需较多调参",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "有 doc/README.md 与3张图示，文档较丰富",
+        "schema_complexity": "使用 defineInteractionSchema 通用交互，mapStyle 嵌套深度大"
+    }
+}

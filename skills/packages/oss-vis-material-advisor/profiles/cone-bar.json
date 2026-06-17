@@ -1,0 +1,147 @@
+{
+    "name": "cone-bar",
+    "title": "锥形柱状图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "李萌"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "多系列锥形柱图（x + y + s）",
+                "example": "[{ x: '9:00', y: 130, s: 's1' }, { x: '11:00', y: 40, s: 's2' }]",
+                "match_pattern": "dataSource[*].{x, y, s}",
+                "note": "s 字段用于区分类目/系列（line 14-16 uniqBy('s')）",
+                "fields": [
+                    { "name": "x", "type": "String(实际)", "required": true, "description": "X 轴类目" },
+                    { "name": "y", "type": "Number(实际)", "required": true, "description": "Y 轴数值" },
+                    { "name": "s", "type": "String", "required": true, "description": "系列名（用于区分类目）" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "chart": {
+                "barCategoryGap": { "type": "number", "default": "50%", "description": "柱间距离 ±100%" },
+                "customColors": { "type": "boolean", "default": true, "description": "是否自定义渐变色" },
+                "color": { "type": "BackgroundColorGroup2EC[]", "description": "渐变填充色数组（按 s 顺序对应）" }
+            },
+            "offset": {
+                "itemsSet": {
+                    "type": "Array<{ itemSetting: { symbolOffset: number } }>",
+                    "description": "分项设置（按柱图从左至右顺序设置由负到正数值，line 42-44 映射到 series.symbolOffset）"
+                }
+            },
+            "legend": {
+                "show": { "type": "boolean", "default": true },
+                "type": { "type": "enum[plain/scroll]", "description": "图例类型" },
+                "icon": { "type": "enum[circle/rect/roundRect/triangle/diamond/pin/arrow/none]" },
+                "orient": { "type": "enum[horizontal/vertical]" },
+                "left/top/right/bottom": { "type": "string", "description": "像素/百分比/关键字" },
+                "textStyle": { "type": "VisualTextStyle" }
+            },
+            "label": {
+                "show": { "type": "boolean", "default": true },
+                "position": { "type": "enum[outside/inside/center]" },
+                "textStyle": { "type": "VisualTextStyle" }
+            },
+            "tooltip": {
+                "show": { "type": "boolean", "default": false },
+                "name/backgroundColor/borderColor/borderWidth/textStyle": "完整 tooltip 样式"
+            }
+        },
+        "default_values": {
+            "config.title": "锥形柱状图",
+            "config.width": 300,
+            "config.height": 300,
+            "config.chart.barCategoryGap": "50%",
+            "config.chart.customColors": true,
+            "config.legend.show": true,
+            "config.legend.icon": "roundRect",
+            "config.label.show": true,
+            "config.label.position": "top"
+        },
+        "ui_features": "pictorialBar + 自定义 SVG path（M0,10 L10,10 C5.5,10 ...）形成水滴/锥形柱头；symbolOffset 支持负到正（line 54-55 [offsetList[index], 0]），实现柱体错位；dataSource 为空数组会跳过 series 生成（line 13 隐式）。"
+    },
+    "business_scenarios": [
+        "时间序列多类目对比（如 9:00/11:00/13:00 多 s1/s2 系列）",
+        "销售/业务量时序柱图",
+        "需要水滴/锥形头部装饰的时尚感柱图",
+        "需要柱体错位（symbolOffset）的不规则柱图"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-bar", "cost": "低", "reason": "扁平柱图替代方案" },
+            { "material": "echarts-line-dual-x", "cost": "中", "reason": "柱+线组合" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡 + 锥形柱图" }
+        ],
+        "incompatible_with": [],
+        "note": "cone-bar 与 cone-single-bar/cone-bar-line/circular-column 各为独立物料，schema 不共享"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.6,
+        "weighted_total": 3.6,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='锥形柱状图' 业务化清晰。",
+            "2. 场景覆盖度 4.0：覆盖多系列 + 渐变 + 柱体错位 + 完整 legend/label/tooltip。",
+            "3. 配置完备度 4.0：4 个 FormCollapse 分组（图/分项/图例/标签/悬浮）+ ArrayCollapse 增删项。",
+            "4. 数据契约清晰度 3.0：dataModel 3 字段（x/y/s）；s 字段名简短不易理解，PM 需文档说明。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 3.5：通用锥形柱图，可与多种图表组合。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 1,
+        "data_fields_to_provide": 3,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 6,
+        "breakdown": { "config_minutes": 1, "data_minutes": 5, "custom_minutes": 0 },
+        "config_required": ["config.title"],
+        "data_required": ["x", "y", "s"],
+        "optional_fields": {
+            "config": ["chart.barCategoryGap", "chart.customColors + chart.color", "offset.itemsSet（柱体错位）", "legend.show/icon/position", "label.show/position/textStyle", "tooltip.show"],
+            "data": []
+        },
+        "assumptions": ["使用默认渐变 2 色", "无柱体错位"],
+        "scenarios": {
+            "minimal": { "config_items": 1, "data_fields": 3, "minutes": 6, "description": "默认渐变 + 3 行 + 图例 + label" },
+            "typical": { "config_items": 4, "data_fields": 3, "minutes": 15, "description": "自定义颜色 + 错位 + 完整 legend" },
+            "full": { "config_items": 10, "data_fields": 3, "minutes": 28, "description": "全部 4 个 FormCollapse 分组 + 完整配置" }
+        }
+    },
+    "_validation_notes": [
+        "dataType 全 String 但 y 实际需为 number（line 25 Number(i.y) 强转）",
+        "symbolOffset 字段名是英文，PM 难理解，需文档说明'按柱图从左至右顺序设置由负到正数值'",
+        "dataSource 为空数组时 line 13 跳过 series 生成，但 legend 仍显示（line 136-139）",
+        "yData 计算若 s 字段不一致会得到错位 series（line 21-27 uniqBy 隐式）",
+        "无 doc/README.md",
+        "groupId=12（与 circular-column 同分组）"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

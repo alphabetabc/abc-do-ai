@@ -1,0 +1,168 @@
+{
+  "name": "oss-chart-plots-series-column",
+  "title": "多系列柱状图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中高",
+    "author": "haoyingying",
+    "groupId": 12,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssColumnPlotChart)",
+    "uses_interaction_hook": "useInteraction + usePersistActions（点击事件）",
+    "uses_data_status": "DataStatus（多系列检查）",
+    "uses_utils": "data from common/util + gradientColor + DEFAULT_COLORS",
+    "unique_features": [
+      "isGroup=true + isMultiSeries=true 多系列分组",
+      "statusConfig 状态配置（按 status 字段匹配不同颜色）— 独家能力",
+      "columnStyle 函数（动态柱子样式：dataStatus-based）",
+      "marginRatio 间距控制"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多系列分组柱形（X维度 + Y指标 + s系列 + a状态）",
+        "example": "[{ x: 'Q1', y: 100, s: 'A产品', a: 'success' }, { x: 'Q1', y: 80, s: 'B产品', a: 'warning' }, ...]",
+        "match_pattern": "data[*].{x, y, s, a}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType) + a (status)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "compareType", "type": "String", "required": true, "description": "多系列分组键" },
+          { "name": "indicator_id", "type": "String", "required": false, "description": "指标 ID" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "payload": "data + designer.utils.getDesignerOriginData(...)"
+      }
+    ],
+    "visual_configs": {
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "style": "PLOTS_SCHEMA.STYLE_STROKE.column + customColors（渐变/单色）",
+      "statusConfig": {
+        "statusStyleSet": [
+          {
+            "statusValue": "Input (匹配 status 字段值)",
+            "isGradient": "Switch (是否渐变)",
+            "gradientColors": "ColorPicker 数组 (渐变)",
+            "colors": "ColorPicker 数组 (单色)"
+          }
+        ]
+      },
+      "marginRatio": "NumberPicker (柱间距比例)",
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "多系列柱状图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "多产品对比：多个产品销售额对比",
+    "状态可视化：服务器状态（正常/警告/异常）不同颜色",
+    "KPI 监控：销售达标/未达标不同颜色（status 字段）",
+    "多渠道对比：线上/线下/批发多渠道对比",
+    "业绩排名：多团队业绩对比"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/column", "cost": "中", "reason": "单系列变多系列分组" },
+      { "material": "oss-chart-plots/stack-column", "cost": "中", "reason": "分组 vs 堆叠切换" },
+      { "material": "oss-chart-plots/series-bar", "cost": "中", "reason": "横竖版多系列" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 oss-chart-plots 系列中独有 statusConfig 状态颜色的物料"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 5 字段业务化（含 indicator_id/indicator_value/indicator_unit/compareType/dimension_name），比 series-bar 多 1 个 indicator_id。",
+      "2. 场景覆盖度 4.0：覆盖多产品/状态/KPI/多渠道/业绩等典型场景；statusConfig 状态颜色是独家能力。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组 + 渐变 + statusConfig（动态颜色）+ marginRatio + 标签；配置颗粒度细。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰，但 ① dataType 错标（indicator_value 应为 Number）；② dataConverter 中 a 字段（status）映射但 dataModel 未声明（line 153 `a: d.status`）。",
+      "5. 文档完整度 2.0：无 doc/ 目录。",
+      "6. 可组合性 4.0：与 column/stack-column/series-bar 物料数据格式完全同构。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 12,
+    "breakdown": {
+      "config_minutes": 4,
+      "data_minutes": 8,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.customColors", "config.statusConfig"],
+    "data_required": ["dimension_name", "indicator_value", "compareType", "status"],
+    "optional_fields": {
+      "config": ["valueLabel.show", "tooltip.show", "marginRatio"],
+      "data": ["indicator_id (联动用)", "indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "至少 2 个系列（否则 DataStatus 报错）",
+      "使用默认色或自定义色",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 4, "minutes": 12, "description": "多系列分组柱 + 默认色 + 状态色" },
+      "typical": { "config_items": 6, "data_fields": 4, "minutes": 25, "description": "自定义柱色 + 状态色 + 标签" },
+      "full": { "config_items": 11, "data_fields": 4, "minutes": 45, "description": "完整样式 + 渐变 + 状态色 + click 下钻 + 标签 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（indicator_value 应为 Number）",
+    "dataConverter 中 a 字段（status）映射但 dataModel 未声明（line 153 `a: d.status`）",
+    "DataStatus 单系列时报错（line 123）需保证多系列",
+    "dataModel 中 title_text/title_value 字段在 defaultValue 演示但代码未消费",
+    "uses statusConfig 状态颜色独家能力，PM 配置时需知 status 字段约定",
+    "dataSource.length === 0 时不渲染（line 124）",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 stack-bar 画像"
+  }
+}

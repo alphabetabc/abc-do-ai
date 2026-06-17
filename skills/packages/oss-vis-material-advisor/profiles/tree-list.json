@@ -1,0 +1,174 @@
+{
+    "name": "tree-list",
+    "title": "树图",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "中高",
+        "author": "孙寰哲"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "扁平树形数据（key + title + parent_key + type + selected_icon + unselected_icon）",
+                "example": "[{ key: '609737586', title: '广州', parent_key: '0', type: 'region', icon1: 'SmileOutlined', icon2: 'MehOutlined' }, ...]",
+                "match_pattern": "data[*].{key, title, parent_key, type, selected_icon, unselected_icon}",
+                "note": "⚠️ dataModel 字段名为 selected_icon/unselected_icon，但 defaultValue.json 使用 icon1/icon2；代码内 icon1/icon2 也未读取（line 78 直接用 item.selected_icon）",
+                "fields": [
+                    { "name": "key", "type": "String", "required": true, "description": "节点唯一 key（React 渲染必需）" },
+                    { "name": "title", "type": "String", "required": true, "description": "节点显示标题" },
+                    { "name": "parent_key", "type": "String", "required": true, "description": "父节点 key（'0' 表示根节点）" },
+                    { "name": "type", "type": "String", "required": true, "description": "节点类型（例：region/data-center/room）" },
+                    { "name": "selected_icon", "type": "String", "required": false, "description": "节点已选中显示的 AntdIcon 名称（schema 字段名）" },
+                    { "name": "unselected_icon", "type": "String", "required": false, "description": "节点未选中显示的 AntdIcon 名称（schema 字段名）" }
+                ]
+            },
+            {
+                "format": "（代码隐式）param1~param5 自定义派发参数",
+                "example": "node.param1 = '...'（defaultValue 中未演示）",
+                "match_pattern": "node.{param1, param2, param3, param4, param5}",
+                "note": "schema 未声明 param1~param5 字段，但代码中通过 onSelect 派发（line 31-49）"
+            }
+        ],
+        "interactions": [
+            {
+                "type": "node_select_dispatch",
+                "trigger": "click on tree node",
+                "config_field": "subscribe.{selectedTreeNodeId, selectedTreeNodeTitle, selectedTreeNodeType, selectedTreeNodeParam1~5}",
+                "behavior": "通过 onSelect 派发 8 个字段（key/title/type/param1~5）"
+            },
+            {
+                "type": "node_check_dispatch",
+                "trigger": "check on tree node",
+                "config_field": "subscribe.checkedTreeKeys",
+                "behavior": "通过 onCheck 派发逗号分隔的 checkedKeys"
+            }
+        ],
+        "visual_configs": {
+            "style": {
+                "showIcon": { "type": "boolean", "default": false, "description": "显示图标" },
+                "checkable": { "type": "boolean", "default": false, "description": "显示复选框" },
+                "showLine": { "type": "boolean", "description": "显示连线" },
+                "switcherIcon": { "type": "string", "description": "展开折叠图标（AntdIcon 名）" },
+                "switcherIconFontSize": { "type": "number", "default": 16 },
+                "backgroundColor": { "type": "string", "description": "树整体背景色" }
+            },
+            "nameFontStyle": { "fontFamily/Size/Weight/color": "Select + NumberPicker + ColorPicker（4 个字段）" },
+            "iconFontStyle": { "fontSize": "NumberPicker" },
+            "nodeSelectedStyle": {
+                "backgroundColor": { "type": "string", "description": "选中节点背景色" },
+                "fontFamily/Size/Weight/color": "Select + NumberPicker + ColorPicker",
+                "note": "borderWidth/borderColor/borderRadius 字段被注释（line 154-174）"
+            }
+        },
+        "default_values": {
+            "config.title": "树图",
+            "config.width": 450,
+            "config.height": 200,
+            "config.style.checkable": false,
+            "config.style.showIcon": false,
+            "config.style.switcherIcon": "",
+            "config.style.switcherIconFontSize": 16,
+            "config.nameFontStyle.fontFamily": "微软雅黑",
+            "config.nameFontStyle.fontSize": 16,
+            "config.nameFontStyle.color": "#FFFFFF",
+            "config.iconFontStyle.fontSize": 16
+        },
+        "ui_features": "基于 antd Tree 组件，扁平数据 → 树形数据通过 initTreeData() 递归构建（line 82-90）；StyleTree 高阶组件注入选中节点样式（nodeSelectedStyle 关键）；dataType 全 String 但 key 实际是数字字符串如 '609737586'。"
+    },
+    "business_scenarios": [
+        "区域-数据中心-机房 多层级展示（parent_key 0 → region → data-center → room）",
+        "组织架构/目录结构展示",
+        "带图标的多级菜单（icon1/icon2 区分选中/未选中状态）",
+        "复选框多选树（onCheck 派发 checkedKeys）",
+        "点击节点联动其他组件（onSelect 派发 8 个参数）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-map", "cost": "中", "reason": "tree-list 选 region → echarts-map 钻取该 region（用 selectedTreeNodeId 作 map 参数）" },
+            { "material": "table-detail", "cost": "中", "reason": "tree-list 选节点 → table-detail 查该节点详情" },
+            { "material": "echarts-bar", "cost": "中", "reason": "tree-list 选 category → echarts-bar 渲染该 category" },
+            { "material": "drilldown-table", "cost": "中", "reason": "tree-list 选节点 → drilldown-table 弹出 Modal" }
+        ],
+        "incompatible_with": [],
+        "note": "tree-list 是少有的支持多级层级的列表/排行类物料；适合作为导航/选择器与其他数据展示物料联动"
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "grade": "A",
+        "score": 4.0,
+        "weighted_total": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.5
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='树图' 通用业务化，dataModel 字段（key/title/parent_key/type）业务化贴合多层级场景。",
+            "2. 场景覆盖度 4.5：覆盖多层级树 + 复选 + 点击派发 8 字段 + 图标切换 + 选中样式 + 展开折叠图标。",
+            "3. 配置完备度 4.0：4 个 FormCollapse 分组（样式/名称/图标/选中）+ Data 字段（6 字段）+ 交互订阅；⚠️ nodeSelectedStyle 中 borderWidth/borderColor/borderRadius 字段被注释。",
+            "4. 数据契约清晰度 3.0：dataModel 6 字段；⚠️ 字段名 selected_icon/unselected_icon 与 defaultValue.json 中 icon1/icon2 不一致；param1~param5 字段未在 schema 声明但代码读取；dataType 全 String。",
+            "5. 文档完整度 2.0：仅 commit 描述，无 doc/readme.md，5+1 文档全缺。",
+            "6. 可组合性 4.5：是少有的多级导航选择器，可与 echarts-map/table/echarts-bar 多种物料深度联动。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 4,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 15,
+        "breakdown": {
+            "config_minutes": 3,
+            "data_minutes": 12,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.nameFontStyle.color"],
+        "data_required": ["key", "title", "parent_key", "type"],
+        "optional_fields": {
+            "config": ["style.showIcon (显示图标)", "style.checkable (复选框)", "style.showLine (连线)", "style.switcherIcon + switcherIconFontSize (展开图标)", "style.backgroundColor (背景色)", "nodeSelectedStyle (选中样式)", "iconFontStyle.fontSize"],
+            "data": ["selected_icon (AntdIcon 名)", "unselected_icon (AntdIcon 名)", "param1~param5 (自定义派发参数，隐式)"]
+        },
+        "assumptions": [
+            "无图标（showIcon=false）",
+            "无复选框（checkable=false）",
+            "无 param1~param5 自定义派发",
+            "使用 initTreeData 自动构建树（无需手写嵌套）"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 4, "minutes": 15, "description": "默认样式 + 4 字段必填 + 3 层结构" },
+            "typical": { "config_items": 6, "data_fields": 6, "minutes": 30, "description": "复选 + 图标 + 选中样式 + 全部数据字段" },
+            "full": { "config_items": 10, "data_fields": 6, "minutes": 50, "description": "复选 + 图标切换 + 展开图标 + 选中样式 + 派发 param1~5" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel 字段名 selected_icon/unselected_icon 与 defaultValue.json 实际字段名 icon1/icon2 不一致（schema 期望 selected_icon，defaultValue 演示 icon1）",
+        "param1~param5 字段未在 schema/dataModel 声明，但代码 onSelect 派发逻辑读取（line 31-49）",
+        "nodeSelectedStyle 中 borderWidth/borderColor/borderRadius 字段被注释（line 154-174），PM 配置界面看不到这些字段",
+        "oss-material.json.dataModel 是空字符串（与多个排名物料一致）",
+        "initTreeData 递归构建依赖 parent_key 字段，data 需保证无循环引用",
+        "useEffect 依赖项含 nameFontStyle/iconFontStyle/style 但缺 nodeSelectedStyle（line 103），修改选中样式不触发重渲",
+        "StyleTree 是本地私有组件（./styles），外部无法复用"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

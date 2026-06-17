@@ -1,0 +1,147 @@
+{
+    "name": "cone-single-bar",
+    "title": "单系列锥形柱状图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "ly"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "单系列锥形柱图（x + y + unit）",
+                "example": "[{ x: '9:00', y: 130, unit: '个' }, { x: '11:00', y: 40, unit: '个' }]",
+                "match_pattern": "dataSource[*].{x, y, unit}",
+                "note": "⚠️ schema 声明 dataModel 字段 x/y/s（与 cone-bar 一致），但 defaultValue 演示用 x/y/unit；代码读取 x/y/unit（line 14-23）",
+                "fields": [
+                    { "name": "x", "type": "String(实际)", "required": true, "description": "X 轴类目" },
+                    { "name": "y", "type": "Number(实际)", "required": true, "description": "Y 轴数值" },
+                    { "name": "unit", "type": "String", "required": false, "description": "单位（label formatter 拼接用）" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "chart": {
+                "barCategoryGap": { "type": "number", "default": "50%" },
+                "customColors/color": { "type": "BackgroundColorGroup2EC[]", "description": "渐变/纯色填充" }
+            },
+            "legend": {
+                "show": { "type": "boolean", "default": true },
+                "title": { "type": "string", "description": "图例名称（line 151 delete legend.title）" },
+                "type/icon/orient/left/top/right/bottom/textStyle": "完整图例配置"
+            },
+            "label": {
+                "show": { "type": "boolean", "default": true },
+                "position": { "type": "enum[outside/inside/center]" },
+                "textStyle": { "type": "VisualTextStyle" },
+                "formatter": "params.value + unit 拼接（line 72-78）"
+            },
+            "tooltip": "标准 tooltip",
+            "xAxis": {
+                "axisLabel": { "type": "VisualTextStyle" },
+                "axisLine": { "type": "boolean", "default": false },
+                "axisMargin": { "type": "number", "description": "X 轴标签与图表距离" }
+            },
+            "yAxis": {
+                "labelShow": { "type": "boolean" },
+                "axisLabel": { "type": "VisualTextStyle" },
+                "axisLine": { "type": "boolean" },
+                "splitLine": { "type": "boolean" }
+            }
+        },
+        "default_values": {
+            "config.title": "单系列锥形柱状图",
+            "config.width": 300,
+            "config.height": 300,
+            "config.chart.barCategoryGap": "50%",
+            "config.chart.customColors": true,
+            "config.legend.show": true,
+            "config.legend.icon": "roundRect",
+            "config.label.show": true,
+            "config.label.position": "top"
+        },
+        "ui_features": "与 cone-bar 类似但单系列（无 s 字段）；label.formatter 自动拼接 unit（line 72-78）；colorBy='data' 或 'series' 切换（line 45）；X/Y 轴独立显隐控制。"
+    },
+    "business_scenarios": [
+        "单类目多时间点对比",
+        "需要单位自动拼接的柱图",
+        "X/Y 轴独立显隐控制",
+        "需要 8 种 legend icon 切换的单系列柱图"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "cone-bar", "cost": "低", "reason": "数据格式部分同构" },
+            { "material": "echarts-bar", "cost": "低", "reason": "扁平柱图替代" }
+        ],
+        "incompatible_with": [],
+        "note": "cone-single-bar 是 cone-bar 单系列版，schema 独立"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.5,
+        "weighted_total": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='单系列锥形柱状图' 业务化清晰但与 cone-bar 区分度小。",
+            "2. 场景覆盖度 3.5：单系列 + unit 拼接 + X/Y 轴独立显隐。",
+            "3. 配置完备度 4.0：5 个 FormCollapse 分组（图/图例/标签/悬浮/X 轴/Y 轴）。",
+            "4. 数据契约清晰度 2.5：dataModel 声明 x/y/s（与 cone-bar 一致），但实际用 x/y/unit；schema 字段名与代码不一致。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 3.5：通用单系列锥形柱图。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 1,
+        "data_fields_to_provide": 2,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 5,
+        "breakdown": { "config_minutes": 1, "data_minutes": 4, "custom_minutes": 0 },
+        "config_required": ["config.title"],
+        "data_required": ["x", "y"],
+        "optional_fields": {
+            "config": ["chart.barCategoryGap", "chart.customColors/color", "legend.show/title/icon", "label.show/position/textStyle", "xAxis/yAxis 显隐 + 字体"],
+            "data": ["unit（label 拼接）"]
+        },
+        "assumptions": ["使用默认渐变 2 色", "无单位"],
+        "scenarios": {
+            "minimal": { "config_items": 1, "data_fields": 2, "minutes": 5, "description": "默认渐变 + 2 字段" },
+            "typical": { "config_items": 4, "data_fields": 3, "minutes": 12, "description": "单位 + 完整图例 + X/Y 轴" },
+            "full": { "config_items": 9, "data_fields": 3, "minutes": 22, "description": "全部 5 个 FormCollapse 分组" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel 声明 s 字段但代码不读；unit 字段未在 dataModel 声明但代码读取（line 14-23）",
+        "dataModel 字段与 defaultValue 字段不一致（s vs unit）",
+        "dataType 全 String 但 y 实际需为 number（line 18 Number(i.y) 强转）",
+        "label.formatter 拼接 unit 时若 unit 是 number 类型（实际如此）会变 '10 个' 显示 OK",
+        "colorBy='series'/'data' 切换对单系列影响小",
+        "console.log('chartData', chartData) 调试日志（line 64）应移除",
+        "无 doc/README.md",
+        "groupId=12（与 circular-column、cone-bar 同分组）"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

@@ -1,0 +1,170 @@
+{
+  "name": "oss-chart-plots-dual-column-line",
+  "title": "分组柱线混合图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "haoyingying",
+    "groupId": 12,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssDualAxesPlotChart)",
+    "uses_interaction_hook": "useInteraction + usePersistActions（点击事件）",
+    "uses_utils": "seriesColors + data from common/util + gradientColor from @Utils",
+    "uses_common_constants": "DEFAULT_COLORS from @Common/constants",
+    "unique_features": [
+      "4 字段数据（dimension_name/indicator_value/compareType/chartType）",
+      "chartType 字段决定是柱图(t=1)还是线图(t=2)，支持分组柱+多条线",
+      "supports gradientColor 自定义渐变填充柱",
+      "isGroup=true + isStack=false（柱分组不堆叠）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "分组柱线混合（4 字段 X/Y/compareType/chartType）",
+        "example": "[{ x: 'Q1', y: 100, s: 'A产品', t: 1 }, { x: 'Q1', y: 5, s: '增长率', t: 2 }, ...]",
+        "match_pattern": "data[*].{x, y, s, t}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType) + t (chartType 1=柱 2=线)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" },
+          { "name": "compareType", "type": "String", "required": true, "description": "多系列分组键" },
+          { "name": "chartType", "type": "String", "required": true, "description": "图表类型（1=柱 2=线），决定是柱数据还是线数据" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "note": "useInteraction 钩子绑定 click 事件"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND（双 yAxis：主轴+副轴 visible: false）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "columnStyle": {
+        "colors": "ColorPicker 数组 (单色填充)",
+        "isGradient": "Switch (是否渐变)",
+        "gradientColors": "ColorPicker 数组 (渐变填充)"
+      },
+      "lineStyle": {
+        "colors": "ColorPicker 数组 (线条颜色)"
+      },
+      "linePoint": {
+        "color": "ColorPicker (点填充色)",
+        "stroke": "ColorPicker (点描边色)",
+        "strokeColors": "ColorPicker 数组 (多系列点描边色)",
+        "colors": "ColorPicker 数组 (多系列点填充色)"
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "分组柱线混合图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "销售+利润率：销售额（分组柱）+ 利润率（多条线）",
+    "数量+趋势：销售量（分组柱）+ 增长率（多条线）",
+    "多产品对比：多个产品的销量+增长率",
+    "业绩+变化率：业绩（柱）+ 同比环比（线）",
+    "综合业务看板：核心指标 + 趋势指标"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/dual-axes", "cost": "中", "reason": "类似双轴，本物料多 1 个分组能力" },
+      { "material": "oss-chart-plots/series-column", "cost": "中", "reason": "分组柱+线混合" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总数值" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 oss-chart-plots 系列中最复杂的混合图（4 字段 + 分组柱+线）"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 4 字段业务化（dimension_name/indicator_value/compareType/chartType），其中 chartType 字段明确说明（'1柱图、2线图'）；fieldLabel 都是中文业务化。",
+      "2. 场景覆盖度 4.0：支持复杂业务场景（销售+利润率/数量+趋势/多产品对比/业绩+变化率/综合看板）；分组柱+线混合是高级业务可视化。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组 + 柱渐变（isGradient/gradientColors）+ 线 colors + point 多色（colors/strokeColors）+ 双 yAxis；配置项最丰富。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰（4 字段），有 rowProperties 描述；瑕疵 ① dataType 错标；② chartType 字段类型应是 Number 但 dataType 标为 String。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/readme.md + doc/images 11 张示例图。",
+      "6. 可组合性 4.0：与 dual-axes/series-column 数据格式相近，与数字卡/边框组合良好。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 7,
+      "data_minutes": 8,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.columnStyle", "config.lineStyle", "config.linePoint", "config.legend"],
+    "data_required": ["dimension_name", "indicator_value", "compareType", "chartType"],
+    "optional_fields": {
+      "config": ["columnStyle.isGradient", "valueLabel.show", "tooltip.show"],
+      "data": ["indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "至少 1 个柱系列（t=1）+ 1 个线系列（t=2）",
+      "无下钻",
+      "使用默认色或自定义色"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 4, "minutes": 15, "description": "1 柱+1 线双轴混合 + 默认样式" },
+      "typical": { "config_items": 8, "data_fields": 4, "minutes": 30, "description": "2 柱+2 线多系列 + 渐变填充 + 自定义色" },
+      "full": { "config_items": 14, "data_fields": 4, "minutes": 60, "description": "完整样式 + 多系列 + click 下钻 + 标签 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（indicator_value/chartType 应为 Number）",
+    "chartType 字段类型应是 Number 1/2，但 dataModel 标为 String",
+    "rebuildPlotOptions 是占位符（line 196-199），未真正实现",
+    "formatPointStroke 中 lineSeries 通过 Number(item.t) === 2 过滤（line 50），t 字段必须能转 Number",
+    "formatPointColor 中 linePoint?.color === '' 时使用 colors 数组（line 46），空字符串是隐式约定",
+    "oss-material.json.dataModel 是空字符串",
+    "useInteraction 钩子绑定 click 事件，但 schema.ts 未声明 interactions 字段"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 double-gauge 画像"
+  }
+}

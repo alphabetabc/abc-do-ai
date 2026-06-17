@@ -1,0 +1,165 @@
+{
+    "name": "progress-list",
+    "title": "进度条列表",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中高",
+        "author": "孙寰哲"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "进度条列表（id + name + value + percent + unit + level）",
+                "example": "[{ id: '1', name: '语音专线', value: 99.99, percent: 13.45, unit: '%', level: 0 }, ...]",
+                "match_pattern": "data[*].{id, name, value, percent, unit, level}",
+                "note": "代码内 groupBy(name) 自动按 name 分组；data 实际是扁平数组，按 name 聚合",
+                "fields": [
+                    { "name": "id", "type": "String", "required": true, "description": "行ID（点击派发 rowProgressId）" },
+                    { "name": "name", "type": "String", "required": true, "description": "行名称（同时是分组键）" },
+                    { "name": "value", "type": "Number(实际)", "required": true, "description": "显示值" },
+                    { "name": "percent", "type": "Number(实际)", "required": true, "description": "进度条百分比（0-100）" },
+                    { "name": "unit", "type": "String", "required": false, "description": "单位" },
+                    { "name": "level", "type": "Number", "required": false, "description": "级别（用于颜色索引），缺省按 0 处理" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "row_click_dispatch",
+                "trigger": "click on progress-item",
+                "config_field": "interactions.defined.{rowProgressId, rowProgressName}",
+                "behavior": "点击行通过 interaction.dispatch 派发 id + name"
+            }
+        ],
+        "visual_configs": {
+            "style": {
+                "width": { "type": "number", "default": 220, "description": "行宽度 px" },
+                "height": { "type": "number", "default": 25, "description": "行高度 px" },
+                "progressWidth": { "type": "number", "default": 150 },
+                "progressHeight": { "type": "number", "default": 20 },
+                "strokeWidth": { "type": "number", "default": 10 },
+                "strokeColor1": { "type": "string", "default": "#108ee9", "description": "渐变起始色" },
+                "strokeColor2": { "type": "string", "default": "#87d068", "description": "渐变结束色" },
+                "isCustomColors": { "type": "boolean", "default": false, "description": "按 level 索引取色" },
+                "customColors": { "type": "string[]", "default": "[]", "description": "多色数组，按 level 索引" },
+                "trailColor": { "type": "string", "default": "#108ee9", "description": "进度条背景色" },
+                "status": { "type": "string", "default": "normal", "options": ["normal", "active"] },
+                "strokeLinecap": { "type": "string", "default": "round", "options": ["round", "square"] },
+                "steps": { "type": "number", "default": 0, "description": "进度条步数，>0 时显示阶梯状" },
+                "layout": { "type": "object", "description": "名称与进度条相对位置（renderLayoutFlex）" }
+            },
+            "nameFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle + isCustomColors + customColors + marginLeft/Right/Top/Bottom + width" },
+            "valueFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle + isCustomColors + customColors + marginLeft/Right/Top/Bottom" },
+            "unitFontStyle": { "fontFamily/Size/Weight/color": "VisualTextStyle + isCustomColors + customColors + marginLeft/Right/Top/Bottom" }
+        },
+        "default_values": {
+            "config.title": "进度条列表",
+            "config.width": 450,
+            "config.height": 200,
+            "config.style.width": 220,
+            "config.style.height": 25,
+            "config.style.progressWidth": 150,
+            "config.style.progressHeight": 20,
+            "config.style.strokeWidth": 10,
+            "config.style.strokeColor1": "#108ee9",
+            "config.style.strokeColor2": "#87d068",
+            "config.style.trailColor": "#108ee9",
+            "config.style.status": "normal",
+            "config.style.strokeLinecap": "round",
+            "config.style.steps": 0
+        }
+    },
+    "business_scenarios": [
+        "网络专线质量监控进度条（语音/物联网/数据/互联网/短彩信占比）",
+        "通用 KPI 完成率列表",
+        "多级别进度展示（按 level 颜色区分）",
+        "分组进度条（按 name 自动 groupBy）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "echarts-bar", "cost": "低", "reason": "echarts-bar 处理横向条形；progress-list 处理带颜色/状态的进度" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [],
+        "note": "level 字段隐式约定 0/1/2 分别对应默认/进阶/警告，需 PM 自定义映射"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.7,
+        "weighted_total": 3.7,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='进度条列表' + 字段(percent/level/unit) 业务化贴近 KPI 场景。",
+            "2. 场景覆盖度 3.5：覆盖进度条 + 分组 + 多色映射 + 阶梯状进度 + 4 种状态，场景集中。",
+            "3. 配置完备度 4.5：5 个 FormCollapse 分组（样式 + 3 个字体 + 布局）+ 多个联动；默认值丰富。",
+            "4. 数据契约清晰度 3.5：dataModel 6 个字段全声明；⚠️ dataType 全 String 但 value/percent 实际为 number；dataModel.name 错写为 'visual-designer-progress-list'。",
+            "5. 文档完整度 2.0：仅有 doc/README.md + doc/CHANGELOG.md，缺 5+1 文档。",
+            "6. 可组合性 3.5：data 扁平+ groupBy 隐式约定，跨物料需了解。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 3,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 10,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 6,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.style.strokeColor1"],
+        "data_required": ["name", "value", "percent"],
+        "optional_fields": {
+            "config": ["style.strokeColor2 (渐变结束色)", "style.steps (阶梯)", "style.status", "字体颜色/字号", "isCustomColors + customColors (按 level 多色)"],
+            "data": ["id (点击派发)", "unit (单位)", "level (按级别多色)"]
+        },
+        "assumptions": [
+            "使用默认蓝→绿渐变",
+            "无阶梯（steps=0）",
+            "无按 level 多色（用默认渐变）",
+            "无 rowProgressId 派发"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 3, "minutes": 10, "description": "默认蓝绿渐变 + 进度条 + 名称/数值/百分比" },
+            "typical": { "config_items": 6, "data_fields": 4, "minutes": 22, "description": "自定义颜色 + 阶梯状 + rowProgressId 派发" },
+            "full": { "config_items": 12, "data_fields": 6, "minutes": 40, "description": "全部 5 个 FormCollapse 分组 + level 多色 + 完整字体" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel.json 中 dataModelDefinition.name 错写为 'visual-designer-progress-list'（应为 'progress-list'）",
+        "isCustomColors 字段在 style 和 3 个字体样式中各有一份，未统一抽离",
+        "代码内 groupBy(name) 隐式聚合，data 实际是扁平数组，schema 未明示该约定",
+        "dataType 全 String 但 value/percent 实际为 number",
+        "renderLayoutFlex 调用未传 labelStyle（被注释），PM 配置 layout 看不到标签",
+        "strokeColor1/strokeColor2 是渐变起止色，命名不直观（'1'/'2' 仅表示起止）"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

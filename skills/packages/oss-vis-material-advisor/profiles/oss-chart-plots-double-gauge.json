@@ -1,0 +1,148 @@
+{
+  "name": "oss-chart-plots-double-gauge",
+  "title": "双层仪表盘",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./index.less"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "李萌",
+    "groupId": 17,
+    "uses_common_schema": "无（自定义样式）",
+    "uses_hoc": "无（直接 export DoubleGauge 组件）",
+    "plot_library": "@fedx-vis/plots (OssGaugePlotChart)",
+    "uses_common_constants": "DEFAULT_COLORS from @Common/constants",
+    "uses_opt_resolve": "statisticResolve from opt-resolve/statistic-style",
+    "unique_features": [
+      "嵌套 2 个 OssGaugePlotChart（外层 + 内层）",
+      "dataSource[0] 是外层百分比，dataSource[1] 是内层百分比",
+      "支持渐变 + 单色双 RangeColors 模式",
+      "statistic 统计文本显示在内层"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "双层仪表盘（2 行 percent 数据）",
+        "example": "[{ percent: 60 }, { percent: 80 }]",
+        "match_pattern": "data[0].percent + data[1].percent",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "percent", "type": "String(实际number)", "required": true, "description": "百分比（0-100），2 行分别对应外层/内层" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "styleOut": {
+        "isGradient": "Switch (外层是否渐变)",
+        "RangeColors": "ColorPicker 数组 (外层单色色阶)",
+        "RangeColor1": "{ colorStops: [...] } (外层渐变方案 1)",
+        "RangeColor2": "{ colorStops: [...] } (外层渐变方案 2)",
+        "radius": "NumberPicker (外层半径)",
+        "width": "NumberPicker (外层环宽)"
+      },
+      "styleIn": "同 styleOut（内层）",
+      "statistic": "PLOTS_SCHEMA.STATISTIC (内层中心统计文本)",
+      "common": { "width/height": "继承 config.width/height" }
+    },
+    "default_values": {
+      "config.title": "双层仪表盘",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "KPI 双指标：当前值（内层） + 目标值（外层）",
+    "进度对比：实际进度（内层） + 计划进度（外层）",
+    "完成率双层：日完成（内层） + 月完成（外层）",
+    "性能双指标：CPU 使用率（内层） + 内存使用率（外层）",
+    "达标双层：当期完成（内层） + 累计完成（外层）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/gauge", "cost": "极低", "reason": "同 oss-gauge，单层变双层" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示具体数值" }
+    ],
+    "incompatible_with": ["非 gauge 类图表"],
+    "note": "本物料是 gauge 物料的双层版本（嵌套 2 个 OssGaugePlotChart）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.5,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 字段简单（仅 percent），业务语义清晰；dataType 错标。",
+      "2. 场景覆盖度 3.5：覆盖 KPI/进度/性能/达标等典型双层仪表盘场景。",
+      "3. 配置完备度 3.5：styleOut/styleIn 完整 + statistic 中心统计 + 渐变模式；配置项较丰富。",
+      "4. 数据契约清晰度 3.0：dataModel 字段清晰，但 ① dataType 错标（percent 应为 Number）；② dataSource 必须是 2 行（0=外层 1=内层）隐式约定，dataModel 未说明。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/readme.md 存在。",
+      "6. 可组合性 3.5：与 gauge 数据同构，与数字卡组合良好。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 8,
+    "breakdown": {
+      "config_minutes": 3,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.styleOut.radius", "config.styleIn.radius"],
+    "data_required": ["data[0].percent", "data[1].percent"],
+    "optional_fields": {
+      "config": ["styleOut.RangeColors", "styleIn.RangeColors", "statistic"],
+      "data": []
+    },
+    "assumptions": [
+      "dataSource 必须是 2 行",
+      "使用默认色或单色色阶",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 2, "minutes": 8, "description": "双层仪表盘 + 默认色" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 15, "description": "自定义色 + 中心统计" },
+      "full": { "config_items": 8, "data_fields": 2, "minutes": 25, "description": "完整样式 + 渐变 + 中心统计" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（percent 应为 Number）",
+    "dataSource 必须 2 行的隐式约定（dataModel 未说明）",
+    "dataModel 中 dimensions/header 全空（与 gauge 物料类似）",
+    "uses index.less 但可能为空文件",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失",
+    "未使用 withPlotRender HOC，直接 export 组件（与其他 oss-chart-plots 不一致）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 gauge 画像"
+  }
+}

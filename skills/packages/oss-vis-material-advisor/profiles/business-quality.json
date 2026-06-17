@@ -1,0 +1,177 @@
+{
+  "name": "business-quality",
+  "title": "玉珏图",
+  "category": "数字/指标卡",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./getOptions.ts"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中高",
+    "author": "zw",
+    "groupId": 5,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / FONT_WEIGHT / GLOBAL_FONTS / defineInteractionSchema（@Common）",
+    "uses_hoc": "无（直接 ReactECharts）",
+    "plot_library": "@fedx-vis/react-echarts"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（businessName + businessType + businessRatio + businessTypeUnit）",
+        "example": "[{ id: 1, businessName: '掉话率', businessType: '2G', businessRatio: '35', businessTypeUnit: '%' }, ...]",
+        "match_pattern": "data[*].{id, businessName, businessType, businessRatio, businessTypeUnit}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "id", "type": "Number", "required": false, "description": "唯一标识（隐式字段，dataModel 未声明）" },
+          { "name": "businessName", "type": "String", "required": true, "description": "业务名称（如掉话率），取 data[0] 作为标题" },
+          { "name": "businessType", "type": "String", "required": true, "description": "业务类型（2G/4G/5G）" },
+          { "name": "businessRatio", "type": "String(实际number)", "required": true, "description": "业务比例/数值" },
+          { "name": "businessTypeUnit", "type": "String", "required": false, "description": "单位（%）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "rowClick",
+        "trigger": "click",
+        "payload": "data 中点击行的完整对象",
+        "note": "通过 defineInteractionSchema 的 rowClickData 派发"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT（width/height/left/top/background/isLock/isHidden）",
+      "title": "getCompTitle（标题/位置/对齐）",
+      "chart": {
+        "maxValue": "图例最大值（NumberPicker）",
+        "backgroundGradientColor": {
+          "isGradient": "Switch 渐变开关",
+          "colors": "ColorGroup 单色/渐变色（x-reactions: isGradient=true 时隐藏）",
+          "itemsSet": "ArrayCollapse 分项设置（每项 bgColor 渐变）"
+        }
+      },
+      "titleTextStyle": {
+        "text": "标题名称（默认 material.title）",
+        "fill": "填充颜色（ColorPicker）",
+        "fontWeight": "字重（Select）",
+        "fontSize": "字号（NumberPicker）",
+        "fontFamily": "字体（Select）",
+        "top/left": "标题偏移",
+        "textAlign": "对齐方式"
+      },
+      "legendStyle": {
+        "show": "Switch",
+        "top/left": "偏移",
+        "icon": "Select（圆环/圆/矩形/正方形 path://）",
+        "textStyle": "图例文本（fontSize/fontFamily/fontWeight/paddingX/paddingY）",
+        "titleStyle": "图例标题颜色"
+      },
+      "labelStyle": {
+        "textStyle": "label 文本（fontSize/fontFamily/fontWeight/color）",
+        "grid": "label 偏移（top/left/bottom）"
+      }
+    },
+    "default_values": {
+      "config.title": "玉珏图",
+      "config.width": 500,
+      "config.height": 300,
+      "config.chart.maxValue": 100,
+      "config.titleTextStyle.text": "掉话率",
+      "config.titleTextStyle.fontSize": 29,
+      "dataConfig.json": "[{businessName:'掉话率', businessType:'2G/4G/5G', businessRatio:35, businessTypeUnit:'%'}] 3 行示例",
+      "dataConfig.isRefresh": true,
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "业务质量分布：2G/4G/5G 网络掉话率/接通率对比",
+    "KPI 分类对比：多个业务类型的指标分布",
+    "玉珏图（径向柱状图）可视化：单标题 + 多分项",
+    "业务保障场景：春节保障/重大活动保障的多业务类型监控",
+    "占比分析：单业务（如掉话率）在多种网络类型中的占比"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "echarts-pie", "cost": "中", "reason": "类似分项占比可视化" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总量" },
+      { "material": "oss-chart-plots-pie", "cost": "中", "reason": "饼/玫瑰图替代" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [],
+    "note": "玉珏图是特殊定制图表（基于 echarts 自定义 pie），与通用饼图/柱图区别在径向布局 + 多 businessType 扇区"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.0,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 3.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 4 字段业务化（businessName/businessType/businessRatio/businessTypeUnit），但 id 字段未声明；defaultValue 演示为 2G/4G/5G 掉话率示例，业务贴合。",
+      "2. 场景覆盖度 3.0：单业务类型分布对比，场景相对单一（仅适合多类型/单指标场景），不适用多维度/多指标。",
+      "3. 配置完备度 4.0：4 个 FormCollapse 分组（图表配置/标题/图例/label）+ itemsSet 数组配置 + x-reactions 联动；配置颗粒度细。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名业务化，但 dataType 全部错标 String（businessRatio 应为 Number）；id 字段未声明。",
+      "5. 文档完整度 3.0：doc/CHANGELOG.md + doc/README.md + 1 张图片，但无 5+1 文档。",
+      "6. 可组合性 4.0：与 echarts-pie 替代性强；与 digital-flop 无缝对接；与边框装饰无依赖。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 4,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 15,
+    "breakdown": {
+      "config_minutes": 6,
+      "data_minutes": 9,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.chart.maxValue", "config.titleTextStyle.text", "config.titleTextStyle.fill"],
+    "data_required": ["businessName", "businessType", "businessRatio", "businessTypeUnit"],
+    "optional_fields": {
+      "config": ["width", "height", "backgroundGradientColor.colors", "itemsSet", "legendStyle.show", "labelStyle"],
+      "data": ["id (内部用)", "其他维度（不消费）"]
+    },
+    "assumptions": [
+      "至少 2 个 businessType 分项（玉珏图需要多扇区）",
+      "businessRatio 数据类型 number（实际 dataModel 标 String）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 4, "data_fields": 4, "minutes": 15, "description": "单业务 + 默认渐变 + 3 分项" },
+      "typical": { "config_items": 10, "data_fields": 4, "minutes": 30, "description": "完整标题 + 图例 + 标签定制 + itemsSet 渐变" },
+      "full": { "config_items": 20, "data_fields": 4, "minutes": 60, "description": "全部 4 个 FormCollapse 分组深度配置" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在且被 schema.ts 顶部 import",
+    "dataModel 中 4 个字段 dataType 全部错标 String（businessRatio 应为 Number）",
+    "id 字段在 defaultValue.json 中使用，但 dataModel.json 中未声明",
+    "schema.ts 顶部有 60+ 行注释代码（label.textStyle.backgroundColor/width 等）",
+    "getChartTitle 从 data[0].businessName 取标题（隐式约定）",
+    "使用 @fedx-vis/react-echarts（外部包）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 business-scale / indicator-display / number-level-indicate"
+  }
+}

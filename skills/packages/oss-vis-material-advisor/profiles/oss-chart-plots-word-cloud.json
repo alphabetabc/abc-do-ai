@@ -1,0 +1,146 @@
+{
+  "name": "oss-chart-plots-word-cloud",
+  "title": "词云图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 12,
+    "uses_common_schema": "无（自定义样式）",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssWordCloudPlotChart)",
+    "unique_features": [
+      "无 xAxis/yAxis/legend（词云图不需要）",
+      "支持自定义字体/字号/字重",
+      "dataModel 字段（type/count）同 oss-chart-plots/pie"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "词云图（type 词 + count 频次）",
+        "example": "[{ type: '大数据', count: 100 }, { type: 'AI', count: 80 }, ...]",
+        "match_pattern": "data[*].{type, count}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (隐式判断 data[0]?.s, dataConverter 不映射 s 字段)",
+        "fields": [
+          { "name": "compareType", "type": "String", "required": true, "description": "词" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "频次（决定字号）" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "common": {
+        "wordStyle": {
+          "fontFamily": "Select (字体)",
+          "fontSize": {
+            "min": "NumberPicker (最小字号)",
+            "max": "NumberPicker (最大字号)"
+          },
+          "fontWeight": "Select (字重 normal/bold)"
+        }
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP"
+    },
+    "default_values": {
+      "config.title": "词云图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "关键词热度：社交媒体/新闻关键词热度可视化",
+    "标签云：用户标签云（高频标签）",
+    "搜索热词：搜索引擎搜索热词",
+    "评论分析：用户评论关键词分析",
+    "主题词：文档主题词分布"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/pie", "cost": "极低", "reason": "dataModel 字段同构（type/count）" },
+      { "material": "oss-chart-plots/rose", "cost": "极低", "reason": "dataModel 字段同构" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总词数" }
+    ],
+    "incompatible_with": ["其他 X/Y 轴图表"],
+    "note": "本物料与 oss-chart-plots/pie/rose 数据格式完全相同（type/count）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.4,
+    "weighted_total": 3.4,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.0,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 字段业务化（compareType/indicator_value/indicator_unit），与 pie 物料同构；dataType 错标。",
+      "2. 场景覆盖度 3.5：词云图场景相对小众（关键词/标签/评论），覆盖 4-5 类典型场景。",
+      "3. 配置完备度 3.0：配置项最少（仅 wordStyle 字体/字号/字重 + tooltip），无 xAxis/yAxis/legend/valueLabel。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰（3 个），dataConverter 仅映射 type/count；dataType 错标。",
+      "5. 文档完整度 2.0：无 doc/ 目录（连 CHANGELOG.md 都没有，是 oss-chart-plots 中唯一）。",
+      "6. 可组合性 4.0：与 pie/rose 数据完全相同（type/count），零成本切换；与数字卡组合。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.common.wordStyle.fontFamily"],
+    "data_required": ["compareType", "indicator_value"],
+    "optional_fields": {
+      "config": ["wordStyle.fontSize.min/max", "wordStyle.fontWeight", "tooltip.visible"]
+    },
+    "assumptions": [
+      "使用默认字体",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "词云图 + 默认样式" },
+      "typical": { "config_items": 4, "data_fields": 2, "minutes": 10, "description": "自定义字号 + 字体" },
+      "full": { "config_items": 5, "data_fields": 2, "minutes": 15, "description": "完整样式 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "无 doc/ 目录（连 CHANGELOG.md 都没有，是 oss-chart-plots 中唯一缺文档的）",
+    "dataType 错标（indicator_value 应为 Number）",
+    "dataConverter 注释了 s 字段（代码未传 s，dataModel 也未声明 compareType 是否被映射）",
+    "isMultiSeries 判断 data[0]?.s 但 dataConverter 不映射 s（line 51-52），所以多系列实际不可用",
+    "defaultValue.dataConfig.json 缺失",
+    "oss-material.json.dataModel 是空字符串"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 funnel 画像"
+  }
+}

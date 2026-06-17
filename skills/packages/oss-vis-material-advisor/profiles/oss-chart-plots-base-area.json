@@ -1,0 +1,169 @@
+{
+  "name": "oss-chart-plots-base-area",
+  "title": "基础面积",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 16,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssAreaPlotChart)",
+    "unique_features": [
+      "支持 X/Y 轴文字标注（textX/textY 浮动 div）",
+      "支持渐变填充（gradientColors 多色 stops 渐变）",
+      "dataModel 中 name/title 字段错写为 'area'（与目录名 base-area 不一致）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单系列面积（X维度 + Y指标）",
+        "example": "[{ x: 'Q1', y: 100 }, { x: 'Q2', y: 150 }, ...]",
+        "match_pattern": "data[*].{x, y}",
+        "supports_multi_series": false,
+        "isMultiSeries": "硬编码 false（代码 line 154）",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "min_range", "type": "String", "required": false, "description": "Y轴最小值（来自首行 data[0]）" },
+          { "name": "max_range", "type": "String", "required": false, "description": "Y轴最大值（来自首行 data[0]）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND（含 min/max range autoregulation）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "point": "PLOTS_SCHEMA.STYLE_STROKE.point (数据点样式)",
+      "areaStyle": {
+        "smooth": "Switch",
+        "lineWidth": "NumberPicker",
+        "lineColor": "ColorPicker",
+        "isGradient": "Switch (是否渐变填充)",
+        "areaColor": "ColorPicker (单色填充)",
+        "areaColors": {
+          "direction": "NumberPicker (渐变方向 0-360)",
+          "colorStops": "[{percent: number, color: string}, ...]"
+        }
+      },
+      "textX": {
+        "content": "Input (X 轴上方浮动文字)",
+        "top": "NumberPicker",
+        "left": "NumberPicker",
+        "textStyle": "VisualTextStyle"
+      },
+      "textY": {
+        "content": "Input (Y 轴左侧浮动文字)",
+        "top": "NumberPicker",
+        "left": "NumberPicker",
+        "textStyle": "VisualTextStyle"
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "基础面积",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "时间序列趋势：销售额/流量/性能指标随时间变化",
+    "渐变视觉强调：需要渐变填充的高端场景（如品牌色渐变）",
+    "X/Y 轴标注：需要在 X/Y 轴附近浮动显示说明文字（textX/textY）",
+    "数值范围监控：配合 minRange/maxRange 自动适配 Y 轴范围",
+    "单系列趋势展示：单维度数据（与 area 物料相比，本物料支持渐变填充和浮动文字）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/area", "cost": "中", "reason": "dataModel 同构，但本物料不支持多系列" },
+      { "material": "oss-chart-plots/line", "cost": "中", "reason": "X/Y 轴同构，本物料是面积图" },
+      { "material": "normal-label", "cost": "低", "reason": "如需更复杂的文字说明可用 normal-label 替代 textX/textY" }
+    ],
+    "incompatible_with": [],
+    "note": "与 area 物料 80% 相似（schema 略不同），但本物料独有：① isGradient 渐变填充；② textX/textY 浮动文字标注"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.0,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.5,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.0：dataModel.name/title 字段错写为 'area'（与目录名 base-area 不一致），dataType 错标；dataModel 中 dimensions/indicators 字段业务化但与实际代码读取对应不清晰。",
+      "2. 场景覆盖度 3.5：仅单系列（isMultiSeries 硬编码 false），不支持多系列；场景比 area 物料略少。",
+      "3. 配置完备度 4.0：基础配置齐全 + 渐变填充（gradientColors 多 stops）+ textX/textY 浮动文字标注（独有功能）；比 area 物料多了渐变和文字标注能力。",
+      "4. 数据契约清晰度 3.0：dataModel 字段名错写（name='area'）+ dataType 错标；min_range/max_range snake_case（与 area 物料 camelCase 不一致）。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md 存在，但 doc/images 8 张图无任何说明。",
+      "6. 可组合性 3.5：与 area 物料 80% 相似但 schema 略不同（多渐变/文字标注字段），跨物料对接需适配。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 7,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 5,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.areaStyle"],
+    "data_required": ["dimension_name", "indicator_value"],
+    "optional_fields": {
+      "config": ["areaStyle.isGradient", "areaStyle.areaColors.colorStops", "textX.content", "textY.content"],
+      "data": ["min_range/max_range (Y轴自适应)"]
+    },
+    "assumptions": [
+      "使用单色或默认渐变",
+      "无 textX/textY 浮动文字",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 7, "description": "单系列面积 + 单色填充" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 15, "description": "渐变填充 + 标签" },
+      "full": { "config_items": 10, "data_fields": 2, "minutes": 30, "description": "渐变填充 + textX/textY + 标签 + 悬浮提示" }
+    }
+  },
+  "_validation_notes": [
+    "dataModel.name/title 错写为 'area'（与目录名 base-area 不一致，混淆来源）",
+    "dataType 错标（indicator_value 应为 Number）",
+    "isMultiSeries 硬编码 false（代码 line 154），无法支持多系列",
+    "dataConverter 注释了 s 字段映射（line 168 `// s: d.compareType`）",
+    "min_range/max_range 用 snake_case（与 area 物料 camelCase 不一致）",
+    "schema.ts 中 baseInfo 注释区（line 30-56）与 area 物料类似，未清理",
+    "oss-material.json.dataModel 是空字符串"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 base-scatter 画像"
+  }
+}

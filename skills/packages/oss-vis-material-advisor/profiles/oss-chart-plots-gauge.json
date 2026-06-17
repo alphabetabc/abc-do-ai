@@ -1,0 +1,140 @@
+{
+  "name": "oss-chart-plots-gauge",
+  "title": "仪表盘",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./opt-resolve/index.ts"]
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 17,
+    "uses_common_schema": "无",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssGaugePlotChart)",
+    "uses_opt_resolve": "本地 opt-resolve/index.ts（含 gaugeStyleResolve/axisOptionResolve/indicatorResolve）",
+    "unique_features": [
+      "dataConverter 把 indicator_value 转 Number 当 percent（line 38）",
+      "dataSource[0]?.percent 是渲染入口",
+      "有独立的 opt-resolve/ 目录（与其他 oss-chart-plots 不同的本地 opt-resolve）"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单层仪表盘（1 行 indicator_value）",
+        "example": "[{ indicator_value: '60' }]",
+        "match_pattern": "data[0].indicator_value → percent",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "百分比（0-100），dataConverter 转 Number 作为 percent" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "style": "本地 gaugeStyleResolve（不在 PLOTS_SCHEMA）",
+      "axis": "本地 axisOptionResolve",
+      "indicator": "本地 indicatorResolve",
+      "statistic": "PLOTS_SCHEMA.STATISTIC (中心统计文本)"
+    },
+    "default_values": {
+      "config.title": "仪表盘",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "KPI 完成率：销售额/目标完成率",
+    "性能监控：CPU/内存/磁盘使用率",
+    "进度展示：项目完成进度",
+    "健康评分：系统健康度评分",
+    "指标监控：任意百分比类指标（0-100）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/double-gauge", "cost": "极低", "reason": "单层变双层" },
+      { "material": "oss-chart-plots/liquid", "cost": "中", "reason": "同百分比类可视化" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示具体数值" }
+    ],
+    "incompatible_with": ["非 gauge 类图表"],
+    "note": "本物料是 oss-chart-plots/series-bar / double-gauge 的基础版（单层仪表盘）"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.4,
+    "weighted_total": 3.4,
+    "breakdown": {
+      "business_description": 3.0,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.0,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.0：dataModel 4 个字段（indicator_value/indicator_unit/title_text/title_value），但只有 indicator_value 被消费。",
+      "2. 场景覆盖度 3.5：覆盖 KPI/性能/进度/健康/指标 5 大类场景，典型百分比类可视化。",
+      "3. 配置完备度 3.0：本地 opt-resolve 独立，配置项较少（style + axis + indicator + statistic）。",
+      "4. 数据契约清晰度 3.0：dataModel 字段清晰但 ① dataType 错标；② dataConverter 把 indicator_value 转 Number 作为 percent 是隐式约定（line 38）。",
+      "5. 文档完整度 2.0：无 doc/ 目录。",
+      "6. 可组合性 3.5：与 double-gauge/liquid 数据同构，与数字卡组合良好。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 1,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style"],
+    "data_required": ["indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "statistic", "axis"]
+    },
+    "assumptions": [
+      "dataSource 仅 1 行",
+      "使用默认色",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 1, "minutes": 5, "description": "仪表盘 + 默认样式" },
+      "typical": { "config_items": 4, "data_fields": 1, "minutes": 10, "description": "自定义色 + 中心统计" },
+      "full": { "config_items": 6, "data_fields": 1, "minutes": 15, "description": "完整样式 + 中心统计 + 轴" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（indicator_value 应为 Number）",
+    "dataConverter 把 indicator_value 转 Number 作为 percent（line 38）是隐式约定",
+    "dataModel 中 dimensions/header 全空",
+    "title_text/title_value 字段在 dataModel 演示但代码未消费",
+    "本地 opt-resolve/ 目录（与其他 oss-chart-plots 共用 /opt-resolve/ 不一致）",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 liquid 画像"
+  }
+}

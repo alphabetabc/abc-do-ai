@@ -1,0 +1,181 @@
+{
+  "name": "oss-chart-plots-stack-column",
+  "title": "堆叠柱状图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中高",
+    "author": "谢名伟",
+    "groupId": 12,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssColumnPlotChart)",
+    "uses_interaction_hook": "useInteraction + usePersistActions（点击事件）",
+    "uses_data_status": "DataStatus（多系列检查）",
+    "uses_utils": "gradientColor + DEFAULT_COLORS",
+    "uses_opt_resolve": "annotationsTextResolve from opt-resolve/annotations-text",
+    "unique_features": [
+      "isStack=true 多系列堆叠",
+      "annotationsLine 自定义虚线（start='start' 到 end='end' 跨 X 轴）",
+      "annotationsText 自定义文本标注（含 unit 拼接）",
+      "columnBackground 柱背景渐变"
+    ]
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "多系列堆叠柱形（X维度 + Y指标 + s系列）",
+        "example": "[{ x: 'Q1', y: 100, s: 'A产品' }, { x: 'Q1', y: 80, s: 'B产品' }, ...]",
+        "match_pattern": "data[*].{x, y, s, u?}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (compareType)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "compareType", "type": "String", "required": true, "description": "多系列分组键" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（u 字段映射）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "note": "useInteraction 钩子绑定 click 事件"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "style": {
+        "fillCustomColors": {
+          "isGradient": "Switch (是否渐变)",
+          "gradientColors": "ColorPicker 数组 (渐变)",
+          "colors": "ColorPicker 数组 (单色)"
+        },
+        "columnBackground": {
+          "isGradualColor": "Switch (背景渐变)",
+          "gradualColor1": "ColorPicker",
+          "gradualColor2": "ColorPicker",
+          "color": "ColorPicker (单色背景)"
+        }
+      },
+      "annotations": {
+        "content": "Input (文本内容)",
+        "position": "Position (文本位置)"
+      },
+      "annotationsLine": {
+        "visible": "Switch (是否显示)",
+        "color": "ColorPicker",
+        "lineWidth": "NumberPicker",
+        "length": "NumberPicker (虚线长度)",
+        "interval": "NumberPicker (虚线间隔)"
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "堆叠柱状图",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "多产品总量：各季度多产品总销量堆叠",
+    "构成分析：各部门成本构成堆叠",
+    "资源堆叠：各服务器 CPU/内存/磁盘占比",
+    "渠道分布：各渠道流量构成",
+    "多维度堆叠 + 标注：业务数据堆叠 + 平均线/目标线标注"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/column", "cost": "中", "reason": "单系列变多系列堆叠" },
+      { "material": "oss-chart-plots/series-column", "cost": "中", "reason": "堆叠 vs 分组切换" },
+      { "material": "oss-chart-plots/stack-bar", "cost": "中", "reason": "横竖版堆叠" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 oss-chart-plots 系列中独有的堆叠 + annotations（文本+线）能力的物料"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 4 字段业务化（dimension_name/compareType/indicator_value/indicator_unit），其中 u 字段映射到 indicator_unit（line 150 `u: d.indicator_unit`）— 独家能力。",
+      "2. 场景覆盖度 4.0：覆盖多产品总量/构成/资源/渠道/多维度堆叠 5 类场景；annotations 标注能力是独家。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组 + 渐变 + 柱背景渐变 + annotations 文本 + annotationsLine 虚线；配置项丰富。",
+      "4. 数据契约清晰度 3.5：dataModel 字段清晰但 ① dataType 错标；② u 字段是 dataConverter 中显式映射（line 150）但 dataModel 未声明。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md + doc/images 7 张示例图。",
+      "6. 可组合性 4.0：与 column/series-column/stack-bar 物料数据格式完全同构。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 10,
+    "breakdown": {
+      "config_minutes": 4,
+      "data_minutes": 6,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.fillCustomColors", "config.annotations"],
+    "data_required": ["dimension_name", "indicator_value", "compareType"],
+    "optional_fields": {
+      "config": ["annotationsLine.visible", "style.columnBackground", "valueLabel.show", "tooltip.show"],
+      "data": ["indicator_unit (u 字段，用于文本标注)"]
+    },
+    "assumptions": [
+      "至少 2 个系列（否则 DataStatus 报错）",
+      "使用默认色或自定义色",
+      "无下钻"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 3, "minutes": 10, "description": "多系列堆叠柱 + 默认样式" },
+      "typical": { "config_items": 6, "data_fields": 3, "minutes": 22, "description": "渐变填充 + annotations 文本 + 标签" },
+      "full": { "config_items": 12, "data_fields": 4, "minutes": 45, "description": "完整样式 + 渐变 + annotations + annotationsLine + 柱背景渐变 + click 下钻" }
+    }
+  },
+  "_validation_notes": [
+    "dataType 错标（indicator_value 应为 Number）",
+    "u 字段是 dataConverter 显式映射（line 150）但 dataModel 未声明（应该补充为 1 个 indicator）",
+    "DataStatus 单系列时报错（line 123）需保证多系列",
+    "dataModel 中 title_text/title_value 字段在 defaultValue 演示但代码未消费",
+    "annotations content 拼接 unit 字段（line 88 `opt.content + props.dataSource?.[0]?.u`）— unit 字段是隐式约定",
+    "columnBackground 是 fillCustomColors 不同字段，但 schema 中可能不一致",
+    "oss-material.json.dataModel 是空字符串",
+    "defaultValue.dataConfig.json 缺失"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "所有 23 个 oss-chart-plots 画像已完成；更新 ROADMAP/README/catalog"
+  }
+}

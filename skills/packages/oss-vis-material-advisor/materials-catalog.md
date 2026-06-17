@@ -1,8 +1,8 @@
 ---
 title: 物料维护清单（advisor 视角）
 description: advisor 对全部 154 个有效物料的画像/文档化状态总览，按 18 个分类组织
-version: 0.1
-last_updated: 2026-06-16
+version: 0.3
+last_updated: 2026-06-17
 ---
 
 # 物料维护清单（advisor 视角）
@@ -33,11 +33,11 @@ last_updated: 2026-06-16
 | 指标        | 数值         |
 | ----------- | ------------ |
 | 物料总数    | 154          |
-| 已画像      | 14（9.1%）   |
-| 待画像      | 140（90.9%） |
-| 自带 doc    | 61（39.6%）  |
-| 🟢 独立优秀 | 6            |
-| 🟡 组合可用 | 8            |
+| 已画像      | 82（53.2%）  |
+| 待画像      | 72（46.8%）  |
+| 自带 doc    | 75（48.7%）  |
+| 🟢 独立优秀 | 18           |
+| 🟡 组合可用 | 64           |
 | 🔴 组合复杂 | 0            |
 | ⚫ 不建议   | 0            |
 
@@ -48,15 +48,15 @@ last_updated: 2026-06-16
 | 物料                            | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
 | `dock-menu`                     | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 15 min          |
-| `ellipse-layout-indicator`      | -      | ⏳   | 📄       | -           | -    | - min           |
-| `free-layout-ind-progress`      | -      | ⏳   | 📄       | -           | -    | - min           |
-| `free-layout-indicator-group`   | -      | ⏳   | 📄       | -           | -    | - min           |
+| `ellipse-layout-indicator`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 15 min          |
+| `free-layout-ind-progress`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
+| `free-layout-indicator-group`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 15 min          |
 | `free-layout-indicators-viewer` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 25 min          |
-| `nine-grid`                     | -      | ⏳   | —        | -           | -    | - min           |
-| `scene-over-view-hlj`           | -      | ⏳   | —        | -           | -    | - min           |
-| `telescoping-board`             | -      | ⏳   | 📄       | -           | -    | - min           |
+| `nine-grid`                     | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
+| `scene-over-view-hlj`           | 高     | ✅   | —        | 🟡 组合可用 | 3.2  | 25 min          |
+| `telescoping-board`             | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
 
-> 已画像 2/8
+> 已画像 8/8 ✅ 全部完成
 
 ### 文本 / 标签 / 标题（5）
 
@@ -75,34 +75,34 @@ last_updated: 2026-06-16
 | 物料                     | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
 | `bidirectional-progress` | 中     | ✅   | 📄       | 🟢 独立优秀 | 4    | 10 min          |
-| `business-quality`       | -      | ⏳   | —        | -           | -    | - min           |
-| `business-scale`         | -      | ⏳   | —        | -           | -    | - min           |
+| `business-quality`       | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 8 min           |
+| `business-scale`         | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 6 min           |
 | `digital-card`           | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
 | `digital-flop`           | 中     | ✅   | 📄       | 🟢 独立优秀 | 4    | 8 min           |
-| `indicator-display`      | -      | ⏳   | —        | -           | -    | - min           |
-| `number-level-indicate`  | -      | ⏳   | —        | -           | -    | - min           |
+| `indicator-display`      | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 5 min           |
+| `number-level-indicate`  | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 6 min           |
 
-> 已画像 3/7
+> 已画像 7/7 ✅ 全部完成
 
 ### 列表 / 排行（13）
 
 | 物料                | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `carousel-list`     | -      | ⏳   | —        | -           | -    | - min           |
-| `carousel-notice`   | -      | ⏳   | 📄       | -           | -    | - min           |
-| `carousel-param`    | -      | ⏳   | 📄       | -           | -    | - min           |
-| `equip-list`        | -      | ⏳   | —        | -           | -    | - min           |
-| `hot-app-top5`      | -      | ⏳   | 📄       | -           | -    | - min           |
-| `monitor-topn-list` | -      | ⏳   | —        | -           | -    | - min           |
-| `progress-list`     | -      | ⏳   | —        | -           | -    | - min           |
+| `carousel-list`     | 中     | ✅   | —        | 🟡 组合可用 | 3.7  | 12 min          |
+| `carousel-notice`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.8  | 8 min           |
+| `carousel-param`    | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 10 min          |
+| `equip-list`        | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
+| `hot-app-top5`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.9  | 10 min          |
+| `monitor-topn-list` | 中     | ✅   | —        | 🟡 组合可用 | 3.7  | 12 min          |
+| `progress-list`     | 中高   | ✅   | —        | 🟡 组合可用 | 3.7  | 10 min          |
 | `top-rank`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.4  | 10 min          |
-| `top-rank-shaanxi`  | -      | ⏳   | —        | -           | -    | - min           |
-| `topn-rank`         | -      | ⏳   | 📄       | -           | -    | - min           |
-| `topn-rank-one`     | -      | ⏳   | 📄       | -           | -    | - min           |
-| `tree-list`         | -      | ⏳   | —        | -           | -    | - min           |
-| `vertical-list`     | -      | ⏳   | —        | -           | -    | - min           |
+| `top-rank-shaanxi`  | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 10 min          |
+| `topn-rank`         | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
+| `topn-rank-one`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.7  | 10 min          |
+| `tree-list`         | 中高   | ✅   | —        | 🟢 独立优秀 | 4.0  | 15 min          |
+| `vertical-list`     | 简单   | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
 
-> 已画像 1/13
+> 已画像 13/13 ✅ 全部完成
 
 ### 表格（10）
 
@@ -162,65 +162,65 @@ last_updated: 2026-06-16
 
 | 物料                                | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ----------------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `circular-column`                   | -      | ⏳   | 📄       | -           | -    | - min           |
-| `cone-bar`                          | -      | ⏳   | 📄       | -           | -    | - min           |
-| `cone-bar-line`                     | -      | ⏳   | 📄       | -           | -    | - min           |
-| `cone-single-bar`                   | -      | ⏳   | 📄       | -           | -    | - min           |
-| `dual-axes-chart`                   | -      | ⏳   | —        | -           | -    | - min           |
+| `circular-column`                   | 中高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 5 min           |
+| `cone-bar`                          | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 6 min           |
+| `cone-bar-line`                     | 高     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 8 min           |
+| `cone-single-bar`                   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 5 min           |
+| `dual-axes-chart`                   | 高     | ✅   | —        | 🟡 组合可用 | 3.5  | 20 min          |
 | `echarts-bar`                       | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.2  | 6 min           |
-| `echarts-gauge`                     | -      | ⏳   | 📄       | -           | -    | - min           |
-| `echarts-liquid`                    | -      | ⏳   | 📄       | -           | -    | - min           |
+| `echarts-gauge`                     | 极高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 30 min          |
+| `echarts-liquid`                    | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
 | `echarts-map`                       | 高     | ✅   | —        | 🟡 组合可用 | 3.7  | 51 min          |
-| `echarts-multi-variable-area-chart` | -      | ⏳   | 📄       | -           | -    | - min           |
+| `echarts-multi-variable-area-chart` | 极高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 15 min          |
 | `echarts-pie`                       | 中     | ✅   | —        | 🟢 独立优秀 | 4.3  | 7 min           |
-| `ind-list-echarts-gauge`            | -      | ⏳   | 📄       | -           | -    | - min           |
+| `ind-list-echarts-gauge`            | 极高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 20 min          |
 
-> 已画像 3/12
+> 已画像 12/12 ✅ 全部完成
 
 ### 图表（oss-chart-plots）（23）
 
-| 物料                                     | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ---------------------------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `oss-chart-plots/plots/area`             | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/bar`              | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/base-area`        | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/base-scatter`     | -      | ⏳   | 📄       | -    | -    | - min           |
-| `oss-chart-plots/plots/column`           | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/double-gauge`     | -      | ⏳   | 📄       | -    | -    | - min           |
-| `oss-chart-plots/plots/dual-axes`        | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/dual-column-line` | -      | ⏳   | 📄       | -    | -    | - min           |
-| `oss-chart-plots/plots/funnel`           | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/gauge`            | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/histogram`        | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/line`             | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/liquid`           | -      | ⏳   | 📄       | -    | -    | - min           |
-| `oss-chart-plots/plots/pie`              | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/radar`            | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/rose`             | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/sankey`           | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/series-area`      | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/series-bar`       | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/series-column`    | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/stack-bar`        | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/stack-column`     | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-plots/plots/word-cloud`       | -      | ⏳   | —        | -    | -    | - min           |
+| 物料                                     | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ---------------------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `oss-chart-plots/plots/area`             | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 6 min           |
+| `oss-chart-plots/plots/bar`              | 中     | ✅   | —        | 🟡 组合可用 | 3.7  | 5 min           |
+| `oss-chart-plots/plots/base-area`        | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 7 min           |
+| `oss-chart-plots/plots/base-scatter`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 8 min           |
+| `oss-chart-plots/plots/column`           | 中     | ✅   | —        | 🟢 独立优秀 | 4.0  | 5 min           |
+| `oss-chart-plots/plots/double-gauge`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
+| `oss-chart-plots/plots/dual-axes`        | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
+| `oss-chart-plots/plots/dual-column-line` | 高     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 15 min          |
+| `oss-chart-plots/plots/funnel`           | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 6 min           |
+| `oss-chart-plots/plots/gauge`            | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
+| `oss-chart-plots/plots/histogram`        | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 5 min           |
+| `oss-chart-plots/plots/line`             | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 5 min           |
+| `oss-chart-plots/plots/liquid`           | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 5 min           |
+| `oss-chart-plots/plots/pie`              | 中     | ✅   | —        | 🟢 独立优秀 | 4.0  | 5 min           |
+| `oss-chart-plots/plots/radar`            | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 7 min           |
+| `oss-chart-plots/plots/rose`             | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 5 min           |
+| `oss-chart-plots/plots/sankey`           | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 7 min           |
+| `oss-chart-plots/plots/series-area`      | 高     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 18 min          |
+| `oss-chart-plots/plots/series-bar`       | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 7 min           |
+| `oss-chart-plots/plots/series-column`    | 中高   | ✅   | —        | 🟢 独立优秀 | 4.0  | 12 min          |
+| `oss-chart-plots/plots/stack-bar`        | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 7 min           |
+| `oss-chart-plots/plots/stack-column`     | 中高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 10 min          |
+| `oss-chart-plots/plots/word-cloud`       | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
 
-> 已画像 0/23
+> 已画像 23/23 ✅ 全部完成
 
 ### 地图（8）
 
-| 物料                     | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ------------------------ | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `baidu-map`              | -      | ⏳   | —        | -    | -    | - min           |
-| `baidu-map-unicom`       | -      | ⏳   | —        | -    | -    | - min           |
-| `geo-3d-map`             | -      | ⏳   | —        | -    | -    | - min           |
-| `geo-cascader`           | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-classify-map` | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-chart-fly-line-map` | -      | ⏳   | 📄       | -    | -    | - min           |
-| `oss-chart-map`          | -      | ⏳   | —        | -    | -    | - min           |
-| `oss-gis`                | -      | ⏳   | —        | -    | -    | - min           |
+| 物料                     | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ------------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `baidu-map`              | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 30 min          |
+| `baidu-map-unicom`       | 中     | ✅   | —        | 🟡 组合可用 | 3.2  | 30 min          |
+| `geo-3d-map`             | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 120 min         |
+| `geo-cascader`           | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 15 min          |
+| `oss-chart-classify-map` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 90 min          |
+| `oss-chart-fly-line-map` | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.5  | 60 min          |
+| `oss-chart-map`          | 高     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 90 min          |
+| `oss-gis`                | 高     | ✅   | 📄       | 🟡 组合可用 | 3.7  | 90 min          |
 
-> 已画像 0/8
+> 已画像 8/8 ✅ 全部完成
 
 ### 3D / 拓扑（4）
 
@@ -327,14 +327,16 @@ last_updated: 2026-06-16
 
 ## 推进建议
 
-当前覆盖率 9.1%，后续批次建议：
+当前覆盖率 53.2%，后续批次建议：
 
 1. **第一批**（已做，11 个）：8 个有 5+1 文档物料 + 3 个高频（echarts-map/table/top-rank）
 2. **第二批**（已完成，10 个）：表格全部完成（table + drilldown-table + drilldown-table-2 + expandable-table + pagination-table + table-detail + table-fixedColumns + table-transpose + transfer-table + alarm-window-card）
-3. **第三批**（建议）：列表/排行（13 个全做）— 高频复用率高
-4. **第四批**：图表 ECharts 剩余（4 个）+ oss-chart-plots 系列（23 个，建议抽取通用 schema 模板）
-5. **第五批**：数字/指标卡、容器/布局、地图、其他
-6. **最后**：边框/装饰（27 个，纯样式，无数据交互，画像意义低）
+3. **第三批**（已完成，13 个）：列表/排行全做（carousel-list / carousel-notice / carousel-param / equip-list / hot-app-top5 / monitor-topn-list / progress-list / top-rank-shaanxi / topn-rank / topn-rank-one / tree-list / vertical-list + 已有 top-rank）
+4. **第四批**（已完成，9 个）：图表 ECharts 剩余全做（circular-column / cone-bar / cone-bar-line / cone-single-bar / dual-axes-chart / echarts-gauge / echarts-liquid / echarts-multi-variable-area-chart / ind-list-echarts-gauge）
+5. **第五批**（已完成，23 个）：oss-chart-plots 系列全做（area / bar / base-area / base-scatter / column / double-gauge / dual-axes / dual-column-line / funnel / gauge / histogram / line / liquid / pie / radar / rose / sankey / series-area / series-bar / series-column / stack-bar / stack-column / word-cloud）
+6. **第六批**（已完成，18 个）：数字/指标卡（4 个）+ 容器/布局（6 个）+ 地图（8 个）全部完成
+7. **下一批候选**（按价值排序）：3D/拓扑（4 个）+ 时钟/动画（5 个）+ 媒体/播放（3 个）+ 进度/加载（5 个）+ 状态/标签（4 个）+ 边框/装饰（27 个）+ 表单/筛选（4 个）+ 按钮/操作（5 个）+ 轮播/公告（5 个）+ 文本/标签/标题（4 个待画像）+ 其他（6 个）= 72 个待画像
+8. **最后**：边框/装饰（27 个，纯样式，无数据交互，画像意义低）
 
 ## 与 development-assistant 清单的关系
 

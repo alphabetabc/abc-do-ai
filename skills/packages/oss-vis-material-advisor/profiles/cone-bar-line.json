@@ -1,0 +1,138 @@
+{
+    "name": "cone-bar-line",
+    "title": "锥形柱线图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "高",
+        "author": "李萌"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "锥形柱+折线复合图（x + y + s + t）",
+                "example": "[{ x: '9:00', y: 130, s: 's1', t: 1 }, { x: '11:00', y: 150, s: 's3', t: 2 }]",
+                "match_pattern": "dataSource[*].{x, y, s, t}",
+                "note": "t 字段决定是柱(t=1)还是线(t=2)，line 37-39 通过 Number(val.t) 过滤",
+                "fields": [
+                    { "name": "x", "type": "String(实际)", "required": true, "description": "X 轴类目" },
+                    { "name": "y", "type": "Number(实际)", "required": true, "description": "Y 轴数值" },
+                    { "name": "s", "type": "String", "required": true, "description": "系列名" },
+                    { "name": "t", "type": "Number", "required": true, "description": "图表类型（1=柱/2=线）" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "chart": {
+                "barType": { "type": "enum[pictorialBar/bar]", "default": "pictorialBar", "description": "柱子类型（pictorialBar=锥形/bar=矩形）" },
+                "barCategoryGap": { "type": "number", "default": "50%" },
+                "customColors/color": { "type": "BackgroundColorGroup2EC[]", "description": "渐变填充色" },
+                "xAxisLabelFont": { "type": "VisualTextStyle", "description": "X 轴标签字体" },
+                "isDoubleYAxis": { "type": "boolean", "default": false, "description": "是否双轴" },
+                "leftName/rightName": { "type": "string", "description": "左/右轴名称" },
+                "leftNameFont/leftAxisLabelFont/rightNameFont/rightAxisLabelFont": "完整 Y 轴字体"
+            },
+            "offset": { "itemsSet": "分项设置（同 cone-bar）" },
+            "grid": { "padding": { "type": "DirSpaceSize", "description": "内边距" } },
+            "legend": "同 cone-bar",
+            "label": {
+                "enableSingleSetting": { "type": "boolean", "description": "使用单独配置（按 seriesName 区分）" },
+                "$common": { "show/position/textStyle": "通用配置" },
+                "$singleSetting": { "ArrayCollapse": "单独配置（每个 series 一个）" }
+            },
+            "tooltip": "同 cone-bar"
+        },
+        "default_values": {
+            "config.title": "锥形柱线图",
+            "config.width": 400,
+            "config.height": 300,
+            "config.chart.isDoubleYAxis": false,
+            "config.chart.leftName": "单位：（s）",
+            "config.chart.rightName": "单位：（单）",
+            "config.legend.show": true,
+            "config.label.show": false
+        },
+        "ui_features": "bar (t=1) + line (t=2) 复合 series；isDoubleYAxis=true 时 line yAxisIndex=1（line 94-99）；label 支持单系列单独配置（seriesName 匹配）；grid.padding 自动适配 left/right/top/bottom。"
+    },
+    "business_scenarios": [
+        "时序数据柱+线组合（销售量柱图 + 增长率折线）",
+        "双指标多类目对比（数量+单价 / 完成数+百分比）",
+        "需要柱体错位 + 双 Y 轴的复合展示",
+        "单系列 label 单独配置（柱顶部 / 线端点 不同）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "cone-bar", "cost": "低", "reason": "数据格式同构，可直接组合（推荐）" },
+            { "material": "echarts-line-dual-x", "cost": "低", "reason": "折线部分替代" },
+            { "material": "echarts-bar", "cost": "中", "reason": "扁平柱+线" }
+        ],
+        "incompatible_with": [],
+        "note": "cone-bar-line 是 cone-bar 升级版（支持折线 + 双轴），schema 独立"
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "grade": "A",
+        "score": 4.0,
+        "weighted_total": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='锥形柱线图' 业务化清晰。",
+            "2. 场景覆盖度 4.5：覆盖柱+线 + 双轴 + 柱体错位 + 单系列 label + 完整 grid/legend/tooltip。",
+            "3. 配置完备度 4.5：8 个 FormCollapse 分组 + ArrayCollapse 增删项 + 单系列单独 label；导入 schema-parts/defaultValue 共用字体。",
+            "4. 数据契约清晰度 3.0：dataModel 4 字段（x/y/s/t）；t 字段是数字（1/2）需在 doc 中说明。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 4.0：通用柱+线图，可独立使用。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 1,
+        "data_fields_to_provide": 4,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 8,
+        "breakdown": { "config_minutes": 2, "data_minutes": 6, "custom_minutes": 0 },
+        "config_required": ["config.title"],
+        "data_required": ["x", "y", "s", "t"],
+        "optional_fields": {
+            "config": ["chart.barType (pictorialBar/bar)", "chart.isDoubleYAxis + 4 个字体", "chart.customColors/color", "offset.itemsSet", "label.enableSingleSetting + singleSetting"],
+            "data": []
+        },
+        "assumptions": ["使用默认锥形柱 + 单 Y 轴", "无柱体错位", "无单系列 label"],
+        "scenarios": {
+            "minimal": { "config_items": 1, "data_fields": 4, "minutes": 8, "description": "默认锥形柱 + 4 字段" },
+            "typical": { "config_items": 4, "data_fields": 4, "minutes": 20, "description": "双 Y 轴 + 渐变 + 错位 + 完整 label" },
+            "full": { "config_items": 12, "data_fields": 4, "minutes": 40, "description": "全部 8 个 FormCollapse 分组 + 单系列 label + 双轴字体" }
+        }
+    },
+    "_validation_notes": [
+        "dataType 全 String 但 y 实际需为 number（line 25 Number(i.y) 强转）",
+        "t 字段是数字（1/2）需在 doc 中说明'1=柱 2=线'",
+        "label.singleSetting 通过 seriesName 匹配（line 131），需保证 s 字段值与 seriesName 一致",
+        "yData 计算若 s 字段在 t=1 和 t=2 间混淆会得到错位 series（line 21-27 隐式）",
+        "schema-parts/defaultValue 引入 defaultFont（外部依赖）",
+        "无 doc/README.md",
+        "groupId=33（与 echarts-liquid 同分组）"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

@@ -1,0 +1,154 @@
+{
+  "name": "oss-chart-plots-column",
+  "title": "基础柱形图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 12,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssColumnPlotChart)",
+    "uses_interaction_hook": "useInteraction + usePersistActions（点击事件）",
+    "uses_scrollbar": "是（PLOTS_SCHEMA.SCROLLBAR）"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单系列柱形（X维度 + Y指标）",
+        "example": "[{ x: 'Q1', y: 100 }, { x: 'Q2', y: 150 }, ...]",
+        "match_pattern": "data[*].{x, y}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "指标单位（未消费）" },
+          { "name": "min_range", "type": "String", "required": false, "description": "Y轴最小值（来自首行 data[0]）" },
+          { "name": "max_range", "type": "String", "required": false, "description": "Y轴最大值（来自首行 data[0]）" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "config_field": "interactions.defined.configurableEvent（默认无）",
+        "note": "index.jsx 使用 useInteraction 钩子绑定 click 事件，触发由 designer 配置的 clickEvent，但物料本身的 schema 未声明 interactions 字段"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM（去掉 gridLine + 支持 labelRotate 度数转弧度）",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND（含 min/max range autoregulation）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "style": "PLOTS_SCHEMA.STYLE_STROKE",
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND",
+      "scrollbar": "PLOTS_SCHEMA.SCROLLBAR（数据量大时支持横向滚动）"
+    },
+    "default_values": {
+      "config.title": "基础柱形图",
+      "config.width": 400,
+      "config.height": 250,
+      "config.legend.visible": false,
+      "config.xAxis.axisLabel.rotate": "自动转换（degrees → radians）",
+      "dataConfig.json": "无 defaultValue 示例（物料 commit 标注 '物料优化: 统一交互面板UI'，意味着是较新版本）"
+    }
+  },
+  "business_scenarios": [
+    "分类对比：各部门/产品的销售额/数量对比",
+    "时间序列：月度/季度业绩柱形图",
+    "频次分布：年龄/价格段分布（配合 scrollbar 数据多时滚动）",
+    "业绩排名：销售员/产品线业绩排名",
+    "下钻详情：点击柱子弹出 Modal 显示明细（需 designer 配置 clickEvent）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/series-column", "cost": "低", "reason": "同列图，多系列加 compareType 即可切换" },
+      { "material": "oss-chart-plots/stack-column", "cost": "低", "reason": "同列图，堆叠多系列" },
+      { "material": "oss-chart-plots/bar", "cost": "低", "reason": "横竖版条形" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总数值" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是 oss-chart-plots 系列柱图基础版，schema 独立但与其他柱图（series-column / stack-column）80% 同构"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.0,
+      "composability": 4.5
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 字段业务化（dimension_name/indicator_value/min_range/max_range），比 area/bar 多支持 Y 轴自适应；commit 标注 '统一交互面板UI'，是较新版本。",
+      "2. 场景覆盖度 4.0：支持单系列 + scrollbar（数据多时滚动）+ click 交互钩子；多系列需用 series-column 物料。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组（普通/xAxis/yAxis/值标签/柱子样式/悬浮提示）+ 1 个 scrollbar 独立配置 + title + commonSetting + dataCfg（dataMore 解析数据图标/长度）；比 bar 物料多了 1 个 scrollbar 分组，比 series-column 缺少多系列配置。",
+      "4. 数据契约清晰度 3.5：dataModel 字段命名清楚，但有 3 处瑕疵：① dataType 错标（indicator_value 应为 Number）；② min_range/max_range 在 dataModel 中用 snake_case 而非 area 物料的 camelCase（命名风格不统一）；③ defaultValue.dataConfig.json 无示例数据（与 area/bar 不一致）。",
+      "5. 文档完整度 2.0：无 doc/ 目录，无 5+1 文档。",
+      "6. 可组合性 4.5：与 series-column / stack-column / bar 同 dataModel 字段，跨物料数据对接零成本；scrollbar 字段在本物料独有，给数据量大场景提供差异化。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.fill"],
+    "data_required": ["dimension_name", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "scrollbar", "valueLabel.show", "tooltip.show"],
+      "data": ["min_range/max_range (Y轴自适应)"]
+    },
+    "assumptions": [
+      "单系列柱形（无需 compareType）",
+      "无下钻交互",
+      "数据量 < 20 条无需 scrollbar"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "单系列 + 默认样式" },
+      "typical": { "config_items": 5, "data_fields": 3, "minutes": 15, "description": "自定义柱样式 + scrollbar + 标签" },
+      "full": { "config_items": 12, "data_fields": 4, "minutes": 35, "description": "全部 FormCollapse + scrollbar + click 下钻" }
+    }
+  },
+  "_validation_notes": [
+    "defaultValue.dataConfig.json 缺失（与 area/bar 不一致），新用户配置时无示例参考",
+    "useInteraction/usePersistActions 钩子绑定 click 事件，但 schema.ts 未声明 interactions 字段，PM 配置时找不到",
+    "dataType 错标（indicator_value 应为 Number）",
+    "min_range/max_range 用 snake_case（与 area 物料的 camelCase minRange/maxRange 不一致）",
+    "xAxis.labelRotate 自动转换（degrees → radians），但需要在轴 schema 的两个不同位置配置（opt.label.rotate 与 props.config.xAxis.axisLabel.rotate）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 line/pie/rose/radar 画像"
+  }
+}

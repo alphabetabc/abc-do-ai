@@ -1,0 +1,206 @@
+{
+  "name": "telescoping-board",
+  "title": "伸缩组件",
+  "category": "容器/布局",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./components/ListItem.tsx", "./utils.ts"]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "ly",
+    "groupId": 4,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / renderDataConfig / renderDynamicEvents / defineInteractionSchema / FONT_WEIGHT / GLOBAL_FONTS（@Common）",
+    "uses_hoc": "无（rc-queue-anim 动画 + 自研 ListItem 组件）",
+    "plot_library": "rc-queue-anim + 纯 CSS"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "树形列表式（id + parentId + label + value + unit + trend）",
+        "example": "[{id:'1',parentId:'0',label:'主项1',value:'100',unit:'%',trend:'1'},{id:'1-1',parentId:'1',label:'子项1',value:'50',unit:'%',trend:'-1'},...]",
+        "match_pattern": "data[0] 取 parentId='0' 第一个为主项；data[i].parentId==mainMenuIndicatorId 的为对比项（mainMenuTrendDatas）；展开菜单中 data[j].parentId==item.id 的为子项",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "id", "type": "String", "required": true, "description": "唯一标识" },
+          { "name": "parentId", "type": "String", "required": true, "description": "父级ID（'0' 表示主项，mainMenuIndicatorId 表示对比项，子项 ID 表示从属）" },
+          { "name": "label", "type": "String", "required": true, "description": "名称" },
+          { "name": "value", "type": "String(实际Number)", "required": true, "description": "数值" },
+          { "name": "unit", "type": "String", "required": false, "description": "单位" },
+          { "name": "trend", "type": "String", "required": false, "description": "趋势变化（'-1' 降 / '0' 平 / '1' 升）" }
+        ],
+        "match_logic": "mainMenuItem = dataSource.filter(parentId==='0').shift() → mainMenuIndicatorName/Value/Unit/Id；mainMenuTrendDatas = dataSource.filter(parentId===mainMenuIndicatorId)；menuItemDataSource = dataSource.filter(parentId==='0') - 1"
+      }
+    ],
+    "interactions": [
+      { "type": "itemClick", "trigger": "click", "payload": "{id}", "note": "onItemClick → setActiveKey + dispatchDataFn({id})（动态事件派发）" },
+      { "type": "itemDoubleClick", "trigger": "dblclick", "payload": "{label, value, unit, trend, clickKey}", "note": "onItemDoubleClick → interaction.dispatch (Modal/Drawer/Dispatch 3 种效果)" },
+      { "type": "btnClick", "trigger": "click", "payload": "n/a", "note": "onBtnClick → setVisible(!visible) 切换菜单展开" },
+      { "type": "externalActiveKey", "trigger": "useEffect", "payload": "{activeKey}", "note": "interactionProps?.activeKey 接收外部激活项" },
+      { "type": "externalOpen", "trigger": "useEffect", "payload": "{open}", "note": "interactionProps?.open 接收外部展开状态" }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT",
+      "title": "getCompTitle",
+      "主项设置 (defaultOpen)": {
+        "defaultOpen": "Switch 默认展开",
+        "menuOpenMaxHeight": "NumberPicker 固定展开菜单高度（min=0）",
+        "menuCloseMaxHeight": "NumberPicker 固定关闭菜单高度（min=0）",
+        "menuValueMaxHeight": "NumberPicker 固定 value 高度（min=0）",
+        "menuValueMaxClampRow": "NumberPicker 固定 value 行数（min=0）",
+        "delay": "NumberPicker 动画延迟时间ms（min=0）",
+        "duration": "NumberPicker 动画持续时间ms（min=0）",
+        "btnAlign": "Radio.Group 对齐方式（left/center/right）",
+        "btnStyle": {
+          "btnFontStyle": "VisualTextStyle 标题字体",
+          "btnValueFontStyle": "VisualTextStyle 值字体",
+          "btnSize": "Size 尺寸",
+          "padding*": "NumberPicker 内边距 4 方向",
+          "margin*": "NumberPicker 外边距 4 方向",
+          "valueMargin*": "NumberPicker 值外边距 4 方向"
+        },
+        "btnBackgroundUrl": "Background 按钮背景图"
+      },
+      "tooltip 配置": {
+        "tooltipWidth": "NumberPicker tooltip 宽度",
+        "tooltipOverlayWidth": "NumberPicker tooltip overlay 宽度",
+        "tooltipFontFamily": "Input 字体",
+        "tooltipFontSize": "NumberPicker 字号",
+        "tooltipFontWeight": "Select 字重",
+        "tooltipColor": "ColorPicker 颜色",
+        "tooltipPlacement": "Select 位置"
+      },
+      "menuItemStyle (菜单项样式)": {
+        "menuItemBackgroundUrl": "Background 背景图",
+        "menuItemBackgroundActiveUrl": "Background 激活态背景图",
+        "menuItemSize": "Size 尺寸",
+        "labelStyle": "VisualTextStyle 标签样式",
+        "valueStyle": "VisualTextStyle 值样式"
+      },
+      "upTrendStyle / downTrendStyle / flatTrendStyle (3 趋势样式)": {
+        "titleFontStyle": "VisualTextStyle 标题字体",
+        "valueFontStyle": "VisualTextStyle 值字体",
+        "imageUrl": "Background 趋势图标",
+        "imageSize": "Size 图标尺寸",
+        "imageTop/Left": "NumberPicker 偏移",
+        "divTop/Bottom": "NumberPicker 上下间距",
+        "titleLeft/Right": "NumberPicker 标题左右间距",
+        "valueLeft/Right": "NumberPicker 值左右间距"
+      }
+    },
+    "default_values": {
+      "config.title": "伸缩组件",
+      "config.defaultOpen": false,
+      "config.menuOpenMaxHeight": 0,
+      "config.menuCloseMaxHeight": 0,
+      "config.menuValueMaxHeight": 0,
+      "config.menuValueMaxClampRow": 100,
+      "config.delay": 200,
+      "config.duration": 1000,
+      "config.btnBackgroundUrl": "SxGz98SJErx44WmVyN9QB.png",
+      "config.btnAlign": "center",
+      "config.menuItemBackgroundUrl": "C1GSCkRqMuk5j4be39Elq.png",
+      "config.menuItemBackgroundActiveUrl": "DNRY0csaOsVuVpN-cyRsr.png",
+      "config.upTrendStyle.imageUrl": "80IlRzBCazyVmaeeBpsQE.png",
+      "config.upTrendStyle.imageSize": "{width:20,height:20}",
+      "dataConfig.json": "[{id,parentId:'0'/'mainMenuId',label,value,unit,trend:'1'/'-1'/'0'}] 树形数据"
+    }
+  },
+  "business_scenarios": [
+    "菜单/导航大屏：可伸缩菜单（主项+子项）展示指标分类",
+    "指标对比场景：主指标 + 对比子指标（同比/环比）+ 趋势图标",
+    "树形结构指标：父子层级指标展示 + 双击下钻",
+    "网络监控菜单：4G/5G/2G 子项 + 趋势升降",
+    "资源/性能大屏：CPU/内存/带宽主项 + 子项（按主机/实例）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "tree-list", "cost": "低", "reason": "树形列表与伸缩菜单都是树形数据展示" },
+      { "material": "vertical-list", "cost": "中", "reason": "垂直列表与伸缩菜单可组合为大屏导航" },
+      { "material": "ellipse-layout-indicator", "cost": "中", "reason": "伸缩菜单 + 椭圆布局组合为 '菜单 + 多指标'" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-pie/bar", "reason": "伸缩菜单是树形/导航类，饼图/柱图是数值对比" }
+    ],
+    "note": "基于 rc-queue-anim 的伸缩菜单/导航 + 树形数据 + 趋势图标 + 动态事件派发"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.0,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 6 字段（id/parentId/label/value/unit/trend）业务化清晰，支持树形 + 趋势。",
+      "2. 场景覆盖度 3.5：伸缩菜单 + 趋势图标 + 双击下钻 + 动态事件派发，场景丰富。",
+      "3. 配置完备度 4.5：5 个 FormCollapse 分组（主项/btnStyle/tooltip/menuItemStyle/3 趋势样式）+ 大量 FormGrid 嵌套；配置粒度极细。",
+      "4. 数据契约清晰度 3.0：dataModel 6 字段全部错标 String（value 应为 Number）；parentId=='0' 隐式约定；trend '-1'/'0'/'1' 字符串约定。",
+      "5. 文档完整度 2.0：doc/CHANGELOG.md + doc/readme.md，无图片，无 5+1 文档。",
+      "6. 可组合性 3.5：与 tree-list/vertical-list 树形组件互补；与椭圆布局/边框装饰可组合；依赖 rc-queue-anim。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 8,
+    "data_fields_to_provide": 6,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 25,
+    "breakdown": {
+      "config_minutes": 17,
+      "data_minutes": 8,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.btnStyle", "config.menuItemStyle", "config.upTrendStyle", "config.downTrendStyle", "config.flatTrendStyle"],
+    "data_required": ["id", "parentId", "label", "value", "unit", "trend"],
+    "optional_fields": {
+      "config": ["defaultOpen", "menuOpenMaxHeight", "menuCloseMaxHeight", "delay", "duration", "btnAlign", "tooltip*"],
+      "data": ["trend（缺则不显示趋势图标）"]
+    },
+    "assumptions": [
+      "dataSource 中 parentId==='0' 的第一条作为主项",
+      "parentId===mainMenuIndicatorId 的为对比项（mainMenuTrendDatas）",
+      "parentId===子项 ID 的为该子项的从属数据",
+      "trend 字符串约定：'-1'=降/'0'=平/'1'=升"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 8, "data_fields": 6, "minutes": 25, "description": "5 样式默认 + 1 主项 + 3 子项" },
+      "typical": { "config_items": 20, "data_fields": 6, "minutes": 50, "description": "完整 5 样式 + tooltip + 树形数据 1 主+5 子" },
+      "full": { "config_items": 40, "data_fields": 6, "minutes": 90, "description": "完整 FormCollapse + 3 趋势样式 + tooltip + 动态事件 + 树形数据 1 主+10 子" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在",
+    "dataModel 中 value 错标 String（实际为 Number）",
+    "parentId 隐式约定 '0' 表示主项，mainMenuIndicatorId 表示对比",
+    "trend 字符串 '-1'/'0'/'1' 与 upTrendStyle/downTrendStyle/flatTrendStyle 映射",
+    "schema.ts 包含大量 ly- 前缀的 designable-id 字段（设计器自动生成），schema 较冗长",
+    "onItemDoubleClick 使用 dynamicEvents 数组动态匹配 clickKey（不是固定事件）",
+    "console.info('props = ', props) 未清理（生产代码残留）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 8 个地图物料画像"
+  }
+}

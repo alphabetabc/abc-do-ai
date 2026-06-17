@@ -1,0 +1,194 @@
+{
+  "name": "number-level-indicate",
+  "title": "数值级别指示",
+  "category": "数字/指标卡",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "zw",
+    "groupId": 4,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / FONT_WEIGHT / GLOBAL_FONTS（@Common）",
+    "uses_hoc": "无",
+    "plot_library": "纯 CSS + 渐变 backgroundImage"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（id + name + value + unit）",
+        "example": "[{ id: 1, name: '风险分', value: 54, unit: '分' }, ...]",
+        "match_pattern": "data[0].{id?, name?, value, unit?}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "id", "type": "String(实际Number)", "required": false, "description": "唯一标识（dataModel 已声明）" },
+          { "name": "name", "type": "String", "required": false, "description": "指标名称" },
+          { "name": "value", "type": "String(实际Number)", "required": true, "description": "核心数值（按 value 与 lowValue/highValue 比较命中区间）" },
+          { "name": "unit", "type": "String", "required": false, "description": "单位（实际渲染中硬编码「分」）" }
+        ],
+        "match_logic": "getCaseInsensitivePropertyValue 不区分大小写取 value 字段；其他字段不消费"
+      }
+    ],
+    "interactions": [
+      {
+        "type": "无（纯展示）",
+        "trigger": "n/a",
+        "payload": "n/a",
+        "note": "未发现点击/悬浮等事件派发，仅做数值范围匹配与高亮渲染"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT（width/height/left/top/background/isLock/isHidden）",
+      "title": "getCompTitle（标题/位置/对齐）",
+      "valueFontStyle": {
+        "header": "数值样式",
+        "fontFamily": "Select（GLOBAL_FONTS）",
+        "fontSize": "NumberPicker（默认 50）",
+        "fontWeight": "Select（FONT_WEIGHT，默认 500）",
+        "marginBottom": "NumberPicker y 轴偏移（默认 10）",
+        "isGradientColor": "Switch 渐变开关",
+        "gradientColor": "ColorPicker 单色（isGradientColor=true 时隐藏）",
+        "direction": "Select 360=上下 / 90=左右（isGradientColor=true 时显示）",
+        "gradientColor1/2": "ColorPicker 渐变填充色（isGradientColor=true 时显示）"
+      },
+      "unitFontStyle": {
+        "header": "单位样式",
+        "fontFamily/fontSize/fontWeight": "Select/NumberPicker（默认 fontSize=16, fontWeight=650）",
+        "isGradientColor": "Switch",
+        "gradientColor": "ColorPicker 单色",
+        "direction": "Select 360/90",
+        "gradientColor1/2": "ColorPicker 渐变色"
+      },
+      "itemStyle": {
+        "header": "通用（高亮行）",
+        "color": "ColorPicker 字体颜色",
+        "fontStyle": "Select normal/italic/oblique",
+        "fontSize": "NumberPicker",
+        "fontWeight": "Select FONT_WEIGHT",
+        "fontFamily": "Select GLOBAL_FONTS",
+        "backgroundImage": "Background 高亮背景图片",
+        "marginBottom": "NumberPicker 范围 y 轴偏移"
+      },
+      "levelStyle": {
+        "header": "等级分项设置",
+        "itemsSet": "ArrayCollapse 数组（单项：barColor/levelName/lowValue/highValue）",
+        "itemDefault": "{ itemSetting: { backgroundImage, indexBgColor, indexBorderColor, color } }"
+      }
+    },
+    "default_values": {
+      "config.title": "数值级别指示",
+      "config.width": 600,
+      "config.height": 300,
+      "config.valueFontStyle.fontSize": 50,
+      "config.valueFontStyle.isGradientColor": true,
+      "config.valueFontStyle.gradientColor1": "#FDFEFF",
+      "config.valueFontStyle.gradientColor2": "#C9F1FF",
+      "config.unitFontStyle.fontSize": 16,
+      "config.unitFontStyle.fontWeight": 650,
+      "config.itemsSet": [
+        { "levelName": "高风险", "lowValue": 0, "highValue": 50, "barColor": "#E7511E" },
+        { "levelName": "中风险", "lowValue": 51, "highValue": 75, "barColor": "#FFF81C" },
+        { "levelName": "低风险", "lowValue": 76, "highValue": 90, "barColor": "#1C9DDC" },
+        { "levelName": "健康", "lowValue": 91, "highValue": 100, "barColor": "#4CEF32" }
+      ],
+      "dataConfig.json": "[{ value: 54 }]",
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "健康分/风险分等级展示：根据 value 命中低/中/高/健康等级高亮",
+    "KPI 评级可视化：单一数值按预设区间染色（绿/黄/橙/红）",
+    "网络质量评分：综合评分 0~100 命中等级区间",
+    "设备健康度评估：单设备得分 → 等级高亮",
+    "分数段排名分桶：单值落入某区间高亮（适用于综合考核分、考试分、用户分群）"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示具体数值，本卡显示等级高亮" },
+      { "material": "indicator-display", "cost": "低", "reason": "指标展示配合等级展示" },
+      { "material": "alarm-window-card", "cost": "低", "reason": "告警卡片与等级色联动" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "双向进度条", "reason": "进度条是连续进度，本卡是离散区间高亮" }
+    ],
+    "note": "离散等级高亮卡（基于 value 区间匹配单条高亮），与连续进度/趋势类组件不互斥但场景重叠度低"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.4,
+    "weighted_total": 3.4,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.0,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.5,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 4 字段（id/name/value/unit）字段命名通用，价值需要靠 itemsSet 配置赋予业务含义（如 健康分/风险分），可适配多场景。",
+      "2. 场景覆盖度 3.0：单值 + 多等级区间高亮的单一模式，场景偏窄（不适用多指标/多维度）。",
+      "3. 配置完备度 4.0：4 个 FormCollapse 分组（数值样式/单位样式/通用/等级分项）+ itemsSet 数组可自定义等级粒度 + x-reactions 联动；配置粒度细。",
+      "4. 数据契约清晰度 3.0：dataModel 4 字段全部错标 String（value 应为 Number），unit 在 dataModel 已声明但渲染硬编码「分」存在不一致。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/README.md + 1 张图片，但无 5+1 文档。",
+      "6. 可组合性 4.0：与 digital-flop/indicator-display/alarm-window-card 组合展示完整指标体系；与边框装饰无依赖。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 1,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 12,
+    "breakdown": {
+      "config_minutes": 9,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.valueFontStyle", "config.unitFontStyle", "config.itemStyle", "config.itemsSet"],
+    "data_required": ["value"],
+    "optional_fields": {
+      "config": ["title", "width", "height", "backgroundImage", "marginBottom"],
+      "data": ["id", "name", "unit（虽声明但未渲染）"]
+    },
+    "assumptions": [
+      "data[0].value 为 number 类型（实际 dataModel 标 String）",
+      "itemsSet 必须配置至少 1 条等级区间才能渲染",
+      "value 必命中 itemsSet 中某个 lowValue~highValue 区间（否则无高亮）"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 1, "minutes": 12, "description": "默认 4 等级 + 单 value 输入" },
+      "typical": { "config_items": 10, "data_fields": 1, "minutes": 25, "description": "自定义等级（4~6 条）+ 数值/单位渐变 + 背景图" },
+      "full": { "config_items": 20, "data_fields": 1, "minutes": 50, "description": "完整 4 FormCollapse 分组深度配置 + 多等级渐变 + 背景图" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在且被 schema.ts 顶部 import",
+    "dataModel 中 4 个字段 dataType 全部错标 String（value 应为 Number）",
+    "unit 字段在 dataModel 已声明但 index.jsx 渲染时硬编码「分」字（约定不一致）",
+    "value 比较依赖 size 大小，itemsSet 中 lowValue/highValue 实际是 String 但代码用 >= <= 比较（隐式 Number 转换）",
+    "itemsSet 数组中 item.isShow 是渲染时动态赋值的脏写法（违反 React 不可变数据原则）",
+    "console.log(item) 未清理（生产代码残留）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 容器/布局 6 个画像"
+  }
+}

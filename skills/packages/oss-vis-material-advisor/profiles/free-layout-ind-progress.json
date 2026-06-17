@@ -1,0 +1,175 @@
+{
+  "name": "free-layout-ind-progress",
+  "title": "自由布局指标进度",
+  "category": "容器/布局",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./components/IndGauge.tsx", "./components/Container.tsx", "./components/options.ts", "./schema-parts/common.ts", "./schema-parts/indItemSettings.ts", "./schema-parts/interactions.ts"]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "高",
+    "author": "xmw",
+    "groupId": 4,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / defineDataConfigSchema / defineInteractionSchema / defineConfigSchema（@Common）",
+    "uses_hoc": "无（自定义 IndGauge 组件 + StyledContainer）",
+    "plot_library": "自研 ECharts 仪表盘（components/options.ts）+ StyledContainer（@Src/components）"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（indicatorId + indicatorName + indicatorValue + indicatorUnit + indicatorLevel + indicatorType + indicatorPercent）",
+        "example": "[{indicatorId:'L-1', indicatorLevel:0, indicatorValue:70, indicatorUnit:'%', indicatorType:'4G', indicatorName:'指标1'}, ...]",
+        "match_pattern": "data[*].{indicatorId, indicatorValue, indicatorUnit, indicatorLevel, indicatorPercent?}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "indicatorId", "type": "String", "required": true, "description": "指标ID（与 indItemSettings.indicatorId 匹配）" },
+          { "name": "indicatorLevel", "type": "String(实际Number)", "required": false, "description": "指标等级（用于按 levelColors 着色）" },
+          { "name": "indicatorValue", "type": "String(实际Number)", "required": true, "description": "指标原始值" },
+          { "name": "indicatorUnit", "type": "String", "required": false, "description": "单位" },
+          { "name": "indicatorType", "type": "String", "required": false, "description": "类型（4G/2G/5G）" },
+          { "name": "indicatorName", "type": "String", "required": false, "description": "指标名（可选）" },
+          { "name": "indicatorPercent", "type": "String(实际Number)", "required": false, "description": "百分比（如未提供则用 indicatorValue）" }
+        ],
+        "match_logic": "props.dataSource.find(d => String(d.indicatorId) === String(item.indicatorId))；value 通过 linearMapping[showRangeMin, showRangeMax] → [0, 100] 映射"
+      }
+    ],
+    "interactions": [
+      { "type": "gaugeClick", "trigger": "click", "payload": "dataItem.__rawData__", "note": "onItemClick → dispatchInteraction(clickEvent) → Modal/Drawer" }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT",
+      "title": "getCompTitle",
+      "common (通用配置)": {
+        "startAngle": "NumberPicker 仪表盘起始角度（默认 110）",
+        "endAngle": "NumberPicker 仪表盘结束角度（默认 -250）",
+        "labelPos": "Space(x,y) label 偏移",
+        "valuePos": "Space(x,y) value 偏移",
+        "outline": "object 边框样式 {borderColor}",
+        "innerCircle": "object 内圆样式 {backgroundColor}",
+        "indGaugeDefaultSettings": "object 仪表盘默认样式 {backgroundColor, foregroundColor}",
+        "backgroundImage": "image 背景图（默认 free-layout-ind-progress.png）",
+        "showIndicatorName": "Switch 是否显示指标名"
+      },
+      "indItemSettings (指标配置)": {
+        "type": "ArrayCollapse",
+        "singleItemProperties": {
+          "indicatorId": "Input 指标ID",
+          "size": "Space(w,h) 尺寸",
+          "position": "Space(left,top) 位置",
+          "backgroundColor": "ColorPicker 背景色",
+          "levelColors": "ArrayCollapse 等级颜色（key + color）",
+          "nameFont/labelFont/valueFont": "VisualTextStyle 字体",
+          "showRangeMin/showRangeMax": "NumberPicker 显示范围（用于 linearMapping）"
+        }
+      }
+    },
+    "default_values": {
+      "config.title": "自由布局指标进度",
+      "config.width": 430,
+      "config.height": 365,
+      "config.common.startAngle": 110,
+      "config.common.endAngle": -250,
+      "config.common.outline.borderColor": "rgba(26, 72, 120, 0.6)",
+      "config.common.innerCircle.backgroundColor": "rgba(9, 100, 134, 0.82)",
+      "config.common.indGaugeDefaultSettings": "{ backgroundColor: 'rgba(27, 84, 143, 0.99)', foregroundColor: 'rgba(76, 213, 205, 1)' }",
+      "config.common.backgroundImage": "free-layout-ind-progress.png",
+      "dataConfig.json": "[{L-1~L-6/R-1~R-4 共 10 个指标，indicatorLevel 0~5 + indicatorValue 0~100 + indicatorType 4G/2G/5G}]",
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "网络性能大屏：4G/2G/5G 多指标（接通率/掉话率/切换成功率）按等级着色仪表盘",
+    "KPI 进度大盘：10+ 业务指标按自由布局展示",
+    "网络质量等级：indicatorLevel 0/1/2/3/4/5 等级颜色（绿/黄/红）",
+    "资源利用率仪表：CPU/内存/带宽利用率按仪表盘展示",
+    "网络监控大屏：左 L 区域 + 右 R 区域仪表盘分组"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "echarts-gauge", "cost": "中", "reason": "类似仪表盘功能" },
+      { "material": "ind-list-echarts-gauge", "cost": "低", "reason": "指标列表+仪表盘组合" },
+      { "material": "ellipse-layout-indicator", "cost": "中", "reason": "椭圆布局 + 仪表盘分组组合" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰" }
+    ],
+    "incompatible_with": [
+      { "material": "echarts-bar (柱图)", "reason": "仪表盘是连续进度，柱图是离散对比" }
+    ],
+    "note": "基于 ECharts 仪表盘的自由布局组件，支持每指标独立位置/大小/等级颜色"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.5,
+    "weighted_total": 3.5,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.5,
+      "composability": 3.5
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 7 字段业务化清晰（indicatorId/Value/Level/Type/Percent/Name/Unit），但 indicatorLevel/Value/Percent 错标 String。",
+      "2. 场景覆盖度 3.5：自由布局支持多仪表盘任意位置摆放，场景覆盖度比椭圆布局广。",
+      "3. 配置完备度 4.0：2 个 FormCollapse 分组（通用/指标）+ ArrayCollapse 指标数组 + levelColors 子数组 + 多种样式；配置粒度细。",
+      "4. 数据契约清晰度 3.0：dataModel 字段较多但全部错标 String（数值字段全应为 Number），与 linearMapping 数学运算存在类型不匹配。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/readme.md + 11 张图片，但无 5+1 文档。",
+      "6. 可组合性 3.5：与 echarts-gauge/ind-list-echarts-gauge 互补；与 ellipse-layout-indicator 形成 '自由 vs 椭圆' 风格选择；可与边框装饰组合。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 20,
+    "breakdown": {
+      "config_minutes": 13,
+      "data_minutes": 7,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.common", "config.indItemSettings"],
+    "data_required": ["indicatorId", "indicatorValue", "indicatorLevel"],
+    "optional_fields": {
+      "config": ["common.startAngle/endAngle", "common.outline", "common.innerCircle", "indItemSettings[*].levelColors"],
+      "data": ["indicatorUnit", "indicatorType", "indicatorName", "indicatorPercent（可选）"]
+    },
+    "assumptions": [
+      "data 中 indicatorId 必须与 indItemSettings.indicatorId 严格匹配",
+      "indicatorValue/Level 实际为 number（dataModel 标 String）",
+      "linearMapping 自动转换值到 [0, 100] 范围"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 3, "minutes": 20, "description": "默认 10 指标 + 2 等级颜色" },
+      "typical": { "config_items": 15, "data_fields": 3, "minutes": 45, "description": "10 指标全配置 + 5 等级颜色 + 自定义仪表盘角度" },
+      "full": { "config_items": 30, "data_fields": 3, "minutes": 80, "description": "完整 FormCollapse + ArrayCollapse 数组 + 6 等级颜色 + 自定义 outline/innerCircle" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在",
+    "dataModel 中所有数值字段（indicatorValue/Level/Percent）错标 String",
+    "indicatorPercent 字段在 defaultValue 中未提供，仅代码内 fallback 使用 indicatorValue",
+    "linearMapping 函数需要 showRangeMin/Max，schema 未明确该字段位置（可能在 indItemSettings 内部）",
+    "defaultValue.json 中 10 个指标分 L/R 两组（暗示左右布局），与 title '自由布局' 略有差异",
+    "dataItem.__rawData__ 通过 closure 传递，性能上每次 useMemo 重新计算（参考 React.memo 优化）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 free-layout-indicator-group / nine-grid / scene-over-view-hlj / telescoping-board"
+  }
+}

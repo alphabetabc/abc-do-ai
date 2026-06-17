@@ -1,5 +1,5 @@
 {
-  "contentHash": "afdca339b60203dfd4891566e01b9fc2a17fcdc9042717e9d5790c22d100136c",
+  "contentHash": "b82f4dc9fad9d07f76ee0a1e8f020b8feaccf6efb8238de79b6e36e0630c41ed",
   "files": [
     "./profiles/",
     "./references/",
@@ -13,6 +13,6 @@
   "targets": [
     "trae"
   ],
-  "updatedAt": "2026-06-16T10:19:14.925Z",
+  "updatedAt": "2026-06-17T06:56:26.495Z",
   "version": "0.0.0"
 }

@@ -1,0 +1,165 @@
+{
+    "name": "ind-list-echarts-gauge",
+    "title": "指标列表-仪表盘",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.tsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.tsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "极高",
+        "author": "xmw"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "指标列表（indicatorId + indicatorName + indicatorValue + indicatorUnit + indicatorType + indicatorPercent）",
+                "example": "[{ indicatorId: 'id-1', indicatorName: 'LTE无线接通率', indicatorValue: '10', indicatorUnit: '%', indicatorPercent: '0.1' }, ...]",
+                "match_pattern": "dataSource[*].{indicatorId, indicatorName, indicatorValue, indicatorUnit, indicatorType, indicatorPercent}",
+                "note": "dataConfig fields=[]（schema 429 未通过 dataModel header），实际字段名以代码读取为准",
+                "fields": [
+                    { "name": "indicatorId", "type": "String", "required": true, "description": "指标 ID（page/indItem filterKey 匹配 key，line 104/62）" },
+                    { "name": "indicatorName", "type": "String", "required": true, "description": "指标名称" },
+                    { "name": "indicatorValue", "type": "String(实际数字)", "required": true, "description": "指标值（line 141）" },
+                    { "name": "indicatorUnit", "type": "String", "required": false, "description": "单位（line 152）" },
+                    { "name": "indicatorType", "type": "String", "required": false, "description": "类型（dataModel 声明但代码中未读，'数据中可以没有字段'）" },
+                    { "name": "indicatorPercent", "type": "String(0-1)", "required": true, "description": "百分比（line 123 Gauge value）" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "layout": {
+                "padding": "内边距（DirSpaceSize）",
+                "pageSize": "每页显示个数（默认 8）",
+                "rowSize": "每行显示个数（默认 4）",
+                "rowSpaceSize": "行间距（默认 45）",
+                "itemSpaceSize": "项目间距（默认 82）",
+                "oddRowAlign/evenRowAlign": "奇/偶行对齐方式（flex-start/center/flex-end）"
+            },
+            "gaugeSetting": {
+                "size": "尺寸（170x170）",
+                "center": "中心位置（'50%,50%'）",
+                "radius": "半径（默认 78）"
+            },
+            "indicatorValueSetting": {
+                "offsetY": "垂直方向偏移（30）",
+                "fontSetting": "字体配置（compositionFontStyle + gradientColors）"
+            },
+            "indicatorNameSetting": {
+                "width": "宽度（70）",
+                "offsetY": "垂直方向偏移（105）",
+                "fontSetting": "字体配置"
+            },
+            "indicatorUnitSetting": {
+                "fontSetting": "字体配置"
+            },
+            "carouselSetting": {
+                "autoplay": "自动播放",
+                "dots.left/top/color/activeColor": "控制点位置/颜色/激活颜色"
+            },
+            "pageSetting": {
+                "filterKey": "使用页码过滤（命名 default 则为默认值）",
+                "disableBackground/background": "禁用背景/背景图片"
+            },
+            "indItemSetting": {
+                "filterKey": "使用 indicatorId 过滤",
+                "disableBackground/background": "禁用背景/背景图片"
+            }
+        },
+        "default_values": {
+            "config.title": "指标列表-仪表盘",
+            "config.width": 1140,
+            "config.height": 375,
+            "config.layout.pageSize": 8,
+            "config.layout.rowSize": 4,
+            "config.gaugeSetting.size": "170x170",
+            "config.carouselSetting.autoplay": true
+        },
+        "ui_features": "依赖 @Components/digital-number（line 6）；3 个渐变 StyledValueLinearGradient/StyledUnitLinearGradient/StyledNameLinearGradient（line 11）；使用 StyledCarousel 自定义走马灯（line 9）；默认依赖 static/images/ind-list-echarts-gauge/item-bg.png 和 default-bg.png（line 22/30）；indicatorType 字段 dataModel 说明'数据中可以没有字段'；4 字段 fontSetting 共享 compositionFontStyle() 函数（schema line 177/222/256）；useMemo 分页：_.chunk(dataSource, pageSize) → _.chunk(page, rowSize)（line 47）。"
+    },
+    "business_scenarios": [
+        "KPI 指标列表（多 KPI 仪表 + 走马灯）",
+        "每页固定数量 + 走马灯分页",
+        "奇偶行不同对齐 + 渐变字体",
+        "指标独立背景图（按 indicatorId 匹配）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-gauge", "cost": "中", "reason": "单仪表盘扩展" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡组合" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰" }
+        ],
+        "incompatible_with": [],
+        "note": "ind-list-echarts-gauge 是 echarts-gauge 列表版（carousel + gauge）"
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "grade": "A",
+        "score": 4.0,
+        "weighted_total": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='指标列表-仪表盘' 业务化。",
+            "2. 场景覆盖度 4.5：覆盖指标列表 + 走马灯分页 + 奇偶行对齐 + 渐变字体 + 独立背景图。",
+            "3. 配置完备度 4.5：7 个 FormCollapse 分组（布局/仪表盘/指标值/指标名/指标单位/走马灯/页面/指标项）+ 2 个 ArrayCollapse（pageSetting/indItemSetting）；4 字段共享 compositionFontStyle()。",
+            "4. 数据契约清晰度 3.0：dataModel 6 字段（indicatorId/Name/Value/Unit/Type/Percent）；⚠️ indicatorType 字段未消费（dataModel 说明'数据中可以没有字段'）；dataConfig.fields=[]（schema 429）。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 4.0：通用 KPI 列表，可独立使用。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 4,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 20,
+        "breakdown": { "config_minutes": 12, "data_minutes": 8, "custom_minutes": 0 },
+        "config_required": ["config.title", "config.layout.pageSize"],
+        "data_required": ["indicatorId", "indicatorName", "indicatorValue", "indicatorPercent"],
+        "optional_fields": {
+            "config": ["layout 完整（padding/rowSize/rowSpaceSize/itemSpaceSize/oddRowAlign/evenRowAlign）", "gaugeSetting 完整", "indicatorValueSetting/NameSetting/UnitSetting 完整字体", "carouselSetting 完整", "pageSetting/indItemSetting 完整"],
+            "data": ["indicatorUnit", "indicatorType（未使用）"]
+        },
+        "assumptions": [
+            "使用默认 pageSize=8 + rowSize=4",
+            "使用默认渐变字体",
+            "使用默认背景图"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 4, "minutes": 20, "description": "默认 8/4 分页 + 4 字段" },
+            "typical": { "config_items": 8, "data_fields": 6, "minutes": 40, "description": "自定义字体 + 走马灯 + 独立背景" },
+            "full": { "config_items": 20, "data_fields": 6, "minutes": 90, "description": "全部 7 个 FormCollapse 分组 + 2 个 ArrayCollapse" }
+        }
+    },
+    "_validation_notes": [
+        "indicatorType 字段 dataModel 说明'数据中可以没有字段'，代码中未读",
+        "dataConfig fields=[]（schema 429），未通过 dataModel header 声明字段",
+        "依赖 static/images/ind-list-echarts-gauge/item-bg.png 和 default-bg.png（line 22/30）",
+        "4 字段 fontSetting 共享 compositionFontStyle() 函数（schema line 177/222/256）",
+        "默认 pageSize=8（schema 437，defaultValue）",
+        "dataType 全 String 但 indicatorValue/Percent 实际需为 number（line 141 DigitalNumber 会处理）",
+        "useMemo 依赖 [props.dataSource, config.layout?.pageSize, config.layout?.rowSize]（line 48）",
+        "import 自 @Components/digital-number、@Src/utils、@fedx-vis/designer-types（外部依赖）",
+        "无 doc/README.md",
+        "groupId=13"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

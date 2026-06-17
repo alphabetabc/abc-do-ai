@@ -1,0 +1,203 @@
+{
+    "name": "hot-app-top5",
+    "title": "热门APPTOP5",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.tsx",
+        "schema": "./schema.ts",
+        "schema_parts": ["./schema-parts/{commonSettings, tabSettings, appIndSettings, appIndInteractions}.ts"],
+        "dataModel": "./dataModel.json",
+        "components": ["./components/{Container, Tabs, AppList, SvgBorder}.tsx"]
+    },
+    "basic": {
+        "main_file": "index.tsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "高",
+        "author": "xmw",
+        "notes": "schema 拆为 4 个 schema-parts + components 拆为 4 个子组件 + 2 个 dataSource（双数据源架构）"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "双数据源（tab + topAppList）",
+                "example": "{ tabDataSource: [{dictName:'视频', dictKey:'1'}, ...], appListDataSource: [{appName:'爱奇艺', appIcon:'', indicatorId:'1', indicatorName:'播放成功率', indicatorValue:'99.38', indicatorUnit:'%'}, ...] }",
+                "match_pattern": "customDataSourceApiConfig.{tabDataSource, appListDataSource}[*]",
+                "fields": [
+                    { "name": "dictName", "type": "String", "required": true, "description": "Tab 显示名（视频/游戏/即时通信/支付）" },
+                    { "name": "dictKey", "type": "String", "required": true, "description": "Tab ID，用于派发与下钻" },
+                    { "name": "appName", "type": "String", "required": true, "description": "应用名（爱奇艺/腾讯视频/抖音/快手等）" },
+                    { "name": "appIcon", "type": "String", "required": false, "description": "应用图标 URL" },
+                    { "name": "indicatorId", "type": "String", "required": true, "description": "指标ID（如'1'=播放成功率,'2'=卡顿时长占比）" },
+                    { "name": "indicatorName", "type": "String", "required": true, "description": "指标名" },
+                    { "name": "indicatorValue", "type": "String(实际number)", "required": true, "description": "指标值" },
+                    { "name": "indicatorUnit", "type": "String", "required": false, "description": "指标单位" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "tab_change_dispatch",
+                "trigger": "onTabChange (Tabs 切换)",
+                "config_field": "interactions.action.actionDictName / actionDictKey",
+                "behavior": "Tab 切换时把 dictName + dictKey 派发出去，同时 setState tabParams 触发 appListDataSource 重新请求"
+            },
+            {
+                "type": "item_click_drilldown",
+                "trigger": "onAppItemClick (AppList item 点击)",
+                "config_field": "interactions.defined.configurableEvent.clickEvent",
+                "sub_fields": ["show", "effect (Modal|Drawer)", "params", "drilldownItemFields", "position", "size", "mask", "closable", "title (Drawer)"],
+                "payload": "整行 raw data"
+            },
+            {
+                "type": "click_dispatch_appName",
+                "trigger": "useInteractionHandle (clickEvent 派发)",
+                "config_field": "interactions.defined.appName (在 appIndInteractions 单独定义)",
+                "behavior": "点击 app 项时派发 appName"
+            },
+            {
+                "type": "subscribe_zone_and_tab",
+                "trigger": "useCustomDataSourceApi + useMemo",
+                "config_field": "interactions.subscribe.{subscribeZoneLevel, subscribeZoneId, subscribeTabActiveId}",
+                "behavior": "订阅 3 个外部参数（地区等级/地区Id/默认选中tabId），用于数据请求的 query 参数"
+            },
+            {
+                "type": "tab_carousel",
+                "trigger": "useRef + Tabs 内部 timer (mouseEnter/Leave 暂停/启动)",
+                "config_field": "config.tabSettings.carousel.{enable, interval}",
+                "behavior": "Tab 自动轮播，鼠标移入停止，移出恢复"
+            }
+        ],
+        "visual_configs": {
+            "common": {
+                "sortField": { "type": "string", "default": "" },
+                "labelFont": { "component": "VisualTextStyle" }
+            },
+            "tabSettings": {
+                "show": { "type": "boolean", "default": true },
+                "defaultActiveId": { "type": "string", "default": null },
+                "width": { "type": "number", "default": 79 },
+                "height": { "type": "number", "default": 32 },
+                "spaceSize": { "type": "number", "default": 10 },
+                "borderColor": { "normal": "string", "active": "string" },
+                "backgroundColor": { "normal": "string", "active": "string" },
+                "font": { "normal": "VisualTextStyle", "active": "VisualTextStyle" },
+                "carousel": { "enable": "boolean", "interval": "number (秒)" }
+            },
+            "appIndSettings.top": {
+                "width": { "type": "number", "default": 108 },
+                "iconBgSize": { "type": "object", "default": "{width: 48, height: 66}" },
+                "appIconPosition": { "type": "object", "default": "{left: 'center', top: 'bottom'}" },
+                "topIndSettings": { "type": "array", "items": "{font, background}", "description": "Top1/2/3 单独设置（金/银/铜配色 + 编号 icon）" }
+            },
+            "appIndSettings.normal": {
+                "width": { "type": "number", "default": 108 },
+                "iconBgSize": { "type": "object", "default": "{width: 48, height: 48}" },
+                "indSettings": { "type": "object", "description": "Top4/5 共用设置" }
+            },
+            "appIndSettings.appIcon": { "size": { "width": "number", "height": "number" } }
+        },
+        "default_values": {
+            "config.title": "热门APPTOP5",
+            "config.width": 432,
+            "config.height": 300,
+            "config.tabSettings.show": true,
+            "config.tabSettings.width": 79,
+            "config.tabSettings.height": 32,
+            "config.tabSettings.carousel.enable": true,
+            "config.tabSettings.carousel.interval": 5,
+            "config.appIndSettings.top.width": 108,
+            "config.appIndSettings.normal.width": 108
+        }
+    },
+    "business_scenarios": [
+        "网络应用质量监控 Top5（视频/游戏/即时通信/支付场景）",
+        "运营商用户热门 APP 监控（爱奇艺/腾讯视频/抖音/快手）",
+        "指标对比 Top5（播放成功率/卡顿时长占比/连接成功率/掉线率）",
+        "Tab 分类切换 + 排序 + 自动轮播 + Modal/Drawer 下钻",
+        "地区维度数据筛选（订阅 zoneLevel/zoneId）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-map", "cost": "低", "reason": "subscribeZoneLevel/Id 与地图区域一致可联动筛选" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "drilldown-table", "cost": "低", "reason": "clickEvent 是标准 configurableEvent，跨物料兼容" },
+            { "material": "carousel-param", "cost": "低", "reason": "carousel-param 可派发 tabId 切换" }
+        ],
+        "incompatible_with": [
+            { "material": "decoration/border1~12", "cost": "中", "reason": "组件内部使用 SvgBorder 自带边框，叠加边框装饰可能冲突" }
+        ],
+        "note": "复杂的多 schema-parts 结构 + 4 个子组件，外部扩展成本高；适合作为大屏核心模块直接使用"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.9,
+        "weighted_total": 3.9,
+        "breakdown": {
+            "business_description": 4.5,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 4.0,
+            "doc_completeness": 2.0,
+            "composability": 3.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.5：title='热门APPTOP5' + 字段(dictName/dictKey/appName/indicatorId/indicatorName/indicatorValue/indicatorUnit) 全部业务化贴近 APP 监控场景；schema-parts 拆分清晰，命名'commonSettings/tabSettings/appIndSettings/appIndInteractions'对应业务模块。",
+            "2. 场景覆盖度 4.0：覆盖 Tab 切换 + 数据轮播 + 双数据源 + 订阅地区参数 + 下钻 + 自动轮播 + 鼠标 hover 暂停 + Top1/2/3 单独配色。",
+            "3. 配置完备度 4.5：3 个 FormCollapse 分组（基本/Tab/top5）+ 完整的下钻配置（Modal/Drawer 全套）+ 3 个订阅 + 2 个 action 派发 + 大量 VisualTextStyle 联动；默认值丰富。",
+            "4. 数据契约清晰度 4.0：dataModel 拆为 2 个 dataModelDefinition（tab + appList），每个字段 fieldLabel 业务化。⚠️ dataType 全是 String 但 indicatorValue 实际为 number。",
+            "5. 文档完整度 2.0：仅有 doc/readme.md + doc/CHANGELOG.md + 15 张截图，缺 5+1 文档。",
+            "6. 可组合性 3.0：schema 拆 4 个 part + 4 个子组件 + 2 个 dataSource，外部扩展成本高；自带 SvgBorder 边框与 decoration 边框可能冲突。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 8,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 24,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 16,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.tabSettings.show"],
+        "data_required": ["tabDataSource.dictName/dictKey (至少 2 个 tab)", "appListDataSource.appName/indicatorId/indicatorName/indicatorValue (至少 5 行)"],
+        "optional_fields": {
+            "config": ["tabSettings.carousel.enable/interval", "appIndSettings.top.topIndSettings[] (Top1/2/3 配色)", "appIndSettings.normal.indSettings (Top4/5 配色)"],
+            "data": ["appIcon (应用图标)", "indicatorUnit (单位)"]
+        },
+        "assumptions": [
+            "使用默认 4 个 Tab（视频/游戏/即时通信/支付）",
+            "使用默认 Top1/2/3 单独配色（金/银/铜）",
+            "无 subscribeZone 参数（默认当前用户区域）",
+            "无 clickEvent 下钻"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 8, "minutes": 24, "description": "默认 Tab 切换 + 5 个 APP + Top1/2/3 配色" },
+            "typical": { "config_items": 6, "data_fields": 10, "minutes": 40, "description": "自定义 Tab 轮播 + 全部 5 个 Top 配色 + 订阅地区" },
+            "full": { "config_items": 12, "data_fields": 12, "minutes": 65, "description": "全部 3 个 FormCollapse 分组 + 完整 Modal/Drawer + 3 个订阅 + 2 个 action 派发" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel 是数组（2 个 dataModelDefinition），非常规单一对象，DynamicData 解析时需按字段组匹配",
+        "indicatorId='1'/'2' 是隐式约定（'1'=播放成功率, '2'=卡顿时长占比），未在 schema 中约束",
+        "tabDataSource 与 appListDataSource 是 2 个独立 dataSource，schema 中以 tabDataSource/appListDataSource 命名，PM 配置时需了解 2 个 dataSource 的字段关系",
+        "requestSubscribeParams formatter 仅处理 SubscribeZoneId/SubscribeZoneLevel，SubscribeTabActiveId 单独在 Tabs 组件中使用（不在请求参数中）",
+        "convertor 在 2 个 dataSource 中都重写 id（tabDataSource: id ?? d.dictKey; appListDataSource: indicatorGroup-indicatorId）",
+        "Tabs 组件内部 timer 实现逻辑（mouseEnter/Leave 暂停）依赖 useRef.tabTimerRef.clear/start，组件内部 API 需对齐",
+        "schema-parts 拆分是较新的最佳实践（2024），但缺少 5+1 文档说明拆分原因"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

@@ -1,0 +1,187 @@
+{
+  "name": "ellipse-layout-indicator",
+  "title": "椭圆布局指标组",
+  "category": "容器/布局",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": ["./schema/interaction.ts"]
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "极高",
+    "author": "谢名伟",
+    "groupId": 4,
+    "uses_common_schema": "BASE_LAYOUT / getCompTitle / renderDataConfig / defineInteractionSchema / renderPositionLeftTop（@Common + @Src）",
+    "uses_hoc": "无（ReactChartComponent + vis-components-lib / EllipseTrackBall 外部 UMD）",
+    "plot_library": "@beehive-insight/vis-react (UMD 加载 EllipseTrackBall 图表)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（indicatorId + indicatorName + indicatorValue）",
+        "example": "[{ indicatorId: 'ind_1', indicatorName: '集客故障', indicatorValue: '12' }, ...]",
+        "match_pattern": "data[*].{indicatorId, indicatorName, indicatorValue}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "indicatorId", "type": "String", "required": true, "description": "指标ID（与 indItemSettings.indicatorId 匹配）" },
+          { "name": "indicatorName", "type": "String", "required": true, "description": "指标名称" },
+          { "name": "indicatorValue", "type": "String(实际Number)", "required": true, "description": "指标值" }
+        ],
+        "match_logic": "props.dataSource.find(d => d.indicatorId === cfg.indicatorId) — 通过 indicatorId 与配置项关联"
+      }
+    ],
+    "interactions": [
+      { "type": "ballClick", "trigger": "click", "payload": "data.originData（dataItem）", "note": "clickTrigger → dispatchInteraction" },
+      { "type": "ballDblClick", "trigger": "dblclick", "payload": "data.originData", "note": "drilldownTrigger → drilldown (clickEvent) → Modal/Drawer" },
+      { "type": "ballHighlight", "trigger": "highlight", "payload": "data.originData（camelCase highlight-* 派发）", "note": "高亮派发 highlightIndicatorId/highlightIndicatorName/highlightType" },
+      { "type": "animationToggle", "trigger": "click", "payload": "n/a", "note": "onAnimationButtonClick 切换 animationBtnStatus（仅预览模式）" }
+    ],
+    "visual_configs": {
+      "commonSetting": "BASE_LAYOUT",
+      "title": "getCompTitle",
+      "centerBallSettings": {
+        "text": "Input 中心球文本（支持 \\n 换行）",
+        "textSize": "Space(宽+高) 文本尺寸",
+        "font": "VisualTextStyle 文本样式",
+        "size": "Space(宽+高) 中心球尺寸",
+        "top": "NumberPicker 上边距",
+        "disableBackground": "Switch 是否禁用背景",
+        "background": "Background 背景图片（默认 center-ball.png + center-ball-animate.png）"
+      },
+      "trackSettings": {
+        "size": "Space(宽+高) 轨道尺寸",
+        "disableBackground": "Switch",
+        "background": "Background 背景图片（默认 track.png）"
+      },
+      "indGroupLayout": {
+        "cy": "NumberPicker 中心点距离上边缘（默认 20）",
+        "paddingRx": "NumberPicker 水平修正参数（默认 70）",
+        "paddingRy": "NumberPicker 垂直修正参数（默认 130）",
+        "enableTrackAnimation": "Switch 启动轨道动画",
+        "rotateDeltaAngleDegree": "NumberPicker 旋转速率（min=0, step=0.01）",
+        "enableManualAnimationBtn": "Switch 显示动画开关（仅预览生效）",
+        "manualAnimationBtnSize": "NumberPicker 开关尺寸",
+        "manualAnimationBtnPos": "renderPositionLeftTop 开关位置"
+      },
+      "indItemCommonSettings": {
+        "enableBallRotate": "Switch 指标背景旋转（默认 true）",
+        "ballHoverScale": "NumberPicker 移入放大比例（默认 1.2）"
+      },
+      "indItemSettings": "ArrayCollapse 单个指标：indicatorId + size + valueFont(VisualTextStyle) + valueFontGradientColor(CssGradientColor) + labelFont(VisualTextStyle) + labelFontGradientColor + background(Background 图标)"
+    },
+    "default_values": {
+      "config.title": "椭圆布局指标组",
+      "config.width": 766,
+      "config.height": 428,
+      "config.indItemSettings": "默认 6 个指标 (ind_1~ind_6)，size 176x176",
+      "config.centerBallSettings.text": "退服\\n统计",
+      "config.centerBallSettings.size": "270x200",
+      "config.centerBallSettings.textSize": "55x55",
+      "config.trackSettings.size": "730x265",
+      "config.indGroupLayout.cy": 20,
+      "config.indGroupLayout.paddingRx": 70,
+      "config.indGroupLayout.paddingRy": 130,
+      "config.indGroupLayout.enableTrackAnimation": true,
+      "config.indGroupLayout.rotateDeltaAngleDegree": 0.5,
+      "config.indItemCommonSettings.enableBallRotate": true,
+      "config.indItemCommonSettings.ballHoverScale": 1.2,
+      "dataConfig.json": "[{indicatorName:'集客故障',indicatorValue:'12',indicatorId:'ind_1',type:'tob'},...] 6 条示例",
+      "dataConfig.refreshTime": 300
+    }
+  },
+  "business_scenarios": [
+    "退服统计大屏：6 类业务退服数（集客故障/机房停电/OLT/2GVIP/4GVIP/5GVIP 退服）按椭圆轨道排列展示",
+    "网络监控场景：核心指标（断站数/掉线率/告警数）按等级环绕展示",
+    "告警大屏：多业务告警指标围绕中心调度",
+    "智慧城市大屏：交通/能源/环境指标椭圆布局",
+    "运营指挥中心：调度中心 + 多业务指标组"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "ellipse-layout-indicator(同型)", "cost": "低", "reason": "可作为子组件嵌入页面" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总量配合椭圆布局" },
+      { "material": "scene-over-view-hlj", "cost": "中", "reason": "场景概览作为父级 + 椭圆指标组作为子区域" },
+      { "material": "decoration/border*", "cost": "低", "reason": "边框装饰无依赖" }
+    ],
+    "incompatible_with": [
+      { "material": "通用 Table/列表", "reason": "椭圆布局是装饰性可视化，承载信息密度低" }
+    ],
+    "note": "高度装饰性的椭圆轨道可视化，依赖外部 UMD（@beehive-insight/vis-react）渲染 EllipseTrackBall 图表，部署成本较高"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B-",
+    "score": 3.3,
+    "weighted_total": 3.3,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.5,
+      "composability": 3.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 3 字段（indicatorId/indicatorName/indicatorValue）业务化清晰，但需要和 indItemSettings.indicatorId 双向匹配，隐式约定较多。",
+      "2. 场景覆盖度 3.0：椭圆轨道围绕中心球的单一布局模式，场景偏窄（仅适合多指标围绕中心调度场景）。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组（中心球/轨道/布局/通用/指标配置/点击事件）+ ArrayCollapse 指标数组 + x-reactions 联动 + 动画配置；配置粒度极细。",
+      "4. 数据契约清晰度 3.0：dataModel 3 字段全部错标 String（indicatorValue 应为 Number）；dataModel 隐含 type 字段未声明（defaultValue 中使用 type 字段）。",
+      "5. 文档完整度 2.5：doc/CHANGELOG.md + doc/readme.md + 9 张图片，但无 5+1 文档。",
+      "6. 可组合性 3.0：依赖外部 UMD 库（@beehive-insight/vis-react + EllipseTrackBall），与同类椭圆/数字卡/边框装饰可组合；外部依赖是组合性短板。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 8,
+    "data_fields_to_provide": 3,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 25,
+    "breakdown": {
+      "config_minutes": 18,
+      "data_minutes": 7,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.indItemSettings", "config.centerBallSettings", "config.trackSettings", "config.indGroupLayout", "config.indItemCommonSettings"],
+    "data_required": ["indicatorId", "indicatorName", "indicatorValue"],
+    "optional_fields": {
+      "config": ["defaultOpen", "manualAnimationBtnPos", "indItemSettings[*].background"],
+      "data": ["type（隐式字段，dataModel 未声明）"]
+    },
+    "assumptions": [
+      "data 中 indicatorId 必须与 indItemSettings 中 indicatorId 严格匹配",
+      "indicatorValue 实际为 number（dataModel 标 String）",
+      "外部 UMD 库 vis-components-lib 必须可访问"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 8, "data_fields": 3, "minutes": 25, "description": "6 个指标 + 默认中心球 + 默认轨道 + 默认动画" },
+      "typical": { "config_items": 18, "data_fields": 3, "minutes": 50, "description": "6 指标全配置（渐变+图标）+ 中心球+轨道背景定制" },
+      "full": { "config_items": 35, "data_fields": 3, "minutes": 90, "description": "6 FormCollapse 完整深度配置 + ArrayCollapse 6 指标 + 动画开关 + 5 个交互事件" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串，但 dataModel.json 实际存在且被 schema.ts 顶部 import",
+    "dataModel 中 indicatorValue 错标 String（实际为 Number）",
+    "dataModel 未声明 type 字段（defaultValue 中使用 type: 'tob'/'jf'/'toh'/'toc'）",
+    "依赖外部 UMD 库 vis-components-lib（liburl 拼装 materialUrl）",
+    "使用 @beehive-insight/vis-react 的 ReactChartComponent（包装类）",
+    "actions.current 是 useRef 引用，但 clickData 等 dirty check 使用 _.isEqual 后才 setState（合规）",
+    "dataSource.data.originData 通过 deep clone 传递（性能注意）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 free-layout-ind-progress / free-layout-indicator-group / nine-grid / scene-over-view-hlj / telescoping-board"
+  }
+}

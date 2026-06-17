@@ -1,0 +1,146 @@
+{
+    "name": "carousel-param",
+    "title": "轮播按钮派发参数",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.tsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.tsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "shz"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "轮播参数列表（id + param1~9）",
+                "example": "[{ id: '1', param1: 'v1', param2: 'v2', ..., param9: 'v9' }, ...]",
+                "match_pattern": "data[*].{id, param1, ..., param9}",
+                "fields": [
+                    { "name": "id", "type": "String", "required": true, "description": "元素ID（轮播/点击时作为外派参数）" },
+                    { "name": "param1~9", "type": "String", "required": false, "description": "9 个通用参数槽位，按需绑定到外派字段" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "param_dispatch",
+                "trigger": "useEffect[checkedId, data] (轮播切换/选中变化)",
+                "config_field": "interactions.defined.{onClickId, onClickParam1~9}",
+                "sub_fields": ["onClickId", "onClickParam1~9"],
+                "behavior": "每次 currentId 变化时把当前行的 id + 9 个 param 通过 interaction.dispatch 派发；onClickId 缺省时 state='0'",
+                "known_issue": "onClickId 缺省时派发 state='0' 字符串（line 74），订阅方需注意空值兜底"
+            },
+            {
+                "type": "subscribe",
+                "trigger": "useEffect[interactionProps?.stopCarouselParam]",
+                "config_field": "interactions.subscribe.stopCarouselParam",
+                "behavior": "当接收到 stopCarouselParam 参数时停止内部轮播"
+            }
+        ],
+        "visual_configs": {
+            "commonStyle": {
+                "iconFontSize": { "type": "string", "default": 80, "description": "轮播开关按钮大小 px" },
+                "period": { "type": "string", "default": 60, "description": "轮播周期(秒)，setInterval" },
+                "autoHidden": { "type": "boolean", "default": false, "description": "鼠标 hover 时显示轮播开关按钮" }
+            }
+        },
+        "default_values": {
+            "config.title": "轮播按钮",
+            "config.width": 100,
+            "config.height": 100,
+            "config.commonStyle.iconFontSize": 80,
+            "config.commonStyle.period": 60,
+            "config.commonStyle.autoHidden": false
+        },
+        "ui_behavior": "组件本身只渲染一个轮播开关图标（Icon type='iconjieshu' / 'iconkaishi1'），数据行不直接渲染，只通过派发影响其他组件"
+    },
+    "business_scenarios": [
+        "大屏参数自动轮播派发（多屏轮播/自动巡检）",
+        "多维度筛选参数按周期轮换绑定",
+        "下钻目标按 ID 轮播切换（搭配 drilldown-table/echarts-map）",
+        "手动暂停/启动轮播的开关按钮"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-map", "cost": "低", "reason": "轮播派发 param1~9 可绑定地图下钻/筛选参数" },
+            { "material": "echarts-bar", "cost": "低", "reason": "轮播派发可触发 echarts-bar 重新拉取数据" },
+            { "material": "drilldown-table", "cost": "低", "reason": "param1~9 绑定 drilldownItemFields 实现自动轮巡" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡接收参数切换数据" }
+        ],
+        "incompatible_with": [],
+        "note": "carousel-param 是'派发型'组件，自身不渲染业务数据，依赖其他组件订阅 messageCenter 事件才能体现价值"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.6,
+        "weighted_total": 3.6,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 4.0,
+            "doc_completeness": 2.0,
+            "composability": 5.0
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='轮播按钮派发参数' 清晰但 param1~9 是技术占位符。",
+            "2. 场景覆盖度 3.0：覆盖轮播+派发+订阅停止，单一职责。",
+            "3. 配置完备度 3.0：仅 1 个 FormCollapse 分组 + 3 个字段；但 9 个派发参数槽 + 1 个订阅槽 = 10 个交互配置。",
+            "4. 数据契约清晰度 4.0：dataModel 字段命名清晰（id/param1~9），dataModelDefinition.description='可视化大屏轮播按钮派发参数'。",
+            "5. 文档完整度 2.0：仅有 doc/readme.md，缺 5+1 文档。",
+            "6. 可组合性 5.0：作为派发中枢，可与所有需要按 ID 轮播切换的组件低代价组合（地图/图表/表格/数字卡）。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 2,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 8,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 4,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.commonStyle.period"],
+        "data_required": ["id", "param1 (至少 1 个)"],
+        "optional_fields": {
+            "config": ["commonStyle.iconFontSize", "commonStyle.autoHidden"],
+            "data": ["param2~9 (按需扩展)"]
+        },
+        "assumptions": [
+            "使用 60s 默认轮播周期",
+            "至少订阅方 1 个（地图/图表/表格）",
+            "onClickId 必绑定订阅方 ID 字段"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 2, "minutes": 8, "description": "默认 60s 周期 + 1 个订阅方" },
+            "typical": { "config_items": 3, "data_fields": 5, "minutes": 16, "description": "自定义周期/按钮大小 + 5 个 param 绑定到下游组件" },
+            "full": { "config_items": 4, "data_fields": 10, "minutes": 28, "description": "全部 9 个 param + 1 个订阅 + hover 显示开关" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel.isUseDimensionParams 类型是字符串 'false'（非 boolean），其他物料通常写 false 布尔",
+        "组件自身只渲染一个轮播开关图标，data 行不直接渲染（'派发型'组件），单用没有视觉效果",
+        "onClickId 缺省时派发 state='0' 字符串，订阅方需注意空值兜底（line 74）",
+        "carouselIndex.current 是 useRef 但在 setInterval 内修改后未触发 setState，是 setCheckedId 触发的 useEffect 重新派发",
+        "useEffect[checkedId, data] 在初始挂载时也会触发一次派发（data[0]），订阅方初始状态需能接收"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

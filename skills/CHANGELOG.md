@@ -1,24 +1,27 @@
 # Changelog
 
-<!-- changelog-last-commit: 0e97b90a905025dd76507c1032bd296cf0844763 -->
+<!-- changelog-last-commit: 54e7bad12d9ca6f68c185670f96d64e1d3510094 -->
+
+## 2026-06-17
+
+- 发布 skill
+    - 「oss-vis-material-advisor」 v0.0.0；
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+    - 「warn-gis-risk-prediction-points」 v0.0.0；
+- 新增 skill「warn-gis-risk-prediction-points」；应急支撑系统中地图预警信息展示的核心模块，负责在 GIS 地图上渲染各类风险预测打点；
 
 ## 2026-06-16
 
-- 新增 skill「oss-vis-material-advisor」；
-- 新增 skill「oss-vis-material-development-assistant」；
 - 发布 skill
     - 「gd-es-next-right-damage-to-towns」 v0.0.0；
+    - 「oss-vis-material-advisor」 v0.0.0；
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+    - 「warn-gis-risk-prediction-points」 v0.0.0；
 - feat: 更新 skill「oss-vis-material-development-assistant」（配置）；
 - 发布 skill
     - 「gd-es-next-right-damage-to-towns」 v0.0.0；
     - 「demo-skill」；
 - 变更文件: package.json、scripts/commit.mjs、scripts/update-changelog.mjs、skills/package.json；
-- 新增 92 个文件；
-- 发布 skill
-    - 「oss-vis-material-advisor」 v0.0.0；
-    - 「oss-vis-material-development-assistant」 v0.0.0；
-    - 「warn-gis-risk-prediction-points」 v0.0.0；
-- 新增 31 个文件；
 
 ## 2026-06-15
 

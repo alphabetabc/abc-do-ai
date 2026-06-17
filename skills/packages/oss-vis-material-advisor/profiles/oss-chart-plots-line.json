@@ -1,0 +1,150 @@
+{
+  "name": "oss-chart-plots-line",
+  "title": "折线图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 15,
+    "uses_common_schema": "PLOTS_SCHEMA",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssLinePlotChart)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "单系列折线（X维度 + Y指标）",
+        "example": "[{ x: '周一', y: 120 }, { x: '周二', y: 200 }, ...]",
+        "match_pattern": "data[*].{x, y}",
+        "supports_multi_series": true,
+        "multi_series_key": "s (但 dataConverter 不映射, 隐式依赖 data[0]?.s 判断)",
+        "fields": [
+          { "name": "dimension_name", "type": "String", "required": true, "description": "X轴类目" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "Y轴数值" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "指标单位（未消费）" },
+          { "name": "title_text", "type": "String", "required": false, "description": "标题名称（未消费）" },
+          { "name": "title_value", "type": "String", "required": false, "description": "标题值（未消费）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "commonSetting": { "padding": "DirSpaceSize" },
+      "xAxis": "PLOTS_SCHEMA.AXIS_DIM",
+      "yAxis": "PLOTS_SCHEMA.AXIS_IND（含 min/max range）",
+      "valueLabel": "PLOTS_SCHEMA.VALUE_LABEL",
+      "point": "PLOTS_SCHEMA.STYLE_STROKE.point (数据点样式)",
+      "lineStyle": {
+        "smooth": "Switch (线条平滑)",
+        "stroke": "ColorPicker",
+        "lineWidth": "NumberPicker",
+        "lineDash": "Select (实线/虚线)"
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND"
+    },
+    "default_values": {
+      "config.title": "折线图",
+      "config.width": 400,
+      "config.height": 250,
+      "config.legend.visible": false,
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "时间序列趋势：股价/温度/流量随时间变化",
+    "多产品趋势对比：多产品销售额随月份变化（多系列时需用 series-line 或传 compareType 字段）",
+    "性能监控：CPU/内存/网络使用率随时间变化",
+    "流量统计：网站 PV/UV 随时间变化",
+    "数据采集：传感器数据随时间变化"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/area", "cost": "低", "reason": "X/Y 轴配置同构" },
+      { "material": "oss-chart-plots/base-area", "cost": "低", "reason": "同 G2 底层" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示首末值或峰值" }
+    ],
+    "incompatible_with": [],
+    "note": "dataConverter 不映射 compareType → s 字段（已注释），所以多系列需修改 dataConverter；判断多系列的逻辑是 data[0]?.s 是否存在"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.6,
+    "weighted_total": 3.6,
+    "breakdown": {
+      "business_description": 3.5,
+      "scenario_coverage": 3.5,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.0,
+      "doc_completeness": 2.0,
+      "composability": 4.0
+    },
+    "reasoning": [
+      "1. 业务描述力 3.5：dataModel 字段业务化但 dataType 错标；title_text/title_value 在 dataModel 演示但代码未消费。",
+      "2. 场景覆盖度 3.5：仅支持单系列（多系列需用 series-line 物料，dataConverter 已注释 s 字段映射），所以多系列场景需切换物料。",
+      "3. 配置完备度 4.0：6 个 FormCollapse 分组 + 折线专属 lineStyle（smooth/stroke/lineWidth/lineDash）+ point；与 area 物料的 point 配置完全相同。",
+      "4. 数据契约清晰度 3.0：dataModel 字段命名清楚，但 ① dataType 错标；② defaultValue.dataConfig.json 无示例；③ dataConverter 注释 s 字段映射（commit 提到 '物料优化' 但此处似未完成）。",
+      "5. 文档完整度 2.0：无 doc/ 目录，无 5+1 文档。",
+      "6. 可组合性 4.0：与 area/base-area 同 dataModel 字段；与数字卡组合展示首末值。",
+      "7. 额外扣分：isMultiSeries 判断逻辑 `_.isArray(props.dataSource) && props.dataSource.length === 0` 在空数据时返回 true（视为多系列），可能与预期不一致。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.lineStyle.stroke"],
+    "data_required": ["dimension_name", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "lineStyle.smooth", "point.visible", "valueLabel.show"],
+      "data": []
+    },
+    "assumptions": [
+      "单系列折线",
+      "使用默认实线（lineDash=实线）",
+      "无 point 标记"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "单系列 + 默认实线" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 13, "description": "自定义线型 + 标签 + point" },
+      "full": { "config_items": 10, "data_fields": 2, "minutes": 30, "description": "全部 FormCollapse 深度配置" }
+    }
+  },
+  "_validation_notes": [
+    "dataConverter 注释了 s 字段映射（line 93 `// s: d.compareType`），所以多系列场景需修改源码或用 series-area/series-line 类物料",
+    "isMultiSeries 判断逻辑 `props.dataSource.length === 0` 视为 true，与预期不一致（空数据应视为无系列）",
+    "dataType 错标（indicator_value 应为 Number）",
+    "defaultValue.dataConfig.json 缺失",
+    "oss-material.json.dataModel 是空字符串"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 pie/rose/radar 画像"
+  }
+}

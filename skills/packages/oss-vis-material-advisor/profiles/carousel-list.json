@@ -1,0 +1,195 @@
+{
+    "name": "carousel-list",
+    "title": "轮播列表(垂直)",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "haoyingying"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "垂直轮播列表（id + name + value + unit）",
+                "example": "[{ id: '1', name: '语音专线', value: 99.99, unit: '%' }, ...]",
+                "match_pattern": "data[*].{id, name, value, unit}",
+                "fields": [
+                    { "name": "id", "type": "String", "required": false, "description": "行ID（用于点击派发 rowHighlightId）" },
+                    { "name": "name", "type": "String", "required": true, "description": "行名称（用于显示 + 派发 rowHighlightName）" },
+                    { "name": "value", "type": "Number(实际)", "required": true, "description": "行数值（dataModel 标 String 但实际渲染为 number）" },
+                    { "name": "unit", "type": "String", "required": false, "description": "单位" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "row_highlight_dispatch",
+                "trigger": "setInterval (轮播定时器到点 + currentIndex 变化)",
+                "config_field": "interactions.defined.rowHighlightId / rowHighlightName",
+                "behavior": "轮播切换时把当前行 id/name 通过 interaction.dispatch 派发出去",
+                "sub_fields": ["rowHighlightId (string)", "rowHighlightName (string)"]
+            }
+        ],
+        "visual_configs": {
+            "swiperTimer": {
+                "type": "number",
+                "min": 1,
+                "step": 10,
+                "default": 3,
+                "description": "轮播时间间隔(秒)，setInterval 实现"
+            },
+            "style": {
+                "width": { "type": "number", "default": 285, "description": "行宽度 px" },
+                "height": { "type": "number", "default": 40, "description": "行高度 px" },
+                "size": { "type": "number", "default": 18, "description": "左侧圆点直径 px" },
+                "customColors": { "type": "string[]", "default": "[]", "description": "圆点颜色循环；空时使用 DEFAULT_COLORS" }
+            },
+            "dividerStyle": {
+                "color": { "type": "string", "default": "#C9CDD6" },
+                "width": { "type": "number", "default": 280, "description": "分割线总长 px" },
+                "dashedwidth": { "type": "number", "default": 8, "description": "虚线单段长度 px" },
+                "density": { "type": "number", "default": 50, "description": "虚线密度（背景色覆盖百分比 0-100）" }
+            },
+            "selectedStyle": {
+                "background": { "type": "string", "default": "rgba(0, 138, 255, 0.1)" },
+                "borderStyle": { "type": "string", "default": "solid", "options": ["dashed", "solid"] },
+                "color": { "type": "string", "default": "#008aff", "description": "边框颜色" },
+                "borderWidth": { "type": "number", "default": 1 },
+                "boxShadow": { "type": "number", "default": 8, "description": "阴影尺寸 px" },
+                "shadowColor": { "type": "string", "default": "#008aff" }
+            },
+            "nameFontStyle": {
+                "fontFamily": { "type": "string", "default": "" },
+                "fontSize": { "type": "number", "default": 17 },
+                "fontWeight": { "type": "string", "default": "400" },
+                "color": { "type": "string", "default": "#FFFFFF" },
+                "isCustomColors": { "type": "boolean", "default": false, "description": "是否启用自定义多色" },
+                "customColors": { "type": "string[]", "default": "[]", "description": "多色数组，依次映射每行" }
+            },
+            "valueFontStyle": {
+                "fontFamily": { "type": "string", "default": "" },
+                "fontSize": { "type": "number", "default": 17 },
+                "fontWeight": { "type": "string", "default": "bold" },
+                "color": { "type": "string", "default": "#FFFFFF" },
+                "isCustomColors": { "type": "boolean", "default": false },
+                "customColors": { "type": "string[]", "default": "[]" }
+            },
+            "unitFontStyle": {
+                "fontFamily": { "type": "string", "default": "" },
+                "fontSize": { "type": "number", "default": 17 },
+                "fontWeight": { "type": "string", "default": "bold" },
+                "color": { "type": "string", "default": "#FFFFFF" },
+                "isCustomColors": { "type": "boolean", "default": false },
+                "customColors": { "type": "string[]", "default": "[]" }
+            }
+        },
+        "default_values": {
+            "config.title": "轮播列表(垂直)",
+            "config.width": 300,
+            "config.height": 300,
+            "config.swiperTimer": 3,
+            "config.style.width": 285,
+            "config.style.height": 40,
+            "config.style.size": 18,
+            "config.dividerStyle.color": "#C9CDD6",
+            "config.dividerStyle.width": 280,
+            "config.dividerStyle.dashedwidth": 8,
+            "config.dividerStyle.density": 50,
+            "config.selectedStyle.background": "rgba(0, 138, 255, 0.1)",
+            "config.selectedStyle.color": "#008aff",
+            "config.nameFontStyle.fontSize": 17,
+            "config.valueFontStyle.fontSize": 17,
+            "config.unitFontStyle.fontSize": 17
+        }
+    },
+    "business_scenarios": [
+        "网络专线质量监控轮播（语音/物联网/数据/互联网/短彩信占比）",
+        "业务线 TopN 自动轮播展示",
+        "产品/服务分类占比轮播",
+        "关键指标定时切换高亮（搭配地图/数字卡联动）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-map", "cost": "低", "reason": "轮播 rowHighlightId/Name 派发可被地图钻取消费" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource，可并列展示同主题" },
+            { "material": "normal-label", "cost": "低", "reason": "标题标签独立" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [],
+        "note": "需注意轮播 dispatch 是单向派发，跨物料消费方需订阅 messageCenter 事件"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.7,
+        "weighted_total": 3.7,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='轮播列表(垂直)' + 字段(id/name/value/unit) 业务化程度中等，行点击派发 rowHighlightId/Name 命名贴近业务。但 doc/readme.md 存在但非 5+1 全套。",
+            "2. 场景覆盖度 4.0：覆盖轮播列表、单行高亮、虚线分割、圆点/边框装饰、字体多色映射等典型轮播场景。",
+            "3. 配置完备度 4.5：5 个 FormCollapse 分组（功能/样式/分割线/选中样式/3 个字体样式）+ 3 个 x-reactions 联动 isCustomColors + 联动颜色；默认值丰富。",
+            "4. 数据契约清晰度 3.5：dataModel 字段 4 个全声明，但 ⚠️ dataModelDefinition.name 错误复制为 'echarts-gauge'（详见 _validation_notes）；dataType 全是 String 但 value 实际应为 number。",
+            "5. 文档完整度 2.0：仅有 doc/CHANGELOG.md + doc/README.md，缺 5+1 文档（README/schema/component-logic/data-model/common-tasks/gotchas）。",
+            "6. 可组合性 4.0：与地图/数字卡/装饰边框均低代价组合；轮播 dispatch 标准 messageCenter 事件，订阅方易对接。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 2,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 8,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 4,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.swiperTimer"],
+        "data_required": ["name", "value"],
+        "optional_fields": {
+            "config": ["style.width/height/size", "dividerStyle.*", "selectedStyle.*", "字体颜色/字号"],
+            "data": ["id (联动用)", "unit (单位)"]
+        },
+        "assumptions": [
+            "使用默认垂直轮播 + 蓝白主题",
+            "无联动下钻（仅展示 + 定时高亮）",
+            "数据条数 ≤ 10 条"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 2, "minutes": 8, "description": "默认样式 + 默认轮播间隔 3s" },
+            "typical": { "config_items": 5, "data_fields": 3, "minutes": 18, "description": "自定义样式/分割线/字体颜色 + id 联动" },
+            "full": { "config_items": 10, "data_fields": 4, "minutes": 30, "description": "全部 5 个 FormCollapse 分组 + rowHighlightName 派发" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel.json 中 dataModelDefinition.name 错误为 'echarts-gauge'，应为 'carousel-list'（疑似 copy-paste）",
+        "dataType 全标 String 但实际 value 渲染为 number，行为无影响但 PM 看 dataModel 易误解",
+        "doc/readme.md 存在但仅基础说明，缺 5+1 文档",
+        "onChange 函数体内 onChange 引用 self（line 22-37），与外层 onChange 局部函数同名，eslint-disable-next-line 已被禁用"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

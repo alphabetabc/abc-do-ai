@@ -1,0 +1,117 @@
+{
+    "name": "oss-chart-classify-map",
+    "title": "分类点线地图",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "hyy",
+    "scanned_at": "2026-06-17",
+    "description": "基于ECharts的多图层地图，支持path（区域）、scatter（散点）、lines（飞线）三种图层叠加，模块化设计，power by @oss-chart/map",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "string", "description": "数据ID" },
+            { "name": "name", "type": "string", "description": "数据名称" },
+            { "name": "value", "type": "string", "description": "数值" },
+            { "name": "lon", "type": "string", "description": "经度" },
+            { "name": "lat", "type": "string", "description": "纬度" },
+            { "name": "unit", "type": "string", "description": "单位" },
+            { "name": "level", "type": "string", "description": "级别" },
+            { "name": "targetId", "type": "string", "description": "目标点ID（飞线）" },
+            { "name": "isCenter", "type": "string", "description": "是否中心点" },
+            { "name": "type", "type": "string", "description": "类型（影响图层归类）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源转换映射",
+        "_note": "value 实际为数值类型，dataModel 声明为 string"
+    },
+    "visual_config": {
+        "geo": {
+            "show": { "type": "boolean", "default": true, "description": "底图显示/隐藏" },
+            "permission": { "type": "boolean", "default": false, "description": "使用权限自动选图（开启后隐藏图层选择）" },
+            "mapsettings": { "type": "object", "x-component": "GeoJsonSelect", "description": "GeoJSON底图选择" },
+            "padding": {
+                "type": "object",
+                "properties": { "top": "string", "bottom": "string", "left": "string", "right": "string" }
+            },
+            "style": {
+                "borderColor": "ColorPicker",
+                "borderWidth": "NumberPicker",
+                "borderType": { "type": "enum", "options": ["solid", "dashed", "dotted"] },
+                "areaColor": "ColorPicker"
+            }
+        },
+        "layer_type": {
+            "options": ["path", "scatter", "lines"],
+            "EC_MAP_LAYER_ENUMS": { "path": "区域", "scatter": "打点" }
+        },
+        "scatter_options": {
+            "MAP_SCATTER_TYPE": {
+                "normal": "普通散点",
+                "single_scatter01": "单点01",
+                "single_scatter02": "单点02（广东IDC）",
+                "group_scatter01": "分组散点01（联通陕西v1）",
+                "group_scatter02": "分组散点02（联通陕西v2）",
+                "group_scatter03": "分组散点03（移动吉林）"
+            },
+            "label": { "show": "Switch", "fontFamily": "GLOBAL_FONTS", "fontSize": "NumberPicker", "color": "ColorPicker", "fontWeight": "枚举" }
+        },
+        "lines_options": {
+            "label-line": "label-line 自定义DOM图层",
+            "line_style": "polyline/polygon支持"
+        }
+    },
+    "interactions": {
+        "click": { "type": "dispatch", "description": "支持散点、飞线点击下钻" },
+        "hover": { "type": "highlight", "description": "区域高亮" }
+    },
+    "business_scenarios": [
+        "多图层地理可视化大屏（区域+散点+飞线叠加）",
+        "运营商基站分布与归属展示",
+        "全国/省级综合态势图"
+    ],
+    "composability": {
+        "compatible_with": [
+            "geo-3d-map（场景互补）",
+            "baidu-map（特定业务打点）",
+            "drilldown-table（点击下钻）",
+            "top-rank（区域排行联动）"
+        ],
+        "replaces": [
+            "oss-chart-fly-line-map（飞线场景被包含）",
+            "oss-chart-map（更强的扩展性）"
+        ],
+        "extends": [
+            "oss-chart-fly-line-map（如果不需要散点/区域可简化）"
+        ]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "高",
+        "setup_steps": [
+            "准备 map-config.json 与 GeoJSON 资源",
+            "根据需求选择 path/scatter/lines 图层",
+            "配置各图层的视觉样式",
+            "组织数据为 {id, name, lon, lat, value, ...} 结构",
+            "配置交互下钻"
+        ],
+        "dependencies": ["@oss-chart/map", "ECharts", "map-config.json 静态资源", "GeoJSON"],
+        "estimated_minutes": 90
+    },
+    "_validation_notes": {
+        "module_complexity": "内部模块化（schema-parts / options / custom-layer / common）较多，进入门槛较高",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "有 doc/README.md 与4张图示",
+        "rendering": "ECharts + 自定义DOM图层（label-line / single-scatter / group-scatter）混合"
+    }
+}

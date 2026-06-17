@@ -1,0 +1,152 @@
+{
+  "name": "oss-chart-plots-pie",
+  "title": "基础饼环图",
+  "category": "图表/oss-chart-plots",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "谢名伟",
+    "groupId": 14,
+    "uses_common_schema": "PLOTS_SCHEMA（部分）",
+    "uses_hoc": "withPlotRender",
+    "plot_library": "@fedx-vis/plots (OssPiePlotChart.Plus)"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "饼/环图（type 类目 + count 数值）",
+        "example": "[{ type: '北京', count: 100, unit: '%' }, { type: '上海', count: 80, unit: '%' }, ...]",
+        "match_pattern": "data[*].{type, count}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "compareType", "type": "String", "required": true, "description": "类目名（饼图分块）" },
+          { "name": "indicator_value", "type": "String(实际number)", "required": true, "description": "数值（饼图分块大小）" },
+          { "name": "indicator_unit", "type": "String", "required": false, "description": "单位（未消费，仅 defaultValue 演示）" }
+        ]
+      }
+    ],
+    "interactions": [],
+    "visual_configs": {
+      "style": {
+        "isGradient": "Switch (是否渐变)",
+        "gradientColors": "ColorPicker 数组 (渐变方案)",
+        "customColors": "ColorPicker 数组 (单色方案)",
+        "radius": "NumberPicker (外半径)",
+        "innerRadius": "NumberPicker (内半径，控制环图大小)",
+        "outlineRadius": "NumberPicker (外圈间距)",
+        "intervalPaddingNumber": "NumberPicker (扇区间距)",
+        "fillOpacity": "SliderWithNumber (填充透明度)",
+        "stroke": { "color": "ColorPicker", "width": "NumberPicker" }
+      },
+      "valueLabel": {
+        "position": "Select (饼图标签位置)",
+        "content": "Input (模板，如 'name,value')",
+        "contentLayout": "Select (horizontal/vertical 排列)",
+        "offset": "NumberPicker (偏移量)"
+      },
+      "tooltip": "PLOTS_SCHEMA.TOOLTIP",
+      "legend": "PLOTS_SCHEMA.LEGEND",
+      "statistic": "PLOTS_SCHEMA.STATISTIC (中心统计文本)"
+    },
+    "default_values": {
+      "config.title": "基础饼环图",
+      "config.legend": "PLOTS_DEFAULTVALUE.LEGEND_DEFAULTVALUE",
+      "dataConfig.json": "无 defaultValue 示例"
+    }
+  },
+  "business_scenarios": [
+    "占比分析：各产品/部门/地区的销售额占比",
+    "分类构成：用户来源渠道占比",
+    "事件分布：告警类型/网络异常类型分布",
+    "市场份额：竞品市场占比",
+    "资源分布：服务器资源/网络资源分布",
+    "环图（donut）：当 innerRadius > 0 时变环图，可显示中心统计"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "oss-chart-plots/rose", "cost": "低", "reason": "dataModel 完全同构（type/count）" },
+      { "material": "oss-chart-plots/funnel", "cost": "中", "reason": "类目占比类图表" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字卡显示总量" }
+    ],
+    "incompatible_with": [],
+    "note": "与 oss-echarts/echarts-pie 数据格式不兼容（echarts-pie 用 name/value，本物料用 type/count）"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.5,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.0,
+      "composability": 4.5
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 仅 2 个字段（compareType/indicator_value），业务语义清晰（类目/数值）；type/count 命名比 echarts-pie 的 name/value 更业务化。",
+      "2. 场景覆盖度 4.0：支持饼图/环图/南丁格尔玫瑰（用 rose 物料）/渐变填充/中心统计；典型占比类业务全覆盖。",
+      "3. 配置完备度 4.5：6 个 FormCollapse 分组 + 渐变配置（gradientColors 自定义渐变方案）+ 标签模板（content 支持 {name}{value} 模板 + horizontal/vertical 排列）+ 内/外半径 + statistic 中心统计；配置颗粒度细。",
+      "4. 数据契约清晰度 3.5：dataModel 字段最少（2 个），命名清晰；瑕疵：① dataType 错标（indicator_value 应为 Number）；② dataConverter 中 indicator_unit 映射到 unit 字段但未消费。",
+      "5. 文档完整度 2.0：无 doc/ 目录，无 5+1 文档。",
+      "6. 可组合性 4.5：与 rose/funnel 同 type/count 数据结构，跨物料切换零成本；与数字卡组合展示总量；与边框组合。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 2,
+    "data_fields_to_provide": 2,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 2,
+      "data_minutes": 3,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.title", "config.style.customColors 或 gradientColors"],
+    "data_required": ["compareType", "indicator_value"],
+    "optional_fields": {
+      "config": ["width", "height", "style.innerRadius", "valueLabel.content", "statistic"],
+      "data": ["indicator_unit (未消费)"]
+    },
+    "assumptions": [
+      "使用 DEFAULT_COLORS 默认色板",
+      "无下钻",
+      "无中心统计文本"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "饼图 + 默认色" },
+      "typical": { "config_items": 5, "data_fields": 2, "minutes": 12, "description": "环图 + 自定义色 + 标签模板" },
+      "full": { "config_items": 10, "data_fields": 3, "minutes": 30, "description": "环图 + 渐变 + 中心统计 + 标签模板 + 描边" }
+    }
+  },
+  "_validation_notes": [
+    "dataConverter 中 indicator_unit 映射到 unit 字段但代码未消费",
+    "dataType 错标（indicator_value 应为 Number）",
+    "defaultValue.dataConfig.json 缺失",
+    "oss-material.json.dataModel 是空字符串",
+    "use OssPiePlotChart.Plus 而非 OssPiePlotChart（Plus 版本支持 statistic 中心统计）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "oss-chart-plots 4th batch processing",
+    "next_step": "继续生成 rose/radar 画像"
+  }
+}

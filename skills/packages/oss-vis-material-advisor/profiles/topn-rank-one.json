@@ -1,0 +1,180 @@
+{
+    "name": "topn-rank-one",
+    "title": "topn排名-陕西",
+    "category": "列表/排行",
+    "version": "develop",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": true,
+        "has_5plus1_docs": false,
+        "complexity": "中",
+        "author": "杨兴相"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "TopN 排名（id + title + name + value + percent + unit）",
+                "example": "[{ id: '1', title: 'broadband', name: '宽带', percent: '10%', value: '287', unit: 's' }, ...]",
+                "match_pattern": "dataSource[*].{id, title, name, value, percent, unit}",
+                "note": "支持通过 interactionProps.topNumber 限制渲染数量（默认 5）",
+                "fields": [
+                    { "name": "id", "type": "string", "required": false, "description": "行ID（schema 声明但代码未消费）" },
+                    { "name": "title", "type": "string", "required": true, "description": "顶部标签" },
+                    { "name": "name", "type": "string", "required": true, "description": "名称" },
+                    { "name": "value", "type": "string(实际number)", "required": true, "description": "数值" },
+                    { "name": "percent", "type": "string", "required": true, "description": "进度条百分比（CSS width + 颜色索引）" },
+                    { "name": "unit", "type": "string", "required": false, "description": "单位" }
+                ]
+            }
+        ],
+        "interactions": [
+            {
+                "type": "subscribe_topNumber",
+                "trigger": "外部订阅",
+                "config_field": "subscribe.topNumber (Input)",
+                "behavior": "通过 interactionProps.topNumber 动态限制渲染前 N 条（默认 5）"
+            },
+            {
+                "type": "subscribe_sortType",
+                "trigger": "外部订阅",
+                "config_field": "subscribe.sortType (Input)",
+                "behavior": "排序方式占位（schema 声明但代码未消费）"
+            }
+        ],
+        "visual_configs": {
+            "itemStyle": {
+                "position": { "type": "number", "options": [1, 2], "description": "1=左对齐（flex 布局），2=右对齐（block 布局）" },
+                "width": { "type": "number", "default": 300 },
+                "height": { "type": "number", "default": 80 },
+                "marginBottom": { "type": "number", "default": 16 }
+            },
+            "itemColors": {
+                "isGradient": { "type": "boolean", "default": true, "description": "true=渐变（itemsSet 数组）；false=纯色（colors 数组）" },
+                "colors": { "type": "ColorGroup[]", "description": "纯色模式" },
+                "itemsSet": {
+                    "type": "Array<{ itemSetting: { bgColor: BackgroundColor } }>",
+                    "description": "渐变模式分项配置（默认 3 项：红/橙/绿）",
+                    "default": [
+                        { "bgColor": "linear-gradient(90deg, rgba(211,76,76,0.8), rgba(113,18,27,0.1))" },
+                        { "bgColor": "linear-gradient(90deg, rgba(238,172,31,0.8), rgba(113,74,18,0.1))" },
+                        { "bgColor": "linear-gradient(90deg, rgba(51,211,138,0.8), rgba(18,113,103,0.1))" }
+                    ]
+                }
+            },
+            "indexStyle": {
+                "width": { "type": "number", "default": 80, "description": "序号区宽度（width*0.7=圆边长）" },
+                "fontStyle": { "type": "object", "description": "序号字体样式 VisualTextStyle" }
+            },
+            "progressStyle": {
+                "nameStyle": { "type": "object", "description": "名称字体样式" },
+                "valueStyle": { "type": "object", "description": "数值字体样式" },
+                "unitStyle": { "type": "object", "description": "单位字体样式" }
+            }
+        },
+        "default_values": {
+            "config.title": "topn排名-陕西",
+            "config.width": 300,
+            "config.height": 260,
+            "config.itemStyle.position": 1,
+            "config.itemStyle.width": 300,
+            "config.itemStyle.height": 80,
+            "config.itemStyle.marginBottom": 16,
+            "config.itemColors.isGradient": true,
+            "config.itemColors.itemsSet": "3 项（红/橙/绿渐变）",
+            "config.indexStyle.width": 80,
+            "config.indexStyle.fontStyle.fontSize": "16px",
+            "config.indexStyle.fontStyle.fontWeight": "bold"
+        },
+        "ui_features": "默认渐变模式（isGradient=true）3 色红橙绿；序号显示 'NO.1'/'NO.2'（topn-rank 仅为数字）；progress 用 '100 - percent + 20%' 反向计算（line 104-110）→ 实际渲染进度条右半段；position 1=左对齐，2=右对齐；包含 getPosition() 智能调整 marginLeft 避免文字被进度条覆盖（line 119-125）。"
+    },
+    "business_scenarios": [
+        "陕西联通 TopN 排名（业务方特定）",
+        "带渐变配色 + NO.x 序号 + 智能避让的复合 TopN 展示",
+        "支持外部订阅 topNumber 动态调整 TopN 数量",
+        "支持左右对齐切换（position 1/2）"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡独立 dataSource" },
+            { "material": "echarts-bar", "cost": "低", "reason": "echarts-bar 处理横向条形；topn-rank-one 处理带渐变配色 TopN" },
+            { "material": "pagination-display", "cost": "中", "reason": "通过外部订阅 topNumber 联动分页" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [],
+        "note": "title='topn排名-陕西' 业务化命名暗示陕西联通特定，但实际样式通用；与 topn-rank 高度同构（schema 95% 重叠，仅 position 字段和交互订阅不同）"
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "grade": "B",
+        "score": 3.7,
+        "weighted_total": 3.7,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 3.5：title='topn排名-陕西' 暗示业务方，但样式通用，命名易误导。",
+            "2. 场景覆盖度 4.0：覆盖 TopN + 渐变配色 + 外部订阅 topNumber + 序号 NO.x 风格 + 左右对齐切换 + 智能避让。",
+            "3. 配置完备度 4.5：4 个 FormCollapse 分组 + ArrayCollapse 增删项 + 2 个交互订阅（topNumber/sortType）；默认值丰富（3 色渐变预设）。",
+            "4. 数据契约清晰度 3.0：dataModel 6 个字段；⚠️ id 字段未消费；sortType 交互字段 schema 声明但代码未消费；dataType 全 string。",
+            "5. 文档完整度 2.0：仅有 doc/README.md，缺 5+1 文档。",
+            "6. 可组合性 4.0：唯一支持外部订阅 topNumber 的 TopN 物料，可与 pagination-display 联动。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 3,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 10,
+        "breakdown": {
+            "config_minutes": 2,
+            "data_minutes": 6,
+            "custom_minutes": 0
+        },
+        "config_required": ["config.title", "config.itemStyle.height"],
+        "data_required": ["name", "value", "percent"],
+        "optional_fields": {
+            "config": ["itemStyle.position (1=左/2=右)", "itemColors.isGradient + itemsSet (渐变)", "itemColors.colors (纯色)", "3 个字体样式", "indexStyle.width"],
+            "data": ["id (未使用)", "unit (单位)", "title (顶部标签)"]
+        },
+        "assumptions": [
+            "使用默认渐变 3 色（红/橙/绿）",
+            "无 sortType 订阅（schema 声明但代码未消费）",
+            "默认 topNumber=5"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 3, "minutes": 10, "description": "默认渐变 + 5 行 + 名称/数值/百分比" },
+            "typical": { "config_items": 5, "data_fields": 5, "minutes": 22, "description": "自定义渐变 + NO.x 序号 + 完整字段 + 单位" },
+            "full": { "config_items": 9, "data_fields": 6, "minutes": 38, "description": "全部 4 个 FormCollapse 分组 + 自定义 itemsSet + topNumber 订阅" }
+        }
+    },
+    "_validation_notes": [
+        "id 字段 schema 声明但 index.jsx 中未消费（line 7-19 仅解构 dataSource 和 interactionProps）",
+        "sortType 订阅字段 schema 声明（line 273-278）但代码中无 sortType 相关逻辑（line 14 仅使用 topNumber）",
+        "dataType 全 string 但 percent 实际需带 % 符号",
+        "defaultValue.json id 全是 '1' 无意义",
+        "getPercentage 反向计算逻辑（100 - percent + 20）需 PM 理解业务背景，否则进度条方向反直觉",
+        "getPosition 智能避让可能因 name 文本过长导致名称溢出",
+        "4 个排名类物料（top-rank/top-rank-shaanxi/topn-rank/topn-rank-one）建议合并"
+    ],
+    "_meta": {
+        "skill": "oss-vis-material-advisor",
+        "skill_version": "0.1",
+        "generated_by": "第三批（列表/排行）"
+    }
+}

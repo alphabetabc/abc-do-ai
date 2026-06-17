@@ -1,0 +1,146 @@
+{
+  "name": "indicator-display",
+  "title": "指标展示",
+  "category": "数字/指标卡",
+  "version": "0.0.1",
+  "scanned_at": "2026-06-17",
+  "scanner": "oss-vis-material-advisor v0.1",
+  "data_source": {
+    "main": "./index.jsx",
+    "schema": "./schema.ts",
+    "dataModel": "",
+    "actual_dataModel": "./dataModel.json",
+    "supporting_files": []
+  },
+  "basic": {
+    "main_file": "index.jsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": false,
+    "has_5plus1_docs": false,
+    "complexity": "中",
+    "author": "sunhuanzhe",
+    "groupId": 4,
+    "uses_common_schema": "未直接使用 @Common（推测）",
+    "uses_hoc": "无",
+    "plot_library": "无（基于 stats-indi + border11 组合）"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "列表式（id + name + value + unit + icon）",
+        "example": "[{ id: 1, name: '在线用户', value: 1234, unit: '人', icon: 'icon-user' }]",
+        "match_pattern": "data[*].{id, name, value, unit, icon}",
+        "supports_multi_series": false,
+        "fields": [
+          { "name": "id", "type": "String", "required": true, "description": "点击派发使用" },
+          { "name": "name", "type": "String", "required": true, "description": "指标名称（labelTitle）" },
+          { "name": "value", "type": "String(实际number)", "required": true, "description": "指标值" },
+          { "name": "unit", "type": "String", "required": false, "description": "单位" },
+          { "name": "icon", "type": "String", "required": false, "description": "图标" }
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "type": "click",
+        "trigger": "click",
+        "payload": "派发 indicatorDisplayClickId (item.id) + indicatorDisplayClickShowGroup (clickEventConfig.clickParams)",
+        "note": "通过 interaction.dispatch 派发"
+      }
+    ],
+    "visual_configs": {
+      "commonSetting": "style.groupLayout / style / style.isBackGround",
+      "digitalProps": "数字翻牌器样式（@fedx-vis/digital-flop 兼容）",
+      "digitalLabelStyleProps.labelStyle": "label 文本样式",
+      "digitalLabelTitleStyleProps": "label 标题样式",
+      "digitalIconStyleProps": "图标样式",
+      "digitalContainerStyle": "数字容器样式",
+      "clickEventConfig.clickParams": "点击事件参数（派发到外部订阅）"
+    },
+    "default_values": {
+      "config.title": "无（直接渲染指标）"
+    }
+  },
+  "business_scenarios": [
+    "多指标展示：在线用户/订单数/销售额等多个 KPI 横向排列",
+    "KPI 看板：每个指标独立卡片 + 边框 + 点击交互",
+    "指标点击联动：点击某个指标触发详情/下钻",
+    "数据驾驶舱：核心指标一屏展示（带边框 + 图标）",
+    "运维监控：核心业务指标快速浏览"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "stats-indi", "cost": "极低", "reason": "直接 import 使用" },
+      { "material": "decoration/border11", "cost": "极低", "reason": "直接 import 使用" },
+      { "material": "digital-flop", "cost": "低", "reason": "数字翻牌器组件" },
+      { "material": "carousel-param", "cost": "中", "reason": "轮播切换 + 指标展示联动" }
+    ],
+    "incompatible_with": [],
+    "note": "本物料是组合型：基于 stats-indi + decoration/border11，每个 data 项渲染一个独立卡片"
+  },
+  "rating": {
+    "label": "🟢 独立优秀",
+    "grade": "A",
+    "score": 4.0,
+    "weighted_total": 4.0,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 4.0,
+      "config_completeness": 4.0,
+      "data_contract_clarity": 3.5,
+      "doc_completeness": 2.0,
+      "composability": 4.5
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：dataModel 5 字段业务化（id/name/value/unit/icon），命名清晰；dataModel.name 写为 'oss-visual-material-indicator-display'，与物料名不一致（小瑕疵）。",
+      "2. 场景覆盖度 4.0：覆盖多指标展示 + 点击联动 2 大类场景，适用范围广。",
+      "3. 配置完备度 4.0：digitalProps + labelStyle + labelTitleStyle + iconStyle + containerStyle 多组件级配置；clickEventConfig 支持派发参数。",
+      "4. 数据契约清晰度 3.5：dataModel 字段命名清楚，仅 value 字段 dataType 错标（应为 Number）。",
+      "5. 文档完整度 2.0：无 doc/ 目录，无 5+1 文档。",
+      "6. 可组合性 4.5：与 stats-indi / decoration/border11 直接 import（耦合高），与 carousel-param 等可联动派发。"
+    ],
+    "scored_at": "2026-06-17"
+  },
+  "build_cost": {
+    "config_items_to_set": 5,
+    "data_fields_to_provide": 4,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 12,
+    "breakdown": {
+      "config_minutes": 6,
+      "data_minutes": 6,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.digitalProps", "config.digitalLabelStyleProps", "config.digitalLabelTitleStyleProps", "config.digitalIconStyleProps", "config.digitalContainerStyle"],
+    "data_required": ["id", "name", "value", "unit"],
+    "optional_fields": {
+      "config": ["style.isBackGround (启用边框)", "clickEventConfig.clickParams"],
+      "data": ["icon"]
+    },
+    "assumptions": [
+      "至少 1 个指标条目",
+      "value 必须是 number"
+    ],
+    "scenarios": {
+      "minimal": { "config_items": 5, "data_fields": 4, "minutes": 12, "description": "单指标卡片 + 默认样式" },
+      "typical": { "config_items": 10, "data_fields": 4, "minutes": 25, "description": "多指标 + 边框 + 点击事件" },
+      "full": { "config_items": 15, "data_fields": 5, "minutes": 50, "description": "完整样式 + 图标 + 派发参数" }
+    }
+  },
+  "_validation_notes": [
+    "oss-material.json.dataModel 是空字符串",
+    "dataModel.name 写为 'oss-visual-material-indicator-display'，与物料名 'indicator-display' 不一致（advisor 渲染时可能找不到）",
+    "dataModel 中 value 字段 dataType 错标（应为 Number）",
+    "直接 import stats-indi 和 decoration/border11（跨物料依赖，与 user 提出的 schema 独立原则冲突，但 index.jsx 是物料入口这是允许的）",
+    "无 doc/ 目录",
+    "interaction.dispatch 派发字段名 indicatorDisplayClickId/ShowGroup（隐式约定）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.1",
+    "generated_by": "6th batch - 数字/指标卡 + 容器/布局 + 地图",
+    "next_step": "继续生成 number-level-indicate"
+  }
+}

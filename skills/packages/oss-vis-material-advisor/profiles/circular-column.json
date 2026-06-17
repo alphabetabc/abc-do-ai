@@ -1,0 +1,148 @@
+{
+    "name": "circular-column",
+    "title": "圆柱形柱图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "scanned_at": "2026-06-17",
+    "scanner": "oss-vis-material-advisor v0.1",
+    "data_source": {
+        "main": "./index.jsx",
+        "schema": "./schema.ts",
+        "dataModel": "./dataModel.json"
+    },
+    "basic": {
+        "main_file": "index.jsx",
+        "schema_file": "schema.ts",
+        "data_model_file": "dataModel.json",
+        "has_doc_readme": false,
+        "has_5plus1_docs": false,
+        "complexity": "中高",
+        "author": "李萌"
+    },
+    "capabilities": {
+        "data_formats": [
+            {
+                "format": "圆柱形柱图（name + value）",
+                "example": "[{ name: '2G基站数', value: 42932 }, { name: '4G基站数', value: 87767 }]",
+                "match_pattern": "dataSource[*].{name, value}",
+                "note": "⚠️ dataModel.json header.dimensions/indicators 全空，schema 也未通过 renderDataConfig 声明字段，实际字段名 name/value 由代码内 uniqBy 隐式约定",
+                "fields": [
+                    { "name": "name", "type": "String(实际)", "required": true, "description": "X 轴类目名（line 12-14）" },
+                    { "name": "value", "type": "Number", "required": true, "description": "圆柱高度值（line 15-17）" }
+                ]
+            }
+        ],
+        "interactions": [],
+        "visual_configs": {
+            "chart": {
+                "barWidth": { "type": "number", "default": 40, "description": "圆柱宽度 px" },
+                "isGradient": { "type": "boolean", "default": true, "description": "侧面是否渐变色" },
+                "gradientColor": { "type": "BackgroundColorGroup2EC[]", "description": "侧面渐变填充色（单轴图只取第一个）" },
+                "color": { "type": "ColorPicker[]", "description": "侧面纯色填充（isGradient=false 时使用）" },
+                "isAria": { "type": "boolean", "default": false, "description": "侧面是否展示斜纹" },
+                "ariaColor/Width/Density": { "type": "ColorPicker/NumberPicker", "description": "斜纹三件套" },
+                "isEllipticGradient": { "type": "boolean", "default": false, "description": "底面是否渐变色" },
+                "ellipticGradientColor/ellipticColor": { "type": "Color", "description": "底面渐变/纯色" }
+            },
+            "outerChart": {
+                "show": { "type": "boolean", "default": false, "description": "外层图形显示/隐藏" },
+                "barWidth/isGradient/gradientColor/color/ellipticColor": "外层图形 + 底部半圆配置"
+            },
+            "label": {
+                "show": { "type": "boolean", "default": false },
+                "position": { "type": "enum[outside/inside/center]" },
+                "backgroundColor/borderColor/borderWidth/borderRadius/textStyle": "label 完整样式"
+            },
+            "tooltip": {
+                "show": { "type": "boolean", "default": false },
+                "name/backgroundColor/borderColor/borderWidth/textStyle": "悬浮提示完整样式"
+            }
+        },
+        "default_values": {
+            "config.title": "圆柱形柱图",
+            "config.width": 300,
+            "config.height": 300,
+            "config.chart.barWidth": 40,
+            "config.chart.isGradient": true,
+            "config.chart.isAria": false,
+            "config.chart.isEllipticGradient": false,
+            "config.outerChart.show": false,
+            "config.label.show": false,
+            "config.tooltip.show": false
+        },
+        "ui_features": "双层 pictorialBar 圆柱：上层 (symbolOffset: [0, -6]) 顶椭圆 + 下层 (symbolOffset: [0, 6]) 底椭圆 + 主体 bar；可选外层半圆环（path://）+ 半高 bar 形成发光环；isAria 用 aria.decal 画斜纹；animation: false 禁用动画。"
+    },
+    "business_scenarios": [
+        "2G/3G/4G/5G 基站数对比",
+        "用户数/设备数等数量指标柱图",
+        "需要 3D 立体感的展示",
+        "需要斜纹纹理或外环装饰的高亮场景"
+    ],
+    "composability": {
+        "compatible_with": [
+            { "material": "echarts-bar", "cost": "低", "reason": "扁平柱图替代方案" },
+            { "material": "digital-flop", "cost": "低", "reason": "数字卡 + 圆柱图组合" },
+            { "material": "decoration/border1~12", "cost": "低", "reason": "边框装饰无依赖" }
+        ],
+        "incompatible_with": [],
+        "note": "circular-column 与 cone-bar/cone-single-bar/echarts-bar 各为独立物料，schema 不共享"
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "grade": "A",
+        "score": 4.0,
+        "weighted_total": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        },
+        "reasoning": [
+            "1. 业务描述力 4.0：title='圆柱形柱图' 业务化清晰。",
+            "2. 场景覆盖度 4.0：覆盖单轴 3D 圆柱 + 外环装饰 + 斜纹纹理 + 完整 label/tooltip。",
+            "3. 配置完备度 4.5：4 个 FormCollapse 分组（圆柱/外层/标签/悬浮）+ 双模式 isGradient 切换 + 斜纹三件套。",
+            "4. 数据契约清晰度 2.5：dataModel header 全空，schema 未通过 renderDataConfig 声明字段；name/value 由代码隐式约定。",
+            "5. 文档完整度 2.0：无 doc/README.md。",
+            "6. 可组合性 4.0：通用圆柱图，可独立使用或与数字卡组合。"
+        ],
+        "scored_at": "2026-06-17"
+    },
+    "build_cost": {
+        "config_items_to_set": 2,
+        "data_fields_to_provide": 2,
+        "needs_custom_dev": false,
+        "custom_dev_minutes": 0,
+        "estimated_minutes": 5,
+        "breakdown": { "config_minutes": 2, "data_minutes": 3, "custom_minutes": 0 },
+        "config_required": ["config.title", "config.chart.barWidth"],
+        "data_required": ["name", "value"],
+        "optional_fields": {
+            "config": ["chart.isGradient + chart.gradientColor", "chart.isAria + 3 个斜纹字段", "chart.isEllipticGradient", "outerChart.show", "label.show", "tooltip.show"],
+            "data": []
+        },
+        "assumptions": [
+            "使用默认渐变蓝色",
+            "无外层装饰",
+            "无斜纹",
+            "无 label/tooltip"
+        ],
+        "scenarios": {
+            "minimal": { "config_items": 2, "data_fields": 2, "minutes": 5, "description": "默认渐变 + 简单 3 行" },
+            "typical": { "config_items": 5, "data_fields": 2, "minutes": 15, "description": "自定义渐变 + 外环 + label" },
+            "full": { "config_items": 12, "data_fields": 2, "minutes": 30, "description": "全部 4 个 FormCollapse 分组 + 斜纹 + 完整字体" }
+        }
+    },
+    "_validation_notes": [
+        "dataModel.json header.dimensions/indicators 全空",
+        "schema.ts 未通过 renderDataConfig 声明字段，name/value 由代码 uniqBy 隐式约定（line 12-17）",
+        "oss-material.json.dataModel 是空字符串",
+        "Tooltip 名中含' 内部、外部、中心'三选一，单轴图边距自动计算",
+        "无 doc/README.md，5+1 文档全缺",
+        "animation: false 禁用所有动画，PM 看不到加载效果",
+        "MAX yData 计算时若 dataSource 为空数组会 Math.max() === -Infinity 导致 y 轴 0~0"
+    ],
+    "_meta": { "skill": "oss-vis-material-advisor", "skill_version": "0.1", "generated_by": "第四批（图表 ECharts）" }
+}

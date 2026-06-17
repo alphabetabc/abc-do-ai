@@ -1,0 +1,116 @@
+{
+    "name": "oss-chart-map",
+    "title": "基础平面地图",
+    "category": "地图",
+    "version": "0.0.1",
+    "author": "谢名伟",
+    "scanned_at": "2026-06-17",
+    "description": "基础平面ECharts地图，支持path/scatter/lines三种图层、6种散点样式（normal/single×2/group×3）、阈值配色与多指标组合，power by @oss-chart/map",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "string", "description": "数据ID" },
+            { "name": "name", "type": "string", "description": "数据名称" },
+            { "name": "value", "type": "string", "description": "数值" },
+            { "name": "lon", "type": "string", "description": "经度" },
+            { "name": "lat", "type": "string", "description": "纬度" },
+            { "name": "unit", "type": "string", "description": "单位" },
+            { "name": "level", "type": "string", "description": "级别" },
+            { "name": "targetId", "type": "string", "description": "目标点ID（飞线）" },
+            { "name": "isCenter", "type": "string", "description": "是否中心点" },
+            { "name": "type", "type": "string", "description": "类型（影响图层归类）" },
+            { "name": "item_label_xx", "type": "string", "description": "多指标标签（动态）" },
+            { "name": "item_value_xx", "type": "string", "description": "多指标值（动态）" },
+            { "name": "item_id_xx", "type": "string", "description": "多指标ID（动态）" },
+            { "name": "item_level_xx", "type": "string", "description": "多指标级别（动态）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源转换映射",
+        "_note": "item_xx 系列为多指标点位支持，比 oss-chart-classify-map 更完整"
+    },
+    "visual_config": {
+        "geo": {
+            "show": "Switch 底图显示",
+            "permission": "Switch 是否使用权限",
+            "mapsettings": "GeoJsonSelect 底图选择",
+            "padding": { "top": "string", "bottom": "string", "left": "string", "right": "string" },
+            "style": { "borderColor": "ColorPicker", "borderWidth": "NumberPicker", "borderType": "枚举", "areaColor": "ColorPicker" }
+        },
+        "MAP_LAYER_ENUMS": { "path": "path", "scatter": "scatter", "lines": "lines" },
+        "scatter_types": {
+            "normal": "普通散点",
+            "scatter01": "单点01",
+            "single_scatter02": "单点02（广东IDC）",
+            "scatter02": "分组散点01（联通陕西v1）",
+            "scatter03": "分组散点02（联通陕西v2）",
+            "scatter04": "分组散点03（移动吉林）"
+        },
+        "label-line": "label-line 自定义DOM图层（多行文本）",
+        "dataRangeConfig": {
+            "showDataRange": "Switch 阈值显示",
+            "dataRangeConfigSet": "ArrayCollapse 阈值分段（start/end/color）"
+        },
+        "toopTipConfig": "Tooltip 配置",
+        "extra": {
+            "multi_indicator": "支持多指标点位（item_xx 系列）",
+            "label_line": "支持多行Label（label-line DOM）"
+        }
+    },
+    "interactions": {
+        "click": { "type": "dispatch", "description": "点/线/区域点击下钻" },
+        "hover": { "type": "highlight", "description": "区域高亮、tooltip" }
+    },
+    "business_scenarios": [
+        "综合地理态势大屏",
+        "多指标点位的资源分布",
+        "网络/物流/能源等资源地图",
+        "领导驾驶舱地图"
+    ],
+    "composability": {
+        "compatible_with": [
+            "geo-3d-map（3D版升级）",
+            "geo-cascader（区域切换联动）",
+            "drilldown-table（点击下钻）",
+            "top-rank（排行联动）",
+            "digital-flop（区域统计）"
+        ],
+        "replaces": [
+            "oss-chart-classify-map（多指标能力更强）",
+            "oss-chart-fly-line-map（飞线场景被包含）"
+        ],
+        "extends": [
+            "geo-3d-map（升级3D）"
+        ]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.6,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "高",
+        "setup_steps": [
+            "准备 map-config.json 静态资源",
+            "准备 GeoJSON 底图",
+            "根据业务选择path/scatter/lines图层与样式",
+            "组织数据（含id/name/lon/lat/value/type等）",
+            "配置阈值配色（可选）",
+            "配置交互下钻"
+        ],
+        "dependencies": ["@oss-chart/map", "ECharts", "map-config.json", "GeoJSON"],
+        "estimated_minutes": 90
+    },
+    "_validation_notes": {
+        "doc_status": "有 doc/README.md + 大量图示（21张）+ CHANGELOG.md，文档非常丰富",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "richness": "组件能力非常丰富（多图层、多散点样式、多指标），学习成本较高",
+        "module": "options / schema-parts / custom-layer / common 模块化设计"
+    }
+}
