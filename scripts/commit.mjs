@@ -27,9 +27,15 @@ import { resolve, basename, extname, dirname } from 'node:path';
 import { updateChangelog } from './update-changelog.mjs';
 
 const CHANGELOG_FILE = 'skills/CHANGELOG.md';
-const CHANGELOG_COMMIT_MSG = 'chore: update changelog';
 
 // ─── 工具函数 ───────────────────────────────────────────
+
+function formatDate(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+const CHANGELOG_COMMIT_MSG = `chore(${formatDate(new Date())}): update changelog`;
 
 function exec(cmd) {
   return execSync(cmd, { encoding: 'utf-8', stdio: 'pipe' }).trim();

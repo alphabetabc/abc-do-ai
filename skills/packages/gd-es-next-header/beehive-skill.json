@@ -1,0 +1,11 @@
+{
+  "contentHash": "b84631a93a3331376b29965a182e2e55edb4b34b02ec770f0cd47077be9c78ad",
+  "files": [
+    "./components/"
+  ],
+  "id": "gd-es-next-header",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
