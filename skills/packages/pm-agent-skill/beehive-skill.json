@@ -1,6 +1,14 @@
 {
+  "contentHash": "5dffea353def6c48cb91495bdc05dd22c363b94233e0510a4f1beba38e833f72",
+  "files": [
+    "./examples/",
+    "./pm-agent-core/",
+    "./resources",
+    "./resources/"
+  ],
   "id": "pm-agent-skill",
-  "version": "0.0.0",
-  "targets": ["trae"],
-  "files": ["./examples/", "./pm-agent-core/", "./resources", "./resources/"]
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
 }
