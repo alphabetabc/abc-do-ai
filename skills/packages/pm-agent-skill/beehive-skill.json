@@ -1,10 +1,10 @@
 {
-  "contentHash": "5dffea353def6c48cb91495bdc05dd22c363b94233e0510a4f1beba38e833f72",
+  "contentHash": "5ff05cfdf7b6b20d600b6ceea2e9040a6c5ce6bf0516c9d3ba0ba8298b61d5cd",
   "files": [
     "./examples/",
     "./pm-agent-core/",
-    "./resources",
-    "./resources/"
+    "./resources/",
+    "./templates/"
   ],
   "id": "pm-agent-skill",
   "targets": [
