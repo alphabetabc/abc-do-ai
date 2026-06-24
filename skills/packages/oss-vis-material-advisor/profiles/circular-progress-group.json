@@ -1,0 +1,88 @@
+{
+    "name": "circular-progress-group",
+    "title": "环形进度图组",
+    "category": "进度/加载",
+    "version": "0.0.1",
+    "author": "haoyingying",
+    "scanned_at": "2026-06-17",
+    "description": "多组数据的环形进度图组，支持行列布局、间隔、默认选中行、点击下钻",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "指标ID" },
+            { "name": "title", "type": "String", "required": true, "description": "指标名称" },
+            { "name": "percent", "type": "String", "required": true, "description": "指标值（百分比）" },
+            { "name": "unit", "type": "String", "description": "单位" }
+        ],
+        "row_count": "多组数据",
+        "data_source": "DynamicData 多数据源",
+        "_note": "与 circular-progress 区别：支持多组数据"
+    },
+    "visual_config": {
+        "groupLayout (组合布局)": {
+            "grid (行列设置)": {
+                "rowNum": "NumberPicker 行数",
+                "colNum": "NumberPicker 列数"
+            },
+            "offset (间隔设置)": {
+                "rowGap": "NumberPicker 行间隔",
+                "colGap": "NumberPicker 列间隔"
+            },
+            "defaultSelectIndex (默认选中行)": {
+                "selectedIndex": "NumberPicker 默认选中行 [0,99] step=1"
+            }
+        },
+        "chartProps (图形)": {
+            "isGradient": "Switch 渐变",
+            "circular": "Switch 起点标识",
+            "radius/ringWidth": "NumberPicker",
+            "startPosition": "enum: top/bottom/left/right"
+        },
+        "schema-parts (高级配置)": "包含digitalProps/titleProps等子模块"
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "点击某行进度图派发数据"
+        }
+    },
+    "business_scenarios": [
+        "多指标完成率对比",
+        "团队/部门KPI达成率",
+        "项目进度看板"
+    ],
+    "composability": {
+        "compatible_with": ["circular-progress", "ind-list-echarts-gauge", "drilldown-table"],
+        "replaces": ["ind-list-echarts-gauge（需grid布局时）"],
+        "extends": ["circular-progress（单组场景）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.6,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备多组数据（title + percent）",
+            "配置 groupLayout（rowNum/colNum/gap）",
+            "配置 chartProps 图形参数",
+            "配置默认选中行（可选）"
+        ],
+        "dependencies": ["@fedx-vis 内部组件"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "percent 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "module": "schema-parts 模块化设计"
+    }
+}

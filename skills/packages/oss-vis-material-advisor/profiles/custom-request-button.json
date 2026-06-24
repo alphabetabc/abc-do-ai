@@ -1,0 +1,85 @@
+{
+    "name": "custom-request-button",
+    "title": "按钮",
+    "category": "按钮/操作",
+    "version": "0.0.1",
+    "author": "yanzhifeng",
+    "scanned_at": "2026-06-17",
+    "description": "通用API请求按钮，支持get/post请求、自定义url/headers/params、成功提示，可订阅headers/params实现动态注入",
+    "data_format": {
+        "type": "static",
+        "data_model": "无 dataModel.json",
+        "request": {
+            "method": "enum: get/post",
+            "url": "MonacoEditor 接口地址（url语法）",
+            "headers": "MonacoEditor 请求头部",
+            "params": "MonacoEditor 请求参数"
+        }
+    },
+    "visual_config": {
+        "style (样式设置)": {
+            "text": "Input 按钮文字",
+            "textStyle": "VisualTextStyle 文字样式",
+            "border": "Border 边框样式",
+            "borderRadius": "NumberPicker 圆角 [0,999]",
+            "backgroundColor": "BackgroundColor 背景颜色"
+        },
+        "api (接口请求设置)": {
+            "method": "enum: get/post",
+            "url": "MonacoEditor 接口地址（url语言）",
+            "headers": "MonacoEditor 请求头部（JSON）",
+            "params": "MonacoEditor 请求参数（JSON）",
+            "successMsg": "Input 提示文本"
+        }
+    },
+    "interactions": {
+        "click": {
+            "type": "api_request",
+            "description": "点击按钮发送API请求（get/post）"
+        },
+        "subscribe": {
+            "headers": "订阅 headers（动态注入）",
+            "params": "订阅 params（动态注入）"
+        }
+    },
+    "business_scenarios": [
+        "触发后端API（导出/查询/操作）",
+        "动态注入请求参数（与表格/查询表单联动）",
+        "RESTful 操作按钮"
+    ],
+    "composability": {
+        "compatible_with": ["export-btn", "ghost-btn", "query-form-group", "drilldown-table"],
+        "replaces": ["ghost-btn（需API场景）", "export-btn（通用API场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "score": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 4.0,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "配置 text 按钮文字",
+            "配置 style 样式（边框/圆角/背景）",
+            "配置 api 请求（method/url/headers/params）",
+            "配置 successMsg 成功提示",
+            "可选：配置 subscribe 订阅"
+        ],
+        "dependencies": ["后端API"],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "monaco_editor": "url/headers/params 使用 MonacoEditor 编辑（json/url语言）",
+        "subscribe_feature": "支持订阅外部 headers/params 实现动态注入"
+    }
+}

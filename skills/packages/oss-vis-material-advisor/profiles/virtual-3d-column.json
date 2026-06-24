@@ -1,0 +1,81 @@
+{
+    "name": "virtual-3d-column",
+    "title": "伪3D柱状图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "伪3D柱状图（圆/方/三角），支持斜纹纹理、底面渐变、topN截取与排序",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "name", "type": "String", "required": true, "description": "X轴名称", "rowProperties": ["format"] },
+            { "name": "value", "type": "String", "required": true, "description": "数值", "rowProperties": ["format"] },
+            { "name": "unit", "type": "string", "description": "单位", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "baseConfig": {
+            "topN": { "type": "number", "description": "TopN截取" },
+            "sorterType": { "type": "enum", "options": ["升序", "降序", "不排序"], "values": [1, 2, 0] },
+            "columnType": { "type": "enum", "options": ["圆形", "方形", "三角形"], "values": [1, 2, 3], "description": "柱体形状" }
+        },
+        "chart": {
+            "barWidth": { "type": "number", "description": "柱体宽度" },
+            "gradientColor": { "type": "array", "x-component": "BackgroundColorGroup2EC", "description": "侧面渐变填充色" },
+            "isAria": { "type": "boolean", "description": "侧面是否展示斜纹" },
+            "ariaColor/ariaWidth/ariaDensity": "斜纹参数（aria开启时）",
+            "isEllipticGradient": { "type": "boolean", "description": "底面是否渐变色" },
+            "ellipticGradientColor/ellipticColor": "底面渐变/纯色（互斥）"
+        },
+        "xAxis": "X轴线、刻度、文本样式（隐藏/显示）",
+        "yLabel": "Y轴文本（位置：外部/内部/中心）",
+        "yUnit": "Y轴单位样式",
+        "tooltip": "悬浮提示（背景/标题/项样式）"
+    },
+    "interactions": {
+        "renderDataConfig": "内置 renderDataConfig（数据源配置）",
+        "click": "通过 defineInteractionSchema 通用交互"
+    },
+    "business_scenarios": [
+        "数据大屏柱状展示（带3D立体感）",
+        "TopN排行可视化（业务/产品/区域）",
+        "多形状柱形对比（圆/方/三角）"
+    ],
+    "composability": {
+        "compatible_with": ["oss-chart-plots-column", "top-rank", "drilldown-table"],
+        "replaces": ["oss-chart-plots-column（需要3D形状时）"],
+        "extends": ["virtual-3d-column-normal（菱形变体）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备柱状数据（name + value）",
+            "配置 baseConfig（topN/sorter/columnType）",
+            "配置 chart 形状与斜纹/渐变",
+            "配置坐标轴/标签/单位/Tooltip样式"
+        ],
+        "dependencies": ["ECharts"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "value 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "dual_variant": "与 virtual-3d-column-normal（菱形）几乎同源"
+    }
+}

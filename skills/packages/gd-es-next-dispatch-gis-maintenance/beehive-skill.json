@@ -1,0 +1,15 @@
+{
+  "contentHash": "17dad2ef9dd67c251ef2688cd3ce4f9b750895c4cd99e739025e8c73fd1fbefd",
+  "files": [
+    "./CENTER-GIS.md",
+    "./MapEmergencyTransmissionView.md",
+    "./DispatchLegend.md",
+    "./damageToTownsGisPin.md"
+  ],
+  "id": "gd-es-next-dispatch-gis-maintenance",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-06-12T08:51:22.882Z",
+  "version": "0.0.0"
+}

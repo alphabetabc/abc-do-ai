@@ -1,0 +1,73 @@
+{
+    "name": "path-animation",
+    "title": "路径动画",
+    "category": "时钟/动画",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "沿SVG路径移动的动画光标组件，支持位图（PNG）/矢量图（SVG）光标，可自定义路径数据（d属性）与动画频率",
+    "data_format": {
+        "type": "static",
+        "source": "纯前端（无数据接入）",
+        "data_model": "无 dataModel.json（空结构）",
+        "_note": "使用 DATA_CONFIG 通用数据配置，但无明确业务字段"
+    },
+    "visual_config": {
+        "backgroundStyle (动画图标样式)": {
+            "backgroundType": { "type": "enum", "options": ["Image", "SVG"] },
+            "backgroundImage": "Background 矢量图（SVG时）",
+            "backgroundColor": "ColorPicker 填充色（SVG时）",
+            "backgroundDefine": "Background 动画光标（Image时）",
+            "width": "number 光标宽度",
+            "height": "number 光标高度"
+        },
+        "rateStyle (动画频率)": {
+            "time": "NumberPicker 动画间隙（秒），默认6"
+        },
+        "pathStyle (动画路径)": {
+            "path": "TextArea 路径数据（SVG d属性）"
+        }
+    },
+    "interactions": {
+        "data_refresh": "DATA_CONFIG 通用数据刷新"
+    },
+    "business_scenarios": [
+        "数据大屏装饰动画（沿曲线运动）",
+        "智能巡检动效（沿预设路径移动）",
+        "流程图动画演示"
+    ],
+    "composability": {
+        "compatible_with": ["oss-chart-fly-line-map", "echarts-3d-pie", "smart-warehouse"],
+        "replaces": ["iframe 嵌入SVG动画"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.0,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 2.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "选择 backgroundType（Image/SVG）",
+            "上传光标图（PNG/SVG）",
+            "配置 path 路径数据（SVG d属性字符串）",
+            "配置动画间隙 time（秒）"
+        ],
+        "dependencies": ["光标图片（PNG/SVG）"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "missing_data_model": "dataModel.json 仅为占位结构（dimensions/indicators 均空）",
+        "browser_compat": "SVG 矢量图有浏览器兼容性问题（schema 中有提示）",
+        "doc_status": "无 doc/README.md",
+        "svg_path_required": "必须输入有效的 SVG d 属性路径，否则动画不显示"
+    }
+}

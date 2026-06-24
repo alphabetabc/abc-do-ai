@@ -1,0 +1,65 @@
+{
+    "name": "stats-indi-grid",
+    "title": "翻牌器栅格布局",
+    "category": "数字/指标卡",
+    "version": "0.0.1",
+    "author": "qinshaoyang",
+    "scanned_at": "2026-06-17",
+    "description": "翻牌器栅格布局（rows/cols自定义），无dataModel（dimensions/indicators空）",
+    "data_format": {
+        "type": "row",
+        "fields": "无dataModel（dimensions/indicators均空）",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": {
+            "rows": "NumberPicker 栅格行数",
+            "cols": "NumberPicker 栅格列数",
+            "gap": "NumberPicker 间隔",
+            "itemStyle": "每个翻牌器样式"
+        }
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互"
+    },
+    "business_scenarios": [
+        "KPI指标栅格布局",
+        "灵活行列的翻牌器",
+        "响应式指标矩阵"
+    ],
+    "composability": {
+        "compatible_with": ["stats-indi", "stats-indi-group", "digital-flop"],
+        "replaces": ["stats-indi-group（需要灵活行/列时）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "配置 rows/cols 行列数",
+            "配置 gap 间隔",
+            "配置每个item样式",
+            "准备数据（标准翻牌器结构）"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "missing_data_model": "无 dataModel.json",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "flexible_layout": "相比 stats-indi-group 灵活（rows/cols可配）"
+    }
+}

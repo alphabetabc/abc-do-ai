@@ -1,0 +1,12 @@
+{
+  "contentHash": "6a664be1bcb082d576bc6c8c5ec0d9724f633710f7fa84908218f8df0333ef14",
+  "files": [
+    "./core-implementation.md",
+    "./portable/"
+  ],
+  "id": "noc-shaanxi-ui-streamer-path",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

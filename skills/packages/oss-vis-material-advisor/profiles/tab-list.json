@@ -1,0 +1,76 @@
+{
+    "name": "tab-list",
+    "title": "TAB列表",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "郝营营",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏TAB列表组件（带前缀图标），支持单选切换、灵活样式（基础+选中两种状态），可作为筛选器",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "tabId" },
+            { "name": "content", "type": "String", "required": true, "description": "名称" },
+            { "name": "icon", "type": "String", "description": "前缀图标（Icon名称/PNG无后缀名）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "commonStyle (通用基础配置 + 选中配置)": {
+            "size": "NumberPicker 元素尺寸（width/height）",
+            "margin": "NumberPicker 元素边距（4方向）",
+            "textStyle": "VisualTextStyle 文本",
+            "lineHeight": "NumberPicker 行高",
+            "border": "borderStyle/borderWidth/borderColor/borderRadius",
+            "backgroundType": "enum: image/color",
+            "backgroundColor": "ColorPicker 背景颜色",
+            "backgroundImg": "Background 背景图",
+            "backgroundRepeat": "enum: full/no-repeat/repeat-x/repeat-y/repeat"
+        }
+    },
+    "interactions": {
+        "select": {
+            "type": "dispatch",
+            "description": "选中某tab派发（id/content/icon）"
+        }
+    },
+    "business_scenarios": [
+        "大屏顶部多tab切换",
+        "业务/区域/类型筛选",
+        "页面分区切换"
+    ],
+    "composability": {
+        "compatible_with": ["drilldown-table", "top-rank", "echarts-bar", "table"],
+        "replaces": ["tab-list-2（无轮播场景）"],
+        "extends": ["tab-list-static（带统计）", "tab-list-arc（弧形）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备tab数据（id + content + icon）",
+            "配置 commonStyle 基础样式（尺寸/边距/边框/背景）",
+            "配置 commonStyle 选中样式（独立配置）",
+            "配置默认选中项"
+        ],
+        "dependencies": ["tab前缀图标资源（PNG）"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "tab_list_family": "tab-list / tab-list-2 / tab-list-arc / tab-list-static 同源组件"
+    }
+}

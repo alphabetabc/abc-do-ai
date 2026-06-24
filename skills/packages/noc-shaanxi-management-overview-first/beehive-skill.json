@@ -1,0 +1,14 @@
+{
+  "contentHash": "0840e37a1747412bb28167c44869f7f7b65f12cb907ffdcbeb4cbcc53c37c310",
+  "files": [
+    "./how-to-extend.md",
+    "./principles.md",
+    "./components/",
+    "./modules/"
+  ],
+  "id": "noc-shaanxi-management-overview-first",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

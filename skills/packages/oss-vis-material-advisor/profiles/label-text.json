@@ -1,0 +1,60 @@
+{
+    "name": "label-text",
+    "title": "标题",
+    "category": "文本/标签/标题",
+    "version": "0.0.1",
+    "author": "sunhuanzhe",
+    "scanned_at": "2026-06-17",
+    "description": "数据大屏标题组件（content + iconType），带Icon的标题文本",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "content", "type": "String", "required": true, "description": "标题文本", "rowProperties": ["format"] },
+            { "name": "iconType", "type": "String", "description": "标题Icon（Icon名称）", "rowProperties": ["format"] }
+        ],
+        "row_count": "单行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "标题样式（icon + 文本）"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置"
+    },
+    "business_scenarios": [
+        "数据大屏模块标题",
+        "带Icon的标题",
+        "分区标题"
+    ],
+    "composability": {
+        "compatible_with": ["normal-label", "textarea-label", "echarts-bar"],
+        "replaces": ["normal-label（带Icon场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.2,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备标题数据（content + iconType）",
+            "配置样式（icon + 文本）"
+        ],
+        "dependencies": ["icon图标资源"],
+        "estimated_minutes": 5
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "vs_normal_label": "与 normal-label 区别：支持 iconType 字段"
+    }
+}

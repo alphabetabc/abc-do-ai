@@ -1,0 +1,81 @@
+{
+    "name": "carousel-image-list",
+    "title": "轮播列表(水平)",
+    "category": "轮播/公告",
+    "version": "0.0.1",
+    "author": "sunhuanze",
+    "scanned_at": "2026-06-17",
+    "description": "水平轮播图列表，支持轮播时间间隔、选中边框、图片尺寸与flex布局，常用于图片轮播+指标展示",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "type", "type": "String", "description": "指标类型" },
+            { "name": "url", "type": "String", "required": true, "description": "图片URL" },
+            { "name": "id", "type": "String", "description": "ID" },
+            { "name": "name", "type": "String", "description": "名称" },
+            { "name": "value", "type": "String", "description": "数值" },
+            { "name": "unit", "type": "String", "description": "单位" }
+        ],
+        "row_count": "多行（多张轮播项）",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "swiperTimer (功能)": {
+            "swiperTimer": "NumberPicker 轮播时间间隔（秒，min=1, step=10）"
+        },
+        "groupLayout (元素布局)": {
+            "width": "NumberPicker 宽度",
+            "height": "NumberPicker 高度",
+            "flex": "renderLayoutFlex 通用 flex 布局"
+        },
+        "style (样式)": {
+            "borderSelected": "Switch 选中边框",
+            "borderWidth": "NumberPicker 选中边框宽度",
+            "borderHeight": "NumberPicker 选中边框高度",
+            "imageWidth/Height": "NumberPicker 图片尺寸",
+            "marginLeft/Right/Top/Bottom": "NumberPicker 边距"
+        }
+    },
+    "interactions": {
+        "auto_play": "定时轮播（swiperTimer 控制间隔）",
+        "click": "选中/派发"
+    },
+    "business_scenarios": [
+        "产品/活动图片轮播",
+        "重点指标图卡轮播",
+        "数据大屏装饰轮播"
+    ],
+    "composability": {
+        "compatible_with": ["drilldown-table", "top-rank", "single-image"],
+        "replaces": ["single-image（需轮播时）"],
+        "extends": ["carousel-list", "carousel-notice", "carousel-param"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备轮播数据（type + url + name + value）",
+            "配置 swiperTimer 时间间隔",
+            "配置元素布局（宽度/高度/flex）",
+            "配置样式（选中边框/图片尺寸/边距）"
+        ],
+        "dependencies": ["图片资源"],
+        "estimated_minutes": 12
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "carousel_family": "与 carousel-list/notice/param 同一家族（仅 type 字段不同）"
+    }
+}

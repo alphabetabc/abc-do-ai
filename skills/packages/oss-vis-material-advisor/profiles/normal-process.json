@@ -1,0 +1,73 @@
+{
+    "name": "normal-process",
+    "title": "环形进度图",
+    "category": "进度/加载",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "杨兴相版本的环形进度图（与 circular-progress 标题相同）",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "指标ID" },
+            { "name": "title", "type": "String", "description": "指标名称" },
+            { "name": "percent", "type": "String", "description": "指标值" },
+            { "name": "unit", "type": "String", "description": "单位" }
+        ],
+        "row_count": "单组",
+        "data_source": "DynamicData 多数据源",
+        "_note": "与 circular-progress 高度同源，title 相同"
+    },
+    "visual_config": {
+        "chartProps (图形)": {
+            "isGradient": "Switch 渐变",
+            "circular": "Switch 起点标识",
+            "radius/ringWidth": "NumberPicker",
+            "startPosition": "enum: top/bottom/left/right",
+            "padding": "NumberPicker 内边距",
+            "backgroundColor/foregroundColor": "ColorPicker",
+            "fillOpacity": "SliderWithNumber"
+        },
+        "digitalProps": "数字属性",
+        "titleProps": "标题样式"
+    },
+    "interactions": {},
+    "business_scenarios": [
+        "单指标完成率",
+        "服务可用率",
+        "KPI进度"
+    ],
+    "composability": {
+        "compatible_with": ["circular-progress", "circular-progress-group", "digital-flop"],
+        "replaces": ["circular-progress（同源）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备单组数据",
+            "配置 chartProps 图形参数",
+            "配置数字/标题样式"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "duplicate_title": "title 与 circular-progress 完全相同，需以 name 区分",
+        "duplicate_feature": "与 circular-progress 高度同源（作者不同：杨兴相 vs haoyingying）"
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "name": "render-stage-loader",
+    "title": "孪生平台加载器",
+    "category": "进度/加载",
+    "version": "0.0.1",
+    "author": "谢名伟",
+    "scanned_at": "2026-06-17",
+    "description": "数字孪生场景加载组件（Fedx3dRenderStageLoaderList），支持场景加载配置、单击/双击孪生体交互（twinId/twinType）",
+    "data_format": {
+        "type": "static",
+        "source": "Fedx3dRenderStageLoaderList（孪生场景资源）",
+        "format": "孪生体配置",
+        "data_model": "无 dataModel.json（空结构）",
+        "_note": "dataConfig 通用配置默认（json/api/sql）"
+    },
+    "visual_config": {
+        "commonSetting (通用设置)": {
+            "enableInteraction": "Switch 启用交互事件",
+            "dataLoaderSetting": "Fedx3dRenderStageLoaderList 场景加载配置"
+        }
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "孪生体交互",
+            "fields": [
+                "twinDisplayName - 孪生体名称",
+                "onClickTwinId - 单击 TwinId",
+                "onClickTwinType - 单击 TwinType",
+                "onDblClickTwinId - 双击 TwinId",
+                "onDblClickTwinType - 双击 TwinType"
+            ]
+        }
+    },
+    "business_scenarios": [
+        "数字孪生平台大屏加载",
+        "智慧城市/园区孪生场景",
+        "孪生体交互（点击设备查看详情）"
+    ],
+    "composability": {
+        "compatible_with": ["smart-warehouse", "oss-gis", "baidu-map", "drilldown-table"],
+        "replaces": ["smart-warehouse（场景级孪生）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "高",
+        "setup_steps": [
+            "注册孪生场景资源（Fedx3dRenderStageLoaderList）",
+            "配置 dataLoaderSetting",
+            "可选：启用交互事件（enableInteraction）",
+            "配置孪生体单击/双击派发参数"
+        ],
+        "dependencies": ["@fedx-3d 孪生平台（场景资源）"],
+        "estimated_minutes": 90
+    },
+    "_validation_notes": {
+        "missing_data_model": "无 dataModel.json（空结构）",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "twin_platform_depend": "强依赖 fedx-3d 孪生平台"
+    }
+}

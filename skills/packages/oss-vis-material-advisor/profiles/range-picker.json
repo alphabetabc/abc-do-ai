@@ -1,0 +1,77 @@
+{
+    "name": "range-picker",
+    "title": "日期选择组件",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "日期范围选择器，支持默认日期前推、格式化、显示查询按钮、标题/输入框样式",
+    "data_format": {
+        "type": "static",
+        "source": "前端 Date / moment",
+        "data_model": "无 dataModel.json",
+        "output": "string 日期范围（按formatStr格式化）"
+    },
+    "visual_config": {
+        "baseConfig (基础配置)": {
+            "isShowTitle": "Switch 显示标题",
+            "title": "Input 标题",
+            "dayStart": "NumberPicker 默认日期前推（天）",
+            "dayEnd": "NumberPicker 默认结束日期（天）",
+            "formatStr": "Input 日期格式化（YYYY-MM-DD）",
+            "isShowQuery": "Switch 显示查询按钮"
+        },
+        "nameFontStyle (标题样式)": {
+            "fontFamily": "GLOBAL_FONTS",
+            "fontSize": "NumberPicker",
+            "fontWeight": "FONT_WEIGHT",
+            "color": "ColorPicker"
+        },
+        "inputStyle (输入框样式)": "标题样式类似"
+    },
+    "interactions": {
+        "change": {
+            "type": "dispatch",
+            "description": "选择日期范围后派发（与查询按钮联动）"
+        }
+    },
+    "business_scenarios": [
+        "大屏顶部时间筛选（近7天/近30天）",
+        "数据查询时间范围",
+        "报表时间选择"
+    ],
+    "composability": {
+        "compatible_with": ["query-form-group", "popover-check", "popover-checkparam", "echarts-line-dual-x"],
+        "replaces": ["iframe 嵌入日期选择器（轻量场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "配置 dayStart/dayEnd 默认日期范围",
+            "配置 formatStr 日期格式",
+            "配置标题/输入框样式",
+            "可选：启用查询按钮"
+        ],
+        "dependencies": ["antd DatePicker"],
+        "estimated_minutes": 8
+    },
+    "_validation_notes": {
+        "missing_data_model": "无 dataModel.json",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "default_date_logic": "默认日期前推/结束逻辑简单，前端需自定义时区处理"
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "contentHash": "93455e88422aa3934992e6772b343a1fe07c29fb6db9e6cae44c3f9f216fbab7",
+  "files": [
+    "./CENTER-GIS.md"
+  ],
+  "id": "gd-es-next-warn-gis-maintenance",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

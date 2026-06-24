@@ -1,0 +1,64 @@
+{
+    "name": "pagination-display",
+    "title": "基础分页组件",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "孙寰哲",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏基础分页组件，显示总条数与分页按钮，常与表格/列表组合使用",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "total", "type": "String", "required": true, "description": "总数（实际Number）" }
+        ],
+        "row_count": "单行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "通用位置/尺寸/标题/可见性配置"
+    },
+    "interactions": {
+        "page_change": {
+            "type": "dispatch",
+            "description": "切换页码派发页码参数（与table/列表联动）"
+        }
+    },
+    "business_scenarios": [
+        "数据大屏分页（与table/列表组合）",
+        "数据浏览翻页",
+        "与 pagination-table 配合"
+    ],
+    "composability": {
+        "compatible_with": ["pagination-table", "table", "drilldown-table", "vertical-list", "top-rank"],
+        "replaces": ["table内置分页（独立分页场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备 total 总数数据",
+            "配置位置/尺寸",
+            "配置与表格/列表的联动"
+        ],
+        "dependencies": ["antd Pagination"],
+        "estimated_minutes": 8
+    },
+    "_validation_notes": {
+        "data_type_issue": "total 声明为 String，应为 Number",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "standalone": "独立分页组件，需与具体数据组件配合使用"
+    }
+}

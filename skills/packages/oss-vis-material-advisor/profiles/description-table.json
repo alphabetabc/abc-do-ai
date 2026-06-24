@@ -1,0 +1,72 @@
+{
+    "name": "description-table",
+    "title": "描述列表",
+    "category": "表格",
+    "version": "0.0.1",
+    "author": "孙寰哲",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏描述列表（column_01 ~ column_13 + column_13_id），强定制工单详情场景",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "column_01", "type": "String", "description": "工单流水号" },
+            { "name": "column_02", "type": "String", "description": "主题" },
+            { "name": "column_03", "type": "String", "description": "故障地市" },
+            { "name": "column_04", "type": "String", "description": "网元名称" },
+            { "name": "column_05", "type": "String", "description": "故障发生时间" },
+            { "name": "column_06", "type": "String", "description": "网管告警标题" },
+            { "name": "column_07", "type": "String", "description": "一线受理时限" },
+            { "name": "column_08", "type": "String", "description": "一线处理时限" },
+            { "name": "column_09", "type": "String", "description": "网管告警流水号" },
+            { "name": "column_10", "type": "String", "description": "故障设备厂商" },
+            { "name": "column_11", "type": "String", "description": "网络三级分类" },
+            { "name": "column_12", "type": "String", "description": "告警清除时间" },
+            { "name": "column_13", "type": "String", "description": "故障描述" },
+            { "name": "column_13_id", "type": "String", "description": "故障描述对应id" }
+        ],
+        "row_count": "单行（工单详情）",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸 + 描述列表样式（label/value对）"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置"
+    },
+    "business_scenarios": [
+        "工单详情描述列表",
+        "故障详情展示",
+        "key-value形式的数据展示"
+    ],
+    "composability": {
+        "compatible_with": ["alarm-window-card", "drilldown-table", "table-detail", "drilldown-table-2"],
+        "replaces": ["el-descriptions（强定制工单场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备工单数据（column_01~column_13）",
+            "配置样式（描述列表布局）"
+        ],
+        "dependencies": ["工单数据API"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "rigid_schema": "字段名 column_01~13 强定制，无灵活命名"
+    }
+}

@@ -1,0 +1,59 @@
+{
+    "name": "textarea-label",
+    "title": "文本域",
+    "category": "文本/标签/标题",
+    "version": "0.0.1",
+    "author": "shz",
+    "scanned_at": "2026-06-17",
+    "description": "数据大屏文本域组件（labelText），多行文本展示，支持TextArea编辑",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "labelText", "type": "String", "required": true, "description": "文本域内容", "rowProperties": ["format"] }
+        ],
+        "row_count": "单行/多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "TextArea 文本样式（字体/颜色/行高/字号/宽度/高度）"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置"
+    },
+    "business_scenarios": [
+        "数据大屏多行文本展示",
+        "告警/事件详情文本",
+        "公告/说明"
+    ],
+    "composability": {
+        "compatible_with": ["normal-label", "label-text", "message-distribute"],
+        "replaces": ["normal-label（多行场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备labelText文本数据",
+            "配置TextArea样式（字体/宽度/高度）"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 5
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "data_type_correct": "labelText 声明为 String（类型正确）"
+    }
+}

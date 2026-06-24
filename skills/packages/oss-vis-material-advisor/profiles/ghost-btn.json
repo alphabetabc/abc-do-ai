@@ -1,0 +1,76 @@
+{
+    "name": "ghost-btn",
+    "title": "幽灵按钮",
+    "category": "按钮/操作",
+    "version": "0.0.1",
+    "author": "zw",
+    "scanned_at": "2026-06-17",
+    "description": "幽灵风格按钮（透明背景+边框），支持文本/边距/边框/背景（图片或颜色）/文本样式 配置",
+    "data_format": {
+        "type": "static",
+        "data_model": "无 dataModel.json",
+        "_note": "纯UI组件，无数据接入"
+    },
+    "visual_config": {
+        "commonStyle": {
+            "content": "Input 按钮文本（注意 schema 误标为number）",
+            "defaultStatus": "enum: visible/hidden 显示/隐藏",
+            "margin (元素边距)": { "marginTop/Right/Bottom/Left": "NumberPicker" },
+            "textStyle": "VisualTextStyle 文本样式",
+            "lineHeight": "NumberPicker 行高",
+            "border (元素边框)": {
+                "borderStyle": "enum: solid/dashed/dotted/double",
+                "borderWidth": "NumberPicker 线宽",
+                "borderColor": "ColorPicker 颜色",
+                "borderRadius": "NumberPicker 圆角"
+            },
+            "backgroundType": "enum: image/color 背景类型",
+            "backgroundColor": "ColorPicker 背景颜色",
+            "backgroundImage": "Background 背景图"
+        }
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "通用交互（defineInteractionSchema）"
+        }
+    },
+    "business_scenarios": [
+        "数据大屏装饰性按钮（透明背景+边框）",
+        "次要操作按钮",
+        "工具栏按钮"
+    ],
+    "composability": {
+        "compatible_with": ["custom-request-button", "export-btn", "levitated-sphere", "dock-menu"],
+        "replaces": ["custom-request-button（无API场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "配置 content 按钮文本",
+            "配置 border 边框（线型/线宽/颜色/圆角）",
+            "配置 backgroundType（image/color）",
+            "配置 margin + textStyle"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 8
+    },
+    "_validation_notes": {
+        "data_type_issue": "schema中content字段误标为 type:number（实际为字符串）",
+        "doc_status": "无 doc/README.md",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串"
+    }
+}

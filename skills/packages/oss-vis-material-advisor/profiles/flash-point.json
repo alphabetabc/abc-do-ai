@@ -1,0 +1,53 @@
+{
+    "name": "flash-point",
+    "title": "闪点",
+    "category": "装饰/边框",
+    "version": "0.0.1",
+    "author": "sunhuanzhe",
+    "scanned_at": "2026-06-17",
+    "description": "闪点装饰组件（点状闪烁动效），无数据接入，用于大屏装饰",
+    "data_format": {
+        "type": "static",
+        "data_model": "无 dataModel.json（空结构）",
+        "_note": "纯装饰组件，无业务数据"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸 + 闪点颜色/动效"
+    },
+    "interactions": {},
+    "business_scenarios": [
+        "大屏装饰闪烁点",
+        "科技感装饰动效",
+        "数据点高亮装饰"
+    ],
+    "composability": {
+        "compatible_with": ["任何组件（作为装饰）"],
+        "replaces": ["自定义CSS动画"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.0,
+        "breakdown": {
+            "business_description": 2.5,
+            "scenario_coverage": 2.5,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "配置闪点位置/尺寸/颜色/动效"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 3
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "pure_decoration": "纯装饰组件，无数据交互"
+    }
+}

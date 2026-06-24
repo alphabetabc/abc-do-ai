@@ -1,0 +1,76 @@
+{
+    "name": "progress-list-bar",
+    "title": "水平进度图",
+    "category": "进度/加载",
+    "version": "0.0.1",
+    "author": "xmw",
+    "scanned_at": "2026-06-17",
+    "description": "水平进度条列表组件，每行展示一个指标的名称/数值/百分比/单位，支持多行多列布局",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "indicatorId", "type": "String", "description": "指标ID" },
+            { "name": "indicatorName", "type": "String", "required": true, "description": "名称" },
+            { "name": "indicatorValue", "type": "String", "required": true, "description": "数值" },
+            { "name": "indicatorRate", "type": "String", "description": "百分比" },
+            { "name": "indicatorUnit", "type": "String", "description": "单位" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "groupLayout (组合布局)": {
+            "grid (行列设置)": { "rowNum": "NumberPicker 行数", "colNum": "NumberPicker 列数" },
+            "offset (间隔设置)": { "rowGap": "行间隔", "colGap": "列间隔" },
+            "defaultSelectIndex": "默认选中行"
+        },
+        "chartProps (图形)": "进度条样式（颜色/宽度/圆角）",
+        "titleProps": "标题样式",
+        "schema-parts (高级配置)": "包含数字/百分比/单位等子模块"
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "点击进度条派发数据"
+        }
+    },
+    "business_scenarios": [
+        "多指标进度对比",
+        "资源使用率展示（CPU/内存/磁盘）",
+        "项目里程碑完成情况"
+    ],
+    "composability": {
+        "compatible_with": ["circular-progress-group", "drilldown-table", "top-rank"],
+        "replaces": ["progress-list", "topn-rank"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备多组数据（indicatorName + indicatorValue + indicatorRate）",
+            "配置 groupLayout（行/列/间隔）",
+            "配置进度条样式（颜色/宽度）",
+            "配置数字/单位样式"
+        ],
+        "dependencies": ["@fedx-vis 内部组件"],
+        "estimated_minutes": 12
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "indicatorValue/indicatorRate 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "module": "schema-parts 模块化设计"
+    }
+}

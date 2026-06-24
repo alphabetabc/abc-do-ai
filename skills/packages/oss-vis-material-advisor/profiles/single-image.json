@@ -1,0 +1,79 @@
+{
+    "name": "single-image",
+    "title": "单张图片",
+    "category": "媒体/播放",
+    "version": "0.0.1",
+    "author": "haoyingying",
+    "scanned_at": "2026-06-17",
+    "description": "数据大屏单张图片组件，支持位图/矢量图、手势光标、点击事件派发、可见范围（全省/地市）",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "content", "type": "String", "description": "内容（通常为图片URL）" }
+        ],
+        "row_count": "单行/多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "backgroundStyle (图片样式)": {
+            "backgroundType": "enum: Image/SVG",
+            "backgroundImage": "Background 矢量图",
+            "backgroundColor": "ColorPicker 填充色（SVG）",
+            "backgroundDefine": "Background 位图",
+            "backgroundRepeat": "enum: full/no-repeat/repeat-x/repeat-y/repeat",
+            "isCursorHand": "Switch 手势光标"
+        },
+        "clickEventConfig (点击事件)": {
+            "clickParams": "Input 参数值",
+            "isJoinParam": "Switch 拼接参数值（a=otherParam1&b=otherParam2 模式）"
+        },
+        "visible (是否可见)": {
+            "visible": "enum: all/province/city（全省/地市可见）"
+        }
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "点击派发 clickParams，启用 isJoinParam 时支持参数拼接"
+        }
+    },
+    "business_scenarios": [
+        "数据大屏Logo/装饰图",
+        "权限可见的图片入口（不同省/地市显示不同图）",
+        "点击跳转的图标按钮"
+    ],
+    "composability": {
+        "compatible_with": ["iframe", "baidu-map", "drilldown-table", "carousel-image-list"],
+        "replaces": ["iframe 嵌入图片（轻量场景）"],
+        "extends": ["carousel-image-list（轮播变体）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "选择 backgroundType（Image/SVG）",
+            "上传图片/矢量图",
+            "配置 backgroundRepeat",
+            "可选：配置点击事件（clickParams + isJoinParam）",
+            "可选：配置可见范围（all/province/city）"
+        ],
+        "dependencies": ["图片资源"],
+        "estimated_minutes": 8
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "permission_unique": "可见范围（visible）配置为组件差异化能力"
+    }
+}

@@ -1,0 +1,78 @@
+{
+    "name": "tab-list-2",
+    "title": "TAB 列表2",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "hyy",
+    "scanned_at": "2026-06-17",
+    "description": "TAB列表2（无前缀图标，支持轮播），支持自动播放/手动控制、默认选中、轮播周期",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "tabId" },
+            { "name": "content", "type": "String", "required": true, "description": "名称" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源",
+        "_note": "与 tab-list 区别：无icon字段 + 增强轮播"
+    },
+    "visual_config": {
+        "commonStyle (通用)": {
+            "margin": "NumberPicker 元素边距",
+            "textStyle": "VisualTextStyle 文本",
+            "lineHeight": "NumberPicker 行高",
+            "opacity": "SliderWithNumber 元素透明度"
+        },
+        "defaultCheck": "Input 默认选中项ID",
+        "carousel (轮播)": {
+            "show": "Switch 开关",
+            "period": "NumberPicker 轮播周期（秒）",
+            "isAutoPlayControler": "Switch 手动控制（hover暂停）"
+        }
+    },
+    "interactions": {
+        "select": {
+            "type": "dispatch",
+            "description": "选中tab派发"
+        },
+        "auto_play": "轮播自动切换（period控制）"
+    },
+    "business_scenarios": [
+        "大屏顶部tab（带轮播）",
+        "公告/通知轮播切换",
+        "多业务场景自动展示"
+    ],
+    "composability": {
+        "compatible_with": ["tab-list", "tab-list-static", "drilldown-table"],
+        "replaces": ["tab-list（无图标+需轮播）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备tab数据（id + content）",
+            "配置 defaultCheck 默认选中",
+            "配置 carousel 轮播（可选）",
+            "配置 commonStyle 样式"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "carousel_feature": "支持轮播（区别于 tab-list）"
+    }
+}

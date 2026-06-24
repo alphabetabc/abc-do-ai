@@ -1,0 +1,77 @@
+{
+    "name": "warning-board",
+    "title": "告警牌",
+    "category": "数字/指标卡",
+    "version": "0.0.1",
+    "author": "谢名伟",
+    "scanned_at": "2026-06-17",
+    "description": "告警牌指标翻牌器（支持分指标单独配置），显示多指标（field-1/2/3）的状态/数值/级别，支持全局或分指标条件配置",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "indicatorId", "type": "String", "description": "指标id" },
+            { "name": "field-1", "type": "String", "description": "字段1（实际Number）" },
+            { "name": "field-2", "type": "String", "description": "字段2（实际Number）" },
+            { "name": "field-3", "type": "String", "description": "字段3（实际Number）" },
+            { "name": "id", "type": "String", "description": "记录ID" }
+        ],
+        "row_count": "多行",
+        "data_source": "renderDataConfig 多数据源"
+    },
+    "visual_config": {
+        "$fieldSetting (条件设置)": {
+            "enableSingleIndSetting": "Switch 启用指标单独配置",
+            "$globalSetting (全局配置)": {
+                "textFieldName": "文字字段名",
+                "valueFieldName": "数值字段名",
+                "levelFieldName": "级别字段名",
+                "fieldSet": "ArrayCollapse 条件→图片/颜色映射"
+            },
+            "singleIndSettings (单指标配置)": "ArrayCollapse（每个indicatorId独立配置）"
+        },
+        "setting (外观)": "FLEX_DIRECTION/JUSTIFYCONTENT/ALIGNITEMS + 文本/边距/子元素布局"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互（defineInteractionSchema）"
+    },
+    "business_scenarios": [
+        "告警指标牌（多指标汇总）",
+        "运维监控面板",
+        "分级别告警状态展示"
+    ],
+    "composability": {
+        "compatible_with": ["digital-flop", "stats-indi", "stats-indi-group", "status-display"],
+        "replaces": ["stats-indi-group（需要单指标独立配置时）"],
+        "extends": ["stats-indi", "stats-indi-group", "stats-indi-grid"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.6,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备数据（indicatorId + field-1/2/3 + id）",
+            "配置 enableSingleIndSetting 启用单指标配置",
+            "全局或单指标配置条件→图片/颜色映射",
+            "配置外观样式（flex布局/边距/文本）"
+        ],
+        "dependencies": ["状态图片素材"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "data_type_issue": "field-1/2/3 声明为 String，应为 Number",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "module": "schema/FieldSetting + schema/DynamicAction 模块化"
+    }
+}

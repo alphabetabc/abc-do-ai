@@ -1,0 +1,12 @@
+{
+  "contentHash": "2d4fedf3e7321bc6e3b70b5823c7a9dcc15f0990359e76c6e1061ebc68d37dde",
+  "files": [
+    "./references/"
+  ],
+  "id": "gd-es-next-warn-gis-risk-prediction-points",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-06-17T06:58:26.904Z",
+  "version": "0.0.0"
+}

@@ -1,0 +1,87 @@
+{
+    "name": "levitated-sphere",
+    "title": "悬浮球",
+    "category": "3D/拓扑",
+    "version": "0.0.1",
+    "author": "qsy",
+    "scanned_at": "2026-06-17",
+    "description": "可拖拽悬浮菜单球（Draggable），支持按钮展开/折叠菜单项、点击下钻（Modal/Drawer/Dispatch）、动画与Tooltip",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "required": true, "description": "菜单项ID（dispatch clickKey）" },
+            { "name": "label", "type": "String", "required": true, "description": "菜单项名称" },
+            { "name": "value", "type": "String", "description": "菜单项数值（可显示在球上）" }
+        ],
+        "row_count": "多行（多个菜单项）",
+        "data_source": "dataSource 数组"
+    },
+    "visual_config": {
+        "buttons": {
+            "defaultOpen": "Switch 默认展开",
+            "btnAlign": "enum: left/center/right 对齐",
+            "btnName": "按钮标题",
+            "btnStyle": {
+                "btnFontStyle": "VisualTextStyle 文本",
+                "btnSize": "Size 尺寸"
+            },
+            "btnBackgroundUrl": "按钮背景图（来自images库）"
+        },
+        "bounds": {
+            "left/right/top/bottom": "number 拖动范围"
+        },
+        "menu_items": {
+            "menuItemBackgroundUrl": "菜单项默认背景图",
+            "menuItemBackgroundActiveUrl": "菜单项激活背景图",
+            "menuItemStyle": {
+                "menuItemSize": "Size 菜单项尺寸"
+            }
+        }
+    },
+    "interactions": {
+        "drag": "Draggable 拖拽悬浮球",
+        "click": "点击按钮展开/折叠菜单",
+        "double_click": "双击菜单项派发下钻（Modal/Drawer/Dispatch）",
+        "scale_animation": "可配置 scale 缩放动画"
+    },
+    "business_scenarios": [
+        "数据大屏悬浮快捷入口",
+        "工具菜单（截图/导出/帮助）",
+        "悬浮操作面板"
+    ],
+    "composability": {
+        "compatible_with": ["ghost-btn", "dock-menu", "export-btn", "custom-request-button"],
+        "replaces": ["dock-menu（需要悬浮场景时）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.6,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备菜单项数据（id/label）",
+            "配置按钮样式（背景图/标题/对齐）",
+            "配置拖动范围 bounds",
+            "配置菜单项样式（默认/激活背景图）",
+            "配置动态事件（Modal/Drawer/Dispatch）"
+        ],
+        "dependencies": ["react-draggable", "rc-queue-anim", "按钮/菜单项背景图"],
+        "estimated_minutes": 25
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "background_image_required": "按钮/菜单项背景图为必填，否则样式异常",
+        "interaction_complex": "dynamicEvents 复杂配置，需要 onClickKey/effect 模式"
+    }
+}

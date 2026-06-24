@@ -1,0 +1,78 @@
+{
+    "name": "visual-iframe",
+    "title": "Iframe物料",
+    "category": "媒体/播放",
+    "version": "0.0.1",
+    "author": "xmw",
+    "scanned_at": "2026-06-17",
+    "description": "可视化iframe组件（VisualIframeSelector），支持订阅iframe显示隐藏状态、cellId/cellName参数、显示为Modal/Drawer",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "流水数据匹配字段（订阅cellId）", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "designerSettings (设计态配置)": {
+            "enablePicker": "Switch 启动交互（iframe元素可点击）"
+        },
+        "iframeSettings (iframe配置)": {
+            "iframeSettings": "VisualIframeSelector 选择iframe"
+        },
+        "showType (显示配置)": {
+            "showType": "enum: none/Drawer/Modal",
+            "closeIconSize": "NumberPicker closeIcon尺寸（默认14）",
+            "closeIconColor": "ColorPicker closeIcon颜色（默认#fff）",
+            "drawerSettings.placement": "enum: right/left/top/bottom 抽屉方向"
+        }
+    },
+    "interactions": {
+        "subscribe": {
+            "visible": "订阅iframe显示隐藏（true/'true'）",
+            "subscribeCellId": "订阅 cellId",
+            "subscribeCellName": "订阅 cellName",
+            "_note": "与 alarm-window-card 流水窗联动"
+        }
+    },
+    "business_scenarios": [
+        "报警流水窗联动（点击cellId/cellName展示iframe详情）",
+        "大屏嵌入第三方系统",
+        "Modal/Drawer 形式展示iframe"
+    ],
+    "composability": {
+        "compatible_with": ["alarm-window-card", "iframe", "baidu-map", "smart-warehouse"],
+        "replaces": ["iframe（需要订阅/Modal/Drawer场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "通过 VisualIframeSelector 选择iframe",
+            "配置 showType（none/Drawer/Modal）",
+            "配置 closeIcon 大小与颜色",
+            "可选：配置 drawerSettings.placement",
+            "配置订阅（visible/cellId/cellName）"
+        ],
+        "dependencies": ["VisualIframeSelector（注册iframe资源）"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "alarm_window_integration": "与 alarm-window-card 联动设计（subscribeCellId/cellName）"
+    }
+}

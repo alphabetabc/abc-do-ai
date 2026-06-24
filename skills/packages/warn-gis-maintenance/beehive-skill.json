@@ -1,6 +1,0 @@
-{
-  "id": "warn-gis-maintenance",
-  "version": "0.0.0",
-  "targets": ["trae"],
-  "files": ["./CENTER-GIS.md"]
-}

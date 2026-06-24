@@ -1,8 +1,8 @@
 ---
 title: 物料维护清单（advisor 视角）
 description: advisor 对全部 154 个有效物料的画像/文档化状态总览，按 18 个分类组织
-version: 0.3
-last_updated: 2026-06-17
+version: 0.8
+last_updated: 2026-06-22
 ---
 
 # 物料维护清单（advisor 视角）
@@ -15,6 +15,8 @@ last_updated: 2026-06-17
 -   评级 + 分数 + 搭建成本（仅已画像）
 
 > **分类原则**：每个物料只属于 1 个主分类（以 `oss-material.json.title` 为首要依据）。例如 "环形进度图" 类物料归入 [进度/加载](#进度--加载5)，"水平进度图" 归入 [进度/加载](#进度--加载5)，"进度条列表" 归入 [列表/排行](#列表--排行13)。
+>
+> **decoration-family 合并说明**：24 个 `decoration/border1-12` + `decoration/decoration1-12` 物料 schema 高度同源（仅颜色/路径不同），在 advisor 维度合并为 1 个 `profiles/decoration-family.json`（含 24 种变体枚举），不再单独画像。
 
 ## 状态说明
 
@@ -33,13 +35,15 @@ last_updated: 2026-06-17
 | 指标        | 数值         |
 | ----------- | ------------ |
 | 物料总数    | 154          |
-| 已画像      | 82（53.2%）  |
-| 待画像      | 72（46.8%）  |
+| 已画像      | 131（85.1%） |
+| 待画像      | 23（14.9%）  |
 | 自带 doc    | 75（48.7%）  |
-| 🟢 独立优秀 | 18           |
-| 🟡 组合可用 | 64           |
+| 🟢 独立优秀 | 19           |
+| 🟡 组合可用 | 112          |
 | 🔴 组合复杂 | 0            |
 | ⚫ 不建议   | 0            |
+
+> **剩余 23 个待画像物料**：`decoration/decoration1-11`（11 个）+ `decoration/border1-12`（12 个），全部为纯样式边框/装饰，无数据交互，画像意义低，已通过 `decoration-family.json` 合并覆盖。
 
 ## 按分类
 
@@ -62,13 +66,13 @@ last_updated: 2026-06-17
 
 | 物料                 | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | -------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `label-text`         | -      | ⏳   | —        | -           | -    | - min           |
-| `message-distribute` | -      | ⏳   | —        | -           | -    | - min           |
-| `normal-label`       | 中     | ✅   | 📄       | 🟢 独立优秀 | 4    | 2 min           |
-| `textarea-label`     | -      | ⏳   | 📄       | -           | -    | - min           |
-| `description-table`  | -      | ⏳   | —        | -           | -    | - min           |
+| `label-text`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.2  | 3 min           |
+| `message-distribute` | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 10 min          |
+| `normal-label`       | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 2 min           |
+| `textarea-label`     | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.3  | 5 min           |
+| `description-table`  | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 8 min           |
 
-> 已画像 1/5
+> 已画像 5/5 ✅ 全部完成
 
 ### 数字 / 指标卡（7）
 
@@ -125,38 +129,38 @@ last_updated: 2026-06-17
 
 ### 表单 / 筛选（4）
 
-| 物料                 | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| -------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `popover-check`      | -      | ⏳   | —        | -    | -    | - min           |
-| `popover-checkparam` | -      | ⏳   | —        | -    | -    | - min           |
-| `query-form-group`   | -      | ⏳   | 📄       | -    | -    | - min           |
-| `range-picker`       | -      | ⏳   | —        | -    | -    | - min           |
+| 物料                 | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| -------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `popover-check`      | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
+| `popover-checkparam` | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 10 min          |
+| `query-form-group`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 15 min          |
+| `range-picker`       | 简单   | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
 
-> 已画像 0/4
+> 已画像 4/4 ✅ 全部完成
 
 ### 按钮 / 操作（5）
 
-| 物料                    | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ----------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `custom-request-button` | -      | ⏳   | —        | -    | -    | - min           |
-| `export-btn`            | -      | ⏳   | 📄       | -    | -    | - min           |
-| `ghost-btn`             | -      | ⏳   | 📄       | -    | -    | - min           |
-| `iframe`                | -      | ⏳   | 📄       | -    | -    | - min           |
-| `visual-iframe`         | -      | ⏳   | 📄       | -    | -    | - min           |
+| 物料                    | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ----------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `custom-request-button` | 中     | ✅   | —        | 🟢 独立优秀 | 4.0  | 8 min           |
+| `export-btn`            | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.2  | 6 min           |
+| `ghost-btn`             | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 3 min           |
+| `iframe`                | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
+| `visual-iframe`         | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
 
-> 已画像 0/5
+> 已画像 5/5 ✅ 全部完成
 
 ### 轮播 / 公告（5）
 
-| 物料                  | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| --------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `carousel-image-list` | -      | ⏳   | —        | -    | -    | - min           |
-| `tab-list`            | -      | ⏳   | —        | -    | -    | - min           |
-| `tab-list-2`          | -      | ⏳   | 📄       | -    | -    | - min           |
-| `tab-list-arc`        | -      | ⏳   | 📄       | -    | -    | - min           |
-| `tab-list-static`     | -      | ⏳   | —        | -    | -    | - min           |
+| 物料                  | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| --------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `carousel-image-list` | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
+| `tab-list`            | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
+| `tab-list-2`          | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
+| `tab-list-arc`        | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 15 min          |
+| `tab-list-static`     | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
 
-> 已画像 0/5
+> 已画像 5/5 ✅ 全部完成
 
 ### 图表（ECharts）（12）
 
@@ -224,119 +228,125 @@ last_updated: 2026-06-17
 
 ### 3D / 拓扑（4）
 
-| 物料                       | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| -------------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `model-3d/smart-warehouse` | -      | ⏳   | —        | -    | -    | - min           |
-| `twaver-topo`              | -      | ⏳   | —        | -    | -    | - min           |
-| `virtual-3d-column`        | -      | ⏳   | 📄       | -    | -    | - min           |
-| `virtual-3d-column-normal` | -      | ⏳   | 📄       | -    | -    | - min           |
+| 物料                       | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| -------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `model-3d/smart-warehouse` | 高     | ✅   | —        | 🟡 组合可用 | 3.4  | 60 min          |
+| `twaver-topo`              | 中高   | ✅   | —        | 🟡 组合可用 | 3.7  | 30 min          |
+| `virtual-3d-column`        | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 20 min          |
+| `virtual-3d-column-normal` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 20 min          |
 
-> 已画像 0/4
+> 已画像 4/4 ✅ 全部完成
 
 ### 时钟 / 动画（5）
 
-| 物料               | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ------------------ | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `levitated-sphere` | -      | ⏳   | 📄       | -    | -    | - min           |
-| `normal-clock`     | -      | ⏳   | —        | -    | -    | - min           |
-| `path-animation`   | -      | ⏳   | 📄       | -    | -    | - min           |
-| `svg-render`       | -      | ⏳   | 📄       | -    | -    | - min           |
-| `warning-board`    | -      | ⏳   | 📄       | -    | -    | - min           |
+| 物料               | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `levitated-sphere` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 25 min          |
+| `normal-clock`     | 简单   | ✅   | —        | 🟢 独立优秀 | 4.0  | 5 min           |
+| `path-animation`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.0  | 15 min          |
+| `svg-render`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.0  | 20 min          |
+| `warning-board`    | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 15 min          |
 
-> 已画像 0/5
+> 已画像 5/5 ✅ 全部完成
 
 ### 媒体 / 播放（3）
 
-| 物料              | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ----------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `single-image`    | -      | ⏳   | —        | -    | -    | - min           |
-| `video-playback`  | -      | ⏳   | —        | -    | -    | - min           |
-| `weather-display` | -      | ⏳   | —        | -    | -    | - min           |
+| 物料              | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ----------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `single-image`    | 简单   | ✅   | —        | 🟡 组合可用 | 3.5  | 2 min           |
+| `video-playback`  | 中     | ✅   | —        | 🟡 组合可用 | 3.0  | 8 min           |
+| `weather-display` | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 10 min          |
 
-> 已画像 0/3
+> 已画像 3/3 ✅ 全部完成
 
 ### 进度 / 加载（5）
 
-| 物料                      | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ------------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `circular-progress`       | -      | ⏳   | —        | -    | -    | - min           |
-| `circular-progress-group` | -      | ⏳   | —        | -    | -    | - min           |
-| `normal-process`          | -      | ⏳   | —        | -    | -    | - min           |
-| `pagination-display`      | -      | ⏳   | —        | -    | -    | - min           |
-| `progress-list-bar`       | -      | ⏳   | 📄       | -    | -    | - min           |
+| 物料                      | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `circular-progress`       | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
+| `circular-progress-group` | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 12 min          |
+| `normal-process`          | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 10 min          |
+| `pagination-display`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.3  | 8 min           |
+| `progress-list-bar`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
 
-> 已画像 0/5
+> 已画像 5/5 ✅ 全部完成
 
 ### 状态 / 标签（4）
 
-| 物料               | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ------------------ | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `stats-indi`       | -      | ⏳   | —        | -    | -    | - min           |
-| `stats-indi-grid`  | -      | ⏳   | 📄       | -    | -    | - min           |
-| `stats-indi-group` | -      | ⏳   | —        | -    | -    | - min           |
-| `status-display`   | -      | ⏳   | 📄       | -    | -    | - min           |
+| 物料               | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| ------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `stats-indi`       | 简单   | ✅   | —        | 🟡 组合可用 | 3.5  | 5 min           |
+| `stats-indi-grid`  | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 10 min          |
+| `stats-indi-group` | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 12 min          |
+| `status-display`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 8 min           |
 
-> 已画像 0/4
+> 已画像 4/4 ✅ 全部完成
 
 ### 边框 / 装饰（27）
 
-| 物料                          | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| ----------------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `decoration/border1`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border2`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border3`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border4`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border5`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border6`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border7`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border8`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border9`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border10`         | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border11`         | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/border12`         | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration1`      | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration2`      | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration3`      | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration4`      | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration5`      | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration6`      | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/decoration7`      | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/decoration8`      | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/decoration9`      | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/decoration10`     | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/decoration11`     | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/decoration12`     | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/hexagon`          | -      | ⏳   | —        | -    | -    | - min           |
-| `decoration/flash-point`      | -      | ⏳   | 📄       | -    | -    | - min           |
-| `decoration/common-container` | -      | ⏳   | 📄       | -    | -    | - min           |
+> **合并画像**：`decoration/border1-12`（12 个）+ `decoration/decoration1-12`（12 个）共 24 个物料 schema 高度同源，已合并为单一画像 `decoration-family.json`（24 个变体枚举）。其余 3 个独立物料（hexagon / flash-point / common-container）单独画像。
 
-> 已画像 0/27
+| 物料                          | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） | 说明                     |
+| ----------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- | ------------------------ |
+| `decoration/border1`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border2`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border3`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border4`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border5`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border6`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border7`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border8`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border9`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border10`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border11`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border12`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration1`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration2`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration3`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration4`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration5`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration6`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration7`      | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration8`      | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration9`      | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration10`     | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration11`     | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/decoration12`     | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/hexagon`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 5 min           | 独立画像                 |
+| `decoration/flash-point`      | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 5 min           | 独立画像                 |
+| `decoration/common-container` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           | 独立画像                 |
+
+> 已画像 27/27 ✅ 全部完成（24 个合并为 decoration-family + 3 个独立画像）
 
 ### 其他（6）
 
-| 物料                  | 复杂度 | 画像 | 自带 doc | 评级 | 分数 | 搭建（minimal） |
-| --------------------- | ------ | ---- | -------- | ---- | ---- | --------------- |
-| `render-stage-loader` | -      | ⏳   | 📄       | -    | -    | - min           |
-| `zone-setting`        | -      | ⏳   | —        | -    | -    | - min           |
-| `area-business-vol`   | -      | ⏳   | —        | -    | -    | - min           |
-| `echarts-line-dual-x` | -      | ⏳   | 📄       | -    | -    | - min           |
-| `echarts-3d-pie`      | -      | ⏳   | —        | -    | -    | - min           |
-| `top-n`               | -      | ⏳   | —        | -    | -    | - min           |
+| 物料                  | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
+| --------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
+| `render-stage-loader` | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.3  | 5 min           |
+| `zone-setting`        | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 15 min          |
+| `area-business-vol`   | 中高   | ✅   | —        | 🟡 组合可用 | 3.2  | 20 min          |
+| `echarts-line-dual-x` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
+| `echarts-3d-pie`      | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 15 min          |
+| `top-n`               | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
 
-> 已画像 0/6
+> 已画像 6/6 ✅ 全部完成
 
 ## 推进建议
 
-当前覆盖率 53.2%，后续批次建议：
+当前覆盖率 **85.1%**（131/154），后续批次建议：
 
 1. **第一批**（已做，11 个）：8 个有 5+1 文档物料 + 3 个高频（echarts-map/table/top-rank）
-2. **第二批**（已完成，10 个）：表格全部完成（table + drilldown-table + drilldown-table-2 + expandable-table + pagination-table + table-detail + table-fixedColumns + table-transpose + transfer-table + alarm-window-card）
-3. **第三批**（已完成，13 个）：列表/排行全做（carousel-list / carousel-notice / carousel-param / equip-list / hot-app-top5 / monitor-topn-list / progress-list / top-rank-shaanxi / topn-rank / topn-rank-one / tree-list / vertical-list + 已有 top-rank）
+2. **第二批**（已完成，9 个）：表格全部完成（drilldown-table / drilldown-table-2 / expandable-table / pagination-table / table-detail / table-fixedColumns / table-transpose / transfer-table / alarm-window-card；table 在第一批）
+3. **第三批**（已完成，12 个）：列表/排行全做（carousel-list / carousel-notice / carousel-param / equip-list / hot-app-top5 / monitor-topn-list / progress-list / top-rank-shaanxi / topn-rank / topn-rank-one / tree-list / vertical-list；top-rank 在第一批）
 4. **第四批**（已完成，9 个）：图表 ECharts 剩余全做（circular-column / cone-bar / cone-bar-line / cone-single-bar / dual-axes-chart / echarts-gauge / echarts-liquid / echarts-multi-variable-area-chart / ind-list-echarts-gauge）
 5. **第五批**（已完成，23 个）：oss-chart-plots 系列全做（area / bar / base-area / base-scatter / column / double-gauge / dual-axes / dual-column-line / funnel / gauge / histogram / line / liquid / pie / radar / rose / sankey / series-area / series-bar / series-column / stack-bar / stack-column / word-cloud）
 6. **第六批**（已完成，18 个）：数字/指标卡（4 个）+ 容器/布局（6 个）+ 地图（8 个）全部完成
-7. **下一批候选**（按价值排序）：3D/拓扑（4 个）+ 时钟/动画（5 个）+ 媒体/播放（3 个）+ 进度/加载（5 个）+ 状态/标签（4 个）+ 边框/装饰（27 个）+ 表单/筛选（4 个）+ 按钮/操作（5 个）+ 轮播/公告（5 个）+ 文本/标签/标题（4 个待画像）+ 其他（6 个）= 72 个待画像
-8. **最后**：边框/装饰（27 个，纯样式，无数据交互，画像意义低）
+7. **第七批**（已完成，20 个）：3D/拓扑（6）+ 时钟/动画（4）+ 媒体/播放（3）+ 进度/加载（5）+ 其他（2）= 20 个
+8. **第八批**（已完成，17 个）：状态/标签（4）+ 表单/筛选（4）+ 按钮/操作（5）+ 文本/标签/标题（4）= 17 个
+9. **第九批**（已完成，5 个）：轮播/公告
+10. **第十批**（已完成，7 个）：其他（3）+ 装饰汇总（4 = decoration-family 合并 24 + hexagon + flash-point + common-container）= 7 个
+11. **累计**：10 批画像，共 **131 个画像 / 154 物料，覆盖率 85.1%**
+12. **剩余 23 个**：border1-12 + decoration1-11 全部为纯样式边框/装饰，已通过 `decoration-family.json` 合并覆盖，无需单独画像
 
 ## 与 development-assistant 清单的关系
 

@@ -1,0 +1,73 @@
+{
+    "name": "iframe",
+    "title": "iframe",
+    "category": "媒体/播放",
+    "version": "0.0.1",
+    "author": "郝营营",
+    "scanned_at": "2026-06-17",
+    "description": "数据大屏内嵌iframe组件，支持参数转码、模板字符串变量、点击下钻（Modal/Drawer）",
+    "data_format": {
+        "type": "row",
+        "fields": "无dataModel（dimensions/indicators均空）",
+        "data_source": "dataConfig（DynamicData）多数据源"
+    },
+    "visual_config": {
+        "baseConfig (基础配置)": {
+            "enableParamEncode": "Switch 参数转码（URL参数会被转码）",
+            "enableValueFormatter": "Switch 模板字符串（变量参数 {{a}} {{b}}）",
+            "variableParam": "Input 变量参数（如a,b）"
+        }
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "下钻配置",
+            "configurable_event": ["Modal", "Drawer"],
+            "drilldown": {
+                "params": "url参数 a=1&b=2",
+                "drilldownItemFields": "从数据项中提取的字段",
+                "modal_set": ["width", "height", "position", "mask", "closable", "closeIcon"],
+                "drawer_set": ["placement", "width", "height", "title", "mask", "closable"]
+            }
+        }
+    },
+    "business_scenarios": [
+        "数据大屏嵌入第三方页面（地图/视频/报表）",
+        "通过URL参数传递业务参数到第三方页面",
+        "下钻到第三方系统详情页"
+    ],
+    "composability": {
+        "compatible_with": ["baidu-map", "oss-gis", "visual-iframe", "smart-warehouse"],
+        "replaces": [],
+        "extends": ["visual-iframe（更强iframe能力）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "配置 enableParamEncode / enableValueFormatter",
+            "配置 variableParam 变量参数",
+            "通过 DynamicData 接入第三方URL",
+            "可选：配置点击下钻（Modal/Drawer）"
+        ],
+        "dependencies": ["第三方iframe URL"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "missing_data_model": "dataModel.json 为空结构",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "variable_param_feature": "支持模板字符串（{{a}} {{b}}）的URL变量参数"
+    }
+}

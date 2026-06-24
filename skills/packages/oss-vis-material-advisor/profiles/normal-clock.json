@@ -1,0 +1,94 @@
+{
+    "name": "normal-clock",
+    "title": "时钟",
+    "category": "时钟/动画",
+    "version": "0.0.1",
+    "author": "yangxingxiang",
+    "scanned_at": "2026-06-17",
+    "description": "纯前端时钟组件，支持12种时间格式（年月日时分秒/中文/斜杠等），可启用整点传参（dispatch时间参数）",
+    "data_format": {
+        "type": "static",
+        "source": "前端 moment()（无需数据接入）",
+        "format": "string 时间字符串",
+        "data_model": "无 dataModel.json",
+        "external_input": "可选接收设计器时区参数"
+    },
+    "visual_config": {
+        "text": {
+            "timeFormat": {
+                "type": "enum",
+                "options": [
+                    "YYYY/MM/DD HH:mm:ss",
+                    "YYYY-MM-DD HH:mm:ss",
+                    "YYYY年MM月DD日 HH:mm:ss",
+                    "YYYY/MM/DD HH:mm",
+                    "YYYY-MM-DD HH:mm",
+                    "YYYY年MM月DD日 hh:mm",
+                    "YYYY/MM/DD HH",
+                    "YYYY-MM-DD HH",
+                    "YYYY年MM月DD日 HH",
+                    "YYYY/MM/DD",
+                    "YYYY-MM-DD",
+                    "YYYY年MM月DD日",
+                    "HH:mm:ss"
+                ],
+                "default": "YYYY-MM-DD HH:mm:ss"
+            },
+            "isTimeParams": { "type": "boolean", "description": "启用整点传参" },
+            "timeParamsFormat": "传参格式（同timeFormat）",
+            "timeParamsDate": "enum 00-23点",
+            "textStyle": {
+                "fontSize": "NumberPicker 字号",
+                "color": "ColorPicker 颜色（纯色）",
+                "isGradient": "Switch 渐变",
+                "fontFamily": "GLOBAL_FONTS 字体",
+                "fontWeight": "FONT_WEIGHT 粗细"
+            }
+        }
+    },
+    "interactions": {
+        "tick": {
+            "type": "dispatch",
+            "description": "启用整点传参时，到达 timeParamsDate 指定的小时数派发时间参数",
+            "configurable_event": ["Dispatch"]
+        }
+    },
+    "business_scenarios": [
+        "数据大屏顶部时间显示",
+        "跨时区业务时间显示",
+        "整点触发业务逻辑（每整点调度）"
+    ],
+    "composability": {
+        "compatible_with": ["digital-flop", "top-rank", "echarts-line-dual-x"],
+        "replaces": ["iframe 嵌入第三方时钟（更轻量）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟢 独立优秀",
+        "score": 4.0,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.5,
+            "data_contract_clarity": 4.0,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "极低",
+        "setup_steps": [
+            "选择 timeFormat 格式",
+            "可选：启用整点传参（isTimeParams + timeParamsFormat + timeParamsDate）",
+            "配置文本样式（颜色/字号/字体）"
+        ],
+        "dependencies": ["moment"],
+        "estimated_minutes": 5
+    },
+    "_validation_notes": {
+        "missing_data_model": "无 dataModel.json（无需数据）",
+        "doc_status": "无 doc/README.md",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "valuable_feature": "整点传参功能可触发其他组件的整点刷新"
+    }
+}

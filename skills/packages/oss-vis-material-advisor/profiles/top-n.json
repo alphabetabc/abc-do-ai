@@ -1,0 +1,68 @@
+{
+    "name": "top-n",
+    "title": "通用TOPN排名",
+    "category": "列表/排行",
+    "version": "0.0.1",
+    "author": "ly",
+    "scanned_at": "2026-06-17",
+    "description": "通用TOPN排名组件（rank + name + value1/unit1 + value2/unit2 + compare + process），支持双指标+比较状态+进度条",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "rank", "type": "String", "required": true, "description": "排名（实际Number）", "rowProperties": ["format"] },
+            { "name": "name", "type": "String", "required": true, "description": "名称", "rowProperties": ["format"] },
+            { "name": "value1", "type": "String", "required": true, "description": "值（实际Number）", "rowProperties": ["format"] },
+            { "name": "unit1", "type": "String", "description": "单位", "rowProperties": ["format"] },
+            { "name": "value2", "type": "String", "description": "第二数值（实际Number）", "rowProperties": ["format"] },
+            { "name": "unit2", "type": "String", "description": "第二单位", "rowProperties": ["format"] },
+            { "name": "compare", "type": "String", "description": "比较状态（上升/下降/持平）", "rowProperties": ["format"] },
+            { "name": "process", "type": "String", "description": "进度条数值（实际Number）", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸/样式 + 排名样式/进度条样式"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互"
+    },
+    "business_scenarios": [
+        "通用TOPN排名（业务/区域/产品）",
+        "双指标+比较排名",
+        "带进度条的排名"
+    ],
+    "composability": {
+        "compatible_with": ["table", "drilldown-table", "echarts-bar", "baidu-map"],
+        "replaces": ["top-rank（需要双指标时）", "topn-rank", "topn-rank-one"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 4.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备TOPN数据（rank + name + value1 + value2 + compare + process）",
+            "配置样式（排名/进度条/比较状态）"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 12
+    },
+    "_validation_notes": {
+        "data_type_issue": "rank/value1/value2/process 声明为 String，应为 Number",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "compare_state": "compare 字段驱动上升/下降/持平图标"
+    }
+}

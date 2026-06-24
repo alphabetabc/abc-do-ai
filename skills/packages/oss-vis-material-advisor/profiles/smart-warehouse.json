@@ -1,0 +1,82 @@
+{
+    "name": "smart-warehouse",
+    "title": "智慧园区",
+    "category": "3D/拓扑",
+    "version": "0.0.1",
+    "author": "谢名伟",
+    "scanned_at": "2026-06-17",
+    "description": "基于 fedx-3d（Three.js） 的 3D 智慧园区模型，支持外景/仓库双场景切换、相机位置、对象交互与Tooltip，power by @fedx-3d/threejs",
+    "data_format": {
+        "type": "static",
+        "source": "@fedx-3d/threejs loader + designer.env.visualMaterialConfig.url（外部模型资源）",
+        "format": "3D模型（GLTF/OBJ） + 贴图资源",
+        "data_model": "无 dataModel.json，模型资源由 visualMaterialConfig 提供",
+        "interaction_data": "运行时通过 OBJECT_UI_INTERACTION 标识可交互对象（来自modelAssets）"
+    },
+    "visual_config": {
+        "designerDev": {
+            "tooltip": "设计器是否显示tooltip",
+            "modelSwitch": "模型切换（0外景/1仓库）"
+        },
+        "building01 (外景)": {
+            "cameraPosition": { "x": "number", "y": "number", "z": "number", "description": "外景相机位置" }
+        },
+        "building02 (仓库)": {
+            "cameraPosition": { "x/y/z": "number", "description": "仓库相机位置" }
+        },
+        "tooltip": {
+            "enable": "启用tooltip",
+            "position": { "left": "number", "top": "number" }
+        }
+    },
+    "interactions": {
+        "scene_switch": {
+            "type": "internal",
+            "description": "通过模型切换（0/1）在外景与仓库之间切换",
+            "camera_target": "warehouse.controlTarget（仓库对焦点）"
+        },
+        "object_click": {
+            "type": "tooltip",
+            "description": "点击可交互对象（OBJECT_UI_INTERACTION）显示Tooltip"
+        }
+    },
+    "business_scenarios": [
+        "智慧园区/智慧工厂3D展示大屏",
+        "仓库/设备3D漫游监控",
+        "数字孪生场景原型"
+    ],
+    "composability": {
+        "compatible_with": ["echarts-3d-pie", "digital-flop", "top-rank", "drilldown-table"],
+        "replaces": [],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "高",
+        "setup_steps": [
+            "部署 fedx-3d 模型资源（GLTF/贴图）到 visualMaterialUrl",
+            "配置 designerDev tooltip 与 modelSwitch",
+            "配置外景/仓库相机位置（cameraPosition x/y/z）",
+            "配置Tooltip位置与样式"
+        ],
+        "dependencies": ["@fedx-3d/threejs", "3D模型资源（GLTF/OBJ）", "贴图资源"],
+        "estimated_minutes": 180
+    },
+    "_validation_notes": {
+        "external_dependency": "强依赖 fedx-3d 模型资源与 visualMaterialConfig.url（外部资源）",
+        "missing_data_model": "无 dataModel.json，所有 3D 模型通过静态资源加载",
+        "doc_status": "无 doc/README.md",
+        "model_complexity": "3D 模型配置需美术/前端协作"
+    }
+}

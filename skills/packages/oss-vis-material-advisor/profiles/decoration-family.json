@@ -1,0 +1,64 @@
+{
+    "name": "decoration",
+    "title": "装饰系列（decoration1-12 / border1-12）",
+    "category": "装饰/边框",
+    "version": "0.0.1",
+    "author": "haoyingying/xmw/...",
+    "scanned_at": "2026-06-17",
+    "description": "装饰系列物料汇总（共24个：decoration1-12 + border1-12），纯样式视觉装饰（无数据交互），用于大屏装饰",
+    "data_format": {
+        "type": "static",
+        "data_model": "无 dataModel.json（所有装饰物料均无数据）",
+        "_note": "纯装饰组件，无业务数据"
+    },
+    "visual_config": {
+        "common": "基础位置/尺寸 + 装饰图形（颜色/线型/动画）",
+        "decoration1-12": "12种装饰图形（不同风格）",
+        "border1-12": "12种边框装饰（不同风格）"
+    },
+    "interactions": {},
+    "business_scenarios": [
+        "大屏模块装饰",
+        "标题区/侧边/底部装饰",
+        "科技感背景装饰"
+    ],
+    "composability": {
+        "compatible_with": ["任何组件（作为装饰）"],
+        "replaces": ["自定义SVG装饰"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.0,
+        "breakdown": {
+            "business_description": 2.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "选择合适的装饰/边框类型",
+            "配置位置/尺寸/颜色"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 3
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "所有装饰物料的 oss-material.json 的 dataModel 字段均为空字符串",
+        "doc_status": "无 doc/README.md",
+        "family_material": "24个装饰物料（decoration1-12 + border1-12）",
+        "value_low": "纯装饰组件，无数据交互能力，画像价值较低",
+        "merge_recommendation": "建议在 advisor 维度合并为 1 个 '装饰系列' 画像（schema 保持独立）"
+    },
+    "_coverage": {
+        "decoration1-12": "12个",
+        "border1-12": "12个",
+        "total": 24,
+        "_note": "本画像代表全部24个装饰物料的汇总，单物料画像因价值低未单独生成"
+    }
+}

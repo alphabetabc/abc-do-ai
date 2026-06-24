@@ -1,0 +1,76 @@
+{
+    "name": "tab-list-arc",
+    "title": "TAB列表",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "郝营营",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏弧形TAB列表组件（带前缀图标），支持标题距底/容器高度/行高/渐变背景色（弧形效果）",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "tabId" },
+            { "name": "content", "type": "String", "required": true, "description": "名称" },
+            { "name": "icon", "type": "String", "description": "前缀图标" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "commonStyle (通用)": {
+            "size": "NumberPicker 尺寸",
+            "margin": "NumberPicker 边距",
+            "textStyle": "VisualTextStyle 文本",
+            "lineHeight": "NumberPicker 行高",
+            "tabTitleBottom": "NumberPicker 标题离底部距离",
+            "tabTitleHeight": "NumberPicker 标题容器高度",
+            "tabTitleLineHeight": "NumberPicker 标题行高",
+            "tabTitleGradientStart/End": "ColorPicker 渐变开始/结束颜色",
+            "backgroundRepeat": "enum 背景重复"
+        }
+    },
+    "interactions": {
+        "select": {
+            "type": "dispatch",
+            "description": "选中tab派发"
+        }
+    },
+    "business_scenarios": [
+        "弧形大屏TAB（炫酷场景）",
+        "智能驾驶舱导航",
+        "带渐变装饰的tab"
+    ],
+    "composability": {
+        "compatible_with": ["tab-list", "tab-list-2", "tab-list-static"],
+        "replaces": ["tab-list（弧形场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备tab数据（id + content + icon）",
+            "配置 tabTitle 系列（Bottom/Height/LineHeight）",
+            "配置渐变颜色（tabTitleGradientStart/End）",
+            "配置 commonStyle 基础样式"
+        ],
+        "dependencies": ["前缀图标（PNG）"],
+        "estimated_minutes": 18
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "arc_design": "弧形样式需精确调参（tabTitleHeight/LineHeight/Gradient）"
+    }
+}

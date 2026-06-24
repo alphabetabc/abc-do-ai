@@ -1,0 +1,62 @@
+{
+    "name": "video-playback",
+    "title": "视频播放",
+    "category": "媒体/播放",
+    "version": "0.0.1",
+    "author": "孙寰哲",
+    "scanned_at": "2026-06-17",
+    "description": "数据大屏内嵌视频播放器组件，支持视频地址、控制栏、循环播放配置（依赖浏览器Flash/rtmp/m3u8协议）",
+    "data_format": {
+        "type": "static",
+        "source": "纯前端 videoUrl 配置",
+        "format": "string 视频URL",
+        "data_model": "无 dataModel.json",
+        "protocols": ["flash", "rtmp", "m3u8"]
+    },
+    "visual_config": {
+        "style (样式)": {
+            "videoUrl": "Input 视频地址（需支持flash/rtmp/m3u8）",
+            "videoControls": "Switch 控制栏",
+            "videoLoop": "Switch 循环播放"
+        }
+    },
+    "interactions": {},
+    "business_scenarios": [
+        "数据大屏嵌入监控视频",
+        "产品演示视频",
+        "园区/工厂实时监控画面"
+    ],
+    "composability": {
+        "compatible_with": ["baidu-map", "smart-warehouse", "oss-gis", "iframe"],
+        "replaces": ["iframe（专用视频场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.0,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 2.5,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "配置 videoUrl 视频地址",
+            "配置 videoControls 控制栏",
+            "配置 videoLoop 循环播放"
+        ],
+        "dependencies": ["浏览器需支持flash/rtmp/m3u8协议（建议谷歌双核）"],
+        "estimated_minutes": 5
+    },
+    "_validation_notes": {
+        "missing_data_model": "无 dataModel.json",
+        "doc_status": "无 doc/README.md",
+        "browser_dependency": "强依赖浏览器协议支持",
+        "schema_simple": "schema 极简（仅3个配置项）"
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "name": "stats-indi-group",
+    "title": "指标翻牌器组（多行）",
+    "category": "数字/指标卡",
+    "version": "0.0.1",
+    "author": "yanzhifeng",
+    "scanned_at": "2026-06-17",
+    "description": "多行指标翻牌器组（每行6个指标，最多6行36个指标），强定制陕西联通左屏列表",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id_1, id_2, ..., id_6", "type": "STRING", "description": "每行指标id" },
+            { "name": "name_1, name_2, ..., name_6", "type": "STRING", "description": "每行指标名" },
+            { "name": "value_1, value_2, ..., value_6", "type": "INTEGER", "description": "每行指标值" },
+            { "name": "unit_1, unit_2, ..., unit_6", "type": "STRING", "description": "每行单位" },
+            { "name": "icon_1, icon_2, ..., icon_6", "type": "STRING", "description": "每行图标名" },
+            { "name": "render_1, render_2, ..., render_6", "type": "number", "description": "每行级别" }
+        ],
+        "row_count": "单行（每行6个指标），多行结构",
+        "data_source": "DynamicData 多数据源",
+        "_note": "强定制：6列固定结构（_1 ~ _6 后缀）"
+    },
+    "visual_config": {
+        "config": "翻牌器样式（多行布局，每行6列）"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互"
+    },
+    "business_scenarios": [
+        "陕西联通左屏下方列表",
+        "多指标网格翻牌器",
+        "运维监控多指标面板"
+    ],
+    "composability": {
+        "compatible_with": ["stats-indi", "stats-indi-grid", "digital-flop"],
+        "replaces": ["stats-indi-grid（强定制6列场景）"],
+        "extends": ["stats-indi", "stats-indi-grid"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备6行×6列结构化数据（id_X/name_X/value_X/unit_X/icon_X/render_X）",
+            "配置翻牌器样式",
+            "（数据格式固定，业务接入需配合）"
+        ],
+        "dependencies": ["icon图标资源"],
+        "estimated_minutes": 18
+    },
+    "_validation_notes": {
+        "data_type_issue": "value 声明为 INTEGER，name/unit/icon 声明为 STRING",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "rigid_schema": "schema强定制：6列固定结构（_1~_6），无灵活扩展性"
+    }
+}

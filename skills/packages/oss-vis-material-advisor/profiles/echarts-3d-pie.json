@@ -1,0 +1,86 @@
+{
+    "name": "echarts-3d-pie",
+    "title": "伪3D饼环图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "author": "linyan",
+    "scanned_at": "2026-06-17",
+    "description": "基于 echarts-gl 实现的3D饼图/环形图，通过内部DiameterRatio控制透明中心比例，sectorHeight控制3D厚度",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "dimension_name", "type": "String", "required": true, "description": "维度名称（分类名）", "rowProperties": ["format"] },
+            { "name": "value", "type": "String", "required": true, "description": "指标值（数值，自动求和占比）", "rowProperties": ["format"] },
+            { "name": "unit", "type": "String", "description": "指标单位", "rowProperties": ["format"] },
+            { "name": "name", "type": "String", "description": "指标标题（Tooltip中显示）", "rowProperties": ["format"] },
+            { "name": "id", "type": "String", "description": "指标ID（点击事件回传）", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行（分类指标数）",
+        "data_source": "DynamicData 多数据源",
+        "_note": "description 指明『无需返回确切的百分比』，框架自动求和计算占比"
+    },
+    "visual_config": {
+        "chart": {
+            "internalDiameterRatio": { "type": "number", "default": 0, "range": "[0,1]", "description": "透明中心比例（0饼图/1空心圆环）" },
+            "sectorHeight": { "type": "number", "default": 20, "description": "扇区3D厚度" }
+        },
+        "pie": {
+            "customColors": { "type": "array", "x-component": "ColorGroup", "description": "扇区填充色（按数据顺序）" }
+        },
+        "legend": {
+            "show": { "type": "boolean", "default": true },
+            "type": { "type": "enum", "options": ["plain", "scroll"], "default": "plain" },
+            "icon": { "type": "enum", "options": ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"] },
+            "orient": { "type": "enum", "options": ["horizontal", "vertical"] },
+            "left / top / right / bottom": "string（像素/百分比/关键字）",
+            "textStyle": "VisualTextStyle"
+        },
+        "tooltip": "ECharts原生Tooltip（自动按name+value+unit拼接）"
+    },
+    "interactions": {
+        "click": {
+            "type": "dispatch",
+            "description": "点击扇区派发 onClickId / onClickName / onClickValue 三个字段",
+            "configurable_event": ["Modal", "Drawer"]
+        }
+    },
+    "business_scenarios": [
+        "业务分类构成分析（销售构成/用户构成）",
+        "占比/份额展示（带立体感）",
+        "数据大屏装饰性饼图"
+    ],
+    "composability": {
+        "compatible_with": ["drilldown-table", "digital-flop", "echarts-bar", "top-rank"],
+        "replaces": ["echarts-pie（需要立体感时）", "oss-chart-plots-pie"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备分类指标数据（dimension_name + value）",
+            "配置 customColors 扇区色板",
+            "配置 legend 类型与位置",
+            "配置点击下钻（Modal/Drawer）"
+        ],
+        "dependencies": ["echarts-gl"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "value 数据类型声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "replacement": "可被 oss-chart-plots-pie（更标准配置）替换"
+    }
+}

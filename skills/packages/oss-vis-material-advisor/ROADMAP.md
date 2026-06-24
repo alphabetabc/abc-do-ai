@@ -1,8 +1,8 @@
 ---
 title: 路线图与继续指南
 description: advisor skill 已完成的工作 + 接下来可做的事情 + 切换智能体/任务时的恢复指南
-version: 0.3
-last_updated: 2026-06-17
+version: 0.8
+last_updated: 2026-06-22
 audience: 任何接手的智能体 / 后续任务
 ---
 
@@ -10,35 +10,188 @@ audience: 任何接手的智能体 / 后续任务
 
 > 任何接手的智能体：先读本文，再决定做什么。所有状态以本文 + `materials-catalog.md` 为准。
 
-## 已完成（截至 2026-06-17）
+## 已完成（截至 2026-06-22）
 
 | # | 任务 | 交付物 |
 | --- | --- | --- |
 | 1 | 建立 skill 框架 | [SKILL.md](./SKILL.md)（主文档） |
 | 2 | 写 4 份规则 | `references/{profile-generation,rating-rules,composition-rules,cost-estimation}.md` |
 | 3 | 生成首批 11 个画像 | `profiles/{echarts-bar,echarts-pie,echarts-map,digital-flop,digital-card,bidirectional-progress,normal-label,free-layout-indicators-viewer,dock-menu,table,top-rank}.json` |
-| 4 | 写画像索引 | `profiles/README.md`（82 个画像总览 + 跨画像发现） |
+| 4 | 写画像索引 | `profiles/README.md`（131 个画像总览 + 跨画像发现） |
 | 5 | 写物料维护清单 | `materials-catalog.md`（154 个物料，按 18 分类组织） |
 | 6 | 写 catalog 自动生成脚本 | `scripts/gen-catalog.js`（含分类去重 + 覆盖校验） |
 | 7 | 跑通组合方案示范 | `examples/sales-dashboard.md`（销售大盘场景，3 个方案卡片） |
 | 8 | 写 PM 常见问题 | `FAQ.md`（选物料/组合/成本 16 个问题） |
 | 9 | 修复 catalog 一致性 | 去重 5 个跨分类物料 + 补全 `decoration/decoration1` + 增加自动校验 |
-| 10 | 生成第二批 10 个画像 | 表格类（drilldown-table / drilldown-table-2 / expandable-table / pagination-table / table-detail / table-fixedColumns / table-transpose / transfer-table / alarm-window-card） |
-| 11 | 生成第三批 13 个画像 | 列表/排行类（carousel-list / carousel-notice / carousel-param / equip-list / hot-app-top5 / monitor-topn-list / progress-list / top-rank-shaanxi / topn-rank / topn-rank-one / tree-list / vertical-list + 已有 top-rank） |
+| 10 | 生成第二批 9 个画像 | 表格类（drilldown-table / drilldown-table-2 / expandable-table / pagination-table / table-detail / table-fixedColumns / table-transpose / transfer-table / alarm-window-card） |
+| 11 | 生成第三批 12 个画像 | 列表/排行类（carousel-list / carousel-notice / carousel-param / equip-list / hot-app-top5 / monitor-topn-list / progress-list / top-rank-shaanxi / topn-rank / topn-rank-one / tree-list / vertical-list；top-rank 在第一批） |
 | 12 | 生成第四批 9 个画像 | 图表 ECharts 剩余（circular-column / cone-bar / cone-bar-line / cone-single-bar / dual-axes-chart / echarts-gauge / echarts-liquid / echarts-multi-variable-area-chart / ind-list-echarts-gauge） |
 | 13 | 生成第五批 23 个画像 | oss-chart-plots 系列（area / bar / base-area / base-scatter / column / double-gauge / dual-axes / dual-column-line / funnel / gauge / histogram / line / liquid / pie / radar / rose / sankey / series-area / series-bar / series-column / stack-bar / stack-column / word-cloud） |
 | 14 | 生成第六批 18 个画像 | 数字/指标卡（4）+ 容器/布局（6）+ 地图（8）= 18 个（business-quality / business-scale / indicator-display / number-level-indicate / ellipse-layout-indicator / free-layout-ind-progress / free-layout-indicator-group / nine-grid / scene-over-view-hlj / telescoping-board / baidu-map / baidu-map-unicom / geo-3d-map / geo-cascader / oss-chart-classify-map / oss-chart-fly-line-map / oss-chart-map / oss-gis） |
+| 15 | 生成第七批 20 个画像 | 3D/拓扑（6：echarts-3d-pie / virtual-3d-column / virtual-3d-column-normal / smart-warehouse / twaver-topo / levitated-sphere）+ 时钟/动画（4：normal-clock / path-animation / svg-render / warning-board）+ 媒体/播放（3：single-image / video-playback / weather-display）+ 进度/加载（5：circular-progress / circular-progress-group / normal-process / pagination-display / progress-list-bar）+ 其他（2：render-stage-loader / echarts-line-dual-x）= 20 个 |
+| 16 | 生成第八批 17 个画像 | 状态/标签（4：status-display / stats-indi / stats-indi-group / stats-indi-grid）+ 表单/筛选（4：popover-check / popover-checkparam / query-form-group / range-picker）+ 按钮/操作（5：custom-request-button / export-btn / ghost-btn / iframe / visual-iframe）+ 文本/标签/标题（4：label-text / message-distribute / textarea-label / description-table）= 17 个 |
+| 17 | 生成第九批 5 个画像 | 轮播/公告（5：carousel-image-list / tab-list / tab-list-2 / tab-list-arc / tab-list-static） |
+| 18 | 生成第十批 7 个画像 | 其他（3：area-business-vol / zone-setting / top-n）+ 装饰汇总（4：decoration-family 合并 24 + hexagon + flash-point + common-container）= 7 个 |
+| 19 | 修复 echarts-3d-pie JSON 解析错误 | 替换 `_note` 中的中文全角双引号 → 中文方头括号 |
 
 ## 当前画像覆盖率
 
-| 维度        | 数据        |
-| ----------- | ----------- |
-| 物料总数    | **154**     |
-| 已画像      | 82（53.2%） |
-| 🟢 独立优秀 | 18          |
-| 🟡 组合可用 | 64          |
-| 🔴 组合复杂 | 0           |
-| ⚫ 不建议   | 0           |
+| 维度        | 数据             |
+| ----------- | ---------------- |
+| 物料总数    | **154**          |
+| 已画像      | 131（85.1%）     |
+| 待画像      | 23（14.9%）      |
+| 🟢 独立优秀 | 19               |
+| 🟡 组合可用 | 112              |
+| 🔴 组合复杂 | 0                |
+| ⚫ 不建议   | 0                |
+
+> **剩余 23 个**：border1-12 + decoration1-11 = 23 个纯样式边框/装饰，已通过 `decoration-family.json` 合并覆盖，无需单独画像。
+
+## 第七批画像 · 完成情况（20/20 ✅）
+
+### 6 个 3D/拓扑
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `echarts-3d-pie` | 中 | 🟡 组合可用 | 3.5 | 15 min |
+| 2 | `virtual-3d-column` | 高 | 🟡 组合可用 | 3.5 | 20 min |
+| 3 | `virtual-3d-column-normal` | 高 | 🟡 组合可用 | 3.3 | 20 min |
+| 4 | `smart-warehouse` | 高 | 🟡 组合可用 | 3.4 | 60 min |
+| 5 | `twaver-topo` | 中高 | 🟡 组合可用 | 3.7 | 30 min |
+| 6 | `levitated-sphere` | 中 | 🟡 组合可用 | 3.6 | 25 min |
+
+### 4 个时钟/动画
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `normal-clock` | 简单 | 🟢 独立优秀 | 4.0 | 5 min |
+| 2 | `path-animation` | 中 | 🟡 组合可用 | 3.0 | 15 min |
+| 3 | `svg-render` | 中 | 🟡 组合可用 | 3.0 | 20 min |
+| 4 | `warning-board` | 中 | 🟡 组合可用 | 3.6 | 15 min |
+
+### 3 个媒体/播放
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `single-image` | 简单 | 🟡 组合可用 | 3.5 | 2 min |
+| 2 | `video-playback` | 中 | 🟡 组合可用 | 3.0 | 8 min |
+| 3 | `weather-display` | 中 | 🟡 组合可用 | 3.3 | 10 min |
+
+### 5 个进度/加载
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `circular-progress` | 中 | 🟡 组合可用 | 3.5 | 8 min |
+| 2 | `circular-progress-group` | 中 | 🟡 组合可用 | 3.6 | 12 min |
+| 3 | `normal-process` | 中 | 🟡 组合可用 | 3.3 | 10 min |
+| 4 | `pagination-display` | 简单 | 🟡 组合可用 | 3.3 | 8 min |
+| 5 | `progress-list-bar` | 中 | 🟡 组合可用 | 3.5 | 10 min |
+
+### 2 个其他（第七批）
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `render-stage-loader` | 简单 | 🟡 组合可用 | 3.3 | 5 min |
+| 2 | `echarts-line-dual-x` | 中 | 🟡 组合可用 | 3.5 | 10 min |
+
+### 第七批核心发现
+
+1. **3D/拓扑分 4 大引擎**：echarts-gl / fedx-3d / twaver / Three.js
+2. **normal-clock 是第七批唯一 🟢 A 评级**：12 种时间格式 + 刻度数/角度独立配置
+3. **video-playback 受限最大**：URL 必须 HTTPS（浏览器自动播放策略）
+4. **circular-progress / circular-progress-group 配套使用**
+5. **5+1 文档覆盖**（20 个）：normal-clock ✅，其余 19 个 ❌
+
+## 第八批画像 · 完成情况（17/17 ✅）
+
+### 4 个状态/标签
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `status-display` | 中 | 🟡 组合可用 | 3.4 | 8 min |
+| 2 | `stats-indi` | 简单 | 🟡 组合可用 | 3.5 | 5 min |
+| 3 | `stats-indi-group` | 中 | 🟡 组合可用 | 3.3 | 12 min |
+| 4 | `stats-indi-grid` | 中 | 🟡 组合可用 | 3.3 | 10 min |
+
+### 4 个表单/筛选
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `popover-check` | 中 | 🟡 组合可用 | 3.5 | 8 min |
+| 2 | `popover-checkparam` | 中 | 🟡 组合可用 | 3.6 | 10 min |
+| 3 | `query-form-group` | 中 | 🟡 组合可用 | 3.5 | 15 min |
+| 4 | `range-picker` | 简单 | 🟡 组合可用 | 3.4 | 5 min |
+
+### 5 个按钮/操作
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `custom-request-button` | 中 | 🟢 独立优秀 | 4.0 | 8 min |
+| 2 | `export-btn` | 简单 | 🟡 组合可用 | 3.2 | 6 min |
+| 3 | `ghost-btn` | 简单 | 🟡 组合可用 | 3.4 | 3 min |
+| 4 | `iframe` | 简单 | 🟡 组合可用 | 3.4 | 5 min |
+| 5 | `visual-iframe` | 中 | 🟡 组合可用 | 3.5 | 8 min |
+
+### 4 个文本/标签/标题
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `label-text` | 简单 | 🟡 组合可用 | 3.2 | 3 min |
+| 2 | `description-table` | 中 | 🟡 组合可用 | 3.3 | 8 min |
+| 3 | `textarea-label` | 简单 | 🟡 组合可用 | 3.3 | 5 min |
+| 4 | `message-distribute` | 中 | 🟡 组合可用 | 3.4 | 10 min |
+
+### 第八批核心发现
+
+1. **custom-request-button 是第八批唯一 🟢 A 评级**：API 请求 + 订阅 + loading 状态自管理
+2. **表单/筛选类全部缺 5+1 文档**（4/4）
+3. **iframe 双胞胎**：iframe vs visual-iframe（visual-iframe 多 alarmLink）
+4. **stats-indi 与 digital-flop 高度同质**：简化版数字卡
+
+## 第九批画像 · 完成情况（5/5 ✅）
+
+### 5 个轮播/公告
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `carousel-image-list` | 中 | 🟡 组合可用 | 3.5 | 10 min |
+| 2 | `tab-list` | 中 | 🟡 组合可用 | 3.5 | 10 min |
+| 3 | `tab-list-2` | 中 | 🟡 组合可用 | 3.5 | 12 min |
+| 4 | `tab-list-arc` | 中高 | 🟡 组合可用 | 3.4 | 15 min |
+| 5 | `tab-list-static` | 中 | 🟡 组合可用 | 3.5 | 8 min |
+
+### 第九批核心发现
+
+1. **4 个 tab-list + 1 个 carousel-image-list 共用 tabData + activeIndex 结构**
+2. **tab-list-arc 唯一弧形变体**
+3. **5+1 文档覆盖**（5 个）：0/5 有 5+1，全部缺失
+
+## 第十批画像 · 完成情况（7 个画像覆盖 30 个物料 ✅）
+
+### 3 个其他（第十批）
+
+| # | 物料 | 复杂度 | 评级 | 分数 | 搭建 |
+|---|------|--------|------|------|------|
+| 1 | `area-business-vol` | 中高 | 🟡 组合可用 | 3.2 | 20 min |
+| 2 | `zone-setting` | 中 | 🟡 组合可用 | 3.3 | 15 min |
+| 3 | `top-n` | 中 | 🟡 组合可用 | 3.5 | 10 min |
+
+### 4 个装饰/容器（合并 24 个边框/装饰）
+
+| # | 画像 | 覆盖物料 | 评级 | 分数 | 搭建 |
+|---|------|---------|------|------|------|
+| 1 | `decoration-family` | border1-12 + decoration1-12 = 24 个 | 🟡 组合可用 | 3.0 | 2 min |
+| 2 | `hexagon` | hexagon | 🟡 组合可用 | 3.0 | 5 min |
+| 3 | `flash-point` | flash-point | 🟡 组合可用 | 3.0 | 5 min |
+| 4 | `common-container` | common-container | 🟡 组合可用 | 3.4 | 5 min |
+
+### 第十批核心发现
+
+1. **decoration-family 合并 24 个边框/装饰物料**：border1-12 + decoration1-12 共 24 个物料 schema 高度同源（仅颜色/路径不同），合并为 1 个画像 + 24 个变体枚举
+2. **common-container 是"通用容器"**：基础容器基底，复用率最高
+3. **area-business-vol + zone-setting 配对使用**
+4. **top-n 与 top-rank 系列重复**：topn-rank / topn-rank-one / top-rank / top-rank-shaanxi / top-n 共 5 个排名物料 schema 80% 同源（用户已确认保持独立）
 
 ## 第六批画像 · 完成情况（18/18 ✅）
 
@@ -204,9 +357,9 @@ audience: 任何接手的智能体 / 后续任务
 -   业务 TopN 大盘（候选：topn-rank-one + digital-flop + pagination-display）—— 可基于第三批新画像
 -   oss-chart-plots 大盘（候选：oss-chart-plots-series-area + oss-chart-plots-pie + topn-rank-one）—— 可基于第五批新画像
 
-### 选项 B：第七批画像（继续扩大覆盖）
+### 选项 B：第七-十批画像（继续扩大覆盖）✅ 已完成
 
-**目标**：把覆盖率从 53.2% 提升到 70%+
+**目标**：把覆盖率从 53.2% 提升到 85.1%
 
 **已完成**：
 
@@ -217,21 +370,14 @@ audience: 任何接手的智能体 / 后续任务
 -   ✅ 数字/指标卡全做（7 个）
 -   ✅ 容器/布局全做（8 个）
 -   ✅ 地图全做（8 个）
+-   ✅ 第七批 20 个（3D/拓扑 + 时钟/动画 + 媒体/播放 + 进度/加载 + 其他）
+-   ✅ 第八批 17 个（状态/标签 + 表单/筛选 + 按钮/操作 + 文本/标签/标题）
+-   ✅ 第九批 5 个（轮播/公告）
+-   ✅ 第十批 7 个（其他 + 装饰汇总，24 个边框/装饰合并为 decoration-family）
 
-**建议批次**（按复用率从高到低）：
+**实际产出**：49 个新画像 JSON（131 总画像 / 154 物料 = 85.1%）
 
-1. ✅ 表格全做（10 个）
-2. ✅ 列表/排行全做（13 个）
-3. ✅ 图表 ECharts 剩余（9 个）
-4. ✅ oss-chart-plots 系列（23 个）
-5. ✅ 数字/指标卡（7 个）
-6. ✅ 容器/布局（8 个）
-7. ✅ 地图（8 个）
-8. 3D / 拓扑（4 个）+ 时钟 / 动画（5 个）+ 媒体 / 播放（3 个）+ 进度 / 加载（5 个）+ 状态 / 标签（4 个）+ 其他（6 个）= 27 个
-9. 文本/标签/标题（4 个待画像）+ 表单/筛选（4 个）+ 按钮/操作（5 个）+ 轮播/公告（5 个）= 18 个
-10. 最后：边框/装饰（27 个，纯样式，画像意义低）
-
-**预计产出**：~72 个新画像 JSON
+**剩余 23 个**：border1-12 + decoration1-11 = 23 个纯样式边框/装饰，已通过 decoration-family.json 合并覆盖，无需单独画像。
 
 ### 选项 C：把 advisor 接入实际使用
 
@@ -258,6 +404,8 @@ audience: 任何接手的智能体 / 后续任务
 -   **D6**（基于第五批发现）：基于 oss-chart-plots 23 个画像输出 `oss-chart-plots-选型决策树.md`，辅助 PM 快速决策
 -   **D7**（基于第六批发现）：基于 8 个地图画像输出 `地图选型决策树.md`（4 大技术栈：百度系/3D系/ECharts系/GIS系）
 -   **D8**（基于第六批发现）：推动 4 个数字/指标卡（business-quality/business-scale/indicator-display/number-level-indicate）合并为 1 个 indicator-card + 4 种皮肤（**注**：与 D5 一样，schema 保持独立，合并建议仅在 advisor 维度提出）
+-   **D9**（基于第七批发现）：基于 6 个 3D/拓扑画像输出 `3D-拓扑选型决策树.md`（4 大引擎：echarts-gl/fedx-3d/twaver/Three.js）
+-   **D10**（基于第十批发现）：完成 24 个边框/装饰物料的合并画像 `decoration-family.json`（24 变体枚举），由 advisor 维度统一推荐，物料 schema 保持独立
 
 ## 智能体切换 / 任务恢复指南
 
@@ -266,7 +414,7 @@ audience: 任何接手的智能体 / 后续任务
 1. **本文件** `ROADMAP.md` — 了解"做到哪了"和"接下来做什么"
 2. **`SKILL.md`** — 了解 advisor 是什么、4 个任务（A/B/C/D）做什么
 3. **`materials-catalog.md`** — 了解 154 个物料的当前状态（画像覆盖 + 评级）
-4. **`profiles/README.md`** — 了解 82 个已画像的详情（第一批 11 + 第二批 10 + 第三批 13 + 第四批 9 + 第五批 23 + 第六批 18）
+4. **`profiles/README.md`** — 了解 131 个已画像的详情（第一批 11 + 第二批 9 + 第三批 12 + 第四批 9 + 第五批 23 + 第六批 18 + 第七批 20 + 第八批 17 + 第九批 5 + 第十批 7）
 5. **`FAQ.md`** — 看 PM 视角的常见问题
 6. **`examples/sales-dashboard.md`** — 看完整的组合方案示范
 7. **按需读 references/** — 做具体任务时再读对应规则文档

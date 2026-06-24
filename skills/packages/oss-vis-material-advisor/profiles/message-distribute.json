@@ -1,0 +1,65 @@
+{
+    "name": "message-distribute",
+    "title": "短信派发组件",
+    "category": "按钮/操作",
+    "version": "0.0.1",
+    "author": "冷涛",
+    "scanned_at": "2026-06-17",
+    "description": "短信派发组件（name + phonenum + description + chosen），支持选中人员并发送短信",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "name", "type": "String", "description": "姓名" },
+            { "name": "phonenum", "type": "String", "description": "手机号" },
+            { "name": "description", "type": "String", "description": "描述" },
+            { "name": "chosen", "type": "String", "description": "是否选中" }
+        ],
+        "row_count": "多行（多个人员）",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸 + 短信派发表格样式（多选）"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "select_users": "选择派发人员",
+        "send_message": "派发短信"
+    },
+    "business_scenarios": [
+        "应急通信短信派发",
+        "重保/告警人员通知",
+        "批量短信发送"
+    ],
+    "composability": {
+        "compatible_with": ["alarm-window-card", "zone-setting", "drilldown-table", "table"],
+        "replaces": ["iframe 嵌入短信平台"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备人员数据（name + phonenum + description）",
+            "配置短信派发表格样式",
+            "配置短信发送API"
+        ],
+        "dependencies": ["短信网关API", "人员数据API"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "domain_specific": "强定制于短信派发场景"
+    }
+}

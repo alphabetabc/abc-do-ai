@@ -1,0 +1,86 @@
+{
+    "name": "status-display",
+    "title": "状态显示",
+    "category": "状态/标签",
+    "version": "0.0.1",
+    "author": "sunhuanzhe",
+    "scanned_at": "2026-06-17",
+    "description": "基于条件映射的状态显示组件（图片+文字+数值），通过运算符（==/!=/>=/<=）把数据值映射到不同状态的图标/文字",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "ID" },
+            { "name": "name", "type": "String", "required": true, "description": "文字内容" },
+            { "name": "value", "type": "String", "required": true, "description": "数值" },
+            { "name": "level", "type": "String", "required": true, "description": "级别（用于条件映射）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源",
+        "_note": "value 实际为数值，但声明为 String"
+    },
+    "visual_config": {
+        "fieldSetting": {
+            "textFieldName": "string 文字字段名",
+            "valueFieldName": "string 数值字段名",
+            "levelFieldName": "string 级别字段名",
+            "fieldSet": {
+                "type": "array",
+                "items": { "operator": "enum: ==/!=/>=/<=", "value": "string 字段值", "img": "Background 图片" },
+                "description": "图片级别对应关系（条件 → 图片）"
+            }
+        },
+        "groupLayout (组合布局)": {
+            "flexDirection": "FLEX_DIRECTION",
+            "justifyContent": "JUSTIFYCONTENT",
+            "alignItems": "ALIGNITEMS",
+            "valueContentAlignItems": "enum: center/left/right"
+        },
+        "childLayout (子元素组合布局)": {
+            "marginTop/Bottom/Left/Right": "number 边距",
+            "textStyle": "VisualTextStyle"
+        }
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互"
+    },
+    "business_scenarios": [
+        "设备运行状态显示（正常/告警/离线）",
+        "订单状态展示（已支付/未支付/退款）",
+        "服务可用性状态监控"
+    ],
+    "composability": {
+        "compatible_with": ["digital-flop", "top-rank", "echarts-gauge", "drilldown-table"],
+        "replaces": ["ind-list-echarts-gauge（需静态映射时）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备数据（id/name/value/level）",
+            "配置 fieldSetting 字段名映射",
+            "配置 fieldSet 条件→图片映射（多组）",
+            "配置组合布局（方向/对齐/边距）"
+        ],
+        "dependencies": ["状态图标素材"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "value 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "schema_complex": "fieldSet 是 ArrayCollapse，配置项较多"
+    }
+}

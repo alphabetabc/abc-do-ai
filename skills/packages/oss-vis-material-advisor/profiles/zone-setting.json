@@ -1,0 +1,70 @@
+{
+    "name": "zone-setting",
+    "title": "区域设置",
+    "category": "状态/标签",
+    "version": "0.0.1",
+    "author": "徐潞园",
+    "scanned_at": "2026-06-17",
+    "description": "区域设置组件（保障人员/通信车/抢修车/发电车），按区域展示应急资源（强定制应急通信场景）",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "zoneId", "type": "String", "description": "区域id" },
+            { "name": "zoneName", "type": "String", "required": true, "description": "区域名称" },
+            { "name": "guaranteeUsers", "type": "String", "description": "保障人员" },
+            { "name": "communicationCars", "type": "String", "description": "应急通信车辆" },
+            { "name": "repairCars", "type": "String", "description": "应急抢修车辆" },
+            { "name": "powerCars", "type": "String", "description": "应急发电车辆" },
+            { "name": "guaranteeUserUnit", "type": "String", "description": "保障人员单位" },
+            { "name": "communicationCarUnit", "type": "String", "description": "通信车辆单位" },
+            { "name": "repairCarUnit", "type": "String", "description": "抢修车辆单位" },
+            { "name": "powerCarUnit", "type": "String", "description": "发电车辆单位" },
+            { "name": "icon", "type": "String", "description": "背景图" },
+            { "name": "params", "type": "String", "description": "附加参数" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸/样式 + 区域卡片布局"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置"
+    },
+    "business_scenarios": [
+        "重保/应急通信资源管理",
+        "区域保障人员/车辆调度",
+        "应急资源可视化"
+    ],
+    "composability": {
+        "compatible_with": ["baidu-map", "oss-gis", "smart-warehouse", "drilldown-table"],
+        "replaces": ["el-descriptions（应急场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备区域保障数据（zoneId + 4种资源 + 4种单位）",
+            "配置样式（背景图/卡片布局）"
+        ],
+        "dependencies": ["区域背景图（按icon）"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "domain_specific": "强定制于应急通信场景，迁移性差"
+    }
+}

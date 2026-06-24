@@ -1,0 +1,78 @@
+{
+    "name": "weather-display",
+    "title": "天气信息",
+    "category": "时钟/动画",
+    "version": "0.0.1",
+    "author": "郝营营",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏天气信息组件，显示地市天气图标、温度、湿度，可配置文字样式与边距",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "region_id", "type": "String", "description": "地市ID" },
+            { "name": "region_name", "type": "String", "required": true, "description": "地市名称" },
+            { "name": "weather_name", "type": "String", "required": true, "description": "天气名称（晴/雨/雪等）" },
+            { "name": "weather_id", "type": "String", "required": true, "description": "天气ID（用于图标映射）" },
+            { "name": "temperature", "type": "String", "description": "温度（实际为Number）" },
+            { "name": "humidity", "type": "String", "description": "湿度（实际为Number）" }
+        ],
+        "row_count": "多行（多地市天气）",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "weatherIconStyle (图标样式)": {
+            "fontSize": "NumberPicker 字号",
+            "marginLeft/Right/Top/Bottom": "NumberPicker 边距"
+        },
+        "regionNameFontStyle (地市名称样式)": {
+            "fontFamily": "GLOBAL_FONTS",
+            "fontSize": "NumberPicker",
+            "fontWeight": "FONT_WEIGHT",
+            "color": "ColorPicker",
+            "marginLeft/Right/Top/Bottom": "NumberPicker"
+        },
+        "weatherNameFontStyle": "天气名称样式（同 regionNameFontStyle）",
+        "temperatureStyle": "温度样式",
+        "humidityStyle": "湿度样式",
+        "iconUrl (图标)": "Background 天气图标（按 weather_id 映射）"
+    },
+    "interactions": {},
+    "business_scenarios": [
+        "数据大屏顶部天气信息条",
+        "跨地市气象展示",
+        "户外作业环境监控"
+    ],
+    "composability": {
+        "compatible_with": ["baidu-map", "oss-chart-map", "normal-clock", "geo-cascader"],
+        "replaces": [],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备天气数据（region_name + weather_id + temperature）",
+            "配置各文字样式（地市名/天气名/温度/湿度）",
+            "上传天气图标（按 weather_id 映射）"
+        ],
+        "dependencies": ["天气图标资源（按weather_id映射）", "气象数据API"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_type_issue": "temperature/humidity 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "external_data": "需对接气象数据API（高德/和风等）"
+    }
+}

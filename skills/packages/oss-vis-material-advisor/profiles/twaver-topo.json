@@ -1,0 +1,93 @@
+{
+    "name": "twaver-topo",
+    "title": "基础拓扑(twaver)",
+    "category": "3D/拓扑",
+    "version": "0.0.1",
+    "author": "郝营营",
+    "scanned_at": "2026-06-17",
+    "description": "基于 twaver 的二维网络拓扑图，支持15种连线类型（arc/triangle/parallel/orthogonal/extend等），3种主题（浅/深蓝/深色），工具栏/搜索/鹰眼可配置",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "网元ID" },
+            { "name": "name", "type": "String", "description": "网元名称" },
+            { "name": "type", "type": "String", "description": "网元类型" },
+            { "name": "parent", "type": "String", "description": "父级ID（用于分组）" }
+        ],
+        "row_count": "多行 + 连线配置",
+        "data_source": "dataSourceConfig（来自designer）",
+        "extensible": "twaver 支持自定义节点/连线属性"
+    },
+    "visual_config": {
+        "common": {
+            "topoTheme": { "type": "enum", "options": ["light", "darkblue", "dark"], "default": "darkblue" },
+            "showToolbar": "Switch 工具栏",
+            "showAutoLayout": "Switch 自动布局按钮",
+            "showSearchBox": "Switch 搜索栏",
+            "showOverview": "Switch 鹰眼"
+        },
+        "node": {
+            "select.color": "ColorPicker 选中颜色"
+        },
+        "label": {
+            "label.color": "ColorPicker 文字颜色",
+            "label.font": "字体/字号",
+            "label.linespacing": "行间距",
+            "label.yoffset": "Y偏移"
+        },
+        "group": "分组样式（颜色/背景/标签）",
+        "link": {
+            "types": ["arc", "triangle", "parallel", "flexional", "flexional.horizontal", "flexional.vertical", "orthogonal", "orthogonal.horizontal", "orthogonal.vertical", "orthogonal.H.V", "orthogonal.V.H", "extend.top", "extend.left", "extend.bottom", "extend.right"],
+            "description": "15种连线类型可配置"
+        }
+    },
+    "interactions": {
+        "node_select": "选中节点派发 selectedNode",
+        "node_click": "点击节点触发下钻",
+        "link_click": "点击连线触发下钻",
+        "drag": "拖动节点（twaver内置）",
+        "search": "搜索栏过滤节点",
+        "auto_layout": "自动布局按钮"
+    },
+    "business_scenarios": [
+        "网络拓扑（路由器/交换机/链路）",
+        "通信网络资源关系图",
+        "服务器/应用依赖关系",
+        "机房/设备物理拓扑"
+    ],
+    "composability": {
+        "compatible_with": ["digital-flop", "top-rank", "drilldown-table", "echarts-bar", "baidu-map"],
+        "replaces": [],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.7,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 4.0,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备节点/连线数据（id/name/type/parent/links）",
+            "选择主题（light/darkblue/dark）",
+            "配置工具栏/搜索/鹰眼/自动布局",
+            "配置节点/标签/分组样式",
+            "选择连线类型（15种）"
+        ],
+        "dependencies": ["twaver（商业库）"],
+        "estimated_minutes": 60
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串，且无 dataModel.json",
+        "data_structure": "节点 + 链接 + 父子关系结构需前端整理",
+        "doc_status": "无 doc/README.md",
+        "designer_specific": "存在 index.designer.jsx（设计器专用入口），实际运行入口为 index.jsx"
+    }
+}

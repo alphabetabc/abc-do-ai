@@ -1,0 +1,59 @@
+{
+    "name": "common-container",
+    "title": "通用模块容器",
+    "category": "装饰/边框",
+    "version": "0.0.1",
+    "author": "xmw",
+    "scanned_at": "2026-06-17",
+    "description": "通用模块容器（type='title'/'extra'，__extra__任意拓展字段），作为大屏模块的容器壳",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "type", "type": "String", "description": "类型值（固定 title 或 extra）" },
+            { "name": "__extra__", "type": "String", "description": "任意拓展字段" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸 + 容器样式（背景/边框/标题区/扩展区）"
+    },
+    "interactions": {},
+    "business_scenarios": [
+        "大屏模块容器（带标题+扩展位）",
+        "通用大屏模块壳",
+        "任何需要title+extra结构的场景"
+    ],
+    "composability": {
+        "compatible_with": ["任何组件（作为容器）"],
+        "replaces": ["自定义div容器"],
+        "extends": ["decoration/border1-12（边框容器）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.4,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备type/__extra__数据",
+            "配置容器样式（标题/扩展位/背景）",
+            "在容器内放置其他组件"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "type_values": "type 字段固定取值 title 或 extra"
+    }
+}

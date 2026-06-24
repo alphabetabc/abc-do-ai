@@ -1,0 +1,82 @@
+{
+    "name": "query-form-group",
+    "title": "搜索表单组",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "谢名伟",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏搜索表单组，支持多字段配置（输入框/下拉框/日期）、单行分列、查询按钮样式、字段联动",
+    "data_format": {
+        "type": "static",
+        "source": "前端 form + 字段配置",
+        "data_model": "无 dataModel.json（空结构）",
+        "fields": "动态配置（fieldsArray ArrayCollapse）"
+    },
+    "visual_config": {
+        "formLayout (表单基础设置)": {
+            "columnNum": "NumberPicker 单行分列数",
+            "labelStyle": "VisualTextStyle 标签样式",
+            "compBackgroundColor": "ColorPicker 组件背景色",
+            "compBorderColor": "ColorPicker 组件边框色",
+            "queryTitle": "Input 查询按钮文字",
+            "queryWidth/Height": "NumberPicker 查询按钮尺寸",
+            "queryFontSize": "NumberPicker 查询按钮字号"
+        },
+        "fields (表单字段设置)": {
+            "fieldsArray": {
+                "type": "array",
+                "items": {
+                    "name": "字段key",
+                    "label": "字段名称",
+                    "compType": "组件类型（input/select/date/...)",
+                    "compProps": "组件属性",
+                    "placeholder": "占位符"
+                }
+            }
+        }
+    },
+    "interactions": {
+        "query": {
+            "type": "dispatch",
+            "description": "点击查询按钮派发表单数据"
+        }
+    },
+    "business_scenarios": [
+        "数据大屏顶部搜索表单（多字段组合）",
+        "数据查询条件（区域/时间/类型）",
+        "列表筛选器"
+    ],
+    "composability": {
+        "compatible_with": ["range-picker", "popover-check", "popover-checkparam", "drilldown-table", "table"],
+        "replaces": ["iframe 嵌入表单"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "配置 formLayout（分列数/标签样式/查询按钮）",
+            "配置 fieldsArray 字段列表（name/label/compType）",
+            "配置每个字段的 placeholder/compProps"
+        ],
+        "dependencies": ["antd Form"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "missing_data_model": "dataModel.json 为空结构",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "fields_dynamic": "字段通过 fieldsArray 动态配置，配置复杂度高"
+    }
+}

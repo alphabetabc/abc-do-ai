@@ -1,0 +1,69 @@
+{
+    "name": "export-btn",
+    "title": "导出按钮",
+    "category": "按钮/操作",
+    "version": "0.0.1",
+    "author": "郝营营",
+    "scanned_at": "2026-06-17",
+    "description": "数据导出按钮（CSV/Excel等），支持标题/位置/尺寸/角度/不透明度/边距 配置（公共配置提供给tabList复用）",
+    "data_format": {
+        "type": "static",
+        "data_model": "无 dataModel.json",
+        "_note": "纯按钮组件，无数据接入（导出由后端API处理）"
+    },
+    "visual_config": {
+        "baseInfo": "ComponentBaseInfo 组件基础信息",
+        "divider": "Divider 分割线",
+        "layout (FormLayout)": {
+            "position": "NumberPicker 位置（left/top）",
+            "size": "NumberPicker 尺寸（width/height/lockedScale）",
+            "transform": "FormGrid 角度（rotate/scale）",
+            "opacity": "SliderWithNumber 不透明度"
+        },
+        "exportConfig": "导出配置（格式/参数）"
+    },
+    "interactions": {
+        "click": {
+            "type": "export",
+            "description": "点击触发导出（与后端API联动）"
+        }
+    },
+    "business_scenarios": [
+        "数据大屏导出报表",
+        "数据下载功能",
+        "数据快照"
+    ],
+    "composability": {
+        "compatible_with": ["drilldown-table", "table", "ghost-btn", "custom-request-button"],
+        "replaces": ["ghost-btn（需要导出场景）"],
+        "extends": ["tabList 公共配置（schema头被注释）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.2,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 2.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "配置位置/尺寸/角度/不透明度",
+            "配置导出API（url/params）",
+            "可选：配置导出格式（CSV/Excel/PDF）"
+        ],
+        "dependencies": ["后端导出API"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "missing_data_model": "无 dataModel.json",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "schema_commented": "schema.ts 大量代码被注释（基线配置提供给tabList复用）"
+    }
+}

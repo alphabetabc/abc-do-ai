@@ -1,6 +1,12 @@
 {
   "projects": [
     {
+      "id": "2314fed60ad0",
+      "projectDir": "E:\\oss-fe-git\\phoenix\\oss-noc-shaanxi",
+      "label": "陕西noc",
+      "addedAt": "2026-06-24T06:02:18.278Z"
+    },
+    {
       "id": "3966030b4894",
       "projectDir": "E:\\oss-fe-git\\phoenix\\oss-visual-material",
       "label": "可视化平台物料",

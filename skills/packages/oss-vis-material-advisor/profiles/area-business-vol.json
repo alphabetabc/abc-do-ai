@@ -1,0 +1,65 @@
+{
+    "name": "area-business-vol",
+    "title": "区域业务量",
+    "category": "数字/指标卡",
+    "version": "0.0.1",
+    "author": "shz",
+    "scanned_at": "2026-06-17",
+    "description": "区域业务量指标组件（id + name + value + unit + group），按区域展示业务量数据",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "指标id", "rowProperties": ["format"] },
+            { "name": "name", "type": "String", "required": true, "description": "指标名称", "rowProperties": ["format"] },
+            { "name": "value", "type": "String", "required": true, "description": "指标值（实际Number）", "rowProperties": ["format"] },
+            { "name": "unit", "type": "String", "description": "指标单位", "rowProperties": ["format"] },
+            { "name": "group", "type": "String", "description": "指标分组（用于分类展示）", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸/样式配置"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互"
+    },
+    "business_scenarios": [
+        "区域业务量汇总",
+        "分区域业务量对比",
+        "业务指标分区域展示"
+    ],
+    "composability": {
+        "compatible_with": ["digital-flop", "stats-indi", "baidu-map", "oss-chart-map"],
+        "replaces": ["stats-indi-group（按区域维度）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.2,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备区域业务数据（id + name + value + unit + group）",
+            "配置样式（基础/数据驱动）"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_type_issue": "value 声明为 String，应为 Number",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "specific_scenario": "专用于'区域业务量'展示"
+    }
+}

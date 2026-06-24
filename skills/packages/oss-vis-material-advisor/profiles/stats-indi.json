@@ -1,0 +1,67 @@
+{
+    "name": "stats-indi",
+    "title": "指标翻牌器",
+    "category": "数字/指标卡",
+    "version": "0.0.1",
+    "author": "yanzhifeng",
+    "scanned_at": "2026-06-17",
+    "description": "指标翻牌器（id + name + value + unit + icon + title + render），支持icon显示、级别渲染、点击下钻",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "string", "description": "指标id", "rowProperties": ["format"] },
+            { "name": "name", "type": "string", "description": "指标名", "rowProperties": ["format"] },
+            { "name": "value", "type": "string", "description": "指标值（实际Number）", "rowProperties": ["format"] },
+            { "name": "unit", "type": "string", "description": "指标单位", "rowProperties": ["format"] },
+            { "name": "icon", "type": "string", "description": "图标名", "rowProperties": ["format"] },
+            { "name": "title", "type": "string", "description": "标题", "rowProperties": ["format"] },
+            { "name": "render", "type": "number", "description": "级别", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸 + 翻牌器样式 + icon显示"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置",
+        "click": "通用交互（点击下钻）"
+    },
+    "business_scenarios": [
+        "KPI指标翻牌器",
+        "带icon的指标展示",
+        "指标级别渲染（颜色映射）"
+    ],
+    "composability": {
+        "compatible_with": ["digital-flop", "stats-indi-group", "stats-indi-grid", "warning-board"],
+        "replaces": ["digital-flop（需要icon时）"],
+        "extends": ["stats-indi-group（多行）", "stats-indi-grid（栅格）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备数据（id + name + value + unit + icon + render）",
+            "配置翻牌器样式（动画/icon/颜色）"
+        ],
+        "dependencies": ["icon图标资源"],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_type_issue": "value 声明为 string，应为 number",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "note": "render 字段已正确声明为 number（少数类型正确的）"
+    }
+}

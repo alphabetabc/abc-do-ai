@@ -1,0 +1,82 @@
+{
+    "name": "virtual-3d-column-normal",
+    "title": "伪3D柱状图(菱形)",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "author": "杨兴相",
+    "scanned_at": "2026-06-17",
+    "description": "菱形伪3D柱状图（ECharts + 渐变 + 斜纹），比 virtual-3d-column 简化的版本",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "groupName", "type": "String", "description": "分组", "rowProperties": ["format"] },
+            { "name": "name", "type": "String", "required": true, "description": "名称", "rowProperties": ["format"] },
+            { "name": "value", "type": "String", "required": true, "description": "数值", "rowProperties": ["format"] },
+            { "name": "unit", "type": "string", "description": "单位", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源",
+        "_note": "与 virtual-3d-column 区别：多了 groupName 字段"
+    },
+    "visual_config": {
+        "baseConfig": {
+            "topN": "TopN截取",
+            "sorterType": "排序方式（升/降/不）"
+        },
+        "chart": {
+            "barWidth": "柱宽",
+            "gradientColor": "侧面渐变色（BackgroundColorGroup2EC）"
+        },
+        "xLabel": "X轴文本样式",
+        "yLabel": {
+            "show": "显示/隐藏",
+            "position": "enum: outside/inside/center",
+            "textStyle": "VisualTextStyle"
+        },
+        "yUnit": "Y轴单位样式",
+        "tooltip": "悬浮提示（自定义项样式）"
+    },
+    "interactions": {
+        "renderDataConfig": "内置数据源配置",
+        "click": "通用交互"
+    },
+    "business_scenarios": [
+        "数据大屏柱状展示（菱形/钻石效果）",
+        "TopN排行（带分组）",
+        "业务指标对比"
+    ],
+    "composability": {
+        "compatible_with": ["virtual-3d-column", "oss-chart-plots-column", "top-rank"],
+        "replaces": ["virtual-3d-column（菱形场景）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.3,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.0,
+            "config_completeness": 3.5,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.5,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备数据（可选 groupName + name + value）",
+            "配置 baseConfig（topN + 排序）",
+            "配置柱体样式",
+            "配置坐标轴/标签/Tooltip"
+        ],
+        "dependencies": ["ECharts"],
+        "estimated_minutes": 15
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "value 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "note": "与 virtual-3d-column 高度同源，简化为菱形 + 减少配置项"
+    }
+}

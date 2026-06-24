@@ -1,0 +1,76 @@
+{
+    "name": "echarts-line-dual-x",
+    "title": "echarts双x轴线图",
+    "category": "图表/ECharts",
+    "version": "0.0.1",
+    "author": "xmw",
+    "scanned_at": "2026-06-17",
+    "description": "ECharts 双 X 轴折线图（主轴+次轴），支持 compareType 维度对比、indicatorPointer 指示线与 grid/legend/series 完整配置",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "dimension_name", "type": "String", "required": true, "description": "主轴维度（X主轴）", "rowProperties": ["format"] },
+            { "name": "compareType", "type": "String", "required": true, "description": "对比维度（X次轴）", "rowProperties": ["format"] },
+            { "name": "indicator_id", "type": "String", "description": "指标ID", "rowProperties": ["format"] },
+            { "name": "indicator_value", "type": "String", "required": true, "description": "指标值（实际Number）", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行（主轴维度 × 次轴维度 × 指标）",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "grid": {
+            "containLabel": "Switch 包含标签",
+            "top/left/bottom/right": "NumberPicker 距离"
+        },
+        "xAxis": {
+            "major (主轴)": { "fieldName": "字段名", "...xAxis": "通用X轴配置", "indicatorPointer": "指示线配置" },
+            "secondary (次轴)": { "fieldName": "字段名", "...xAxis2": "次X轴配置" }
+        },
+        "yAxis": "Y轴配置（schema-parts/axis.ts）",
+        "legend": "图例配置（schema-parts/legend.ts）",
+        "seriesStyle": "系列样式（schema-parts/seriesStyle.ts）"
+    },
+    "interactions": {
+        "click": "通用交互（defineInteractionSchema）"
+    },
+    "business_scenarios": [
+        "同期对比（今年 vs 去年）",
+        "多维度对比（产品A vs 产品B）",
+        "时间序列+分类对比"
+    ],
+    "composability": {
+        "compatible_with": ["oss-chart-plots-line", "drilldown-table", "top-rank"],
+        "replaces": ["oss-chart-plots-line（需要双X轴时）"],
+        "extends": ["dual-axes-chart（升级双Y轴）"]
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 4.0,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备双维度数据（dimension_name + compareType + indicator_value）",
+            "配置 grid 网格",
+            "配置 xAxis 主轴与次轴",
+            "配置 yAxis + legend + seriesStyle",
+            "配置交互（点击下钻）"
+        ],
+        "dependencies": ["ECharts"],
+        "estimated_minutes": 25
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "data_type_issue": "indicator_value 声明为 String，应为 Number",
+        "doc_status": "无 doc/README.md",
+        "module": "schema 模块化（schema-parts/axis/legend/seriesStyle）"
+    }
+}

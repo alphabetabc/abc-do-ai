@@ -1,0 +1,61 @@
+{
+    "name": "svg-render",
+    "title": "SVG渲染",
+    "category": "3D/拓扑",
+    "version": "0.0.1",
+    "author": "shz",
+    "scanned_at": "2026-06-17",
+    "description": "可视化大屏SVG渲染组件（id + level），按id/level渲染SVG图形（按level切换不同状态/颜色）",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "id" },
+            { "name": "level", "type": "String", "description": "level（用于状态/颜色映射）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "config": "基础位置/尺寸 + SVG路径配置"
+    },
+    "interactions": {
+        "renderDataConfig": "数据源配置"
+    },
+    "business_scenarios": [
+        "SVG可视化大屏渲染",
+        "按level切换状态的图标",
+        "SVG动画与状态联动"
+    ],
+    "composability": {
+        "compatible_with": ["path-animation", "baidu-map", "oss-gis"],
+        "replaces": ["path-animation（静态SVG渲染）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.0,
+        "breakdown": {
+            "business_description": 3.0,
+            "scenario_coverage": 2.5,
+            "config_completeness": 3.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 3.5
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备数据（id + level）",
+            "配置SVG资源（按id/level）",
+            "配置样式"
+        ],
+        "dependencies": ["SVG资源"],
+        "estimated_minutes": 20
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "note": "schema极简（2字段），需阅读index代码了解具体行为"
+    }
+}

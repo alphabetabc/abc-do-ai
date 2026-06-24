@@ -1,0 +1,77 @@
+{
+    "name": "tab-list-static",
+    "title": "TAB统计列表",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "shz",
+    "scanned_at": "2026-06-17",
+    "description": "TAB统计列表（带双指标统计），支持value1/level1/value2/level2两个指标展示 + 状态级别",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "id", "type": "String", "description": "id" },
+            { "name": "content", "type": "String", "required": true, "description": "名称" },
+            { "name": "icon", "type": "String", "description": "前缀图标" },
+            { "name": "value1", "type": "String", "description": "指标值1（实际Number）" },
+            { "name": "level1", "type": "String", "description": "级别1（用于颜色映射）" },
+            { "name": "value2", "type": "String", "description": "指标值2（实际Number）" },
+            { "name": "level2", "type": "String", "description": "级别2（用于颜色映射）" }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源"
+    },
+    "visual_config": {
+        "commonStyle (通用)": {
+            "size": "NumberPicker 尺寸",
+            "margin": "NumberPicker 边距",
+            "textPadding": "NumberPicker 内边距",
+            "textStyle": "VisualTextStyle 文本",
+            "lineHeight": "NumberPicker 行高",
+            "border": "borderStyle/borderWidth/borderColor/borderRadius"
+        }
+    },
+    "interactions": {
+        "select": {
+            "type": "dispatch",
+            "description": "选中tab派发（id/content/icon/value1/value2/level1/level2）"
+        }
+    },
+    "business_scenarios": [
+        "带统计的TAB切换（每个tab显示两个指标）",
+        "状态/告警统计（level1/level2颜色映射）",
+        "KPI指标tab"
+    ],
+    "composability": {
+        "compatible_with": ["tab-list", "tab-list-2", "status-display", "top-rank"],
+        "replaces": ["tab-list + 多个 indicator-display 组合"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.5,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.0,
+            "doc_completeness": 2.0,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "中",
+        "setup_steps": [
+            "准备tab数据（含value1/level1/value2/level2）",
+            "配置 commonStyle 样式（基础+选中）",
+            "可选：level1/level2 配置颜色映射"
+        ],
+        "dependencies": ["前缀图标（PNG）"],
+        "estimated_minutes": 18
+    },
+    "_validation_notes": {
+        "data_type_issue": "value1/value2 声明为 String，应为 Number",
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "dual_indicator": "支持双指标 + 双状态级别（区别于其他tab-list）"
+    }
+}

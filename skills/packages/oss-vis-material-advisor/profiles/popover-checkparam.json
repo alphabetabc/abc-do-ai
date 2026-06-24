@@ -1,0 +1,82 @@
+{
+    "name": "popover-checkparam",
+    "title": "下拉选择框(参数版)",
+    "category": "表单/筛选",
+    "version": "0.0.1",
+    "author": "孙寰哲",
+    "scanned_at": "2026-06-17",
+    "description": "下拉选择框（带 param 参数字段），支持单选/多选、前缀间距、全选配置、弹出层样式",
+    "data_format": {
+        "type": "row",
+        "fields": [
+            { "name": "label", "type": "STRING", "required": true, "description": "显示名", "rowProperties": ["format"] },
+            { "name": "id", "type": "INTEGER", "required": true, "description": "数据key", "rowProperties": ["format"] },
+            { "name": "param", "type": "STRING", "description": "参数（额外字段）", "rowProperties": ["format"] }
+        ],
+        "row_count": "多行",
+        "data_source": "DynamicData 多数据源",
+        "_note": "与 popover-check 区别：多一个 param 字段"
+    },
+    "visual_config": {
+        "funcSettings (功能设置)": {
+            "autoInit": "Switch 自动初始化",
+            "placeholder": "Input 选择框占位符"
+        },
+        "selectedStyle (选择框样式)": {
+            "prefixText": "Input 前缀",
+            "space": "NumberPicker 前缀与选项间距",
+            "checkMode": "enum: multi/single",
+            "$selectionAllCard (多选时)": {
+                "enableSelectionAll": "Switch 启动全部选项",
+                "selectionAllItemLabel": "Input 文本字段（默认'全部'）",
+                "selectionAllItemValue": "Input 枚举字段（默认'all'）",
+                "selectionAllItemParam": "Input 参数字段"
+            }
+        },
+        "popoverStyle": "弹出层样式"
+    },
+    "interactions": {
+        "change": {
+            "type": "dispatch",
+            "description": "选中项变化派发（id/label/param）"
+        }
+    },
+    "business_scenarios": [
+        "下拉筛选（带额外参数）",
+        "多选全选场景（带'全部'选项）",
+        "区域/类型+附加参数选择"
+    ],
+    "composability": {
+        "compatible_with": ["query-form-group", "popover-check", "drilldown-table", "top-rank"],
+        "replaces": ["popover-check（需要param时）"],
+        "extends": []
+    },
+    "rating": {
+        "label": "🟡 组合可用",
+        "score": 3.6,
+        "breakdown": {
+            "business_description": 3.5,
+            "scenario_coverage": 3.5,
+            "config_completeness": 4.0,
+            "data_contract_clarity": 3.5,
+            "doc_completeness": 2.5,
+            "composability": 4.0
+        }
+    },
+    "build_cost": {
+        "complexity": "低",
+        "setup_steps": [
+            "准备下拉数据（label + id + param）",
+            "配置 checkMode 选中模式",
+            "多选时：启用 enableSelectionAll 全选",
+            "配置 selectedStyle + popoverStyle"
+        ],
+        "dependencies": [],
+        "estimated_minutes": 10
+    },
+    "_validation_notes": {
+        "data_model_oss_material_json": "oss-material.json 的 dataModel 字段为空字符串",
+        "doc_status": "无 doc/README.md",
+        "selection_all": "多选模式支持'全部'选项（4个字段：enable/label/value/param）"
+    }
+}
