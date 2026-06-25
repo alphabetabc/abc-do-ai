@@ -1,11 +1,14 @@
 {
-  "contentHash": "7d43722408c9d29e79f1dfb62cb4b829bd92943d88a0cf376bd26e394fe78279",
+  "contentHash": "d2a6d089663055b6cf4e549c760bbddf8231212b1b17fc8f9e1ab7c64c21aaf7",
   "files": [
-    "./MapEmergencyTransmission.md"
+    "./MapEmergencyTransmission.md",
+    "./GlowPoint.md",
+    "./EmapUtilsExtension.md"
   ],
   "id": "gd-es-next-ui-emap-gis",
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-06-25T09:11:17.647Z",
   "version": "0.0.0"
 }

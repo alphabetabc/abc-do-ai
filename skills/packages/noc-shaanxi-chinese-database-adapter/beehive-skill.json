@@ -1,9 +1,10 @@
 {
-  "contentHash": "581c52814970acf53df6446da0fc670ad5acb062324fbd6927080b1566b715b4",
+  "contentHash": "b1516a24970ce2641ad824ba7f1768b3b2c90e94fc3915cd35efc6ee1b174c23",
   "files": [],
   "id": "noc-shaanxi-chinese-database-adapter",
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-06-25T09:17:11.983Z",
   "version": "0.0.0"
 }
