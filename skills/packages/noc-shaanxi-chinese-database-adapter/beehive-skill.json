@@ -1,10 +1,12 @@
 {
-  "contentHash": "b1516a24970ce2641ad824ba7f1768b3b2c90e94fc3915cd35efc6ee1b174c23",
-  "files": [],
+  "contentHash": "12ad7b02cf7fbacbf7c7e692c97aec78d379dfc636f7beb3838f24db77817750",
+  "files": [
+    "./noc-java-refactor-plan.md"
+  ],
   "id": "noc-shaanxi-chinese-database-adapter",
   "targets": [
     "trae"
   ],
-  "updatedAt": "2026-06-25T09:17:11.983Z",
+  "updatedAt": "2026-06-25T10:04:08.977Z",
   "version": "0.0.0"
 }
