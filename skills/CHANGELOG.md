@@ -1,6 +1,16 @@
 # Changelog
 
-<!-- changelog-last-commit: 3a3ac0383aa7ba2c77c18ea49b02cc128a51bd5c -->
+<!-- changelog-last-commit: 0190b9b9564f34e50c0aace9c12ab29e050e28ea -->
+
+## 2026-06-30
+
+- 新增 skill「pm-agent-skill」；
+- 发布 skill
+    - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-ui-emap-gis」 v0.0.0；
+    - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
+    - 「oss-vis-material-advisor」 v0.0.0；
+- 新增 10 个文件；
 
 ## 2026-06-25
 
@@ -8,6 +18,7 @@
     - 「gd-es-next-ui-emap-gis」 v0.0.0；
     - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
 - 新增 EmapUtilsExtension, GlowPoint；
+- 新增 skill「noc-shaanxi-chinese-database-adapter」；
 
 ## 2026-06-24
 
