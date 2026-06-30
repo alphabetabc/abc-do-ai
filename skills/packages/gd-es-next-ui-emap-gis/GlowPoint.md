@@ -136,7 +136,34 @@ const opacity = this.opacityOut(phase);
 | 0.75  | 37.5         | 0.36             |
 | 1     | 42 (最大)    | 0.15（淡出底色） |
 
-中心点（`kind: "core"`）始终固定在 `baseRadius`、opacity=1、strokeWidth=2，作为视觉锚点。
+中心点（`kind: "core"`）在 **`showCore: true`** 时始终固定在 `baseRadius`、opacity=1、strokeWidth=2，作为视觉锚点；`showCore` 默认为 `false`，此时中心点不渲染（feature 仍存在但完全透明），只有扩散环显示。
+
+### 4.4 中心点显隐（`showCore`）
+
+| 取值 | 视觉效果 | 适用场景 |
+|---|---|---|
+| `false`（默认） | 仅扩散环 | 干净利落的高亮，强调环本身 |
+| `true` | 中心点 + 扩散环 | 需要明确指示"这里有东西" |
+
+```ts
+// 隐藏中心点（默认）
+EMapUtils.addAnimatePoints({ mode: "ripple", /* showCore: false */ });
+
+// 显示中心点
+EMapUtils.addAnimatePoints({ mode: "ripple", showCore: true });
+```
+
+中心点样式（`showCore=true` 时）：
+
+```ts
+// 等价于：在 baseRadius 处画一个不透明的实心圆（fillColor + strokeColor 同色）
+this.eStyle.circle({
+    fillColor: toRgbaString(meta.color, 1),
+    strokeColor: toRgbaString(meta.color, 1),
+    strokeWidth: 2,
+    radius: this.baseRadius,
+});
+```
 
 ## 5. breath 模式（原地呼吸）
 
@@ -185,6 +212,7 @@ interface IAnimatePointsLayerOpts {
     maxRadius?: number; // 最大半径（px），默认 42
     duration?: number; // 单周期毫秒，默认 2000
     zIndex?: number; // 图层层级，默认 9998
+    showCore?: boolean; // ripple 模式：是否显示中心圆点，默认 false
 }
 ```
 
@@ -224,6 +252,7 @@ EMapUtils = {
         maxRadius?: number;
         duration?: number;
         zIndex?: number;
+        showCore?: boolean;
     }) => {
         destroy: () => void;
         layer: any;
@@ -368,13 +397,18 @@ function CoreBuildingsGlow({ buildings }: { buildings: Array<{ id: number; lng: 
 
 ## 13. 版本
 
-- **文档版本**: 2.0
-- **最后更新**: 2026-06-25
-- **变更说明**:
-    - **重大重构**：从 `createGlowCanvas` + `gsap.to` 演进为 `AnimatePointsLayer` 类 + `d3.scaleLinear` + RAF
-    - 新增 `breath` 模式（原地呼吸），原文档仅描述 ripple
-    - 引入 **固定中心点**（`kind: 'core'`）：ripple 模式下作为视觉锚点，永远固定在最小半径
-    - 引入 **idPrefix 实例前缀**：tick 内 `startsWith` 过滤本实例 feature，避免与同 layer 上其它动画混淆
-    - 透明度策略改为「保留底色 0.15」：避免环到达最大半径时突然消失
-    - 移除对 `gsap` 的依赖，统一由 d3 提供缓动 + 颜色能力
-    - 新增 `EMapUtils.addAnimatePoints` 工厂入口（与 `useWFSLayer` 风格一致）
+- **文档版本**: 2.1
+- **最后更新**: 2026-06-26
+- **变更说明（v2.0 → v2.1）**:
+    - **新增** `showCore?: boolean` 选项（`IAnimatePointsLayerOpts` / `EMapUtils.addAnimatePoints`）：ripple 模式下控制中心圆点显隐，默认 `false`（中心点不可见）
+    - 新增第 4.4 节「中心点显隐（`showCore`）」：说明视觉效果对照、调用示例、中心点样式
+    - 更新第 4.3 节末尾：中心点描述改为"在 `showCore: true` 时"才显示
+
+**变更说明（v1 → v2.0）**:
+- **重大重构**：从 `createGlowCanvas` + `gsap.to` 演进为 `AnimatePointsLayer` 类 + `d3.scaleLinear` + RAF
+- 新增 `breath` 模式（原地呼吸），原文档仅描述 ripple
+- 引入 **固定中心点**（`kind: 'core'`）：ripple 模式下作为视觉锚点，永远固定在最小半径
+- 引入 **idPrefix 实例前缀**：tick 内 `startsWith` 过滤本实例 feature，避免与同 layer 上其它动画混淆
+- 透明度策略改为「保留底色 0.15」：避免环到达最大半径时突然消失
+- 移除对 `gsap` 的依赖，统一由 d3 提供缓动 + 颜色能力
+- 新增 `EMapUtils.addAnimatePoints` 工厂入口（与 `useWFSLayer` 风格一致）

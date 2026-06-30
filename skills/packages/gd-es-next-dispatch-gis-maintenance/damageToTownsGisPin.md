@@ -11,9 +11,7 @@
 
 ## 2. 定义与注册
 
-### 2.1 字段定义
-
-**文件**: `apps/main/app/components/fields.ts`
+**字段定义**（`apps/main/app/components/fields.ts`）：
 
 ```typescript
 {
@@ -23,28 +21,13 @@
 }
 ```
 
-### 2.2 状态派发
-
-**文件**: `apps/main/app/components/right/network-compact/damage-to-towns/index.tsx`
+**状态派发**（`apps/main/app/components/right/network-compact/damage-to-towns/index.tsx`）：
 
 ```typescript
-const params = {
-    townName,
-    zoneName,
-    zoneLevel: "3",
-    alarmType: info.table === "middleTable" ? get(info, "tableType") : get(info, "record.alarmType"),
-    scanTime: info.table === "middleTable" ? get(info, "record.scanTime") : get(info, "record.dataTime"),
-    sceneType: "township",
-    isTownship: true,
-    townId,
-    regionName,
-    cityName,
-    isTownExitRoute,
-    selected,
-};
-
 dispatch(widgetFields.getField("sectionRight:damageToTownsGisPin"), params);
 ```
+
+`params` 字段定义见 §3 数据结构表。
 
 ## 3. 数据结构
 
@@ -72,51 +55,18 @@ dispatch(widgetFields.getField("sectionRight:damageToTownsGisPin"), params);
 
 ## 5. 消费组件列表
 
-### 5.1 组件映射表
-
 | 组件 | 文件路径 | 功能 | 触发条件 |
 |------|----------|------|----------|
-| **DispatchLegend** | `dispatch-legend/index.tsx` | 图例联动（自动勾选光缆、机房） | `alarmType`匹配 + `selected=true` |
-| **zone-select** | `zone-select/index.tsx` | 地图定位到告警乡镇 | `selected=true` |
-| **center-gis** | `center-gis/index.tsx` | 触发传输机房光缆数据请求 | `alarmType`匹配 + `selected=true` + `zoneLevel=town` |
-| **dispatch-gis/index.tsx** | `dispatch-gis/index.tsx` | props传递给子组件 | 无 |
+| **DispatchLegend** | `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx` | 图例联动（自动勾选光缆、机房） | `alarmType`匹配 + `selected=true` |
+| **zone-select** | `apps/main/app/components/center/zone-select/index.tsx` | 地图定位到告警乡镇 | `selected=true` |
+| **center-gis** | `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx` | 触发传输机房光缆数据请求 | `alarmType`匹配 + `selected=true` + `zoneLevel=town` |
+| **dispatch-gis** | `apps/main/app/components/center/dispatch-gis/index.tsx` | props 传递给子组件 | 无 |
 
-### 5.2 图例联动（DispatchLegend）
+**联动实现位置**：
 
-```typescript
-useEffect(() => {
-    if (["乡镇单断", "乡镇双断", "乡镇全阻"].includes(damageToTownsGisPin?.alarmType) && damageToTownsGisPin?.selected) {
-        const newCheckedValues = { ...checkedValues, 光缆: true, 机房: true };
-        setTimeout(() => {
-            setCheckedValues(newCheckedValues);
-        }, damageToTownsGisPinTimeout * 1000);
-    }
-}, [damageToTownsGisPin]);
-```
-
-### 5.3 地图定位（zone-select）
-
-```typescript
-useEffect(() => {
-    if (damageToTownsGisPin?.selected && dataList) {
-        const { regionName, cityName, townName } = damageToTownsGisPin;
-        locateZoneInfo(regionName, cityName, townName, dataList, false);
-    }
-}, [damageToTownsGisPin]);
-```
-
-### 5.4 数据请求（center-gis）
-
-```typescript
-if (
-    !["乡镇单断", "乡镇双断", "乡镇全阻"].includes(damageToTownsGisPin?.alarmType) ||
-    !damageToTownsGisPin?.selected ||
-    currentZone?.zoneLevel !== ZoneLevelEnum.town
-) {
-    return;
-}
-// 执行乡镇退服相关的数据请求
-```
+- 图例联动（DispatchLegend）：详见 [DispatchLegend.md §9](./DispatchLegend.md#9-乡镇退服联动damagetotownsgispin)
+- 地图定位（zone-select）：`apps/main/app/components/center/zone-select/index.tsx` 的 `useEffect([damageToTownsGisPin])`
+- 数据请求（center-gis）：`apps/main/app/components/center/dispatch-gis/center-gis/index.tsx` 中 `if (alarmType 匹配 && selected && currentZone.zoneLevel === town) { ... }` 守卫后执行
 
 ## 6. 数据流转图
 
@@ -203,6 +153,10 @@ damage-to-towns → damageToTownsGisPin → DispatchLegend/zone-select/center-gi
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-06-04  
+**文档版本**: 1.1
+**最后更新**: 2026-06-26
 **维护团队**: GD Emergency Support Team
+**整理内容**:
+- §2 与 §3 合并：字段定义 + 数据结构合一，移除派发代码块（指向 §3 表）
+- §5 消费组件列表：去除三个 useEffect 代码块（与 `DispatchLegend.md` §9 / `zone-select` 内部代码重复），改为指向实现位置
+- 文件路径改用项目根相对路径（去除简写）

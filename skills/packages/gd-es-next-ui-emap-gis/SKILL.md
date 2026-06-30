@@ -251,9 +251,10 @@ const districts = await EMapGlobalRequest.getEMapDistrictJson({
 
 ## 12. 版本信息
 
-- **版本**: 1.5
-- **最后更新**: 2026-06-25
+- **版本**: 1.6
+- **最后更新**: 2026-06-26
 - **更新内容**:
+    - **新增** `AnimatePointsLayer.showCore?: boolean` 选项：[GlowPoint.md](./GlowPoint.md) v2.1，ripple 模式下控制中心圆点显隐（默认 `false`）
     - **新增** [EmapUtilsExtension.md](./EmapUtilsExtension.md)：EMapUtils 的维护与扩展 SOP
     - **重写** [GlowPoint.md](./GlowPoint.md) v2.0：`AnimatePointsLayer` 类 + d3 scale + RAF 实现
     - **清理重复内容**：第 10 节"动画点"从完整原理描述压缩为概述段，详情跳转 GlowPoint.md；模块结构补 `AnimatePointsLayer.ts`；front matter 描述去掉 `gsap`

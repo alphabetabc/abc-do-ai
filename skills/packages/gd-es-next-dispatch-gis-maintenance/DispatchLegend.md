@@ -16,6 +16,7 @@ dispatch-legend/
 ```
 
 **关联文件**：
+
 - `apps/main/app/components/center/dispatch-gis/presets.ts` — 包含 `LAYER_CONFIG`（`defaultLegendIcon` 兜底）和 `useCurrentEmergencyTransmissionLayerSettings`（按 zoneLevel 取分级配置）
 
 ## 3. 核心功能实现
@@ -256,7 +257,7 @@ LegendItem / BackboneNetworkLegend / <Image src>
 
 #### 3.7.3 关键代码
 
-**hook 文件** [useEmergencyTransmissionLegendIcons.ts](../../../../../../e:/oss-fe-git/phoenix/oss-visual-gd-emergency-support-next/apps/main/app/components/center/dispatch-gis/dispatch-legend/useEmergencyTransmissionLegendIcons.ts)：
+**hook 文件** [useEmergencyTransmissionLegendIcons.ts](apps/main/app/components/center/dispatch-gis/dispatch-legend/useEmergencyTransmissionLegendIcons.ts)：
 
 ```typescript
 import { useMemo } from "react";
@@ -286,12 +287,12 @@ const legendIcons = useEmergencyTransmissionLegendIcons(currentZone);
 
 **4 处图例图标使用**（位于 `index.tsx`）：
 
-| 图例项   | serverCodeName                  | 旧硬编码          | 新表达式                                                                |
-| -------- | ------------------------------- | ----------------- | ----------------------------------------------------------------------- |
-| 二干     | `省级传输二干告警图层`          | `二干.png`        | `legendIcons[LAYER_CONFIG["二干"].serverCodeName]`                       |
-| 骨干层   | `地市骨干层路由告警图层`        | `骨干层路由.png`  | `legendIcons[LAYER_CONFIG["骨干层路由"].serverCodeName]`（传入 BackboneNetworkLegend 的 `icon` prop）|
-| 汇聚层   | `区县汇聚层路由告警图层`        | `汇聚路由.png`    | `legendIcons[LAYER_CONFIG["汇聚路由"].serverCodeName]`（Image src 拼接）|
-| 接入层   | `乡镇接入层路由告警图层`        | `接入层路由.png`  | `legendIcons[LAYER_CONFIG["接入层"].serverCodeName]`                    |
+| 图例项 | serverCodeName           | 旧硬编码         | 新表达式                                                                                              |
+| ------ | ------------------------ | ---------------- | ----------------------------------------------------------------------------------------------------- |
+| 二干   | `省级传输二干告警图层`   | `二干.png`       | `legendIcons[LAYER_CONFIG["二干"].serverCodeName]`                                                    |
+| 骨干层 | `地市骨干层路由告警图层` | `骨干层路由.png` | `legendIcons[LAYER_CONFIG["骨干层路由"].serverCodeName]`（传入 BackboneNetworkLegend 的 `icon` prop） |
+| 汇聚层 | `区县汇聚层路由告警图层` | `汇聚路由.png`   | `legendIcons[LAYER_CONFIG["汇聚路由"].serverCodeName]`（Image src 拼接）                              |
+| 接入层 | `乡镇接入层路由告警图层` | `接入层路由.png` | `legendIcons[LAYER_CONFIG["接入层"].serverCodeName]`                                                  |
 
 **`BackboneNetworkLegend` 改造**（接受 `icon` prop）：
 
@@ -302,12 +303,12 @@ src={`${constants.IMAGE_PATH}/emergency/map/图例/${props.icon ?? "骨干层路
 
 #### 3.7.4 兜底语义
 
-| 场景                          | 实际显示图标                       |
-| ----------------------------- | ---------------------------------- |
-| 配置 `legendIcon` 有值        | 配置值                             |
+| 场景                           | 实际显示图标                       |
+| ------------------------------ | ---------------------------------- |
+| 配置 `legendIcon` 有值         | 配置值                             |
 | 配置 `legendIcon: ""` 空字符串 | 视为未配置，走 `defaultLegendIcon` |
-| 配置 key 缺失（town 级别等）  | 走 `defaultLegendIcon`             |
-| `layerSettings` 整个缺失      | 走 `defaultLegendIcon`             |
+| 配置 key 缺失（town 级别等）   | 走 `defaultLegendIcon`             |
+| `layerSettings` 整个缺失       | 走 `defaultLegendIcon`             |
 
 #### 3.7.5 注意事项
 
@@ -333,8 +334,8 @@ src={`${constants.IMAGE_PATH}/emergency/map/图例/${props.icon ?? "骨干层路
 
 ### 4.2 图例类型映射
 
-| 分组             | 图例名称     | 默认状态      | 说明             | 图标可配       |
-| ---------------- | ------------ | ------------- | ---------------- | -------------- |
+| 分组             | 图例名称     | 默认状态      | 说明             | 图标可配  |
+| ---------------- | ------------ | ------------- | ---------------- | --------- |
 | **应急物资**     | 任务中       | true          | 任务进行中的资源 |
 |                  | 应急通信车   | false         | 应急通信车辆     |
 |                  | 抢修车辆     | false         | 抢修车辆         |
@@ -350,12 +351,12 @@ src={`${constants.IMAGE_PATH}/emergency/map/图例/${props.icon ?? "骨干层路
 |                  | 普通站       | false         | 普通站点         |
 |                  | 光缆         | false         | 光缆线路         |
 |                  | 机房         | false         | 机房设施         |
-| **传输路由**     | 二干         | false         | 省级传输二干     | ✅ 可配        |
-|                  | 骨干层路由   | false         | 地市骨干层       | ✅ 可配        |
-|                  | 汇聚路由     | false         | 区县汇聚层       | ✅ 可配        |
-|                  | 接入层       | false         | 乡镇接入层       | ✅ 可配        |
-|                  | 乡镇三路由   | false         | 乡镇三路由       | ❌ 硬编码      |
-|                  | 节点机房     | false         | 节点机房         | ❌ 硬编码      |
+| **传输路由**     | 二干         | false         | 省级传输二干     | ✅ 可配   |
+|                  | 骨干层路由   | false         | 地市骨干层       | ✅ 可配   |
+|                  | 汇聚路由     | false         | 区县汇聚层       | ✅ 可配   |
+|                  | 接入层       | false         | 乡镇接入层       | ✅ 可配   |
+|                  | 乡镇三路由   | false         | 乡镇三路由       | ❌ 硬编码 |
+|                  | 节点机房     | false         | 节点机房         | ❌ 硬编码 |
 | **传输状态**     | 传输路由中断 | false         | 传输路由中断告警 |
 |                  | 传输路由正常 | false         | 传输路由正常状态 |
 | **物理站址状态** | 物理站址退服 | true          | 站址退服告警     |
@@ -498,66 +499,37 @@ setTimeout(() => {
 
 `damageToTownsGisPin` 是全局状态变量，用于实现乡镇退服告警与地图的联动功能。
 
-### 9.1 在图例组件中的使用
+### 9.1 联动逻辑
 
-```typescript
-useEffect(() => {
-    if (["乡镇单断", "乡镇双断", "乡镇全阻"].includes(damageToTownsGisPin?.alarmType) && damageToTownsGisPin?.selected) {
-        let newCheckedValues = { ...checkedValues };
-
-        // 乡镇出局路由选中时（isTownExitRoute = true）
-        if (damageToTownsGisPin?.isTownExitRoute) {
-            // 选中乡镇三路由
-            newCheckedValues["乡镇三路由"] = true;
-            // 取消退服和核心层选中
-            newCheckedValues["物理站址退服"] = false;
-            newCheckedValues["核心层"] = false;
-        } else {
-            // 乡镇退服选中时（isTownExitRoute = false）
-            // 选中物理站点的所有选项
-            newCheckedValues["核心层"] = true;
-            newCheckedValues["重要层"] = true;
-            newCheckedValues["支撑层"] = true;
-            newCheckedValues["普通站"] = true;
-            newCheckedValues["光缆"] = true;
-            newCheckedValues["机房"] = true;
-        }
-
-        setTimeout(() => {
-            setCheckedValues(newCheckedValues);
-        }, damageToTownsGisPinTimeout * 1000);
-    }
-}, [damageToTownsGisPin]);
-```
-
-### 9.2 联动逻辑说明
-
-| 场景             | 条件                      | 联动动作                                                         |
-| ---------------- | ------------------------- | ---------------------------------------------------------------- |
-| **乡镇出局路由** | `isTownExitRoute = true`  | 选中「乡镇三路由」，取消「物理站址退服」和「核心层」             |
+| 场景             | 条件                      | 联动动作                                                                                     |
+| ---------------- | ------------------------- | -------------------------------------------------------------------------------------------- |
+| **乡镇出局路由** | `isTownExitRoute = true`  | 选中「乡镇三路由」，取消「物理站址退服」和「核心层」                                         |
 | **乡镇退服**     | `isTownExitRoute = false` | 选中物理站点所有选项：核心层、重要层、支撑层、普通站、光缆、机房、物理站址退服、物理站址正常 |
 
-### 9.3 详细文档
+### 9.2 实现位置
 
-请参考: [damageToTownsGisPin 全局状态变量维护文档](./damageToTownsGisPin.md)
+联动实现位于 `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx` 的 `useEffect([damageToTownsGisPin])` 中。完整代码与消费组件列表见：[damageToTownsGisPin 全局状态变量维护文档](./damageToTownsGisPin.md)
 
 ## 10. 相关文件
 
-| 文件路径                                                                        | 说明                 |
-| ------------------------------------------------------------------------------- | -------------------- |
-| `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`        | 图例主组件           |
-| `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.css`        | 图例样式文件         |
-| `apps/main/app/components/center/dispatch-gis/dispatch-legend/useEmergencyTransmissionLegendIcons.ts` | 传输路由图例图标 hook |
-| `apps/main/app/components/center/dispatch-gis/presets.ts`                       | 共享 presets（含 LAYER_CONFIG / useCurrentEmergencyTransmissionLayerSettings） |
-| `apps/main/app/components/center/dispatch-gis/MapEmergencyTransmissionView.tsx` | 传输路由告警视图组件 |
-| `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`             | 中心GIS主组件        |
-| `apps/main/app/components/center/zone-select/index.tsx`                         | 区域选择组件         |
-| `apps/main/app/components/right/network-compact/damage-to-towns/index.tsx`      | 乡镇退服告警组件     |
-| `apps/main/app/components/fields.ts`                                            | 全局字段定义         |
+| 文件路径                                                                                              | 说明                                                                           |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.tsx`                              | 图例主组件                                                                     |
+| `apps/main/app/components/center/dispatch-gis/dispatch-legend/index.css`                              | 图例样式文件                                                                   |
+| `apps/main/app/components/center/dispatch-gis/dispatch-legend/useEmergencyTransmissionLegendIcons.ts` | 传输路由图例图标 hook                                                          |
+| `apps/main/app/components/center/dispatch-gis/presets.ts`                                             | 共享 presets（含 LAYER_CONFIG / useCurrentEmergencyTransmissionLayerSettings） |
+| `apps/main/app/components/center/dispatch-gis/MapEmergencyTransmissionView.tsx`                       | 传输路由告警视图组件                                                           |
+| `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`                                   | 中心GIS主组件                                                                  |
+| `apps/main/app/components/center/zone-select/index.tsx`                                               | 区域选择组件                                                                   |
+| `apps/main/app/components/right/network-compact/damage-to-towns/index.tsx`                            | 乡镇退服告警组件                                                               |
+| `apps/main/app/components/fields.ts`                                                                  | 全局字段定义                                                                   |
 
 ---
 
-**文档版本**: 1.2
-**最后更新**: 2026-06-11
+**文档版本**: 1.3
+**最后更新**: 2026-06-26
 **维护团队**: GD Emergency Support Team
-**更新内容**: 新增 §3.7 传输路由图例图标分级配置（hook `useEmergencyTransmissionLegendIcons`），更新 §2 组件结构、§4.2 图例可配列、§6 数据流、§8.4 常见问题
+**整理内容**:
+
+- §3.7.3 hook 文件链接改用项目根相对路径
+- §9 乡镇退服联动：移除与 `damageToTownsGisPin.md` §5.2 重复的代码块，改为引用

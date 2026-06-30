@@ -1,11 +1,19 @@
 ---
 name: pm-agent-skill
 description: PM 智能体 — 主动接管 + 透明 + 授权制 + 上下文对齐 + 技术栈无关。当产品经理开始新项目、讨论原型开发、需要扫描/规划/改造/验收支持时触发。技术栈无关，适用于 React / Python / Vue / Java 等任意项目。
-version: 1.0.0
+version: 1.1.0
 audience: 产品经理 / 智能体开发者 / 团队 leader
+date: 2026-06-26
+status: 生效
 ---
 
 # pm-agent · PM 智能体
+
+> **PM 先看 [pm-agent-core/PM-QUICKSTART.md](./pm-agent-core/PM-QUICKSTART.md)** — 1 页速查
+>
+> **详细维护规则见 [MAINTENANCE.md](./MAINTENANCE.md)**
+>
+> **本轮优化方案 / 执行状态见 [OPTIMIZATION-PLAN.md](./OPTIMIZATION-PLAN.md)**
 
 ## 1. 触发条件
 
@@ -136,10 +144,13 @@ PM 提需求
 
 ## 11. 不可改边界
 
-- ❌ 本 Skill 自身（修订需新建版本 + git tag）
-- ❌ `./pm-agent-core/pm-agent.md`
-- ❌ `./pm-agent-core/agents/*.md`
-- ❌ `./pm-agent-core/baseline/*`
+详细权威定义见 [pm-agent-core/pm-agent.md §5.5](./pm-agent-core/pm-agent.md#55-不可改边界canonical)
+
+简要：
+
+- ❌ skill 自身 / `pm-agent.md` / `agents/*.md` / `baseline/*` — 绝对不可改
+- ❌ `methodology/*.md` / `templates/*.md` / `MAINTENANCE.md` — 禁止智能体直接改
+- ✅ `knowledge/*` / `handover/*` — 运行时数据可写
 
 ## 12. 详细文档导航
 
@@ -157,7 +168,13 @@ PM 提需求
 
 ## 13. 使用示例
 
-详见 [examples/](./examples/)
+详见 [examples/](./examples/)。包含 3 套场景对照，覆盖不同项目类型的 PM 说法 + 智能体标准回执：
+
+| 场景               | 目录                                                               | 适用项目类型             | 关键特征                              |
+| ------------------ | ------------------------------------------------------------------ | ------------------------ | ------------------------------------- |
+| **A 中后台 CRUD**  | [examples/](./examples/)                                           | 客户运营 / OA / 后台管理 | 4 件套标准 + 列表/详情/表单           |
+| **B 内部数据看板** | [examples/scenario-b-dashboard/](./examples/scenario-b-dashboard/) | Dashboard / 报表 / BI    | 多 Tab + 图表组件 + 角色权限          |
+| **C 营销活动页**   | [examples/scenario-c-marketing/](./examples/scenario-c-marketing/) | 落地页 / H5 / 活动页     | 视觉对照 + 4 态 + 响应式 + 活动期字段 |
 
 - 典型 PM 提需求 → [examples/input.md](./examples/input.md)
 - 智能体标准回执 → [examples/output.md](./examples/output.md)
@@ -165,6 +182,12 @@ PM 提需求
 ## 14. 模板清单
 
 详见 [templates/](./templates/)
+
+| 维护 / 入门 | 路径 |
+|------------|------|
+| PM 速查（5 分钟入门）| [pm-agent-core/PM-QUICKSTART.md](./pm-agent-core/PM-QUICKSTART.md) |
+| 维护规则（frontmatter / 变更流程）| [MAINTENANCE.md](./MAINTENANCE.md) |
+| 优化方案 / 执行状态 | [OPTIMIZATION-PLAN.md](./OPTIMIZATION-PLAN.md) |
 
 | 模板                                                                 | 用途                 | 何时使用                                  |
 | -------------------------------------------------------------------- | -------------------- | ----------------------------------------- |
@@ -198,7 +221,7 @@ PM 提需求
 
 ## 16. 自包含声明
 
-整个 skill 包是**自包含**的，可以复制到任何 Trae 项目使用：
+整个 skill 包是**自包含**的，可被任何支持 Skill 的 AI 工具加载使用：
 
 ```
 你的项目/
@@ -228,6 +251,6 @@ PM 提需求
 **可移植**：
 
 - ✅ 整个 `pm-agent/` 文件夹可直接 zip 打包
-- ✅ 复制到任何 Trae 项目即可启用
-- ✅ IDE 自动识别 SKILL.md
+- ✅ 复制到任何项目即可启用（路径由所用 AI 工具的 skill 加载约定决定）
+- ✅ 主流 IDE / 工具自动识别 SKILL.md
 - ✅ PM 立即可用

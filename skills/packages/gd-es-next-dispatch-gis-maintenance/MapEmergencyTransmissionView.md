@@ -452,17 +452,18 @@ if (!currentZone) {
 
 ## 8. 修复记录
 
-| 修复项                           | 修复内容                                                                                  | 代码位置                            |
-| -------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
-| `optical` 分号拆分去重           | `optical` 可能包含 `A;B;A`，需拆分、去空、去重后生成 `circuitNames`                       | L36-46                              |
-| `enableSubLayer`                 | 添加 `enableSubLayer` 属性启用子图层渲染                                                  | L62-72                              |
-| `refreshDeps`                    | 添加 `shouldRequestErgan` 和 `shouldRequestLocal` 到依赖数组                              | L127, L143                          |
-| `TransmissionAlarmLayerProps`    | 添加 `currentZone` 和 `interval` 属性                                                     | L22-31                              |
-| 分级配置 `layerSettings`         | 新增 `layerSettings` 属性透传分级配置；按 `zoneLevel` 取 `province/region/city` 配置      | L83-94, L60, L157 等                |
-| `refreshDeps` 含 `layerSettings` | 添加 `layerSettings` 到 `useRequest.refreshDeps`，zoneLevel 切换时子图层告警色正确刷新    | L56                                 |
-| `mainLayerColor` / `zIndex`      | `TransmissionAlarmLayer` 读取 `layerSettings[serverCodeName]?.{color, zIndex}` 传入子组件 | L60-70                              |
-| 早期返回 `currentZone` 空        | 添加 `if (!currentZone) return null` 早返，hook 顺序保持                                  | L148-150                            |
-| 修复 zIndex 条件                 | `MapEmergencyTransmission` 中 `if (isNil(zIndex))` → `if (!isNil(zIndex))`                | `MapEmergencyTransmission.tsx` L137 |
+> **注意**：本节描述的是组件演进过程中**已修复**的历史问题。新增需求请直接修改组件代码，无需在本节追加。
+
+| 修复项                        | 修复内容                                                                                  |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `optical` 分号拆分去重        | `optical` 可能包含 `A;B;A`，需拆分、去空、去重后生成 `circuitNames`                       |
+| `enableSubLayer`              | 添加 `enableSubLayer` 属性启用子图层渲染                                                  |
+| `refreshDeps` 完整性          | 添加 `shouldRequestErgan` / `shouldRequestLocal` / `layerSettings` 到依赖数组             |
+| `TransmissionAlarmLayerProps` | 添加 `currentZone` / `interval` / `layerSettings` 属性                                    |
+| 分级配置 `layerSettings` 透传 | 按 `zoneLevel` 取 `province/region/city` 配置并向下传递                                   |
+| `mainLayerColor` / `zIndex`   | `TransmissionAlarmLayer` 读取 `layerSettings[serverCodeName]?.{color, zIndex}` 传入子组件 |
+| 早期返回 `currentZone` 空     | 添加 `if (!currentZone) return null` 早返，hook 顺序保持                                  |
+| 修复 zIndex 条件              | `MapEmergencyTransmission` 中 `if (isNil(zIndex))` → `if (!isNil(zIndex))`                |
 
 ## 9. 常见问题解决方案
 
@@ -576,7 +577,10 @@ const { data: alarmLayerData } = useRequest(
 
 ---
 
-**文档版本**: 2.3
-**最后更新**: 2026-06-11
+**文档版本**: 2.4
+**最后更新**: 2026-06-26
 **维护团队**: GD Emergency Support Team
-**更新内容**: 融合分级配置（`currentLayerSettings` 按 zoneLevel 透传 `layerSettings` 到 `TransmissionAlarmLayer`），新增 `mainLayerColor` / `zIndex` / 早期返回 / `refreshDeps` 含 `layerSettings` 等变更的说明与配置指南
+**整理内容**:
+
+- §8 修复记录：移除易过期的 L### 行号引用，改为"修复项 + 修复内容"两列表格
+- 顶部加维护说明（已修复问题不追加，新需求直接改代码）

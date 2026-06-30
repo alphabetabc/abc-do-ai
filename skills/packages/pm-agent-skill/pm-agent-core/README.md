@@ -51,7 +51,7 @@ pm-agent 是面向**产品经理**的智能体：
 ## 目录结构
 
 ```
-.trae/pm-agent/
+<项目配置目录>/pm-agent/   ← 路径由所用 AI 工具决定
 ├── pm-agent.md                          # 调度器主入口
 ├── README.md                            # 本文件
 ├── agents/                              # 4 个子智能体（按工作流顺序）

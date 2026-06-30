@@ -292,6 +292,172 @@ addPoints: function (ctxOpt: any, data: any) {
 },
 ```
 
+### 3.6 发光/泛光动画
+
+**场景**：对核心层、核心机楼等高优先级业务 type，在普通点位之外额外创建一个 ripple 扩散动画 layer，作为视觉强调。
+
+**核心数据结构**（`mapInit.tsx` 顶部）：
+
+```typescript
+/**
+ * 发光能力白名单。
+ * - key：业务 type（如 "核心层"、"核心机楼"）
+ * - layerIdPrefix：ripple 衍生 layerId 的前缀
+ * 修改此 Map 时请同步确认所有"按 type 过滤 / 按前缀筛"的调用点
+ * （isFlash / setLayerStatus / 未来事件过滤）。
+ * 注：此为 mapInit 内部实现细节，不导出。
+ */
+const enableAnimateLayerTypes = new Map<string, { layerIdPrefix: string }>([
+    ["核心层", { layerIdPrefix: "核心层_ripple" }],
+    ["核心机楼", { layerIdPrefix: "核心机楼_ripple" }],
+]);
+```
+
+**layerId 命名约定**：`${layerIdPrefix}_${intId}`，例：`核心层_ripple_123`
+
+#### 3.6.1 isFlash 判断（`addPoints` 内）
+
+```typescript
+const isFlash = isCoreFlash && enableAnimateLayerTypes.has(p.type) && p.level === "21";
+
+if (isFlash) {
+    const handle = createGlowPointAnimator({
+        map,
+        EMap,
+        layerId: `${enableAnimateLayerTypes.get(p.type)?.layerIdPrefix}_${p?.intId}`,
+        points: [{ id: p?.intId, longitude: p?.longitude, latitude: p?.latitude }],
+        mode: "ripple",
+        // ...其它动画参数
+    });
+    ctxOpt.__glowHandles.set(p?.intId, handle);
+}
+```
+
+#### 3.6.2 setLayerStatus 反查（基于 Map 迭代，不依赖 regex）
+
+```typescript
+if (layerId && allLegendKeys.includes(layerId)) {
+    // 族名归并："光缆" + 任何可发光 type（与 enableAnimateLayerTypes 同步）
+    checkKey = ["光缆", ...enableAnimateLayerTypes.keys()].find((k) => layerId.includes(k)) || layerId;
+} else {
+    // 通用规则：从 Map 里反查 layerId 归属 type
+    for (const [type, { layerIdPrefix }] of enableAnimateLayerTypes) {
+        if (layerId?.startsWith(layerIdPrefix)) {
+            checkKey = type;
+            break;
+        }
+    }
+}
+```
+
+#### 3.6.3 添加新发光类型的最小步骤
+
+1. 在 `enableAnimateLayerTypes` Map 加 entry（`{ type, layerIdPrefix }`）：
+    ```typescript
+    ["新类型", { layerIdPrefix: "新类型_ripple" }],
+    ```
+2. 如果新类型需要不同的 `level` 阈值，调整 `isFlash` 中的 `p.level === "XX"` 条件。
+3. **无需**改 `setLayerStatus`（自动通过 `for...of Map + startsWith(prefix)` 识别）。
+4. **需要**在事件过滤（pointermove / clickPopup）列表里显式加 `enableAnimateLayerTypes.get("新类型")!.layerIdPrefix`——**这是有意为之的"摩擦"**，强迫开发者决策"新类型要不要进这个 filter"。
+
+#### 3.6.4 与旧实现的差异
+
+| 维度                                 | 旧实现                                               | 新实现                                                                            |
+| ------------------------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 白名单存储                           | `["核心层", "核心机楼"]` 数组 + 4 处硬编码           | 1 个 Map 单一来源                                                                 |
+| isFlash 检查                         | `p.type === "X" \|\| p.type === "Y"`                 | `Map.has(p.type)`                                                                 |
+| setLayerStatus 反查                  | 4 条硬编码 if-else + regex `^(.+?)_ripple(?:_\d+)?$` | `for...of Map + startsWith(layerIdPrefix)`                                        |
+| 事件过滤（pointermove / clickPopup） | `"核心层_ripple"` / `"核心机楼_ripple"` 字面量       | **显式 `get("X")!.layerIdPrefix`**——避免隐式派生耦合                              |
+| 添加新 type 改动                     | 改 ≥4 处                                             | 改 1 处（Map entry）+ 在需要它的 filter 列表里显式 `get("X")!.layerIdPrefix` 一行 |
+| `__glowHandles` 清理                 | 整批清空（跨 addPoints 调用互相抹除）                | **差量更新 + 按类别分流**（仅销毁本次不再需要的句柄）                             |
+
+#### 3.6.5 `__glowHandles` 差量更新
+
+**问题**：`addPoints` 会被多个 useEffect 依次调用（物理站 → 动环机房 → 应急资源），旧实现每次都 `forEach + clear` 整张 Map，导致**非本次类别**的 glow 句柄被误杀，下次轮到时再重建——视觉表现是"不该消失的 glow 闪烁"。
+
+**新实现**：
+
+```typescript
+// 1. 初始化（如果还没有）
+if (!ctxOpt.__glowHandles) {
+    ctxOpt.__glowHandles = new Map<any, { destroy: () => void }>();
+}
+
+// 2. 本次 addPoints 中需要发光的 (type, intId) 复合 key 集合（复用 isFlash 判断）
+//    使用复合 key 防止不同 type 的 intId 碰撞导致句柄互相覆盖
+const currentFlashKeys = new Set<string>();
+//    本次 addPoints 中发光能力 type 集合（清理段按类别分流用，独立于 isFlash 判断：
+//    即使当前数据没有 level="21" 的点，老的同 type 句柄也能被正确销毁）
+const currentPointTypes = new Set<string>();
+points?.forEach((p: any) => {
+    if (p?.type && enableAnimateLayerTypes.has(p.type)) {
+        currentPointTypes.add(p.type);
+    }
+    if (isCoreFlash && p.level === "21" && p?.intId !== undefined) {
+        currentFlashKeys.add(`${p.type}::${p.intId}`);
+    }
+});
+
+// 3. 销毁：旧句柄但本次不在集合内（跨类别的句柄先按 type 过滤掉，避免误杀）
+ctxOpt.__glowHandles.forEach((handle: any, key: any) => {
+    const [type] = (key as string).split("::");
+    // 跨类别：保留（核心层 句柄不被动环机房 addPoints 销毁）
+    if (!currentPointTypes.has(type)) return;
+    // 同类别但本次不需要发光（被移除 / 降级了）：销毁
+    if (!currentFlashKeys.has(key)) {
+        handle.destroy?.();
+        ctxOpt.__glowHandles.delete(key);
+    }
+});
+
+// 4. 重建：在 forEach 内，isFlash 时销毁旧句柄再创建新句柄（避免 set 覆盖造成双重动画）
+if (isFlash) {
+    const flashKey = `${p.type}::${p.intId}`;
+    const oldHandle = ctxOpt.__glowHandles.get(flashKey);
+    if (oldHandle) {
+        oldHandle.destroy?.();
+    }
+    const handle = createGlowPointAnimator({...});
+    ctxOpt.__glowHandles.set(flashKey, handle);
+}
+```
+
+**关键点**：
+
+- `currentFlashKeys` 复用 `enableAnimateLayerTypes.has(p.type) && p.level === "21"` 判断——与 `isFlash` 完全一致
+- **复合 key (`${type}::${intId}`)**：防止不同 type 的 intId 碰撞导致句柄互相覆盖（数据层没有强保证时仍安全）
+- **按类别分流**：清理段先 split key 取 type，只对 `currentPointTypes` 中的 type 进行销毁判断，跨类别句柄直接 `return` 不动——这是修复"动环机房 addPoints 误杀核心层句柄"的关键
+- 跨 useEffect 调用之间不互相抹除：物理站 addPoints 不会销毁动环机房的句柄
+- 重建前必须先 `destroy` 旧句柄：`Map.set` 是覆盖语义，旧句柄不会被 GC，需要主动销毁
+
+**已知限制**：
+
+- 同类别内每次 addPoints 仍会重建（位置 / 颜色更新可保持新鲜）——这是有意的，保留位置新鲜度
+- 真正"零重建"的实现需要数据签名比对（经纬度 / 颜色变化才重建），超出本轮范围
+- 复合 key 假设 `p.type` 中不含 `::`，当前业务 type（"核心层"、"核心机楼"、"应急通信车1" 等）均无 `::`，无碰撞风险
+
+#### 3.6.6 显式 `get()` vs 派生常量：选型决策
+
+事件过滤（pointermove / clickPopup）需要用到 `enableAnimateLayerTypes` 里的 `layerIdPrefix`。本轮有两条可选路径：
+
+| 路径                          | 形态                                                                                                                                       | 优点                                                                                                  | 缺点                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **A. 派生常量 + spread**      | 模块级 `const animateRipplePrefixes = [...enableAnimateLayerTypes.values()].map(v => v.layerIdPrefix);`，调用点 `...animateRipplePrefixes` | DRY：单点修改所有调用点同步；调用点简洁                                                               | 隐式耦合：Map 加 entry 会**自动**注入所有调用点；每个调用点拿同一份，无法差异化 |
+| **B. 显式 `get()`**（已采用） | 调用点 `enableAnimateLayerTypes.get("核心层")!.layerIdPrefix`                                                                              | 可追溯：阅读调用点时一眼知道用了什么；灵活：每个调用点可选不同子集；新加 type 不会"偷偷"进所有 filter | 调用点略有冗余                                                                  |
+
+**选 B 的理由**：
+
+1. **事件过滤是"按场景选子集"**——pointermove 跳过 `核心层_ripple` 但放过 `核心机楼_ripple` 是合理需求（虽然当前没用到）。用派生常量强行"全选"会丧失这个灵活性
+2. **新加 type 不应隐式扩散**——加 `"骨干层"` 到 Map，开发者应该**主动决定**"骨干层要不要进 pointermove 过滤"，而不是被派生常量偷偷加进去
+3. **可读性**——`enableAnimateLayerTypes.get("核心层")!.layerIdPrefix` 在过滤列表里**自解释**，读者不需要追到派生常量定义
+
+**反例（保留派生）**：`setLayerStatus` 内部仍用 `[...enableAnimateLayerTypes.keys()]` 派生（位置：`apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`）。理由：setLayerStatus 是"按图例控可见性"的**全集**操作——所有发光 type 都应参与归并，派生是合理的"全集"表达
+
+**注意点**：
+
+- 用 `!` 而非 `?? ""`：`get("X")?.layerIdPrefix ?? ""` 会让 `indexOf("")` 永远返回 0（空串是任何串的子串），**会引入隐性 bug**
+- `!` 是合理的"显式契约"——key 在 Map 中就是契约的一部分
+
 ## 4. API 接口说明
 
 ### 4.1 MapInit 工具类方法
@@ -609,6 +775,7 @@ const columns = useMemo(() => {
 
 ---
 
-**文档版本**: 1.1
-**最后更新**: 2026-06-04
+**文档版本**: 1.8
+**最后更新**: 2026-06-26
 **维护团队**: GD Emergency Support Team
+**整理内容**: - §3.6.6 反例链接改用相对路径（`file:///e:/...` → 项目根相对路径）- SKILL.md 与 CENTER-GIS.md 内容去重：SKILL.md 精简为入口，详细设计在本文件 - token 优化：减少重复内容，保留核心决策信息

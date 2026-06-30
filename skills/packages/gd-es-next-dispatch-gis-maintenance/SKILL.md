@@ -2,29 +2,31 @@
 name: gd-es-next-dispatch-gis-maintenance
 description: 用于维护和拓展 dispatch-gis 指挥调度 GIS 组件的可复用技能
 tags:
-  - GIS
-  - 指挥调度
-  - 维护
+    - GIS
+    - 指挥调度
+    - 维护
 ---
 
 # dispatch-gis 组件维护技能 (Skill)
 
 ## 🚀 快速导航
 
-| 使用场景             | 快速入口                             | 详细文档                                                             |
-| -------------------- | ------------------------------------ | -------------------------------------------------------------------- |
-| 添加新图例项         | [点击跳转](#1-添加新图例项)          | [DispatchLegend.md](./DispatchLegend.md)                             |
-| 新增打点类型         | [点击跳转](#2-新增打点类型)          | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 修改弹窗字段         | [点击跳转](#3-修改弹窗字段)          | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 添加地图图层         | [点击跳转](#4-添加地图图层)          | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 调试数据不更新       | [点击跳转](#5-调试数据不更新问题)    | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 优化性能问题         | [点击跳转](#6-优化性能问题)          | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 同经纬度处理         | [点击跳转](#7-同经纬度处理)          | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 扩展跨地市飞线       | [点击跳转](#8-扩展跨地市飞线功能)    | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 传输路由状态控制     | [点击跳转](#9-传输路由状态控制)      | [MapEmergencyTransmissionView.md](./MapEmergencyTransmissionView.md) |
-| 乡镇退服图例联动     | [点击跳转](#10-乡镇退服图例联动)     | [damageToTownsGisPin.md](./damageToTownsGisPin.md)                   |
-| 添加新预警类型       | [点击跳转](#11-添加新预警类型)       | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
-| 多级视图告警图层配置 | [点击跳转](#12-多级视图告警图层配置) | [layerSettings 配置说明](#12-多级视图告警图层配置)                   |
+| 使用场景                 | 快速入口                                     | 详细文档                                                             |
+| ------------------------ | -------------------------------------------- | -------------------------------------------------------------------- |
+| 添加新图例项             | [点击跳转](#1-添加新图例项)                  | [DispatchLegend.md](./DispatchLegend.md)                             |
+| 新增打点类型             | [点击跳转](#2-新增打点类型)                  | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 修改弹窗字段             | [点击跳转](#3-修改弹窗字段)                  | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 添加地图图层             | [点击跳转](#4-添加地图图层)                  | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 调试数据不更新           | [点击跳转](#5-调试数据不更新问题)            | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 优化性能问题             | [点击跳转](#6-优化性能问题)                  | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 同经纬度处理             | [点击跳转](#7-同经纬度处理)                  | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 扩展跨地市飞线           | [点击跳转](#8-扩展跨地市飞线功能)            | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 传输路由状态控制         | [点击跳转](#9-传输路由状态控制)              | [MapEmergencyTransmissionView.md](./MapEmergencyTransmissionView.md) |
+| 乡镇退服图例联动         | [点击跳转](#10-乡镇退服图例联动)             | [damageToTownsGisPin.md](./damageToTownsGisPin.md)                   |
+| 添加新预警类型           | [点击跳转](#11-添加新预警类型)               | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 多级视图告警图层配置     | [点击跳转](#12-多级视图告警图层配置)         | [layerSettings 配置说明](#12-多级视图告警图层配置)                   |
+| 添加发光/泛光类型        | [点击跳转](#13-添加发光泛光类型)             | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| 显式 `get()` vs 派生常量 | [点击跳转](#14-显式-get-vs-派生常量选型决策) | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
 
 ---
 
@@ -133,10 +135,10 @@ tags:
 
 ```typescript
 useRequest(() => api(), {
-  ready: isDefined(param1) && isDefined(param2),
-  refreshDeps: [param1, param2],
-  pollingInterval: 300000,
-  onSuccess: (data) => console.log('✅ 数据更新', data),
+    ready: isDefined(param1) && isDefined(param2),
+    refreshDeps: [param1, param2],
+    pollingInterval: 300000,
+    onSuccess: (data) => console.log("✅ 数据更新", data),
 });
 ```
 
@@ -307,6 +309,33 @@ useRequest(() => api(), {
 
 ---
 
+## 13. 添加发光/泛光类型
+
+**场景**：让业务 type 在地图上出现 ripple 扩散动画（核心机楼、核心层等高优先级点的视觉强调）。
+
+**关键文件**：`apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`（`enableAnimateLayerTypes` Map + `isFlash` 判断 + 事件过滤列表）
+
+**详细文档**：[CENTER-GIS.md §3.6](./CENTER-GIS.md#36-发光泛光动画) — 含添加步骤、复合 key、按类别分流、setLayerStatus 反查
+
+> **提示**：事件过滤列表（pointermove / clickPopup）不会因为 Map 加 entry 就自动包含新 type——需要显式 `get("新类型")!.layerIdPrefix` 一行（有意为之的"摩擦"）。详见 [CENTER-GIS.md §3.6.3 步骤 4](./CENTER-GIS.md#363-添加新发光类型的最小步骤)。
+
+---
+
+## 14. 显式 `get()` vs 派生常量：选型决策
+
+**场景**：`enableAnimateLayerTypes` 是发光能力单一来源，多处需要用到 `layerIdPrefix`——是派生常量还是显式引用？
+
+**当前决策**：
+
+| 使用位置                             | 形态                                       | 语义                         |
+| ------------------------------------ | ------------------------------------------ | ---------------------------- |
+| 事件过滤（pointermove / clickPopup） | 显式 `get("X")!.layerIdPrefix`             | 子集（每调用点可选）         |
+| `setLayerStatus` 归并                | `[...enableAnimateLayerTypes.keys()]` 派生 | 全集（所有发光 type 都参与） |
+
+**详细文档**：[CENTER-GIS.md §3.6.6](./CENTER-GIS.md#366-显式-get-vs-派生常量选型决策) — 含选型理由、注意点（`!` vs `?? ""`）
+
+---
+
 ## 🎯 常见问题速查
 
 | 问题                | 快速解决方案                           | 详细文档                                                                                                                                     |
@@ -335,7 +364,7 @@ useRequest(() => api(), {
 
 ---
 
-**文档版本**: 2.4
-**最后更新**: 2026-06-12
+**文档版本**: 3.1
+**最后更新**: 2026-06-26
 **维护团队**: GD Emergency Support Team
-**更新内容**: 新增第12节「多级视图告警图层配置」，记录 province/region/city 三级视图的图层 color、alarmColor、legendIcon 配置规范及颜色命名规则
+**整理内容**: - 第13、14节精简：移除与 [CENTER-GIS.md](./CENTER-GIS.md) §3.6.3 / §3.6.6 的重复内容，改为"场景 + 关键文件 + 详细文档链接" - 快速定位优化：减少 token 消耗 - 维护说明：本 SKILL.md 为**入口**，详细设计文档在 [CENTER-GIS.md](./CENTER-GIS.md)

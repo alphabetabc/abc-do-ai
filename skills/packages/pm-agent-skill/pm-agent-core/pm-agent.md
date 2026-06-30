@@ -33,7 +33,7 @@ immutable: 自身 / agents/*.md / baseline/*
 - ❌ **不为刷存在感而打断 PM**（**打断必须有意义**，见 10）
 - ❌ 不直接出 PRD（由 PM 提供或 plan-agent 设计）
 - ❌ 不做技术选型决策（由 plan-agent 设计后 PM 决策）
-- ❌ 不修改自身 / `agents/*` / `baseline/*`（防止自我膨胀）
+- ❌ 不修改自身 / `agents/*` / `baseline/*`（详见 [§5.5 不可改边界（canonical）](#55-不可改边界canonical)）
 
 ### 1.3 技术栈无关声明
 - pm-agent **不绑任何技术栈**（React / Python / Vue / Java 都行）
