@@ -1,6 +1,17 @@
 # Changelog
 
-<!-- changelog-last-commit: 0190b9b9564f34e50c0aace9c12ab29e050e28ea -->
+<!-- changelog-last-commit: e1d56c7e30313a63bd36fcac0e8ac2a7bf2a0c48 -->
+
+## 2026-07-08
+
+- 发布 skill
+    - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-right-damage-to-towns」；
+    - 「gd-es-next-right-network-scale-maintenance」；
+    - 「gd-es-next-right-real-time-impact」 v0.0.0；
+    - 「gd-es-next-warn-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-warn-gis-risk-prediction-points」；
+- 更新 8 个文件；
 
 ## 2026-06-30
 
