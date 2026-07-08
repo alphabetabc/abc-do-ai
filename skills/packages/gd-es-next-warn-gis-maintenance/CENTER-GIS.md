@@ -173,6 +173,83 @@ showMapMovePopup: function (lonLat: any, feature: any) {
 },
 ```
 
+### 3.5 zIndex 体系：数据层赋值 + 渲染层消费
+
+**场景**：告警点被同经纬度的正常点遮挡、不同级别点位叠放顺序不可控。warn-gis 与 dispatch-gis 共用同一套 zIndex 体系，把 zIndex 从"渲染层运行时硬编码"前移到"API 数据生成时主动赋值"，渲染层只消费。
+
+> **与 dispatch-gis 的差异**：warn-gis 没有发光 ripple 图层（无 `enableAnimateLayerTypes`、无 `__glowHandles`），只消费物理站 API 返回的 zIndex；不涉及动环机房（动环机房只在 dispatch-gis 出现）。
+
+#### 3.5.1 数据层：API 转换时按 (type, status) 复合键查表赋 zIndex
+
+**文件**：`apps/main/request/center.ts`
+
+warn-gis 调用的 `getEmergencySitePointsApi`（物理站，[L64-L89](apps/main/request/center.ts)）在 `rows.map` 转换时已新增 `zIndex` 字段：
+
+```typescript
+const levelOrder = {
+    "11": 199, "21": 198, "31": 197, "41": 196,  // status=1 告警
+    "10": 195, "20": 194, "30": 193, "40": 192,  // status=0 正常
+};
+// ...
+level: `${viewPageArgs.zoneLevel}${alarmLevel}`,
+zIndex: levelOrder[`${item.type}${alarmLevel}`],
+```
+
+| 规则 | 说明 |
+| --- | --- |
+| key = `${type}${status}` | type 1/2/3/4 对应核心层/重要层/支撑层/普通站，status 0/1 对应正常/告警 |
+| 告警 > 正常 | 同级别内 status=1（199）永远高于 status=0（195），告警点压在正常点之上 |
+| 级别降序 | type 1 > 2 > 3 > 4，核心层永远压在普通站之上 |
+
+#### 3.5.2 渲染层：消费 zIndex + 精确清理图层
+
+**文件**：`apps/main/app/components/center/warn-gis/center-gis/utils/mapInit.tsx`
+
+`addPoints` 创建图层时优先用数据带的 zIndex，无值才 fallback（[L193](./utils/mapInit.tsx)）：
+
+```typescript
+zIndex: p.zIndex || (isMaxIcon ? 99999 : 99),
+```
+
+| 点位类型 | 是否带 zIndex | 取值 |
+| --- | --- | --- |
+| 物理站 | ✅ API 主动赋值 | 192-199 |
+| 应急通信车/抢修车辆等应急资源 | ❌ API 未赋值 | fallback 99 |
+| 轨迹点 | ❌ | 硬编码 99 |
+
+> **设计意图**：只有需要"告警压正常、高级别压低级别"的点位才主动加 zIndex；应急资源点之间是平级的，用 fallback 99 即可。
+
+#### 3.5.3 图层清理：按 (type, zIndex) 精确粒度
+
+**文件**：`apps/main/app/components/center/warn-gis/center-gis/index.tsx`
+
+同一个 type 现在会因 zIndex 不同分裂成多个图层（如"核心层199"、"核心层195"），清理时必须覆盖所有 (type, zIndex) 组合，否则切换图例时旧图层残留：
+
+```typescript
+// 物理站 effect（L299-L302）
+const layerIds = [...new Set(dataSitePointsRef.current.map((p: any) => `${p.type}${p.zIndex || ""}`))];
+if (!isEmpty(layerIds)) {
+    MapInit.clearLayerById(ctxOpt, layerIds);
+}
+```
+
+#### 3.5.4 allLegendKeys：layerId 命名与 setLayerStatus 匹配
+
+**文件**：`apps/main/app/components/center/warn-gis/center-gis/utils/mapInit.tsx`（[L5-L34](./utils/mapInit.tsx)）
+
+`allLegendKeys` 列表现在装的全是带 zIndex 后缀的 key，与 API 返回的 layerId（`${type}${zIndex}`）一一对应：
+
+```typescript
+const allLegendKeys = [
+    // 物理站
+    "核心层199", "核心层195", "重要层198", "重要层194",
+    "支撑层197", "支撑层193", "普通站196", "普通站192",
+    // ...
+];
+```
+
+`setLayerStatus`（[L627-L644](./utils/mapInit.tsx)）用 `allLegendKeys.includes(layerId)` 判断业务图层，再用 `layerId.includes(levelType)` 做族名归并（如"核心层199"和"核心层195"都归到"核心层"图例项）。
+
 ## 4. API 接口说明
 
 ### 4.1 MapInit 工具类方法

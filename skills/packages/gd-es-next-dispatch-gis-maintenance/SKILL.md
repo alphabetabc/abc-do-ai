@@ -27,6 +27,7 @@ tags:
 | 多级视图告警图层配置     | [点击跳转](#12-多级视图告警图层配置)         | [layerSettings 配置说明](#12-多级视图告警图层配置)                   |
 | 添加发光/泛光类型        | [点击跳转](#13-添加发光泛光类型)             | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
 | 显式 `get()` vs 派生常量 | [点击跳转](#14-显式-get-vs-派生常量选型决策) | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
+| zIndex 体系（数据层赋值） | [点击跳转](#15-zindex-体系数据层赋值--渲染层消费) | [CENTER-GIS.md](./CENTER-GIS.md)                                     |
 
 ---
 
@@ -333,6 +334,22 @@ useRequest(() => api(), {
 | `setLayerStatus` 归并                | `[...enableAnimateLayerTypes.keys()]` 派生 | 全集（所有发光 type 都参与） |
 
 **详细文档**：[CENTER-GIS.md §3.6.6](./CENTER-GIS.md#366-显式-get-vs-派生常量选型决策) — 含选型理由、注意点（`!` vs `?? ""`）
+
+---
+
+## 15. zIndex 体系：数据层赋值 + 渲染层消费
+
+**场景**：告警点被同经纬度正常点遮挡、不同级别点位叠放顺序不可控。把 zIndex 从"渲染层运行时硬编码"前移到"API 数据生成时主动赋值"。
+
+**关键文件**：
+
+- `apps/main/request/center.ts`（`getEmergencySitePointsApi` / `getEmergencyPowerRoomPointsApi` 的 `levelOrder` 表 + `zIndex` 字段）
+- `apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`（`addPoints` 消费 `p.zIndex || fallback`、`allLegendKeys` 带 zIndex 后缀）
+- `apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`（图层清理按 `${type}${zIndex}` 精确粒度）
+
+**核心规则**：告警 > 正常、高级别 > 低级别；物理站 192-199、动环机房 188-199、发光 ripple 层固定 98、应急资源 fallback 99。
+
+**详细文档**：[CENTER-GIS.md §3.7](./CENTER-GIS.md#37-zindex-体系数据层赋值--渲染层消费) — 含 levelOrder 表、消费规则、清理粒度、allLegendKeys 匹配
 
 ---
 

@@ -442,7 +442,7 @@ const api = state.exitServiceType === ServiceType.Logical
 | **当前版本** | `1.1.0` |
 | **最后更新** | `2026-06-16` |
 | **维护者** | Emergency Support Team |
-| **所属 Skill** | `gd-es-next-right-damage-to-towns`（[SKILL.md](./SKILL.md)） |
+| **所属 Skill** | `gd-es-next-right-real-time-impact`（[SKILL.md](../../SKILL.md) damage-to-towns 子模块） |
 | **接口文件** | `apps/main/request/right.ts`（6 个 viewItemId） |
 | **公共 viewPageId** | `guarantee-right-page` |
 | **Mock 根目录** | `/static/mock/emergency/` |

@@ -1,7 +1,7 @@
 ---
-name: gd-es-next-right-damage-to-towns-exit-service-detail
-title: 退服统计弹窗实现参考
-description: ExitServiceDetail 弹窗实现（handleRowClick / onRow / btns / 拖拽控制）的唯一代码片段维护点。所属 Skill: gd-es-next-right-damage-to-towns。
+name: gd-es-next-right-real-time-impact-damage-to-towns-exit-service-detail
+title: 退服统计弹窗实现参考（合并 Skill · damage-to-towns 子模块）
+description: ExitServiceDetail 弹窗实现（handleRowClick / onRow / btns / 拖拽控制）的唯一代码片段维护点。所属 Skill: gd-es-next-right-real-time-impact（damage-to-towns 子模块）。
 version: 1.5.0
 ---
 
@@ -9,7 +9,7 @@ version: 1.5.0
 
 > **职责定位**：本文件是 `ExitServiceDetail.tsx` 弹窗**实现**的唯一维护点（代码片段、handleRowClick、onRow、btns、拖拽控制）。
 >
-> 跨切面概念（GIS 派发分流、选中态双轨制、dataTime 同步链路等）请查阅 [SKILL.md](./SKILL.md#关键概念一次讲清楚)。
+> 跨切面概念（GIS 派发分流、选中态双轨制、dataTime 同步链路等）请查阅 [SKILL.md](../../SKILL.md#关键概念一次讲清楚-共享)。
 >
 > 维护约定：跨切面概念**不**在此处重述，违反者视为 PR 不通过。
 
@@ -20,8 +20,8 @@ version: 1.5.0
 - **组件文件**：`apps/main/app/components/right/network-compact/damage-to-towns/ExitServiceDetail.tsx`
 - **样式文件**：`apps/main/app/components/right/network-compact/damage-to-towns/index.css`
 - **弹窗容器**：`index.tsx` 中 `StyledDraggableModal`（受 `state.disabledDraggable` 控制拖拽）
-- **GIS 派发**：`props.onCellClick` → `index.tsx` → `sectionRight:damageToTownsModalGisPin` 字段（详见 [SKILL.md 关键概念 §1](./SKILL.md#1-oncellclick-三表派发)）
-- **选中态**：内部 `state.selectedRowKey`（详见 [SKILL.md 关键概念 §2](./SKILL.md#2-选中态双轨制)）
+- **GIS 派发**：`props.onCellClick` → `index.tsx` → `sectionRight:damageToTownsModalGisPin` 字段（详见 [SKILL.md 关键概念 §1](../../SKILL.md#1-oncellclick-三表派发-damage-to-towns)）
+- **选中态**：内部 `state.selectedRowKey`（详见 [SKILL.md 关键概念 §2](../../SKILL.md#2-选中态双轨制-damage-to-towns)）
 
 ---
 
@@ -231,8 +231,8 @@ const onRow = useMemoizedFn((record: any) => {
 
 - **API 契约**：[api-reference.md](./api-reference.md) — 6 个 viewItemId、请求参数、响应结构
 - **配置 schema**：[config-reference.md](./config-reference.md) — `detailModal.{physical|logic}.columns.{zoneLevel}` 配置规范
-- **GIS 派发分流**：[SKILL.md 关键概念 §1](./SKILL.md#1-oncellclick-三表派发) — 三表 payload 差异表
-- **选中态双轨制**：[SKILL.md 关键概念 §2](./SKILL.md#2-选中态双轨制) — 弹窗 vs 主屏中栏
+- **GIS 派发分流**：[SKILL.md 关键概念 §1](../../SKILL.md#1-oncellclick-三表派发-damage-to-towns) — 三表 payload 差异表
+- **选中态双轨制**：[SKILL.md 关键概念 §2](../../SKILL.md#2-选中态双轨制-damage-to-towns) — 弹窗 vs 主屏中栏
 
 ---
 
@@ -244,7 +244,7 @@ const onRow = useMemoizedFn((record: any) => {
 | **当前版本** | `1.5.0` |
 | **最后更新** | `2026-06-16` |
 | **维护者** | Emergency Support Team |
-| **所属 Skill** | [gd-es-next-right-damage-to-towns](./SKILL.md)（v1.5.0） |
+| **所属 Skill** | [gd-es-next-right-real-time-impact](../../SKILL.md)（damage-to-towns 子模块，v1.5.0） |
 | **组件文件** | `apps/main/app/components/right/network-compact/damage-to-towns/ExitServiceDetail.tsx` |
 | **关联接口** | `getTownshipOutOfServiceCountPhysicsApi` / `getTownshipOutOfServiceCountLogicApi`（详见 [api-reference.md](./api-reference.md)） |
 | **关联配置** | `gd-emergency-support.modules.damage-to-towns.detailModal.{physical\|logic}.columns.{zoneLevel}`（详见 [config-reference.md](./config-reference.md)） |

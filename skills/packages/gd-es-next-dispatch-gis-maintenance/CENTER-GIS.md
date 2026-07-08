@@ -458,6 +458,96 @@ if (isFlash) {
 - 用 `!` 而非 `?? ""`：`get("X")?.layerIdPrefix ?? ""` 会让 `indexOf("")` 永远返回 0（空串是任何串的子串），**会引入隐性 bug**
 - `!` 是合理的"显式契约"——key 在 Map 中就是契约的一部分
 
+### 3.7 zIndex 体系：数据层赋值 + 渲染层消费
+
+**场景**：告警点被同经纬度的正常点遮挡、不同级别点位叠放顺序不可控。解决方案是把 zIndex 从"渲染层运行时硬编码"前移到"API 数据生成时主动赋值"，渲染层只消费。
+
+#### 3.7.1 数据层：API 转换时按 (type, status) 复合键查表赋 zIndex
+
+**文件**：`apps/main/request/center.ts`
+
+`getEmergencySitePointsApi`（物理站，[L64-L89](apps/main/request/center.ts)）和 `getEmergencyPowerRoomPointsApi`（动环机房，[L899-L928](apps/main/request/center.ts)）在 `rows.map` 转换时新增 `zIndex` 字段：
+
+```typescript
+// 物理站 levelOrder（status 仅 0/1 两态）
+const levelOrder = {
+    "11": 199, "21": 198, "31": 197, "41": 196,  // status=1 告警
+    "10": 195, "20": 194, "30": 193, "40": 192,  // status=0 正常
+};
+// 动环机房 levelOrder（status 0/1/2 三态，多一档环境异常）
+const levelOrder = {
+    "11": 199, "21": 198, "31": 197, "41": 196,  // status=1 告警
+    "12": 195, "22": 194, "32": 193, "42": 192,  // status=2 环境
+    "10": 191, "20": 190, "30": 189, "40": 188,  // status=0 正常
+};
+// ...
+zIndex: levelOrder[`${item.type}${item.status}`],
+```
+
+**设计要点**：
+
+| 规则 | 说明 |
+| --- | --- |
+| key = `${type}${status}` | type 1/2/3/4 对应核心层/重要层/支撑层/普通站（或核心机楼/重要汇聚/普通汇聚/业务汇聚），status 0/1/2 对应正常/告警/环境 |
+| 告警 > 正常 | 同级别内 status=1 的 zIndex（199）永远高于 status=0（195），保证告警点压在正常点之上 |
+| 级别降序 | type 1 > 2 > 3 > 4，核心层永远压在普通站之上 |
+| 物理站 192-199 / 动环机房 188-199 | 动环机房多一个 status=2 档，低位 188-191 让出给环境异常态 |
+
+#### 3.7.2 渲染层：消费 zIndex + 精确清理图层
+
+**文件**：`apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`
+
+`addPoints` 创建图层时优先用数据带的 zIndex，无值才 fallback（[L315](./utils/mapInit.tsx)）：
+
+```typescript
+zIndex: p.zIndex || (isMaxIcon ? 99999 : 99),
+```
+
+| 点位类型 | 是否带 zIndex | 取值 |
+| --- | --- | --- |
+| 物理站、动环机房 | ✅ API 主动赋值 | 188-199 |
+| 应急通信车/抢修车辆等应急资源 | ❌ API 未赋值 | fallback 99 |
+| 跨地市飞线起点/终点 | ❌ | 硬编码 199 |
+| 轨迹点、传输机房/光缆 | ❌ | 硬编码 99 |
+
+> **设计意图**：只有需要"告警压正常、高级别压低级别"的点位才主动加 zIndex；应急资源点之间是平级的，用 fallback 99 即可。
+
+#### 3.7.3 图层清理：按 (type, zIndex) 精确粒度
+
+**文件**：`apps/main/app/components/center/dispatch-gis/center-gis/index.tsx`
+
+同一个 type 现在会因 zIndex 不同分裂成多个图层（如"核心层199"、"核心层195"），清理时必须覆盖所有 (type, zIndex) 组合，否则切换图例时旧图层残留：
+
+```typescript
+// 物理站 effect（L428-L430）、动环机房 effect（L452-L455）
+const layerIds = [...new Set(dataSitePointsRef.current.map((p: any) => `${p.type}${p.zIndex || ""}`))];
+MapInit.clearLayerById(ctxOpt, layerIds);
+```
+
+#### 3.7.4 allLegendKeys：layerId 命名与 setLayerStatus 匹配
+
+**文件**：`apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx`（[L6-L56](./utils/mapInit.tsx)）
+
+`allLegendKeys` 列表现在装的全是带 zIndex 后缀的 key，与 API 返回的 layerId（`${type}${zIndex}`）一一对应：
+
+```typescript
+const allLegendKeys = [
+    // 物理站
+    "核心层199", "核心层195", "重要层198", "重要层194",
+    "支撑层197", "支撑层193", "普通站196", "普通站192",
+    // 动环机房
+    "核心机楼199", "核心机楼195", "核心机楼191",
+    "重要汇聚198", "重要汇聚194", "重要汇聚190",
+    // ...
+];
+```
+
+`setLayerStatus`（[L821-L828](./utils/mapInit.tsx)）用 `allLegendKeys.includes(layerId)` 判断业务图层，再用 `layerId.includes(levelType)` 做族名归并（如"核心层199"和"核心层195"都归到"核心层"图例项）。
+
+#### 3.7.5 发光层 zIndex 独立
+
+发光 ripple 图层用固定 `zIndex: 98`（[L345](./utils/mapInit.tsx)），独立于业务点位的 188-199 区间，不与业务图层冲突。详见 §3.6。
+
 ## 4. API 接口说明
 
 ### 4.1 MapInit 工具类方法
@@ -665,6 +755,45 @@ if (!isPointExists(p?.longitudeB, p?.latitudeB)) {
     // 创建终点
 }
 ```
+
+### 7.6 ripple 发光点清空不了
+
+**问题**：取消图例（如「物理站址退服」「核心层」）后，地图上的 ripple 扩散动画仍持续运行；或在数据刷新后，已不再满足发光条件的点仍残留动画。
+
+**根因**：`clearGlowHandles(ctxOpt, clearType)` 只在数据更新 useEffect（`dataSitePointsNew` / `dataPowerRoomPointsNew` 变化）里调用，**与图例状态 `legendSelected` 解耦**。图例切换路径只走 `setLayerStatus` / `setAnimateLayerStatus`（控制 `layer.setVisible(false)` 隐藏图层），**不会触发 `AnimatePointsLayer.destroy()`**，`__glowHandles` Map 中的句柄和 RAF 循环仍存活，直到下一次数据刷新才可能被清理。
+
+**失效场景一览**：
+
+| 场景 | 清理路径 | 是否生效 | 原因 |
+| ---- | -------- | -------- | ---- |
+| 数据刷新 + 发光点仍存在 | 路径 B（addPoints 内差量） | ✅ | `currentFlashKeys` 含该 key，先 destroy 旧句柄再建新的 |
+| 数据刷新 + 整个 type 消失 | 路径 A（clearGlowHandles） | ✅ | 按 type 匹配销毁 |
+| **图例切换但数据未刷新** | 无 | ❌ | `clearGlowHandles` 不在 `legendSelected` 变化时调用；`setAnimateLayerStatus` 只隐藏图层不销毁句柄 |
+| **同 type 点仍存在但发光点已降级（level 变为非 "21"）** | 路径 B | ❌ | `currentPointTypes` 仍含该 type → L299 `return` 跳过；该 key 既不在 `currentFlashKeys` 内、又被 return 跳过，成为漏网之鱼 |
+| **图例已取消 + `isCoreFlash` 为 false** | 无 | ❌ | addPoints 不触发（图例取消 → alarmLevels 为空 → 不调用 addPoints），路径 B 不执行 |
+
+**关键代码位置**：
+
+- `clearGlowHandles` 调用点：`apps/main/app/components/center/dispatch-gis/center-gis/index.tsx` L431 / L457（仅在数据 useEffect 内）
+- 图例切换路径：`setLegendLayerStatus` → `setAnimateLayerStatus`（`apps/main/app/components/center/dispatch-gis/center-gis/index.tsx` L285-286）
+- 差量清理 return 跳过：`apps/main/app/components/center/dispatch-gis/center-gis/utils/mapInit.tsx` L298-299
+- `destroy()` 实现（正确）：`apps/main/app/components/ui/emap-gis/AnimatePointsLayer.ts` L290-302
+
+**验证方式**：
+
+在 `setAnimateLayerStatus` 调用前打印 `ctxOpt.__glowHandles?.size`，图例取消后观察是否仍 > 0 且不下降：
+
+```typescript
+// index.tsx L285-286 附近
+console.log("glowHandles size before legend toggle:", ctxOpt.__glowHandles?.size);
+MapInit.setAnimateLayerStatus(ctxOpt, legendSelected["物理站址退服"] && legendSelected["核心层"], "核心层_ripple");
+```
+
+**修复方向（参考，未实施）**：
+
+在 `legendSelected` 变化的 useEffect 中，当对应图例取消时主动调用 `MapInit.clearGlowHandles(ctxOpt, "核心层")` / `clearGlowHandles(ctxOpt, "核心机楼")`，使图例切换路径也能触发 `destroy()`。
+
+**详细文档**：[§3.6.5 `__glowHandles` 差量更新](#365-__glowhandles-差量更新)
 
 ## 8. 性能优化
 

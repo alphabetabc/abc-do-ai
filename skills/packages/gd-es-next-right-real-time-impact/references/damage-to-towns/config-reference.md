@@ -1,4 +1,11 @@
-# 环境配置参考文档
+---
+name: gd-es-next-right-real-time-impact-damage-to-towns-config-reference
+title: 环境配置参考文档（合并 Skill · damage-to-towns 子模块）
+description: environment.json 中 damage-to-towns 配置树、zoneLevel 映射、单列配置字段与示例。所属 Skill: gd-es-next-right-real-time-impact（damage-to-towns 子模块）。
+version: 1.1.0
+---
+
+# 环境配置参考文档（damage-to-towns 子模块）
 
 配置文件：`apps/main/public/config/environment.json`
 

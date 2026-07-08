@@ -1,11 +1,13 @@
 {
-  "contentHash": "93455e88422aa3934992e6772b343a1fe07c29fb6db9e6cae44c3f9f216fbab7",
+  "contentHash": "a97a8c6ae94fc1317f5adc45ba6d4b203f7fb7aea98d895b982f6a362097f571",
   "files": [
-    "./CENTER-GIS.md"
+    "./CENTER-GIS.md",
+    "./references/"
   ],
   "id": "gd-es-next-warn-gis-maintenance",
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-07-08T03:20:57.512Z",
   "version": "0.0.0"
 }

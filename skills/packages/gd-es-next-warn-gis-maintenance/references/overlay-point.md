@@ -18,10 +18,10 @@ OverlayPoint 是打点定位与 Portal 管理的核心组件，被 `RiskPredicti
 ```typescript
 interface OverlayPointProps {
     point: { name: string; longitude: number; latitude: number; [k: string]: any };
-    weather?: any;          // 来自 state.weatherPoints.find(...) 的匹配结果
-    waterSituation?: any;   // 来自 state.waterWarningPoints.find(...) 的匹配结果
-    highRiskTown?: any;     // 来自 state.highRiskPoints.find(...) 的匹配结果
-    legendSelected: Array<[string, boolean]>;  // 图例选中列表
+    weather?: any; // 来自 state.weatherPoints.find(...) 的匹配结果
+    waterSituation?: any; // 来自 state.waterWarningPoints.find(...) 的匹配结果
+    highRiskTown?: any; // 来自 state.highRiskPoints.find(...) 的匹配结果
+    legendSelected: Array<[string, boolean]>; // 图例选中列表
 }
 ```
 
@@ -159,11 +159,11 @@ const zoneId = props.weather?.zoneId ?? props.waterSituation?.zoneId ?? props.hi
 
 ## 依赖
 
-| 依赖项 | 用途 |
-| --- | --- |
-| `useMapContext().overlayManager` | 获取地图 overlay 管理器（来自 `ui/emap-gis`） |
-| `ripplePoint` | 波纹动画 PNG（`@/images/gis-points/gis-ripple-point.png`） |
-| `pointTriangle` | 标签底部三角形 PNG（`@/images/gis-points/label-icon-triangle.png`） |
+| 依赖项                           | 用途                                                                |
+| -------------------------------- | ------------------------------------------------------------------- |
+| `useMapContext().overlayManager` | 获取地图 overlay 管理器（来自 `ui/emap-gis`）                       |
+| `ripplePoint`                    | 波纹动画 PNG（`@/images/gis-points/gis-ripple-point.png`）          |
+| `pointTriangle`                  | 标签底部三角形 PNG（`@/images/gis-points/label-icon-triangle.png`） |
 
 ## 故障排查
 
@@ -185,6 +185,6 @@ const zoneId = props.weather?.zoneId ?? props.waterSituation?.zoneId ?? props.hi
 
 ## 更新日志
 
-| 版本  | 日期       | 变更说明                                                              |
-| ----- | ---------- | --------------------------------------------------------------------- |
+| 版本  | 日期       | 变更说明                                                                                     |
+| ----- | ---------- | -------------------------------------------------------------------------------------------- |
 | 1.0.0 | 2026-06-17 | 从 SKILL.md 拆分独立文档，补全坐标映射、zIndex 自管理、Portal Context、zoneId 兜底等机制说明 |
