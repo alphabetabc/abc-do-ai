@@ -182,13 +182,7 @@ function buildBulletsFromCommit(commit, rootDir) {
   // 1) 非发布的 skill：每个一条 "更新 skill「...」（细节）" / "新增 skill「...」" / "删除 skill「...」"
   for (const g of nonPublishGroups) {
     const label = getSkillLabel(rootDir, g.skillName);
-    if (
-      g.files.every(
-        (f) =>
-          f.status === 'D' ||
-          (f.status === 'D' && !f.file.includes(`${STORAGE_DIR}/`))
-      )
-    ) {
+    if (g.files.every((f) => f.status === 'D')) {
       bullets.push({ level: 0, text: `删除 skill「${label}」` });
       continue;
     }

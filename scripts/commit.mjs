@@ -196,6 +196,9 @@ function groupFilesBySkill(files) {
       if (base === SKILL_DOC_FILE) groups[skillName].hasDoc = true;
       if (f.file.includes(STORAGE_DIR)) groups[skillName].hasStorage = true;
       if (f.status === 'A') groups[skillName].isNew = true;
+      if (f.status === 'D' && !f.file.includes(`${STORAGE_DIR}/`)) {
+        groups[skillName].isDeleted = true;
+      }
     } else {
       nonSkillFiles.push(f);
     }
@@ -336,7 +339,9 @@ function describeSkillChanges(group) {
   const label = fm?.name || group.skillName;
 
   const actions = [];
-  if (group.hasStorage) {
+  if (group.isDeleted) {
+    actions.push('删除');
+  } else if (group.hasStorage) {
     actions.push('发布');
   } else if (group.isNew) {
     actions.push('新增');
@@ -424,6 +429,28 @@ function ruleBasedGenerate(diff) {
       }
     } else {
       messages.push(`新增 ${names.length} 个 skill: ${names.join('、')}`);
+    }
+    return { type, message: messages.join('；') };
+  }
+
+  // 场景 2.5：删除 skill 模块
+  const deletedSkills = skillGroups.filter(
+    (g) => g.isDeleted && g.files.every((f) => f.status === 'D')
+  );
+  if (
+    deletedSkills.length > 0 &&
+    nonSkillFiles.length === 0 &&
+    skillGroups.every((g) => g.isDeleted)
+  ) {
+    type = 'chore';
+    const names = deletedSkills.map((g) => {
+      const fm = readSkillFrontmatter(g.skillName);
+      return fm?.name || g.skillName;
+    });
+    if (names.length === 1) {
+      messages.push(`删除 skill「${names[0]}」`);
+    } else {
+      messages.push(`删除 ${names.length} 个 skill: ${names.join('、')}`);
     }
     return { type, message: messages.join('；') };
   }
@@ -748,7 +775,9 @@ function printDiffSummary(diff) {
       const label = fm?.name || g.skillName;
       const ver = meta?.version ? ` \x1b[90mv${meta.version}\x1b[0m` : '';
       let action;
-      if (g.hasStorage) {
+      if (g.isDeleted) {
+        action = '\x1b[31m删除\x1b[0m';
+      } else if (g.hasStorage) {
         action = '\x1b[35m发布\x1b[0m';
       } else if (g.isNew) {
         action = '\x1b[32m新增\x1b[0m';
@@ -920,7 +949,9 @@ async function main() {
       const ver = meta?.version ? ` \x1b[90mv${meta.version}\x1b[0m` : '';
       // 生成动作描述
       let action;
-      if (g.hasStorage) {
+      if (g.isDeleted) {
+        action = '\x1b[31m删除\x1b[0m';
+      } else if (g.hasStorage) {
         action = '\x1b[35m发布\x1b[0m';
       } else if (g.isNew) {
         action = '\x1b[32m新增\x1b[0m';
