@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: e1d56c7e30313a63bd36fcac0e8ac2a7bf2a0c48 -->
+<!-- changelog-last-commit: 05db2c2602f53f92eced74a3da4b25d877301d12 -->
+
+## 2026-07-09
+
+- 新增 skill「agent-creator」；
+- 变更文件: learn-skill/grill-me-main/.claude-plugin/plugin.json、learn-skill/grill-me-main/CLAUDE.md、learn-skill/grill-me-main/LICENSE、learn-skill/grill-me-main/scripts/link-skills.sh、learn-skill/grill-me-main/skills/engineering/diagnose/SKILL.md、learn-skill/grill-me-main/skills/engineering/diagnose/scripts/hitl-loop.template.sh、learn-skill/grill-me-main/skills/engineering/github-triage/AGENT-BRIEF.md、learn-skill/grill-me-main/skills/engineering/github-triage/OUT-OF-SCOPE.md、learn-skill/grill-me-main/skills/engineering/github-triage/SKILL.md、learn-skill/grill-me-main/skills/engineering/grill-with-docs/ADR-FORMAT.md、learn-skill/grill-me-main/skills/engineering/grill-with-docs/CONTEXT-FORMAT.md、learn-skill/grill-me-main/skills/engineering/grill-with-docs/SKILL.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/DEEPENING.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/INTERFACE-DESIGN.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/LANGUAGE.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/SKILL.md、learn-skill/grill-me-main/skills/engineering/tdd/SKILL.md、learn-skill/grill-me-main/skills/engineering/tdd/deep-modules.md、learn-skill/grill-me-main/skills/engineering/tdd/interface-design.md、learn-skill/grill-me-main/skills/engineering/tdd/mocking.md、learn-skill/grill-me-main/skills/engineering/tdd/refactoring.md、learn-skill/grill-me-main/skills/engineering/tdd/tests.md、learn-skill/grill-me-main/skills/engineering/to-issues/SKILL.md、learn-skill/grill-me-main/skills/engineering/to-prd/SKILL.md、learn-skill/grill-me-main/skills/engineering/zoom-out/SKILL.md、learn-skill/grill-me-main/skills/misc/git-guardrails-claude-code/SKILL.md、learn-skill/grill-me-main/skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh、learn-skill/grill-me-main/skills/misc/migrate-to-shoehorn/SKILL.md、learn-skill/grill-me-main/skills/misc/scaffold-exercises/SKILL.md、learn-skill/grill-me-main/skills/misc/setup-pre-commit/SKILL.md、learn-skill/grill-me-main/skills/personal/edit-article/SKILL.md、learn-skill/grill-me-main/skills/personal/obsidian-vault/SKILL.md、learn-skill/grill-me-main/skills/productivity/caveman/SKILL.md、learn-skill/grill-me-main/skills/productivity/grill-me/SKILL.md、learn-skill/grill-me-main/skills/productivity/write-a-skill/SKILL.md；
+- 新增 skill「agent-creator」（文档、配置、2 个其他文件）；其他 40 个文件变更；
 
 ## 2026-07-08
 
@@ -12,6 +18,7 @@
     - 「gd-es-next-warn-gis-maintenance」 v0.0.0；
     - 「gd-es-next-warn-gis-risk-prediction-points」；
 - 更新 8 个文件；
+- 变更文件: scripts/commit.mjs、scripts/update-changelog.mjs；
 
 ## 2026-06-30
 
