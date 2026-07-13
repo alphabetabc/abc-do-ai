@@ -1,0 +1,11 @@
+{
+  "contentHash": "e37c936d0bb7bf956a4cfd52f3e7327708fbc49b69987fc1bfb8b84b45339ab1",
+  "files": [
+    "./references/"
+  ],
+  "id": "fedx-gis-api-helper",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
