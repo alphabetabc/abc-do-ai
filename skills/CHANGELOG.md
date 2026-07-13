@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: 05db2c2602f53f92eced74a3da4b25d877301d12 -->
+<!-- changelog-last-commit: 0b990bfc02a4314dc809d666837676fb8195d553 -->
+
+## 2026-07-13
+
+- 发布 skill
+    - 「fedx-gis-api-helper」 v0.0.0；
+- 新增 skill「fedx-gis-api-helper」；Helps business developers use the fedx-gis npm package to bu...；
 
 ## 2026-07-09
 
