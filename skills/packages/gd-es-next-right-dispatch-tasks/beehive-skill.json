@@ -1,0 +1,11 @@
+{
+  "contentHash": "1ff7d81ac23c8b6ea151bba7b69dcc686551c4fb02e317052390706d4974be88",
+  "files": [
+    "./references/"
+  ],
+  "id": "gd-es-next-right-dispatch-tasks",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
