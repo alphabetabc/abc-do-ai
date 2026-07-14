@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: 0b990bfc02a4314dc809d666837676fb8195d553 -->
+<!-- changelog-last-commit: e5e1568f7db414f64f664a6e1ecb21675cd8d7eb -->
+
+## 2026-07-14
+
+- 发布 skill
+    - 「gd-es-next-right-dispatch-tasks」 v0.0.0；
+- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
+- 发布 skill「gd-es-next-right-dispatch-tasks」 v0.0.0；其他 1 个文件变更；
 
 ## 2026-07-13
 
