@@ -1,0 +1,11 @@
+{
+  "contentHash": "536a2ab4cca73b8a7a49a84d739b323c0d11c2256abf1abf8fc27f88beecee52",
+  "files": [
+    "./references/"
+  ],
+  "id": "noc-shaanxi-emergency-support-center",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
