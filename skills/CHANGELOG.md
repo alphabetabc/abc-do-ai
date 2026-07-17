@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: e5e1568f7db414f64f664a6e1ecb21675cd8d7eb -->
+<!-- changelog-last-commit: 35eb9fb21cb1ce8d4e3b6f16149d8443e3d42297 -->
+
+## 2026-07-17
+
+- 发布 skill
+    - 「noc-shaanxi-emergency-support-center」 v0.0.0；
+- 新增 skill「noc-shaanxi-emergency-support-center」；维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模块（中屏...；
 
 ## 2026-07-14
 
