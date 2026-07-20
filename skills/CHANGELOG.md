@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: 35eb9fb21cb1ce8d4e3b6f16149d8443e3d42297 -->
+<!-- changelog-last-commit: 14099b356db592472ea5803d01236288dc09e585 -->
+
+## 2026-07-20
+
+- 新增 skill「ai-coding-project-initializer」；
+- 变更文件: fedx-agents/leader/ai-coding/ai-coding-training/cheatsheet.md、fedx-agents/leader/ai-coding/ai-coding-training/html/assets/styles.css、fedx-agents/leader/ai-coding/ai-coding-training/html/cheatsheet.html、fedx-agents/leader/ai-coding/ai-coding-training/html/index.html、fedx-agents/leader/ai-coding/ai-coding-training/html/legacy-project.html、fedx-agents/leader/ai-coding/ai-coding-training/html/mindset.html、fedx-agents/leader/ai-coding/ai-coding-training/html/new-project.html、fedx-agents/leader/ai-coding/ai-coding-training/legacy-project.md、fedx-agents/leader/ai-coding/ai-coding-training/mindset.md、fedx-agents/leader/ai-coding/ai-coding-training/new-project.md、fedx-agents/leader/leader.skill.md、scripts/commit.mjs、skills/package.json；
+- 新增 skill「ai-coding-project-initializer」（文档、配置、32 个其他文件）；其他 14 个文件变更；
 
 ## 2026-07-17
 
