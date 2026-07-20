@@ -1185,6 +1185,7 @@ async function main() {
 
   rl.close();
   println('\n\x1b[1m🎉 完成！\x1b[0m\n');
+  process.exit(0);
 }
 
 main().catch((err) => {

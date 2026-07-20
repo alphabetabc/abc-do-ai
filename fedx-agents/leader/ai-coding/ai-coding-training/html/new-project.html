@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>新项目开发流程 · AI Coding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html">AI Coding <span>培训</span></a>
+      <nav class="nav">
+        <a href="./index.html">目录</a>
+        <a href="./mindset.html">思维转变</a>
+        <a href="./new-project.html" aria-current="page">新项目</a>
+        <a href="./legacy-project.html">历史项目</a>
+        <a href="./cheatsheet.html">提示词自检</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <article class="content">
+      <p class="kicker">主路径</p>
+      <h1>新项目开发流程</h1>
+      <p class="lead">把「好问题」逼成可执行工件，再让 AI 按工件实现。关键关卡：大模型反向提问。</p>
+
+      <h2>0. 这条链路在解决什么</h2>
+      <p>瓶颈不在「AI 会不会写」，而在「人会不会问」。跳过反向提问或 design 回写，等于允许 AI 在空白处自信填错。</p>
+      <blockquote class="warning">两道硬门槛：① 无经过反向提问并产品冻结的 PM 输入，不开五件套；② 无研发审定的五件套（及必要 design），不让 AI 大改业务代码。</blockquote>
+
+      <h2>1. 文档目录结构解析</h2>
+      <p>先认清文档树。以产品仓常见 <code>docs/</code> 为准；框架 monorepo 见文末。</p>
+      <pre><code>仓库根/
+├── AGENTS.md                 # AI 协作宪法
+└── docs/
+    ├── design/               # ★ 全局设计单一事实来源
+    ├── specs/                # ★ SDD 特性（pm-inputs + 五件套）
+    ├── research/             # 调研 PoC（采纳须回写 design）
+    ├── skills/               # 编码 / 测试 / 提示词习惯
+    ├── workflows/            # SDD / TDD 流程（若有）
+    └── changelogs/           # 变更记录（若有）</code></pre>
+      <h3>design/</h3>
+      <ul>
+        <li><code>tech-stack.md</code> — 栈与工具链</li>
+        <li><code>architecture.md</code> — NFR、持久化、外部系统</li>
+        <li><code>system-overview</code> / <code>product-framework</code> — Shell、IA、路由原则</li>
+        <li><code>api-contracts</code> / <code>api/*</code> + OpenAPI — HTTP 契约</li>
+        <li><code>data-models.md</code> — 表/实体权威</li>
+        <li><code>decisions/</code> ADR — 长远决策</li>
+        <li><code>glossary.md</code> — 术语</li>
+      </ul>
+      <h3>specs/</h3>
+      <pre><code>docs/specs/
+├── index.md                 # 特性登记
+├── _template/               # pm-inputs + 五件套空模板
+└── &lt;编号-短名&gt;/
+    ├── pm-inputs/
+    │   ├── pm-requirements-input.md
+    │   └── assets/
+    ├── spec.md
+    ├── acceptance-tests.md
+    ├── data-model-extensions.md
+    ├── plan.md
+    └── tasks.md</code></pre>
+      <h3>research / skills / AGENTS</h3>
+      <ul>
+        <li><code>research/</code> — 非正式基线；采纳后回写 design</li>
+        <li><code>skills/</code> · <code>workflows/</code> — 工程习惯与 SDD/TDD</li>
+        <li>根目录 <code>AGENTS.md</code> — AI 默认约束</li>
+      </ul>
+      <table>
+        <thead><tr><th>产出</th><th>落点</th></tr></thead>
+        <tbody>
+          <tr><td>选型 / 架构</td><td><code>design/tech-stack</code> · architecture · ADR</td></tr>
+          <tr><td>HTTP / 表结构</td><td><code>design/api*</code> · OpenAPI · data-models</td></tr>
+          <tr><td>业务需求</td><td><code>specs/.../pm-inputs/</code></td></tr>
+          <tr><td>特性行为与计划</td><td><code>specs/.../</code> 五件套</td></tr>
+          <tr><td>未定论探查</td><td><code>research/</code> → 回写 design</td></tr>
+        </tbody>
+      </table>
+      <p>框架 monorepo：<code>packages/framework-docs/</code>（框架）+ <code>apps/&lt;product&gt;/docs/</code>（业务）。原则相同，路径按仓改准。</p>
+
+      <h2>2. 总览</h2>
+      <div class="flow">
+        <span class="step">① 背景</span><span class="arrow">→</span>
+        <span class="step">② 技术确认</span><span class="arrow">→</span>
+        <span class="step">③ assets</span><span class="arrow">→</span>
+        <span class="step">④ PM 草稿</span><span class="arrow">→</span>
+        <span class="step">④★ 反向提问</span><span class="arrow">→</span>
+        <span class="step">⑤ 五件套+design</span><span class="arrow">→</span>
+        <span class="step">⑥ TDD</span>
+      </div>
+
+      <h2>3–5. 上游：背景 · 选型 · assets</h2>
+      <p><strong>① 产品：</strong>给谁用、痛点、目标/不做、角色与参考行为。不要求先写 HTTP。</p>
+      <p><strong>② 技术经理：</strong>复用否、新依赖否、外部边界、分期。结论写入 <code>docs/design/</code>（见 §1）。</p>
+      <p><strong>③ assets：</strong><code>pm-inputs/assets/</code>，界面争议时强烈建议入库。</p>
+
+      <h2>6. 起草 PM 输入</h2>
+      <p>按模板块 A–K：名片、范围、权限、旅程、界面、数据规则、验收、非功能、开放问题、参考、assets。未知标待确认，禁止瞎编 design 字段。</p>
+
+      <h2>7. ④★ 大模型反向提问（关键）</h2>
+      <p>初稿完成后先不进五件套。让模型当刁钻评审，只提问、列未知；产品/技术答复后回写文档，再冻结。</p>
+      <pre><code>你是苛刻的产品+研发双审。请只基于《产品经理需求输入》全文（及 assets），
+列出反向问题，按优先级排序。要求：
+1) 覆盖范围边界、权限、旅程分支、空态/错态、数据口径、验收可测性、非功能、外部边界；
+2) 每个问题说明：不问清楚时最可能出现什么错误臆造；
+3) 区分必须本期拍板 / 可挂起；
+4) 禁止直接写五件套或代码；未知就提问。
+输出：问题清单 + 建议回写到文档哪一节。</code></pre>
+      <ul class="checklist">
+        <li><label><input type="checkbox" /> 至少一轮有记录的反向提问</label></li>
+        <li><label><input type="checkbox" /> 阻塞未知已关闭或显式挂起并指定主责</label></li>
+        <li><label><input type="checkbox" /> 产品确认可生成五件套</label></li>
+      </ul>
+
+      <h2>8. research（按需）</h2>
+      <p><code>docs/research/</code>：方案对比、PoC、抓帧、第三方探查。可引用；<strong>采纳后必须回写 design/ADR</strong>。spec 不直接把 research 当契约，不放密钥。</p>
+
+      <h2>9. 五件套明细 + design 同步</h2>
+      <table>
+        <thead><tr><th>文件</th><th>内部明细</th></tr></thead>
+        <tbody>
+          <tr><td><code>spec.md</code></td><td>背景目标；角色权限；接口索引（指向 design/OpenAPI）；界面交互；数据概述；边界/错误；非功能；依赖；开放问题</td></tr>
+          <tr><td><code>acceptance-tests.md</code></td><td>Gherkin 场景；checklist；与自动化类型映射</td></tr>
+          <tr><td><code>data-model-extensions.md</code></td><td>实体/表增量；字段表；合并回 data-models 的约定</td></tr>
+          <tr><td><code>plan.md</code></td><td>范围；前置条件；里程碑 M1…；风险；评审点</td></tr>
+          <tr><td><code>tasks.md</code></td><td>后端/前端/测试/文档/DevOps 可勾选任务</td></tr>
+        </tbody>
+      </table>
+      <pre><code>PM 输入（产品冻结）
+  → 五件套（特性级）
+      → 引用并更新 docs/design/*（全局真相）
+      → 探查走 research → 采纳后回写 design</code></pre>
+      <p>新 API/字段先改契约与 OpenAPI；新表先 extensions 再合并 data-models；争议决策走 ADR。</p>
+
+      <h2>10. 实现（SDD + TDD）</h2>
+      <pre><code>冻结接口草稿 → 红 → 绿 → 重构 → 对照验收 → MR 文档与代码同批</code></pre>
+
+      <h2>11. AI Coding 工具与技能</h2>
+      <h3>Superpowers（必提）</h3>
+      <p><code>using-superpowers</code>、<code>brainstorming</code>、<code>writing-plans</code>、<code>test-driven-development</code>、<code>executing-plans</code> / <code>subagent-driven-development</code>、<code>systematic-debugging</code>、<code>verification-before-completion</code>、代码审查与 worktree 等。可能适用就先加载。</p>
+      <h3>Frontend Design（必提）</h3>
+      <p>新页面 / 显著 UI：用 frontend-design 纪律；在已有管理后台 Shell 内服从 <code>docs/design</code> 与设计系统，不凭空发挥。</p>
+      <p>反模式：不加载 Superpowers/TDD 直接开写；无反向提问就「做漂亮」；research 当契约却不更新 design。</p>
+
+      <h2>12. 开工前检查清单</h2>
+      <ul class="checklist">
+        <li><label><input type="checkbox" /> 技术确认与必要 design/ADR 已落</label></li>
+        <li><label><input type="checkbox" /> PM 输入已起草并完成反向提问回写</label></li>
+        <li><label><input type="checkbox" /> 产品冻结 PM 输入</label></li>
+        <li><label><input type="checkbox" /> 五件套研发审定；design/OpenAPI 已同步或列入 plan</label></li>
+        <li><label><input type="checkbox" /> research 采纳项已回写 design</label></li>
+        <li><label><input type="checkbox" /> 实现将用 Superpowers（含 TDD）；UI 考虑 frontend-design</label></li>
+      </ul>
+
+      <div class="pager">
+        <a href="./mindset.html">← 为什么做与思维转变</a>
+        <a class="next" href="./legacy-project.html">下一步：历史项目维护 →</a>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

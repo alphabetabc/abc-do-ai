@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>历史项目维护 · AI Coding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html">AI Coding <span>培训</span></a>
+      <nav class="nav">
+        <a href="./index.html">目录</a>
+        <a href="./mindset.html">思维转变</a>
+        <a href="./new-project.html">新项目</a>
+        <a href="./legacy-project.html" aria-current="page">历史项目</a>
+        <a href="./cheatsheet.html">提示词自检</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <article class="content">
+      <p class="kicker">老系统怎么用 AI 改，而不把线上改炸</p>
+      <h1>历史项目维护</h1>
+      <p class="lead">一句话：改老代码之前，先写清楚三件事——<strong>现在实际是怎样</strong>、<strong>要改成怎样</strong>、<strong>这次不许动什么</strong>。写不清，就不许让 AI 大改。</p>
+
+      <h2>先统一几个说法（别被缩写吓到）</h2>
+      <table>
+        <thead><tr><th>说法</th><th>人话</th></tr></thead>
+        <tbody>
+          <tr><td><strong>as-is</strong></td><td>现状：用户或调用方<strong>今天真实看到的行为</strong>（不是旧文档怎么写、不是你觉得应该怎样）</td></tr>
+          <tr><td><strong>to-be</strong></td><td>目标态：改完之后应该变成怎样，最好和现状一条对一条</td></tr>
+          <tr><td><strong>非目标</strong></td><td>这次明确不做的事。不写清楚，AI 很容易「顺便重构」</td></tr>
+          <tr><td><strong>影响面</strong></td><td>会不会动到页面、接口、数据库、权限、下游、文档——逐项回答是/否</td></tr>
+          <tr><td><strong>design / 契约</strong></td><td><code>docs/design</code>、OpenAPI 等对外约定。代码改了行为，这些必须一起改</td></tr>
+          <tr><td><strong>冻结</strong></td><td>人审过、可以按这份文档开工；开工后再改范围要重新审</td></tr>
+        </tbody>
+      </table>
+
+      <h2>三条硬规矩</h2>
+      <ol>
+        <li>没有写好并审过的「现状 → 目标态」（含影响面、非目标、验收），<strong>不要让 AI 大改老代码</strong>。</li>
+        <li>接口/表结构/可见行为已经变了，却不改 design / OpenAPI，<strong>这单不算做完</strong>。</li>
+        <li>其实是在做一整块新功能 → <strong>别硬套本页</strong>，改走 <a href="./new-project.html">新项目流程</a>。</li>
+      </ol>
+      <blockquote class="warning">老系统最危险的不是「AI 不会写」，而是你没问清楚现状，它用猜测补全，还顺手改你没批准的地方。</blockquote>
+
+      <h2>1. 先分清：你在做哪一种事？</h2>
+      <p>很多人把「改了一个 bug」说成「历史项目改造完成了」。这是两回事：</p>
+      <table>
+        <thead><tr><th>你在做的事</th><th>人话</th><th>怎么才算做完</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>改一个需求 / 修一个缺陷</strong><br /><span style="color:var(--ink-muted)">（日常最常见）</span></td>
+            <td>这一票怎么安全改完？</td>
+            <td>有一份审过的「现状→目标态」；代码、测试、相关文档同一批合并</td>
+          </tr>
+          <tr>
+            <td><strong>把整个老仓库逐步改成能稳用 AI</strong><br /><span style="color:var(--ink-muted)">（技术经理排期那种）</span></td>
+            <td>这个仓以后怎么持续、安全地改？</td>
+            <td>模块列清楚了、每一块知道怎么推进、关键流程有书面现状、文档和真实行为不再对不上</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>日常改需求：走下面第 2 节。<br />领导说「把历史项目 AI Coding 化」：走第 4 节，再拆成很多次「改一个需求」。</p>
+
+      <h2>2. 日常：改一个需求，按这 6 步做</h2>
+      <div class="flow">
+        <span class="step">① 查清现状</span><span class="arrow">→</span>
+        <span class="step">② 写目标态</span><span class="arrow">→</span>
+        <span class="step">③ 让 AI 挑毛病</span><span class="arrow">→</span>
+        <span class="step">④ 列出要改的文档</span><span class="arrow">→</span>
+        <span class="step">⑤ 按文档改代码</span><span class="arrow">→</span>
+        <span class="step">⑥ 对照验收合并</span>
+      </div>
+      <ol>
+        <li><strong>查清现状（as-is）</strong>：用第 3 节里的办法取证，写成「今天实际怎样」。猜的不算。</li>
+        <li><strong>写目标态（to-be）</strong>：和现状一条对一条；写清改哪几条、这次不做哪些、影响哪些面、怎么验收算过。</li>
+        <li><strong>先别改代码</strong>：把文档丢给模型，只让它提反向问题；你答完、补进文档，人说可以再开工。</li>
+        <li><strong>列出文档同步项</strong>：要动接口/表/权限的，写出要改哪些 design / OpenAPI / spec。</li>
+        <li><strong>提示词挂上这份文档</strong>：只改影响面里写的范围；非目标里写的一律不做。</li>
+        <li><strong>对照验收打勾</strong>：代码和文档同一批进合并请求（MR）。</li>
+      </ol>
+      <p><strong>目标态必须写清：</strong></p>
+      <ul>
+        <li>相对现状，到底变了哪几条</li>
+        <li>这次不做的事（例如：不重构别的模块、不加没要的字段、不改无关文案）</li>
+        <li>页面 / 接口 / 数据 / 权限 / 下游 / 文档 —— 每一项写「动」或「不动」</li>
+        <li>验收条目要能打勾、也能判定失败（别写「体验更好」）</li>
+      </ul>
+      <blockquote>不写「这次不做」= 等于默许 AI 随便加戏。</blockquote>
+
+      <h2>3. 现状（as-is）怎么查清？一共 6 种办法</h2>
+      <p>写现状之前先选办法。<strong>总共就这 6 种</strong>；可以组合，但必须写明：主要靠哪一种、辅助靠哪一种。</p>
+      <table>
+        <thead><tr><th>编号</th><th>办法（人话）</th><th>你具体做什么</th><th>能不能单独当真</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>P1</strong></td>
+            <td>自己跑一遍</td>
+            <td>按主流程点页面，或调真实/预发接口，记下输入→输出→异常情况</td>
+            <td>可以（默认首选）</td>
+          </tr>
+          <tr>
+            <td><strong>P2</strong></td>
+            <td>从测试 / 注释等旁证里找约定</td>
+            <td>有自动化测试就用；<strong>没有也常见</strong>——改看单测碎片、关键注释、TODO、示例请求/返回、fixture、断言文案。把它们整理成「代码旁白里的约定」，再拿去核实。重构前若完全没有，可先补几条锁现状的单测</td>
+            <td>旁证可靠且已核实后可当辅证；<strong>光靠注释不能定大改</strong></td>
+          </tr>
+          <tr>
+            <td><strong>P3</strong></td>
+            <td>读代码推断</td>
+            <td>读实现和分支，写出「代码看起来会怎样」；标上「我不太有把握」</td>
+            <td>环境搭不起来时用；<strong>不要单独定大改</strong></td>
+          </tr>
+          <tr>
+            <td><strong>P4</strong></td>
+            <td>整理旧文档（可让 AI 归纳）</td>
+            <td>旧 wiki/spec 常对不齐：把散落材料丢给 AI <strong>总结、去重、合并成一版「候选现状」</strong>，再和真实行为逐条对（一致 / 过期 / 冲突）。对得上的可回写成新版 design；对不上的标过期，别当真相</td>
+            <td><strong>不能单独当真</strong>（归纳稿仍是草稿，必须用 P1/P3 核实）</td>
+          </tr>
+          <tr>
+            <td><strong>P5</strong></td>
+            <td>问现场的人</td>
+            <td>没有工单系统也没关系：问<strong>现场运维、产品经理、熟手研发</strong>——「线上一直怎么用的、哪些坑不能动」。先写成「待验证」，再自己跑一遍或读代码核实</td>
+            <td><strong>不能单独当真</strong></td>
+          </tr>
+          <tr>
+            <td><strong>P6</strong></td>
+            <td>看线上证据</td>
+            <td>日志、审计、网关 trace、浏览器 HAR、监控、错误码分布；写清查的时间段和条件</td>
+            <td>偶现/只有生产才有时很有用</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>怎么选？看你的处境</h3>
+      <table>
+        <thead><tr><th>你现在的情况</th><th>主要用</th><th>再补</th></tr></thead>
+        <tbody>
+          <tr><td>本地或预发能点出来</td><td>P1 自己跑一遍</td><td>P4 看旧文档是否过期</td></tr>
+          <tr><td>有靠谱测试，或至少有关键注释/示例可整理</td><td>P2 整理旁证（无测就用注释等）</td><td>P1 抽查主流程；要重构时尽量先补锁现状的单测</td></tr>
+          <tr><td>环境搭不起来，只能看代码</td><td>P3 读代码</td><td>P5 问运维/产品；有条件再看 P6 线上</td></tr>
+          <tr><td>旧文档又多又对不齐</td><td>P4 先让 AI 归纳成一版候选</td><td><strong>必须再加 P1 或 P3 核实</strong>；核实后可回写成新版文档</td></tr>
+          <tr><td>「运维/产品说以前就这样」</td><td>P5 先记下来</td><td>必须再用 P1 或 P3 核实</td></tr>
+          <tr><td>偶现、只有生产才出现</td><td>P6 线上证据</td><td>能复现再补 P1</td></tr>
+        </tbody>
+      </table>
+      <p><strong>记住两句：</strong></p>
+      <ul>
+        <li>能点页面 / 调接口 → 优先自己跑（P1）。</li>
+        <li>旧文档、运维/产品口头说法只能当线索，不能当唯一真相。</li>
+        <li>屎山没有自动化测试很正常：P2 改看注释/示例/零星单测；别因为「没测试」就跳过旁证。</li>
+      </ul>
+      <p>现状写合格的最低标准：写的是<strong>今天能观察到的行为</strong>；写了证据来源；写了主流程和已知边角；写了「本期先不修的老坑」（防止 AI 顺手「修好」）。</p>
+
+      <h2>4. 整仓改造：技术经理怎么推进？</h2>
+      <p>目标不是一天重写完，而是：以后每次改都能按纪律做，改完后文档和真实行为对得上。</p>
+      <p><strong>按顺序做这 5 步：</strong></p>
+      <ol>
+        <li><strong>列清单</strong>：有哪些模块、主流程、对外接口；现有文档还信不信。</li>
+        <li><strong>给每块贴标签</strong>（只贴一个主标签）：要改行为 / 修缺陷 / 重构但对外不变 / 其实是新功能 / 不再维护。</li>
+        <li><strong>选推进方式</strong>（下面 5 选，可组合）。</li>
+        <li><strong>先把关键主流程的现状写下来</strong>（用第 3 节的办法）。主流程都写不清，不许开大改。</li>
+        <li><strong>拆成小批</strong>：每一批按第 2 节「改一个需求」做完；合入时文档一起改。</li>
+      </ol>
+
+      <h3>整仓推进方式一共 5 种（S1–S5）</h3>
+      <table>
+        <thead><tr><th>编号</th><th>叫什么</th><th>什么时候用</th><th>你具体怎么做</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>S1</strong></td>
+            <td>来一个需求改一个</td>
+            <td>平时修修补补，没有整仓计划</td>
+            <td>每次严格走第 2 节；<strong>合并时必须改相关文档</strong>，否则文档债越堆越多</td>
+          </tr>
+          <tr>
+            <td><strong>S2</strong></td>
+            <td>按模块一块块啃</td>
+            <td>要系统改造某一个业务域（比如账号、订单）</td>
+            <td>先列该域清单 → 写清主流程现状 → 再一批批改目标态</td>
+          </tr>
+          <tr>
+            <td><strong>S3</strong></td>
+            <td>先把真实行为写进文档</td>
+            <td>代码很乱，但对外接口还相对稳定；或大改之前</td>
+            <td>先按真实行为改 design / OpenAPI（可以开「只改文档」的合并），再动代码</td>
+          </tr>
+          <tr>
+            <td><strong>S4</strong></td>
+            <td>先用测试锁住，再动内部</td>
+            <td>要重构、换实现、升级依赖，但对外行为暂时不变</td>
+            <td>用测试/验收表锁住现状 → 再重构 → 测试保持全绿；禁止借重构偷偷改行为</td>
+          </tr>
+          <tr>
+            <td><strong>S5</strong></td>
+            <td>按新项目流程做</td>
+            <td>其实是新模块；或现状根本写不清；或跨很多域要单独排期</td>
+            <td>停用本页模板，走 <a href="./new-project.html">新项目流程</a>（产品输入 + 五件套）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>怎么选（别想复杂）：</strong></p>
+      <ul>
+        <li>平时交付 → <strong>S1</strong>（但每张合并请求都要改文档）</li>
+        <li>某个业务域要系统化搞好 → <strong>S2 + S3</strong>（先写清现状和接口文档，再一块块改）</li>
+        <li>大重构、对外先不变 → <strong>S4</strong>；若行为也要变，拆成「先锁旧行为，再单独开一单改行为」</li>
+        <li>新功能 → <strong>只走 S5</strong>，别假装是维护</li>
+      </ul>
+      <p><strong>一批怎么切：</strong>先主流程后边角；先接口/权限/数据，后纯文案；一批只做一个能演示的目标（例如「列表筛选和接口约定对齐」），不要「本周重构整个账号域」。</p>
+      <p><strong>某个模块什么时候算「改造阶段完成」：</strong>不是「用过 AI 了」，而是——清单和标签齐了；主流程有可引用的现状说明；后来的变更都能拿出「现状→目标态」；对外行为和 design 没有已知对不上的地方。</p>
+      <blockquote>整仓可以一直「进行中」。按模块勾完成即可，不必等整个仓库重写完。</blockquote>
+
+      <h2>5. 什么时候别用本页，改走新项目？</h2>
+      <ul>
+        <li>要新增一整块用户能感知的能力（不只是改旧行为）</li>
+        <li>要新的主数据模型，或一批新接口（不是改几个字段）</li>
+        <li>跨很多业务域，需要单独里程碑</li>
+        <li>现状根本写不清——应先调研或补规格，不要硬写目标态</li>
+      </ul>
+
+      <h2>6. 改代码前：让模型只提问（必做）</h2>
+      <p>模板填完先别改代码。把文档贴给模型，只让它找漏洞；你答完写回文档，人确认后再开工。</p>
+      <pre><code>你是苛刻的遗留系统变更审稿人。请只基于我粘贴的「现状 → 目标态」文档提问。
+要求：
+1) 检查：现状证据够不够（P1–P6）、能不能复现、目标态能不能观察、
+   一对一对照清不清、非目标能不能挡住顺手重构、
+   影响面有没有漏接口/数据/下游/权限、兼容与回滚、验收能不能判定失败；
+2) 每个问题说明：不问清楚时 AI 最可能改错什么；
+3) 区分：必须本期拍板 / 可以以后再定；
+4) 禁止直接改代码或擅自扩大范围；不知道就提问。</code></pre>
+
+      <h2>7. 改代码时怎么约束 AI</h2>
+      <p>改了接口字段 → 改 api 文档和 OpenAPI；改了表 → 改 data-models；原来有五件套 → 同步验收场景。禁止：代码已合并，文档还在描述旧行为。</p>
+      <pre><code>请严格依据本「现状 → 目标态」文档实现变更。
+只修改「影响面」标明的范围；「非目标」里的一律不要做。
+不要引入文档没写的字段、接口、菜单或行为。
+若现状描述与代码不一致，先停下来说明差异，不要猜测后继续大改。
+若要改接口约定或表结构，先列出要同步的 docs/design（或 OpenAPI），再改代码。
+完成后对照「验收对照」逐条说明怎么验证。</code></pre>
+
+      <h2>8. 文档写在哪？</h2>
+      <table>
+        <thead><tr><th>写什么</th><th>放哪</th></tr></thead>
+        <tbody>
+          <tr><td>这一票的现状→目标态</td><td>相关特性目录下的变更说明，或合并请求描述附件（团队统一一种即可）</td></tr>
+          <tr><td>接口 / 表结构变更</td><td><code>docs/design</code>、OpenAPI、<code>data-models</code></td></tr>
+          <tr><td>原来就有五件套的行为</td><td>同步改该特性的 spec / acceptance-tests</td></tr>
+          <tr><td>探查过程的笔记</td><td>可先放 <code>docs/research/</code>；一旦写进正式约定，必须回写 design</td></tr>
+        </tbody>
+      </table>
+      <p>完整可复制模板见同目录 Markdown：<code>legacy-project.md</code> 第 10 节（含「证据用了 P几」必填项）。</p>
+
+      <h2>9. 别这么干</h2>
+      <ul>
+        <li>「就改一小下」→ 不写文档，直接让 AI 扫仓库改</li>
+        <li>现状只抄旧文档、只信 AI 归纳稿，或只听运维/产品口头说——自己不跑、不核实</li>
+        <li>因为「没有自动化测试 / 没有工单」就空着 P2、P5 不用</li>
+        <li>目标态只写「优化体验 / 更合理」，没法验收</li>
+        <li>不写「这次不做」，等于默许重构和加戏</li>
+        <li>接口/表改了，design / OpenAPI 不动</li>
+        <li>明明是新功能，硬塞进本模板，逃避产品输入和五件套</li>
+        <li>宣称「整仓改造完成」，但主流程没有书面现状，文档和真实行为还对不上</li>
+      </ul>
+
+      <h2>10. 记不住时看这里</h2>
+      <table>
+        <thead><tr><th>你想问</th><th>直接答案</th></tr></thead>
+        <tbody>
+          <tr><td>现状怎么查清？有几条路？</td><td><strong>6 种：</strong>自己跑 / 测试·注释等旁证 / 读代码 / 整理旧文档（可 AI 归纳）/ 问运维或产品 / 看线上证据。口头与旧文档不能单独当真。</td></tr>
+          <tr><td>整仓怎么推进？有几种？</td><td><strong>5 种：</strong>来一个改一个 / 按模块啃 / 先写文档再改代码 / 先锁测试再重构 / 按新项目做。</td></tr>
+          <tr><td>改一个需求怎么做完？</td><td>查清现状 → 写目标态 → 让 AI 挑毛病 → 列出要改的文档 → 按文档改 → 验收并和文档一起合并。</td></tr>
+          <tr><td>整仓怎么做完？</td><td>列清单 → 贴标签 → 选推进方式 → 写清主流程现状 → 拆小批按「改一个需求」做；按模块勾完成即可。</td></tr>
+        </tbody>
+      </table>
+
+      <h2>11. 开工前打勾</h2>
+      <ul class="checklist">
+        <li><label><input type="checkbox" />（若是整仓推进）模块已列清单并贴标签，已选好 S1–S5 里的推进方式</label></li>
+        <li><label><input type="checkbox" /> 现状已写明用了哪种查法（P1–P6）；没把握时没有硬开大改</label></li>
+        <li><label><input type="checkbox" /> 目标态、影响面、本次不做、验收都写清了</label></li>
+        <li><label><input type="checkbox" /> 已让模型挑过毛病，答复写回文档，人确认可以开工</label></li>
+        <li><label><input type="checkbox" /> 要同步的 design / OpenAPI / spec 已列出或已改</label></li>
+        <li><label><input type="checkbox" /> 给 AI 的提示词挂了这份文档，并准备好怎么验收</label></li>
+      </ul>
+
+      <div class="pager">
+        <a href="./new-project.html">← 新项目开发流程</a>
+        <a class="next" href="./cheatsheet.html">下一步：提示词与自检 →</a>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "id": "ai-coding-project-initializer",
+  "version": "0.0.0",
+  "targets": ["trae"],
+  "files": ["references/", "scripts/"]
+}

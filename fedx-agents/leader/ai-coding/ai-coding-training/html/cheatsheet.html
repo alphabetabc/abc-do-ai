@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>提示词与自检 · AI Coding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html">AI Coding <span>培训</span></a>
+      <nav class="nav">
+        <a href="./index.html">目录</a>
+        <a href="./mindset.html">思维转变</a>
+        <a href="./new-project.html">新项目</a>
+        <a href="./legacy-project.html">历史项目</a>
+        <a href="./cheatsheet.html" aria-current="page">提示词自检</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <article class="content">
+      <p class="kicker">日常速查 · 复制即用</p>
+      <h1>提示词与自检</h1>
+      <p class="lead">流程细节回看前三篇。本页按「先选路 → 数字速查 → 新项目提示词 → 历史提示词 → 通用约束 → 自检」整理，与正文口径一致。</p>
+
+      <h2>0. 先选路（30 秒）</h2>
+      <table>
+        <thead><tr><th>你在做什么</th><th>走哪条</th><th>动手前必须有</th></tr></thead>
+        <tbody>
+          <tr><td>新能力 / 新模块</td><td><strong>新项目</strong></td><td>产品冻结的 PM 输入（含反向提问）</td></tr>
+          <tr><td>改老系统已有行为</td><td><strong>历史项目</strong></td><td>审过的「现状 → 目标态」</td></tr>
+          <tr><td>其实是新功能</td><td colspan="2">改走新项目，别硬套历史模板</td></tr>
+          <tr><td>现状写不清</td><td colspan="2">先调研 / 补规格，或升级新项目</td></tr>
+        </tbody>
+      </table>
+      <blockquote class="warning">三条铁律：没写清不让 AI 大改；契约变了文档与代码同批；禁止臆造文档没有的字段/接口/菜单。</blockquote>
+
+      <h2>1. 数字速查</h2>
+      <p><strong>新项目：</strong>背景 → 技术确认 → assets → PM 草稿 → ★反向提问冻结 → 五件套+design → 实现验收。</p>
+      <p><strong>历史改一单：</strong>查现状 → 写目标态 → ★挑毛病冻结 → 列文档 → 按文档改 → 验收同批合并。</p>
+      <table>
+        <thead><tr><th colspan="2">P1–P6 查现状</th><th colspan="2">S1–S5 整仓推进</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>自己跑一遍</td><td>S1</td><td>来一个改一个</td></tr>
+          <tr><td>P2</td><td>测试·注释等旁证</td><td>S2</td><td>按模块一块块啃</td></tr>
+          <tr><td>P3</td><td>读代码推断</td><td>S3</td><td>先写真实行为进文档</td></tr>
+          <tr><td>P4</td><td>整理旧文档（可 AI 归纳）</td><td>S4</td><td>先锁测试再重构</td></tr>
+          <tr><td>P5</td><td>问运维/产品/熟手</td><td>S5</td><td>按新项目做</td></tr>
+          <tr><td>P6</td><td>看线上证据</td><td></td><td></td></tr>
+        </tbody>
+      </table>
+      <p>P4、P5 不能单独当真。无自动化测试、无工单仍可走 P2（注释等）与 P5（问人）。</p>
+
+      <h2>2. 新项目 — 提示词</h2>
+      <h3>2.1 ★ PM 输入后反向提问（先于五件套）</h3>
+      <pre><code>你是苛刻的产品+研发双审。请只基于《产品经理需求输入》全文（及 assets），
+列出反向问题，按优先级排序。要求：
+1) 覆盖范围边界、权限、旅程分支、空态/错态、数据口径、验收可测性、非功能、外部边界；
+2) 每个问题说明不问清楚时最可能的错误臆造；
+3) 区分必须本期拍板 / 可挂起；
+4) 禁止直接写五件套或代码；未知就提问。
+输出：问题清单 + 建议回写到哪一节。</code></pre>
+
+      <h3>2.2 生成五件套</h3>
+      <pre><code>请根据 {路径}/pm-inputs/pm-requirements-input.md（及 assets），
+按 docs/specs/_template 生成五件套：
+spec.md、plan.md、tasks.md、data-model-extensions.md、acceptance-tests.md。
+权威引用 docs/design 与 OpenAPI；勿编造已有字段；未知写入开放问题。
+若需新增/变更 API 或表，先列出必须同步的 design 文件清单。</code></pre>
+
+      <h3>2.3 按五件套实现</h3>
+      <pre><code>请严格依据 {路径}/spec.md 与 acceptance-tests.md 实现。
+契约以 {契约路径} 为准。「非目标」禁止实现。
+勿引入文档未出现的字段/菜单/权限码。
+改契约须先更新文档再改代码。
+能测则先红后绿；完成后对照验收说明验证方式。</code></pre>
+
+      <h3>2.4 补验收自动化</h3>
+      <pre><code>请根据 acceptance-tests.md 在现有框架下补自动化（或可重复手工步骤）。
+优先关键路径与契约边界；勿为未写入验收的行为写测试。</code></pre>
+
+      <ul class="checklist">
+        <li><label><input type="checkbox" /> PM 输入已反向提问并冻结</label></li>
+        <li><label><input type="checkbox" /> 五件套已审定；要改的 design 已列出或已改</label></li>
+        <li><label><input type="checkbox" /> 实现提示词指向五件套与非目标</label></li>
+      </ul>
+
+      <h2>3. 历史项目 — 提示词</h2>
+      <h3>3.1 协助查现状</h3>
+      <pre><code>我在为遗留变更写现状。请按取证办法整理，不要编造未观察到的行为。
+已知：【现象 / 路径 / 日志 / 旧文档片段】
+输出：主/辅办法（仅 P1–P6）· 现状草稿 · 未知清单 · 不知标【未知】</code></pre>
+
+      <h3>3.2 旧文档很乱 — AI 归纳（仍须核实）</h3>
+      <pre><code>下面是散落旧文档（可能矛盾）。请总结去重成「候选现状」，标明：
+一致之处 · 冲突之处（勿擅自挑边）· 必须复现或问人才能补的缺口。
+禁止把归纳说成已核实真相；末尾注明须用 P1/P3 核实后再冻结。</code></pre>
+
+      <h3>3.3 ★ 现状→目标态反向提问（先于改代码）</h3>
+      <pre><code>你是苛刻的遗留系统变更审稿人。请只基于「现状 → 目标态」文档提问。
+覆盖：P1–P6 证据、可复现、可观察、一对一对照、「本次不做」、
+影响面（接口/数据/下游/权限）、兼容回滚、验收可失败性。
+禁止直接改代码；未知就提问。</code></pre>
+
+      <h3>3.4 挂文档实现</h3>
+      <pre><code>请严格依据 {现状-目标态文件路径} 实现。
+只改「影响面」；「本次不做」禁止实现。
+现状与代码不符则先停；改契约须先列出 docs/design 同步项。
+对照「验收对照」逐条说明验证方式。</code></pre>
+
+      <ul class="checklist">
+        <li><label><input type="checkbox" /> 现状写明用了哪些 P；目标态/影响面/本次不做/验收已写清</label></li>
+        <li><label><input type="checkbox" /> 已反向提问并冻结；design 同步项已列出或已改</label></li>
+        <li><label><input type="checkbox" /> 实现提示词挂了这份文档</label></li>
+      </ul>
+
+      <h2>4. 通用约束句</h2>
+      <pre><code>本次任务范围仅限：{一句话}。明确不做：{非目标}。
+不要重构无关模块；有疑问先问，不要自行扩展范围。</code></pre>
+      <pre><code>若改变了对外 API、持久化或用户可见行为，列出需同步的文档清单
+（spec / acceptance-tests / design / OpenAPI）。禁止契约已变只改代码。</code></pre>
+      <pre><code>遇到文档未写清的行为或字段：先停下来提问，
+不要用「业界最佳实践」或猜测补全后继续大改。</code></pre>
+
+      <h2>5. 反例与禁止</h2>
+      <ul>
+        <li>「做漂亮一点，你看着改」——无文档、无边界</li>
+        <li>「顺便重构相关模块」——扩大非目标</li>
+        <li>只按旧 wiki / 只听运维口头——裸 P4/P5</li>
+        <li>臆造字段；契约变了只改代码；口头改需求不回写</li>
+        <li>无现状→目标态就大改遗留；无冻结 PM 输入就开写五件套</li>
+        <li>因「没测试/没工单」空着 P2、P5；把 AI 归纳稿直接当真相</li>
+      </ul>
+
+      <h2>6. 人与 AI 分工</h2>
+      <table>
+        <thead><tr><th>谁</th><th>负责</th><th>不负责</th></tr></thead>
+        <tbody>
+          <tr><td>人</td><td>冻结文档、拍板未知、审 MR、勾验收</td><td>把现状真相甩给模型猜</td></tr>
+          <tr><td>AI</td><td>提问、起草、按文档最小 diff</td><td>扩大范围、编造字段、当线上真相源</td></tr>
+        </tbody>
+      </table>
+
+      <h2>7. 「算会用」</h2>
+      <ol>
+        <li>和传统编程比真正变了什么？怎样才算在做 AI Coding？（见思维篇开放问题）</li>
+        <li>新 / 历史各走哪条？动手前核心文档是什么？</li>
+        <li>查现状 6 种办法？哪两种不能单独当真？</li>
+        <li>整仓 5 种推进？何时必须 S5？</li>
+        <li>三条铁律？人机分工？</li>
+        <li>产品方向与本课关系？（愿景 vs 技能）</li>
+      </ol>
+      <p><strong>实践（一周任一）：</strong> A 走新项目小特性（含反向提问）；或 B 填历史模板改真实小问题（写明用了哪些 P）。</p>
+      <ul class="checklist">
+        <li><label><input type="checkbox" /> 能独立选新项目或历史项目</label></li>
+        <li><label><input type="checkbox" /> 动手前有可分享、已冻结的文档</label></li>
+        <li><label><input type="checkbox" /> 提示词指向文档路径，不是只贴聊天</label></li>
+        <li><label><input type="checkbox" /> 合并前对照验收；契约变更已回写 design</label></li>
+      </ul>
+
+      <p>完整可复制全文见仓库 <code>cheatsheet.md</code>。</p>
+
+      <div class="pager">
+        <a href="./legacy-project.html">← 历史项目维护</a>
+        <a class="next" href="./index.html">回目录完成闭环 →</a>
+      </div>
+    </article>
+  </main>
+</body>
+</html>
