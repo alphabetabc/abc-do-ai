@@ -1,23 +1,15 @@
 # Changelog
 
-<!-- changelog-last-commit: 4d9727d4a053e9666c659bf80c6a858b376f1bd7 -->
+<!-- changelog-last-commit: 141eef281b3bb5b760893a003340c420a7f10373 -->
 
 ## 2026-07-23
 
 - 发布 skill
-    - 「oss-visual-material-project-env」 v0.0.0；
-- 新增 skill「oss-visual-material-project-env」；Maintains pnpm workspace config (pnpm-workspace.yaml) and pn...；
-- 发布 skill
     - 「oss-visual-designer-project-env」 v0.0.0；
     - 「oss-visual-material-project-env」 v0.0.0；
-- 新增 5 个文件；
-- 发布 skill
-    - 「oss-visual-designer-project-env」 v0.0.0；
-- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
 - 新增 skill「oss-visual-designer-project-env」；管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpmfile.c...；
-- 发布 skill
-    - 「oss-visual-designer-project-env」 v0.0.0；
-- 更新 5 个文件；
+- 新增 skill「oss-visual-material-project-env」；Maintains pnpm workspace config (pnpm-workspace.yaml) and pn...；
+- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-07-20
 
@@ -59,33 +51,31 @@
     - 「gd-es-next-right-real-time-impact」 v0.0.0；
     - 「gd-es-next-warn-gis-maintenance」 v0.0.0；
     - 「gd-es-next-warn-gis-risk-prediction-points」；
-- 更新 8 个文件；
 - 变更文件: scripts/commit.mjs、scripts/update-changelog.mjs；
 
 ## 2026-06-30
 
-- 新增 skill「pm-agent-skill」；
 - 发布 skill
     - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
     - 「gd-es-next-ui-emap-gis」 v0.0.0；
     - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
     - 「oss-vis-material-advisor」 v0.0.0；
-- 新增 10 个文件；
+- 新增 skill「pm-agent-skill」；
 
 ## 2026-06-25
 
 - 发布 skill
     - 「gd-es-next-ui-emap-gis」 v0.0.0；
     - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
-- 新增 EmapUtilsExtension, GlowPoint；
 - 新增 skill「noc-shaanxi-chinese-database-adapter」；
+- 新增 EmapUtilsExtension, GlowPoint；
 
 ## 2026-06-24
 
-- 新增 skill「oss-vis-material-advisor」；
 - 发布 skill
     - 「assurance-progress」；
     - 「damage-to-towns-exit-service-detail」；
+    - 「demo-skill」；
     - 「dispatch-gis-maintenance」；
     - 「emergency-api-generator」；
     - 「gd-es-next-assurance-progress」 v0.0.0；
@@ -93,9 +83,11 @@
     - 「gd-es-next-emergency-api-generator」 v0.0.0；
     - 「gd-es-next-header」 v0.0.0；
     - 「gd-es-next-right-network-scale-maintenance」 v0.0.0；
+    - 「gd-es-next-right-network-scale-maintenance」；
     - 「gd-es-next-ui-emap-gis」 v0.0.0；
     - 「gd-es-next-warn-gis-maintenance」 v0.0.0；
     - 「gd-es-next-warn-gis-risk-prediction-points」 v0.0.0；
+    - 「gd-es-next-warn-gis-risk-prediction-points」；
     - 「network-scale-maintenance」；
     - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
     - 「noc-shaanxi-management-overview-first」 v0.0.0；
@@ -103,7 +95,7 @@
     - 「ui-emap-gis」；
     - 「warn-gis-maintenance」；
     - 「warn-gis-risk-prediction-points」；
-    - 「demo-skill」；
+- 新增 skill「oss-vis-material-advisor」；
 - 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-06-22
@@ -117,24 +109,22 @@
 - 发布 skill
     - 「gd-es-next-header」 v0.0.0；
     - 「gd-es-next-interaction-fields」 v0.0.0；
-- 变更文件: scripts/commit.mjs；
-- 发布 skill
     - 「oss-vis-material-advisor」 v0.0.0；
     - 「oss-vis-material-development-assistant」 v0.0.0；
     - 「warn-gis-risk-prediction-points」；
+- 变更文件: scripts/commit.mjs；
 
 ## 2026-06-16
 
 - 发布 skill
+    - 「demo-skill」；
     - 「gd-es-next-right-damage-to-towns」 v0.0.0；
+    - 「gd-es-next-right-damage-to-towns」；
     - 「oss-vis-material-advisor」 v0.0.0；
     - 「oss-vis-material-development-assistant」 v0.0.0；
     - 「warn-gis-risk-prediction-points」；
-- feat: 更新 skill「oss-vis-material-development-assistant」（配置）；
-- 发布 skill
-    - 「gd-es-next-right-damage-to-towns」 v0.0.0；
-    - 「demo-skill」；
 - 变更文件: package.json、scripts/commit.mjs、scripts/update-changelog.mjs、skills/package.json；
+- 更新 skill「oss-vis-material-development-assistant」（配置）；
 
 ## 2026-06-15
 
@@ -146,9 +136,8 @@
 ## 2026-06-09
 
 - 发布 skill
-    - 「gd-es-next-left-emergency-resources」 v0.0.0；
-- 发布 skill
     - 「dispatch-gis-maintenance」；
+    - 「gd-es-next-left-emergency-resources」 v0.0.0；
     - 「warn-gis-risk-prediction-points」；
 
 ## 2026-06-05
@@ -159,7 +148,6 @@
 
 ## 2026-05-27
 
-- 新增 skill「agent-creator」；
 - 发布 skill
     - 「assurance-progress」；
     - 「damage-to-towns-exit-service-detail」；
@@ -169,6 +157,7 @@
     - 「ui-emap-gis」；
     - 「warn-gis-maintenance」；
     - 「warn-gis-risk-prediction-points」；
+- 新增 skill「agent-creator」；
 - 变更文件: .gitignore、skills/.beehive-skills-manager-db/projects/list.json、skills/package.json、skills/packages/toc.md；
 
 ## 2026-05-26

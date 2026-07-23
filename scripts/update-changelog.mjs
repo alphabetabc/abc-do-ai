@@ -305,6 +305,145 @@ function renderBullets(bullets) {
     .join('\n');
 }
 
+/**
+ * 对单个日期的 bullets 做合并去重，解决一天多次提交产生的脏数据：
+ *   1. 多个 "发布 skill" 父条目 → 合并为一个，子项去重 + 排序
+ *   2. 同 action + 同 skill 名称的条目 → 只保留最详细的那条（带 description 的优先）
+ *   3. 低价值的 "新增/更新/变更 N 个文件" 条目 → 仅在没有其他有意义 bullets 时保留
+ *   4. 完全重复的 "变更文件: ..." 条目 → 只保留一条
+ *   5. 按固定顺序输出：发布 skill → 新增 → 更新 → 删除 → 变更文件 → 其他
+ */
+export function consolidateBullets(bullets) {
+  if (!bullets || bullets.length === 0) return bullets;
+
+  const SKILL_ACTION_RE = /^(新增|更新|删除) skill「([^」]+)」(?:；(.+))?$/;
+  const GENERIC_COUNT_RE = /^(新增|更新|删除|变更)\s*\d+\s*个文件$/;
+  const PUBLISH_PARENT_TEXT = '发布 skill';
+  const PUBLISH_CHILD_RE = /^「(.+?)」(?: (v\S+))?$/;
+
+  // 1) 发布 skill 子项收集
+  const publishChildren = [];
+  // 2) skill 动作去重：key = `${action}:${label}`
+  const skillActions = new Map();
+  // 3) 变更文件条目去重
+  const fileListMap = new Map();
+  // 4) 低价值 generic count 条目，仅作为兜底保留
+  const genericBullets = [];
+  // 5) 其他条目按文本去重
+  const otherBullets = new Map();
+  // 6) 脏前缀清理缓存
+  const dirtyPrefixRe = /^(feat|fix|docs|chore|build|ci|style|refactor|perf|test|revert)\s*[:：]\s*/i;
+
+  let hasPublishParent = false;
+
+  for (const b of bullets) {
+    const rawText = (b.text || '').trim();
+    if (!rawText) continue;
+
+    // 发布 skill 子项（level === 1 且属于发布 skill 组）
+    if (b.level === 1 && PUBLISH_CHILD_RE.test(rawText)) {
+      publishChildren.push(rawText);
+      continue;
+    }
+
+    // 发布 skill 父条目
+    if (b.level === 0 && rawText === PUBLISH_PARENT_TEXT) {
+      hasPublishParent = true;
+      continue;
+    }
+
+    // 清理历史脏前缀（"feat: 更新 skill「X」..." 之类）
+    const text = rawText.replace(dirtyPrefixRe, '').trim();
+
+    // skill 动作：新增/更新/删除 skill「X」...
+    const m = text.match(SKILL_ACTION_RE);
+    if (m) {
+      const [, action, label, desc] = m;
+      const key = `${action}:${label}`;
+      const descLen = desc ? desc.length : 0;
+      const existing = skillActions.get(key);
+      if (!existing || descLen > existing.descLen) {
+        skillActions.set(key, { bullet: { level: 0, text }, descLen });
+      }
+      continue;
+    }
+
+    // 变更文件: ...
+    if (text.startsWith('变更文件:')) {
+      if (!fileListMap.has(text)) {
+        fileListMap.set(text, { level: 0, text });
+      }
+      continue;
+    }
+
+    // 低价值 generic count
+    if (GENERIC_COUNT_RE.test(text)) {
+      genericBullets.push({ level: 0, text });
+      continue;
+    }
+
+    // 其他：按文本去重
+    if (!otherBullets.has(text)) {
+      otherBullets.set(text, { level: 0, text });
+    }
+  }
+
+  // 组装结果
+  const result = [];
+
+  // a) 发布 skill 组（子项去重 + 排序）
+  if (hasPublishParent && publishChildren.length > 0) {
+    // 「name」 v1.2.3 形式归一化用于去重
+    const seen = new Set();
+    const uniqueChildren = [];
+    for (const child of publishChildren) {
+      const cm = child.match(PUBLISH_CHILD_RE);
+      const key = cm ? `${cm[1]}@${cm[2] || ''}` : child;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueChildren.push(child);
+      }
+    }
+    // 按 skill 名排序，稳定性更好
+    uniqueChildren.sort((a, b) => {
+      const an = a.match(PUBLISH_CHILD_RE)?.[1] || a;
+      const bn = b.match(PUBLISH_CHILD_RE)?.[1] || b;
+      return an.localeCompare(bn);
+    });
+    result.push({ level: 0, text: PUBLISH_PARENT_TEXT });
+    for (const c of uniqueChildren) {
+      result.push({ level: 1, text: c });
+    }
+  }
+
+  // b) skill 动作：按 新增 → 更新 → 删除 → 名称排序
+  const ACTION_ORDER = { 新增: 0, 更新: 1, 删除: 2 };
+  const sortedActions = [...skillActions.values()]
+    .map((v) => v.bullet)
+    .sort((a, b) => {
+      const ak = a.text.match(SKILL_ACTION_RE)?.[1] || '';
+      const bk = b.text.match(SKILL_ACTION_RE)?.[1] || '';
+      const ao = ACTION_ORDER[ak] ?? 99;
+      const bo = ACTION_ORDER[bk] ?? 99;
+      if (ao !== bo) return ao - bo;
+      return a.text.localeCompare(b.text);
+    });
+  for (const b of sortedActions) {
+    result.push(b);
+  }
+
+  // c) 变更文件 / 其他条目
+  for (const b of fileListMap.values()) result.push(b);
+  for (const b of otherBullets.values()) result.push(b);
+
+  // d) generic count 仅在没有任何有意义 bullets 时兜底
+  if (result.length === 0 && genericBullets.length > 0) {
+    result.push(...genericBullets);
+  }
+
+  return result;
+}
+
 function renderChangelog(marker, entriesMap) {
   let out = '# Changelog\n\n';
   if (marker) {
@@ -406,6 +545,16 @@ export async function updateChangelog(options = {}) {
     if (!existingTexts.has(text)) {
       if (!parsed.entries.has(date)) parsed.entries.set(date, []);
       parsed.entries.get(date).push({ level: 0, text });
+    }
+  }
+
+  // 按日期对 bullets 做合并去重，避免一天多次提交产生的脏数据
+  for (const [date, bullets] of parsed.entries) {
+    const consolidated = consolidateBullets(bullets);
+    if (consolidated.length === 0) {
+      parsed.entries.delete(date);
+    } else {
+      parsed.entries.set(date, consolidated);
     }
   }
 
