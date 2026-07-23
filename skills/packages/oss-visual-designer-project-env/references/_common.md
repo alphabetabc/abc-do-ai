@@ -47,6 +47,7 @@ allowBuilds:
     ejs: false
     es5-ext: false
     esbuild: false
+    fsevents: false
 
 overrides:
     '@types/react': 17.0.30
@@ -60,7 +61,8 @@ overrides:
     react-dom: 17.0.2
     typescript: 4.9.5
     react-intl-universal: 2.4.2
-    react-router-dom: 5.2.0
+    react-router-dom: 5.3.4
+    react-router: 5.3.4
     #oss-web-common: 0.3.1
 
 settings:
@@ -87,7 +89,8 @@ settings:
 | antd                            | 4.16.2            | 锁定 4.16，不升级 5.x                             |
 | oss-ui                          | 0.1.94            | 内部 UI 库                                        |
 | typescript                      | 4.9.5             | TS 4.9，不升级 5.x                                |
-| react-router-dom                | 5.2.0             | RR5，不升级 6.x                                   |
+| react-router-dom                | 5.3.4             | RR5，不升级 6.x                                   |
+| react-router                    | 5.3.4             | RR5 核心，与 react-router-dom 对齐                |
 | react-intl-universal            | 2.4.2             | 国际化                                            |
 | antd-img-crop                   | 3.16.0            | 图片裁剪                                          |
 | react-error-overlay             | 6.0.9             | CRA 错误覆盖层                                    |

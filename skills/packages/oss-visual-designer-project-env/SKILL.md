@@ -18,7 +18,7 @@ date: '2026-07-23'
 | 1    | 执行分支检查脚本                     | **硬性前置**，见 §3                              |
 | 2    | 读取实际配置文件                     | `pnpm-workspace.yaml` + `.pnpmfile.cjs`          |
 | 3    | 参考 `yarn.lock` 中的实际锁定版本    | **硬性约束**，见 §1.1                            |
-| 4    | 与 references 文档对比               | 核对 overrides / readPackage 注入项              |
+| 4    | 与 references 文档逐行精确对比       | **禁止扫读**，见 §1.2                            |
 | 5    | 用户确认后修改 + 同步更新 references | 修改实际文件并更新 `references/branch-<name>.md` |
 
 ### 1.1 yarn.lock 参考准则
@@ -28,6 +28,17 @@ date: '2026-07-23'
 - `overrides` / 注入的版本应与 `yarn.lock` 中已验证可用的版本对齐，避免引入未经验证的新版本
 - 若需要升级版本，先在 `yarn.lock` 中确认目标版本是否存在且已解析过
 - `yarn.lock` 是历史依赖树的真实快照，优先级高于凭记忆/猜测设定版本
+
+### 1.2 逐行精确对比准则
+
+步骤 4 对比实际配置与 references 快照时，**必须逐行精确对比，禁止扫读/概括性判断"差不多一致"**：
+
+- `overrides` / `allowBuilds` / `settings` / `packages` 每一项都要逐条核对，不能因"前一项存在"就默认"同类项已覆盖"（如 `react-router-dom` 存在不代表 `react-router` 也存在）
+- `.pnpmfile.cjs` 的 `readPackage` 注入块要逐行对比，包括注释行、启用/禁用状态、版本号
+- 对比结果要列出**具体差异行**（实际文件第 X 行 vs 快照第 Y 行），不能只说"一致"
+- 发现差异时，先向用户报告差异点，确认后再同步更新 references 快照
+
+> 历史教训：曾因扫读认为 `pnpm-workspace.yaml` 与快照"完全一致"，实际遗漏了用户新增的 `react-router: 5.2.0` 行。
 
 ---
 

@@ -36,8 +36,8 @@ function readPackage(pkg, context) {
             'language-tags': '1.0.5',
             '@types/lodash': '4.14.201',
             // 'react-error-overlay': '6.0.9',
-            // 'react-router-dom': '5.3.4',
-            // 'react-router': '5.3.4',
+            'react-router-dom': '5.3.4',
+            'react-router': '5.3.4',
             // antd: '*',
 
             // 测试
@@ -114,6 +114,8 @@ module.exports = {
 | oss-visual-designer | tslib | \* | TS 运行时辅助 |
 | oss-visual-designer | language-tags | 1.0.5 | 语言标签解析 |
 | oss-visual-designer | @types/lodash | 4.14.201 | Lodash 类型 |
+| oss-visual-designer | react-router-dom | 5.3.4 | **本分支启用**：RR5 路由绑定（与 overrides 一致） |
+| oss-visual-designer | react-router | 5.3.4 | **本分支启用**：RR5 核心（与 overrides 一致） |
 | oss-visual-designer | @fedx-vis/designer-types | workspace:\* | **本分支启用**：本地 workspace 子包，类型定义 |
 | oss-visual-designer | @fedx-vis/request | workspace:\* | **本分支启用**：本地 workspace 子包，请求层 |
 | oss-visual-designer | @fedx-vis/share | workspace:\* | **本分支启用**：本地 workspace 子包，共享枚举/工具 |
@@ -157,6 +159,7 @@ module.exports = {
 | `oss-web-common` 版本在 overrides 被注释 | 由 `.pnpmfile.cjs` 动态注入，切换分支时需核对注入逻辑  |
 | `@formily/*` 在 fedx-report 注入路径锁定 | 若升级 Formily，需同时改 `.pnpmfile.cjs` 中 9 个包版本 |
 | `@fedx-vis/*` workspace 注入             | 当前为启用状态，如需禁用见 §2.3                        |
+| `react-router-dom` / `react-router` 版本 | overrides 与 .pnpmfile.cjs 均锁定 5.3.4，已对齐        |
 
 ---
 
