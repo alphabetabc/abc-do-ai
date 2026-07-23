@@ -1,6 +1,6 @@
 # Changelog
 
-<!-- changelog-last-commit: 7b54c691886a5ee2dc37cf5d6ae304c22aa8a4ac -->
+<!-- changelog-last-commit: bfe1b130a166e51a35480614f53e25ab33f50e69 -->
 
 ## 2026-07-23
 
@@ -11,6 +11,10 @@
     - 「oss-visual-designer-project-env」 v0.0.0；
     - 「oss-visual-material-project-env」 v0.0.0；
 - 新增 5 个文件；
+- 发布 skill
+    - 「oss-visual-designer-project-env」 v0.0.0；
+- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
+- 新增 skill「oss-visual-designer-project-env」；管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpmfile.c...；
 
 ## 2026-07-20
 
