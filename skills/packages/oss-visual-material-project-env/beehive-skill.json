@@ -1,0 +1,12 @@
+{
+  "contentHash": "189d2691d0ec9b191b54fee6a0a2ede4761059aeececbe9b5200a013ddf8224d",
+  "files": [
+    "./scripts/",
+    "./references/"
+  ],
+  "id": "oss-visual-material-project-env",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
