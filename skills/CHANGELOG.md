@@ -1,12 +1,16 @@
 # Changelog
 
-<!-- changelog-last-commit: 8235f8529b51f573f439b556c92d14cc6135c47c -->
+<!-- changelog-last-commit: 7b54c691886a5ee2dc37cf5d6ae304c22aa8a4ac -->
 
 ## 2026-07-23
 
 - 发布 skill
     - 「oss-visual-material-project-env」 v0.0.0；
 - 新增 skill「oss-visual-material-project-env」；Maintains pnpm workspace config (pnpm-workspace.yaml) and pn...；
+- 发布 skill
+    - 「oss-visual-designer-project-env」 v0.0.0；
+    - 「oss-visual-material-project-env」 v0.0.0；
+- 新增 5 个文件；
 
 ## 2026-07-20
 
