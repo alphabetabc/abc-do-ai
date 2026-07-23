@@ -15,8 +15,11 @@ description: 'Maintains pnpm workspace config (pnpm-workspace.yaml) and pnpm hoo
 | ---- | ------------------------------------------------------ | ------------------------------------ |
 | 1    | 执行分支检查脚本                                       | 见下方「执行前检查」                 |
 | 2    | 读取 `pnpm-workspace.yaml` 和 `.pnpmfile.cjs` 实际内容 | 与当前分支的 references 文档对比     |
-| 3    | 检查实际配置与 references 是否一致                     | 不一致则向用户报告差异并询问是否更新 |
-| 4    | 用户确认后再修改实际配置文件                           | 同步更新 references 文档             |
+| 3    | **以 `yarn.lock` 为准校验版本**                        | 与 `yarn.lock` 中已解析的版本对照，发现差异时主动汇报 |
+| 4    | 检查实际配置与 references 是否一致                     | 不一致则向用户报告差异并询问是否更新 |
+| 5    | 用户确认后再修改实际配置文件                           | 同步更新 references 文档             |
+
+> **准则**：本 skill 所有版本判断必须以 `yarn.lock` 中实际解析的版本为最终依据。references 中记录的版本号必须能与 `yarn.lock` 对得上；如对不上，要么以 `yarn.lock` 为准更新 references，要么作为「版本校验提示」单独记录差异及处理策略。 |
 
 ---
 

@@ -1,0 +1,12 @@
+{
+  "contentHash": "e8ee1481c09020958940e5d8dcbe7392925df28d15300b64406cdd392f7d3e04",
+  "files": [
+    "./scripts/",
+    "./references/"
+  ],
+  "id": "oss-visual-designer-project-env",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

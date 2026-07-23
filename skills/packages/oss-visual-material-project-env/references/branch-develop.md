@@ -4,19 +4,22 @@
 
 ## 目标分支
 
-- **默认期望分支**：`develop`
-- **适用场景**：日常开发、合并特性分支前的集成测试
-- **风险等级**：低（默认分支，所有配置已验证）
+-   **默认期望分支**：`develop`
+-   **适用场景**：日常开发、合并特性分支前的集成测试
+-   **风险等级**：低（默认分支，所有配置已验证）
 
 ## 核心工作流（develop 分支）
 
 每次调用本 skill 时，必须先执行以下步骤：
 
-1. **分支检查**：运行 `node .trae/skills/oss-visual-material-project-pnpm/scripts/check-branch.mjs`，确认当前在 `develop` 分支
+1. **分支检查**：运行 `node .trae/skills/oss-visual-material-project-env/scripts/check-branch.mjs`，确认当前在 `develop` 分支
 2. **读取实际配置**：读取 `pnpm-workspace.yaml` 和 `.pnpmfile.cjs` 的当前内容
-3. **快照对比**：与本文「配置快照」章节逐项对比
-4. **差异报告**：如果发现不一致，向用户报告差异并询问是否更新快照
-5. **修改与同步**：用户确认后再修改实际配置文件 + 本文档
+3. **yarn.lock 版本校验**：以 `yarn.lock` 中实际解析的版本为最终依据，对照 references 中记录的版本号
+4. **快照对比**：与本文「配置快照」章节逐项对比
+5. **差异报告**：如果发现不一致，向用户报告差异并询问是否更新快照
+6. **修改与同步**：用户确认后再修改实际配置文件 + 本文档
+
+> **版本校验准则**：本 skill 所有版本判断必须以 `yarn.lock` 中实际解析的版本为准。references 中记录的版本号必须能与 `yarn.lock` 对得上；如对不上，要么以 `yarn.lock` 为准更新 references，要么在「版本校验提示」章节单独记录差异及处理策略。
 
 ## 文件位置
 
@@ -304,7 +307,7 @@ pnpm i --network-concurrency=6
 
 ---
 
-## 版本校验提示（基于 yarn.lock 对照）
+## 版本校验提示（基于 yarn.lock 对照，以 yarn.lock 为准）
 
 调用 skill 时应主动向用户汇报：
 
@@ -317,6 +320,8 @@ pnpm i --network-concurrency=6
 4. **`antd@4.17.4` fetcher 重定向**：保持现状，fetcher 将 `antd@4.17.4` 指向 `antd-4.17.4.tgz` 不动；如未来希望与 yarn.lock 完全一致，可移除该 fetcher，只保留 `antd@4.16.2 → antd-4.16.2.tgz`。
 
 5. 其他依赖项（`react-draggable`、`@types/react`、`echarts`、`react-intl-universal`、`electron-to-chromium`、`monaco-editor`、`@cesium/engine`、`cesium`、`oss-toolkits`、`@types/styled-components` 等）以本 skill 文档为准，无需特别提示。
+
+> **准则重申**：本章节所有判断以 `yarn.lock` 中实际解析的版本为最终依据。如 yarn.lock 后续发生变化，应重新校验并更新本章节。
 
 ---
 
