@@ -1,6 +1,8 @@
 ---
 name: 'oss-visual-designer-project-env'
 description: '管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpmfile.cjs 环境配置，按分支维护差异化依赖注入与覆盖规则。Invoke when 用户修改 workspace/pnpmfile 配置、切换分支环境、询问依赖注入规则、或需要获取当前分支并匹配对应环境配置时。'
+version: '1.1.0'
+date: '2026-07-23'
 ---
 
 # oss-visual-designer-project-env
@@ -39,6 +41,7 @@ description: '管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpm
 | 本地依赖目录   | `.yalc/`、`.yalc/@*/*`、`packages/*`、`packages-next/*` |
 | 分支检查脚本   | `scripts/check-branch.mjs`                              |
 | 分支配置文档   | `references/branch-<name>.md`                           |
+| 公共配置文档   | `references/_common.md`                                 |
 
 ---
 
@@ -74,7 +77,9 @@ node scripts/check-branch.mjs [选项]
 
 | 分支                     | 文档                                          | 状态      |
 | ------------------------ | --------------------------------------------- | --------- |
+| （公共）                 | `references/_common.md`                       | ✅ 已维护 |
 | `release-shaanxi-unicom` | `references/branch-release-shaanxi-unicom.md` | ✅ 已维护 |
+| `develop`                | `references/branch-develop.md`                | ✅ 已维护 |
 
 ---
 
@@ -86,7 +91,8 @@ oss-visual-designer-project-env/
 ├── scripts/
 │   └── check-branch.mjs      # 分支检查脚本（Node.js ESM）
 └── references/
-    └── branch-<name>.md      # 各分支完整配置参考
+    ├── _common.md            # 公共配置（各分支共享）
+    └── branch-<name>.md      # 各分支专属配置（引用 _common.md）
 ```
 
 ---
@@ -96,7 +102,8 @@ oss-visual-designer-project-env/
 未来需要支持新分支（feature/release/main 等）：
 
 1. 切换到目标分支
-2. 复制 `references/branch-release-shaanxi-unicom.md` 为 `references/branch-<新分支名>.md`
-3. 更新目标分支信息、配置快照、差异点
-4. 在 §4 References 索引表追加一行
-5. 使用 `check-branch.mjs --branch <新分支名>` 校验
+2. 复制 `references/branch-develop.md` 为 `references/branch-<新分支名>.md`
+3. 仅更新分支专属内容（目标分支信息、`.pnpmfile.cjs` 快照、注入说明表、`@fedx-vis/*` 状态、版本校验提示）
+4. 公共内容无需修改，自动引用 `_common.md`
+5. 在 §4 References 索引表追加一行
+6. 使用 `check-branch.mjs --branch <新分支名>` 校验
