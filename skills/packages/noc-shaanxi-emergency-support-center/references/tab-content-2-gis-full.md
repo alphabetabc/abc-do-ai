@@ -19,6 +19,42 @@
 4. 抢修回流（`leftRepairNoticeParams?.intId`）
 5. 网元点击 → 派发右屏
 
+## `<GisCustomCircleView>` 聚合圆组件
+
+tab2 **和 tab1 一样**使用本地增强版 `GisCustomCircleView`，**v1.10 起传 `enableSelfPopup={true}`**（启用自定位模式）；**v1.11 起聚合圆 tooltip 改走 `tooltipTileChildren` prop**（与 tab1 对齐，[gis/index.tsx#L780-L793](web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L780-L793)）：
+
+```tsx
+<GisCustomCircleView
+    enableSelfPopup={true}
+    visible={true}
+    source={circlePoints}
+    toolPupWindowId="toolTipWindowCircle2"
+    onClick={onCircleClick}
+    onMouseMove={onCirclePointMove}
+    tooltipProperty={{ placement: 'top' }}
+    overlayStyle={{ width: 300 }}
+    radius={circlePoints.length > 10 ? 100 : 60}
+    tooltipTileChildren={
+        <div id="toolTipWindowCircle2">
+            {circleTooltipSource && (
+                <ElTooltipCircle
+                    key="EteElTooltipCirclePopup2"
+                    source={circleTooltipSource}
+                    style={circleTooltipStyle}
+                    onItemClick={(item) => pointClick({ ...item, neType: item.rawNeType ?? item.neType })}
+                />
+            )}
+        </div>
+    }
+/>
+```
+
+> - tab2 **没有外层锚点 div**——`<div id="toolTipWindowCircle2">` 直接嵌在 `tooltipTileChildren` 内（[L781](web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L781)），跟随 AntD Tooltip 渲染；与 tab1 注释掉外层 div、保留 id 在 `tooltipTileChildren` 外层（[tab-content-1-gis-full.md § Tooltip 节点](tab-content-1-gis-full.md)）的实现略有差异，但 `appendChild` 路径都被 `tooltipTileChildren` 短路，行为一致
+> - `toolPupWindowId="toolTipWindowCircle2"` 仍传，**保留是为了维持与 tab1 的 id 后缀约定**（不重叠即可），实际未被消费（CircleView `if (div && !props.tooltipTileChildren)` 守卫把 appendChild 路径短路掉）
+> - tab2 替换原生 `CircleView` 的历史见 [tab-content-2-aggregate-points.md § 5.6](tab-content-2-aggregate-points.md)
+> - v1.10 起 tab1（shorthand `enableSelfPopup`）和 tab2（显式 `enableSelfPopup={true}`）都启用了自定位模式，容器 id 统一变 `freePointContainer`
+> - 详细 props / 自定位模式说明见 [fedx-gis/circle-view.md](fedx-gis/circle-view.md) 和 [tab-content-1-gis-full.md § `<GisCustomCircleView>` 自定义聚合圆组件](tab-content-1-gis-full.md)
+
 ## State 总览（与 tab1 比，多了区域相关）
 
 ```ts
@@ -181,20 +217,63 @@ useEffect(() => {
     maskClosable={false}
     mask={false}
     title={'区域配置'}
+    // @ts-ignore
     onClose={() => setShowAreaSetting(false)}
     onOk={handleAreaSettingOK}
     destroyOnClose
     onCancel={() => setShowAreaSetting(false)}
-    style={{ top: '125px', left: '550px' }}
+    style={{ top: '125px', left: '550px' }} // 设置样式来改变位置
     bodyStyle={{ height: '200px', overflowY: 'auto' }}
 >
     <Checkbox.Group value={areaSettingCheckList} onChange={onAreaSettingChange}>
-        {dataAreaSetting?.map((item) => (
-            <Checkbox style={{ margin: 5 }} value={item.areaId}>{item.areaName}</Checkbox>
-        ))}
+        {dataAreaSetting?.map((item) => {
+            return (
+                <Checkbox style={{ margin: 5 }} value={item.areaId}>
+                    {item.areaName}
+                </Checkbox>
+            );
+        })}
     </Checkbox.Group>
 </Modal>
 ```
+
+### 区域 Tab 三档宽度（commit `2d6cdee` 引入）
+
+`<div className="area">` 里的 `.child` / `.title` / `.title-selected` 三套类**按 `dataFilterArea.length` 动态分配宽度档**，避免只显示 1-2 个区域时 Tab 太挤或全 3 个时溢出：
+
+```ts
+{dataFilterArea?.map((item, index) => {
+    const length = dataFilterArea.length;
+    let widthClass = '';
+    if (length === 1) widthClass = 'full-width';
+    else if (length === 2) widthClass = 'half-width';
+    else if (length === 3) widthClass = 'third-width';
+    return (
+        <div key={index} className={`child ${widthClass} ${item.selected ? 'child-selected' : ''}`} title={item.areaName}>
+            <div
+                onClick={() => changCurrentArea(item)}
+                className={`title ${widthClass} ${item.selected ? 'title-selected' : ''}`}
+            >
+                {item.areaName}
+            </div>
+        </div>
+    );
+})}
+```
+
+对应 `.less` 样式（`tab-content-2/components/center-gis/components/gis/index.less`）：
+
+| 档位 | `.child` width | `.title` width | `.title-selected` width |
+|---|---|---|---|
+| `full-width`（区域数 = 1）| `98%` | `850px` | `850px` |
+| `half-width`（区域数 = 2）| `calc(45% - 10px)` | `430px` | `455px` |
+| `third-width`（区域数 = 3）| `calc(33% - 10px)` | `300px` | `313px` |
+
+同时：
+
+- `.title` 默认 `width` 由 `200px` 改为 `230px`
+- `.title-selected` 默认 `font-size` 由 `48px` 改为 `42px`
+- `.area-setting` 加了 `z-index: 1`（commit `2d6cdee` 同步加）
 
 ## 容器 id 与 Tooltip 节点
 
@@ -214,7 +293,8 @@ useEffect(() => {
 - 根：`emergency-support-center-sudden-gis-map-container`
 - 区域面板遮罩：`.banner-mask`
 - 区域面板：`.area`，含 `.area-content` `.child` `.child-selected` `.title` `.title-selected`
-- 区域配置入口按钮：`.area-setting`
+- 区域宽度档（commit `2d6cdee`）：`.child.full-width` `.child.half-width` `.child.third-width`、`.title.full-width` `.title.half-width` `.title.third-width`、`.title-selected.full-width` `.title-selected.half-width` `.title-selected.third-width`
+- 区域配置入口按钮：`.area-setting`（含 `z-index: 1`）
 - 图例相关：`.legend-title` `.legend-title-hidden` `.legend-group` `.legend-name`
 - 抢修回流按钮：`.back`
 
@@ -228,4 +308,4 @@ useEffect(() => {
 - 区域切换会清空 `leftRepairNoticeParams`（派发 `''`），注意顺序：`changCurrentArea` 内最后才清
 - `GisLegend` 是从 tab1 的目录复用的（`../../../../../tab-content-1/components/center-gis/components/gis-legend`），不要重复实现
 
-> 版本：v1.0 · 创建日期：2026-07-13
+> 版本：v1.3 · 更新日期：2026-07-24（同步 v1.11：聚合圆 tooltip 改走 `tooltipTileChildren` prop；`<GisCustomCircleView>` 示例补全 `tooltipTileChildren` 块 + 标注 tab2 **无外层锚点 div**（id 内嵌在 `tooltipTileChildren` 内））

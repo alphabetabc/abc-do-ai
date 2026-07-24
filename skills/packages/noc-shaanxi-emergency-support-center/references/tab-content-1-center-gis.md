@@ -55,20 +55,43 @@ const onBackClick = (e) => {
 ## 渲染
 
 ```tsx
-<div className="emergency-support-center-gis-root">
-    <div>
-        <Gis
-            {...props}
-            showGisTownMapBack={showGisTownMapBack}
-            changeShowGisTownMapBack={() => setShowGisTownMapBack(false)}
-        />
-    </div>
-    <Tooltip title="返回上一层">
-        <div className="back" onClick={onBackClick} />
-    </Tooltip>
-</div>
+import { useEnvironment } from '~/web/hooks/useEnvironment';
+import { constants } from '~/web/common/constants';
+
+export const CenterGis = (props) => {
+    const [showGisTownMapBack, setShowGisTownMapBack] = useState(false);
+    const { emergencySupportGisConfig } = useEnvironment();
+    const { showSatelliteBackgroundMap } = emergencySupportGisConfig;
+
+    //返回地市PATH地图
+    const onBackClick = (e) => { /* ... */ };
+
+    return (
+        <div
+            className="emergency-support-center-gis-root"
+            style={{
+                backgroundImage: showSatelliteBackgroundMap
+                    ? `url(${constants.IMAGE_PATH}/emergency-support/卫星地图.png)`
+                    : '',
+            }}
+        >
+            <div>
+                <Gis
+                    {...props}
+                    showGisTownMapBack={showGisTownMapBack}
+                    changeShowGisTownMapBack={() => setShowGisTownMapBack(false)}
+                />
+            </div>
+            <Tooltip title="返回上一层">
+                <div className="back" onClick={onBackClick} />
+            </Tooltip>
+        </div>
+    );
+};
 ```
 
+> 卫星地图背景（commit `2bd9eee` 引入）由环境变量 `emergencySupportGisConfig.showSatelliteBackgroundMap` 控制是否显示；`.less` 中原本写死的 `background: url(...)` 已被注释，避免和 inline style 冲突。
+>
 > 注意：`drillZone` 已在 `{...props}` 中透传给 `<Gis>`，此处未作为独立命名 prop 显式写出；`Gis` 内部通过 `props.drillZone` 获取。
 
 ## className
@@ -98,5 +121,6 @@ const onBackClick = (e) => {
 - `e.stopPropagation()` 是为了防止返回按钮事件冒泡到外层地图
 - `setShowGisTownMapBack(true)` 后必须由 `Gis` 调用 `changeShowGisTownMapBack(false)` 重置，否则回流开关一直开着
 - 和 `tab-content-2` 的 `CenterSuddenGis` 不同：**这是有返回按钮的**，突发保障的壳不带返回按钮
+- 卫星地图背景在 commit `2bd9eee` 之后改用 inline `style.backgroundImage`；**不要**再在 `<div className="emergency-support-center-gis-root">` 上的 `.less` 写 `background: url(...)`（会盖过 inline style）
 
-> 版本：v1.0 · 创建日期：2026-07-13
+> 版本：v1.1 · 更新日期：2026-07-23（同步 `2bd9eee` 卫星背景改为 inline style）

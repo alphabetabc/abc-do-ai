@@ -229,10 +229,11 @@ const onShowCircle = (pointArr) => {
 
 ### 5.6 `CircleView` 替换为 `GisCustomCircleView`
 
-完整代码（[gis/index.tsx:777-786](web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L777-L786)）：
+完整代码（[gis/index.tsx:770-780](web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L770-L780)）：
 
 ```tsx
 <GisCustomCircleView
+    enableSelfPopup={true}
     visible={true}
     source={circlePoints}
     toolPupWindowId="toolTipWindowCircle2"
@@ -244,7 +245,10 @@ const onShowCircle = (pointArr) => {
 />
 ```
 
-> **与 tab1 差异**：tab1 原本就用 `GisCustomCircleView`；tab2 是从原生 `CircleView`（动态 `overlayStyle.width`）替换过来的。`toolPupWindowId` 保持 `toolTipWindowCircle2`（tab1 是 `toolTipWindowCircle1`）。
+> **与 tab1 差异**：
+> - tab1 原本就用 `GisCustomCircleView`；tab2 是从原生 `CircleView`（动态 `overlayStyle.width`）替换过来的。
+> - v1.10 起 tab1（shorthand `enableSelfPopup`）和 tab2（显式 `enableSelfPopup={true}`）都启用了自定位模式，div id 都是 `freePointContainer`。
+> - `toolPupWindowId` 保持 `toolTipWindowCircle2`（tab1 是 `toolTipWindowCircle1`）。
 
 ### 5.7 `ElTooltipCircle` 加 `onItemClick`
 

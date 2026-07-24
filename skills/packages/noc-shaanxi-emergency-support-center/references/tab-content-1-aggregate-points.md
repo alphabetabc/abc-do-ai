@@ -340,7 +340,7 @@ export default function Index(props) {
 | `circlePoints` / `circleTooltipSource` / `circleTooltipStyle` state | **零改动**                                      |
 | `onCirclePointMove` / `onCircleClick`                               | **零改动**                                      |
 | `pointClick(point)`                                                 | **零改动**（调用方负责复原 neType）             |
-| `<GisCustomCircleView>`                                             | **零改动**（仍是 tab1 的本地增强版）            |
+| `<GisCustomCircleView>`                                             | **传 `enableSelfPopup`**（启用自定位模式，详见 [tab-content-1-gis-full.md § `<GisCustomCircleView>` 自定义聚合圆组件](tab-content-1-gis-full.md)） |
 | `<ElTooltipBase>`                                                   | **零改动**                                      |
 | less 样式                                                           | **零改动**                                      |
 | 后端 API                                                            | **零改动**                                      |

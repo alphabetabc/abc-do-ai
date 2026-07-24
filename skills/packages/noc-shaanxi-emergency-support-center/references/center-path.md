@@ -91,16 +91,41 @@ ready: legendValue === LegendEnum.room && isDefined(zoneId) && isDefined(zoneLev
 
 气泡 label 的 rich 富文本：
 
-- `value0`（`room` 图例）：红色 `#ff5050`
-- `value1`（其他图例）：白色 `#F0F0F0`
+通用样式（系列 2 label，所有图例共享）：
+
+- `value0`（`room` 图例第 1 段）：红色 `#ff5050`
+- `value1`（其他图例第 1 段）：白色 `#F0F0F0`
 - `value2`：绿 `#29ff67`
 - `value3`：青 `#39f8ff`
 - `value4`：黄 `#ffb900`
 
-所有标签字体：`YouSheBiaoTiHei`，22px，背景图：
+退服基站专用样式（系列 2 label 的 `isSiteAlarm` 分支）—— **同时具备 `value1` + `value2` + `value3` 且无 `value4`** 时启用，与上面四色互斥：
 
-- `gis-三角体.png`（系列 1 标签背景）
-- `gis-tip背景.png`（系列 2 标签背景）
+- `value2Site`：橙 `#FFA940`
+- `value3Site`：红 `#FF4D4F`
+- `sep`：lime `#9BFF00`（两段数字之间的 `/`）
+
+对应 formatter：
+
+```ts
+const isSiteAlarm =
+    params.data?.value1 && params.data?.value2 && params.data?.value3 && !params.data?.value4;
+if (isSiteAlarm) {
+    // 退服基站情况：value1颜色不变，value2是FFA940，value3是FF4D4F，/使用9BFF00颜色
+    return `\n{${v1}|${params.data?.value1 || '0'}}{sep|/}{value2Site|${
+        params.data?.value2 || ''
+    }}{sep|/}{value3Site|${params.data?.value3 || ''}}`;
+}
+```
+
+> 来源 commit：`2d6cdee`（2026-07-23）。
+
+所有标签字体：`YouSheBiaoTiHei`，22px。背景图通过 `import` 引用：
+
+```ts
+import gisTipBackground from '../../images/gis-tip背景.png';
+import gisTriangle from '../../images/gis-三角体.png';
+```
 
 事件：
 
@@ -248,10 +273,51 @@ useEffect(() => {
 
 ## 静态资源路径
 
-| 用途 | 路径 |
+引入方式（commit `94aef85` 之后）：
+
+```ts
+import gisTipBackground from '../../images/gis-tip背景.png';
+import gisTriangle from '../../images/gis-三角体.png';
+```
+
+| 用途 | 引用变量 | 文件 |
+|---|---|---|
+| 系列 1 标签背景 | `gisTriangle` | `tab-content-1/images/gis-三角体.png` |
+| 系列 2 标签背景 | `gisTipBackground` | `tab-content-1/images/gis-tip背景.png` |
+
+> 引入后用 `backgroundColor.image: gisTriangle`（或 `gisTipBackground`）放进 ECharts `option.series[*].label.normal.textStyle.backgroundColor`。**不要**再用绝对路径 `/static/images/emergency-support/xxx.png`——已废弃。
+
+另外卫星地图（`卫星地图.png`）由环境变量 `emergencySupportGisConfig.showSatelliteBackgroundMap` 控制是否显示：
+
+```ts
+const { emergencySupportGisConfig } = useEnvironment();
+const { showSatelliteBackgroundMap } = emergencySupportGisConfig;
+
+// 在 return JSX 处
+<div
+    className="emergency-support-center-path-root"
+    style={{
+        backgroundImage: showSatelliteBackgroundMap
+            ? `url(${constants.IMAGE_PATH}/emergency-support/卫星地图.png)`
+            : '',
+    }}
+>
+```
+
+> `.less` 中原本写死的 `background: url(...)` 已被注释（commit `2bd9eee`），避免与 inline style 冲突。同步规则见 SKILL.md「图片引用 / 卫星地图背景」。
+
+## 图例 Radio 文字
+
+`Radio.Group` 当前文本（commit `2bd9eee` 之后的现状）：
+
+| `legendValue` | 显示文字 |
 |---|---|
-| 系列 1 标签背景 | `/static/images/emergency-support/gis-三角体.png` |
-| 系列 2 标签背景 | `/static/images/emergency-support/gis-tip背景.png` |
+| `LegendEnum.site` | `退服基站（2G <span className="text-site-sep">/</span> <span className="text-site-4G">4G</span> <span className="text-site-sep">/</span> <span className="text-site-5G">5G</span>）` |
+| `LegendEnum.siteRoom` | `物理站退服`（曾用名 `基站-机房退服`，commit `2bd9eee` 改称） |
+| `LegendEnum.olt` | `退服OLT` |
+| `LegendEnum.bras` | `退服BRAS` |
+| `LegendEnum.room` | `机房（<span className="text-room-red">停电机房</span>/<span className="text-room-green">可发电</span>/<span className="text-room-blue">可发电且影响业务</span>/<span className="text-room-yellow">不可发电且影响业务</span>）` |
+| `LegendEnum.trans` | `传输中断`（曾用名 `断点中断`，commit `2bd9eee` 改称） |
 
 ## className
 
@@ -259,6 +325,9 @@ useEffect(() => {
 - 地图容器：`map`（id 为 `echartsMap`，由 ECharts init 取）
 - 右上角返回按钮：`back`
 - 左下角图例：`legend`，含 `title` + `radio`
+- 图例文字 span：`text-site-sep`（`#9BFF00`）、`text-site-4G`（`#FFA940`）、`text-site-5G`（`#FF4D4F`）、`text-room-red/green/blue/yellow`
+
+> 颜色变更历史（commit `2d6cdee`）：`.text-site-4G` 由 `#29ff67` → `#FFA940`；`.text-site-5G` 由 `#39f8ff` → `#FF4D4F`；新增 `.text-site-sep { color: #9BFF00 }`。
 
 ## 易踩坑
 
@@ -268,5 +337,8 @@ useEffect(() => {
 - `convertData(ci)` 中的 `ci` 偏移在切换省级 / 地市时不同，省级 0.22，地市 0.03
 - 单击气泡的 swich 分支里没改 `centerAreaNeIds.data`，因为是重置为 `[]`，真正派发的是 `pointClick`（GIS 那边）
 - `props.currentTabType` 必须显式判断，否则会跨 tab 渲染
+- `backgroundColor.image` 系列标签背景图**必须用 `import` 变量**（已废弃绝对路径字符串）
+- 卫星地图背景由 `showSatelliteBackgroundMap` 控制；`.less` 里若写了 `background-image: url(...)` 会盖过 inline style，commit `2bd9eee` 之后该写法被注释
+- 退服基站的 `isSiteAlarm` 判断条件是「有 `value1/value2/value3` 且没有 `value4`」，缺一不可；任意一项缺失都会走回原通用 5 段格式
 
-> 版本：v1.0 · 创建日期：2026-07-13
+> 版本：v1.1 · 更新日期：2026-07-23（同步 `94aef85 / 2d6cdee / 2bd9eee`）

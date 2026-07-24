@@ -40,6 +40,18 @@ description: '维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模
     - 跨 Tab 共有逻辑在各自的文档里**分别记录**，不抽公共文档
     - 唯一的例外：`GisLegend` 跨 Tab 复用（已在「跨 Tab 复用」条目里说明）
 
+6. **不主动查 git（No Unsolicited Git Lookup）**
+    - 除非用户**明确**说"同步别人更新""拉一下最新""diff 一下""看 git 状态"等指示，否则不要主动跑 `git status` / `git log` / `git diff` / `git fetch` / `git stash` / `git show` 等命令
+    - 用户没说就查 git，会把无关输出塞进上下文、干扰判断、还可能踩到「Git Safety Protocol」红线
+    - 维护者只在用户**给出同步信号**时执行 git 类命令；其他时间一律用 `Read` / `Grep` / `Glob` / `SearchCodebase` 读当前 working tree
+    - 这条规则对所有维护者（包括我自己）生效
+
+7. **人员信息只在 CHANGELOG 出现（Author Info Goes to CHANGELOG Only）**
+    - `SKILL.md` / `references/**/*.md` 的目标读者是「未来想接入/维护/拓展这个模块的工程师」，他们关心**功能本身**——字段含义、组件 props、调用约定、坑点
+    - **作者信息（`xxx@boco.com.cn` 之类）一律不进非 CHANGELOG 文档**；作者归属属于 review 轨迹的一部分，写在 [CHANGELOG.md](CHANGELOG.md) 里即可
+    - commit SHA 可以出现在非 CHANGELOG 文档——它是「这项能力何时被引入」的功能性背景，不是人员信息；日期、PR 号、邮箱、用户名都不进
+    - 例外：CHANGELOG.md 允许写「作者 / 日期 / 全 SHA / commit title」四要素，且仅在「git 锚点」表格与「v?.?」条目标题处出现一次
+
 ## 适用范围
 
 - 根目录：`e:\oss-fe-git\phoenix\oss-noc-shaanxi\web\pages\emergency-support\modules\center\`
@@ -110,7 +122,7 @@ export enum LegendEnum {
     bras = 4, //BRAS退服
     olt = 5, //OLT退服
     // line = 6, //专线中断（预留，未启用）
-    siteRoom = 7, //基站-机房
+    siteRoom = 7, //物理站退服（曾用名「基站-机房退服」，commit 2bd9eee 改称；中心 Path 上 Radio 显示文字为「物理站退服」，GIS Legend 中 value 1000501 的 Checkbox 名称同样改称）
 }
 
 export enum MapTypeEnum {
@@ -152,7 +164,10 @@ export enum MapTypeEnum {
 2. **TabButton**：[tab-button/index.tsx](web/pages/emergency-support/modules/center/components/tab-button/index.tsx) — URL `?tab=2` 的初始化与切回 tab1 是否重置了 `centerAreaId` / `centerAreaNeIds`。
 3. **日常保障 Path**：[center-path/index.tsx](web/pages/emergency-support/modules/center/components/tab-content-1/components/center-path/index.tsx) — 图例 Radio 切换、三类 `useRequest` 的 `ready` 与 `refreshDeps`、双击 `drillMap` 的级别判断、气泡点击 `onScatterClick` 的 switch 分支。
 4. **日常 / 突发 GIS**：分别在 [center-gis/index.tsx](web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/index.tsx) 和 [center-gis/index.tsx](web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/index.tsx) 下，乡镇地图返回区县 (`zoneTownSelect`)、返回上一层、`Gis` 子组件 props。
-5. **样式 / 图片**：less 文件命名 `<组件目录>/index.less`；图片放 `images/`，引用使用绝对路径 `/static/images/emergency-support/xxx.png`（与 center-path/index.tsx 一致）。
+5. **样式 / 图片**：less 文件命名 `<组件目录>/index.less`；图片放 `images/`。引用方式有两种：
+    - `center-path/index.tsx` 系列标签背景图：**`import gisXxx from '../../images/gis-xxx.png'`**（webpack 一起打包，使用图片变量直接放到 `backgroundColor.image`）
+    - `center-gis/index.{tsx,less}` 根容器的卫星背景（`卫星地图.png` 等是否显示由 `emergencySupportGisConfig.showSatelliteBackgroundMap` 控制）：`<div>` 上挂 `style={{ backgroundImage: showSatelliteBackgroundMap ? \`url(${constants.IMAGE_PATH}/emergency-support/卫星地图.png)\` : '' }}`，并且 `.less` 里只用 `background-repeat / background-position / background-size`，`background-image` 这条写法在 `.less` 里**不要重复**（CSS 会盖过 inline style）
+    - `Button.tsx` 使用 `constants.IMAGE_PATH` 拼接 `${constants.IMAGE_PATH}/emergency-support/xxx.png`
 6. **skill 文档漂移 review**（每次升级 skill 必做）：
     - `Read` 受影响源文件 → 与文档 1:1 对照
     - 检查所有 prop 是否完整（包括 `false` 默认值）
@@ -165,8 +180,11 @@ export enum MapTypeEnum {
 
 - **新增图例**：先改 `LegendEnum` → 在 `center-path/index.tsx` 的 `Radio.Group` 增加项 → 在 `onScatterClick` switch 增加分支 → 如果需要新 `useRequest`，使用 `~/web/hooks/useIntervalTimer` 的 `TIME_RANGE` + `isDefined` `ready` 守卫。
 - **新增 Tab**：在 `TabChangeEnum` 新增键值，修改 `index.tsx` 顶层渲染分支，TabButton 增加按钮。
-- **新增图片**：放 `images/` 目录；命名小写连字符（如 `alarm-access1.png`），不要使用中文。
-- **图片引用**：有两种模式——`center-path/index.tsx` 使用绝对路径 `/static/images/emergency-support/xxx.png`；`Button.tsx` 使用 `constants.IMAGE_PATH` 拼接 `${constants.IMAGE_PATH}/emergency-support/xxx.png`。修改时请保持一致。
+- **新增图片**：放 `images/` 目录；命名小写连字符（如 `alarm-access1.png`）；如确实需要中文文件名（如 `gis-三角体.png`、`gis-tip背景.png`），仍可在 `import` 形式下使用，但要保证 `import` 路径与文件名一一对应。
+- **图片引用**有三种模式，按位置选用：
+    - `center-path/index.tsx` 系列 1/系列 2 标签背景图：**`import gisXxx from '../../images/xxx.png'`** → `backgroundColor.image: gisXxx`（commit `94aef85` 之后；之前是绝对路径 `/static/images/emergency-support/xxx.png`，已废弃）
+    - `center-path/index.tsx` + 两个 `center-gis/index.tsx` 的**卫星地图背景**：按 `useEnvironment().emergencySupportGisConfig.showSatelliteBackgroundMap` 决定根 `<div>` 是否挂 `style.backgroundImage = url(IMAGE_PATH + '/emergency-support/卫星地图.png')`（commit `2bd9eee` 之后；`.less` 中的 `background: url(...)` 已注释，避免和 inline style 冲突）
+    - `Button.tsx`：`constants.IMAGE_PATH` 拼接 `${constants.IMAGE_PATH}/emergency-support/xxx.png`
 - **不要** 在此模块直接修改 `~/web/services/emergency-support/` 或上级 `pages/emergency-support/` 容器代码；如确有必要，与用户确认后再改动。
 - **跨 Tab 复用**：两个 Tab 的 GIS 组件不应抽公共组件，但 `GisLegend` 是唯一例外——tab2 的 `Gis` 直接从 `../../../../../tab-content-1/components/center-gis/components/gis-legend` 引用。新增复用组件前请与用户确认。
 - 修改完必须 `Read` 受影响的 `.tsx / .less` 文件确认类型与样式一致，避免 build 失败。
@@ -217,6 +235,6 @@ export enum MapTypeEnum {
 - "排查中屏双击下钻 / 中屏智能问答 / 中屏 Tab 切换"
 - 涉及 `emergency-support/modules/center` 目录下任何文件的新增、修改、bug 排查
 
-> **当前 skill 版本：v1.8 · 2026-07-16**
+> **当前 skill 版本：v1.11 · 2026-07-24**
 >
-> skill 自身的演进历史已挪到 [CHANGELOG.md](CHANGELOG.md)，不再放在 SKILL.md 里（避免污染模块技术知识）。
+> skill 自身的演进历史已挪到 [CHANGELOG.md](CHANGELOG.md)，不再放在 SKILL.md 里（避免污染模块技术知识）。v1.11 同步 tab1 + tab2 聚合圆 tooltip 改走 `tooltipTileChildren`（tab1 外层 `toolTipWindowCircle1` 锚点 div 已注释；tab2 本就无外层锚点 div，仅同步文档；两边 `toolPupWindowId` 仍保留作 id 后缀约定）。

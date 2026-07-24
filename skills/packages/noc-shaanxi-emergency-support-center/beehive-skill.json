@@ -1,7 +1,8 @@
 {
-  "contentHash": "536a2ab4cca73b8a7a49a84d739b323c0d11c2256abf1abf8fc27f88beecee52",
+  "contentHash": "3da8caccdfda43f754da172de31a6d77baabd9e84491cde0ee7c5849db770c2a",
   "files": [
-    "./references/"
+    "./references/",
+    "./CHANGELOG.md"
   ],
   "id": "noc-shaanxi-emergency-support-center",
   "targets": [

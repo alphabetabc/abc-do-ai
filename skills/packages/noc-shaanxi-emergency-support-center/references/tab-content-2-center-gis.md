@@ -13,10 +13,29 @@
 ## 渲染
 
 ```tsx
-<div className="emergency-support-center-sudden-gis-root">
-    <Gis {...props} />
-</div>
+import { useEnvironment } from '~/web/hooks/useEnvironment';
+import { constants } from '~/web/common/constants';
+
+export const CenterSuddenGis = (props) => {
+    const { emergencySupportGisConfig } = useEnvironment();
+    const { showSatelliteBackgroundMap } = emergencySupportGisConfig;
+
+    return (
+        <div
+            className="emergency-support-center-sudden-gis-root"
+            style={{
+                backgroundImage: showSatelliteBackgroundMap
+                    ? `url(${constants.IMAGE_PATH}/emergency-support/卫星地图.png)`
+                    : '',
+            }}
+        >
+            <Gis {...props} />
+        </div>
+    );
+};
 ```
+
+> 卫星地图背景（commit `2bd9eee` 引入）与 tab1 的 `CenterGis` 共用同一份实现，差异只在 className。`.less` 中原本写死的 `background: url(...)` 已被注释，避免和 inline style 冲突。
 
 ## className
 
@@ -45,5 +64,6 @@
 - 不要在这个壳里加任何 state——会和子组件 `Gis` 内部 state 冲突
 - 新增 props 必须同步透传给 `Gis`，否则断链
 - 子组件的路径、组件名（例如 `Gis`）要保持一致，否则 props 不通
+- 卫星地图背景在 commit `2bd9eee` 之后改用 inline `style.backgroundImage`（与 tab1 的 `CenterGis` 同款）；**不要**在 `.less` 写 `background: url(...)`
 
-> 版本：v1.0 · 创建日期：2026-07-13
+> 版本：v1.1 · 更新日期：2026-07-23（同步 `2bd9eee` 卫星背景改为 inline style）
