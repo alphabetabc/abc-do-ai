@@ -4,17 +4,26 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import {
+  SKILLS_DIR,
+  STORAGE_DIR,
+  SKILL_META_FILE,
+  SKILL_DOC_FILE,
+  extractSkillName,
+  readSkillMeta,
+  readSkillFrontmatter,
+  getSkillLabel,
+  classifyFiles,
+  isStorageFile,
+  isCoreFile,
+  getSkillAction,
+} from './skill-classifier.mjs';
 
 const execFileAsync = promisify(execFile);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CHANGELOG_COMMIT_SUBJECT = /^chore(\([^)]*\))?: update changelog$/i;
-
-const SKILLS_DIR = 'skills/packages';
-const STORAGE_DIR = 'skills/storage';
-const SKILL_META_FILE = 'beehive-skill.json';
-const SKILL_DOC_FILE = 'SKILL.md';
 
 // ─── CLI ────────────────────────────────────────────────
 
@@ -63,30 +72,6 @@ async function gitExec(args, cwd) {
   }
 }
 
-function extractSkillName(filePath) {
-  const normalized = filePath.replace(/\\/g, '/');
-  const pkgMatch = normalized.match(new RegExp(`^${SKILLS_DIR}/([^/]+)/`));
-  if (pkgMatch) return pkgMatch[1];
-  const storMatch = normalized.match(new RegExp(`^${STORAGE_DIR}/([^/]+)/`));
-  if (storMatch) return storMatch[1];
-  return null;
-}
-
-function readSkillMeta(rootDir, skillName) {
-  const metaPath = path.join(rootDir, SKILLS_DIR, skillName, SKILL_META_FILE);
-  if (!existsSync(metaPath)) return null;
-  try {
-    return JSON.parse(readFileSync(metaPath, 'utf-8'));
-  } catch {
-    return null;
-  }
-}
-
-function getSkillLabel(rootDir, skillName) {
-  const meta = readSkillMeta(rootDir, skillName);
-  return meta?.id || meta?.name || skillName;
-}
-
 /**
  * 获取指定 commit 的文件变更列表
  */
@@ -105,57 +90,15 @@ async function getCommitFiles(rootDir, hash) {
     .filter(Boolean);
 }
 
-/**
- * 将文件按 skill 维度分组
- */
-function classifyFiles(files) {
-  const groups = new Map();
-  const nonSkillFiles = [];
-
-  for (const f of files) {
-    const skillName = extractSkillName(f.file);
-    if (skillName) {
-      if (!groups.has(skillName)) {
-        groups.set(skillName, {
-          skillName,
-          files: [],
-          isNew: false,
-          isUpdate: false,
-          hasMeta: false,
-          hasDoc: false,
-          hasStorage: false,
-          storageStatus: null,
-        });
-      }
-      const g = groups.get(skillName);
-      g.files.push(f);
-      const base = path.basename(f.file);
-      if (base === SKILL_META_FILE) g.hasMeta = true;
-      if (base === SKILL_DOC_FILE) g.hasDoc = true;
-      if (f.file.includes(`${STORAGE_DIR}/`)) {
-        g.hasStorage = true;
-        g.storageStatus = f.status;
-      }
-      if (f.status === 'A' && !f.file.includes(`${STORAGE_DIR}/`))
-        g.isNew = true;
-      if (f.status === 'M' && !f.file.includes(`${STORAGE_DIR}/`))
-        g.isUpdate = true;
-      if (f.status === 'D' && !f.file.includes(`${STORAGE_DIR}/`))
-        g.isNew = false;
-    } else {
-      nonSkillFiles.push(f);
-    }
-  }
-
-  return { skillGroups: [...groups.values()], nonSkillFiles };
-}
+// classifyFiles / extractSkillName / readSkillMeta / getSkillLabel
+// 已移到 skill-classifier.mjs，这里直接复用
 
 // ─── Bullet 构造 ────────────────────────────────────────
 
 /**
  * 从 commit 的文件变更生成分类后的 bullets
  */
-function buildBulletsFromCommit(commit, rootDir) {
+export function buildBulletsFromCommit(commit, rootDir) {
   const { skillGroups, nonSkillFiles } = commit.classified;
   const bullets = [];
 
@@ -175,47 +118,74 @@ function buildBulletsFromCommit(commit, rootDir) {
     return bullets;
   }
 
-  // 区分"需要发布"的 skill（storage 有变更）和"仅更新/删除"的 skill
-  const publishGroups = skillGroups.filter((g) => g.hasStorage);
-  const nonPublishGroups = skillGroups.filter((g) => !g.hasStorage);
+  // 用 skill-classifier 的 getSkillAction 统一判定动作。
+  // 关键：同一个 skill 可能同时 isUpdate + hasStorage（更新并发布），
+  // 这种情况要生成两条 bullet：一条「更新 skill」+ 一条「发布 skill」子项。
+  // getSkillAction 只返回单个动作（按优先级），所以这里单独判定 hasStorage
+  // 来识别「发布」维度，其余动作走 getSkillAction。
+  const publishChildren = [];
+  const actionBullets = [];
 
-  // 1) 非发布的 skill：每个一条 "更新 skill「...」（细节）" / "新增 skill「...」" / "删除 skill「...」"
-  for (const g of nonPublishGroups) {
+  for (const g of skillGroups) {
     const label = getSkillLabel(rootDir, g.skillName);
-    if (g.files.every((f) => f.status === 'D')) {
-      bullets.push({ level: 0, text: `删除 skill「${label}」` });
-      continue;
-    }
-    if (g.isNew) {
-      bullets.push({ level: 0, text: `新增 skill「${label}」` });
-      continue;
-    }
-    const details = [];
-    if (g.hasDoc) details.push('文档');
-    if (g.hasMeta) details.push('配置');
-    const otherCount = g.files.filter(
-      (f) =>
-        path.basename(f.file) !== SKILL_DOC_FILE &&
-        path.basename(f.file) !== SKILL_META_FILE &&
-        !f.file.includes(`${STORAGE_DIR}/`)
-    ).length;
-    if (otherCount > 0) details.push('其他');
-    const detailStr = details.length > 0 ? `（${details.join('、')}）` : '';
-    bullets.push({
-      level: 0,
-      text: `feat: 更新 skill「${label}」${detailStr}`,
-    });
-  }
+    const fm = readSkillFrontmatter(rootDir, g.skillName);
+    const desc =
+      fm?.description && skillGroups.length === 1
+        ? fm.description.length > 60
+          ? fm.description.slice(0, 60) + '...'
+          : fm.description
+        : '';
+    const descPart = desc ? `；${desc}` : '';
 
-  // 2) 需要发布的 skill：合并到一个 "发布 skill" 父条目下
-  if (publishGroups.length > 0) {
-    bullets.push({ level: 0, text: '发布 skill' });
-    for (const g of publishGroups) {
-      const label = getSkillLabel(rootDir, g.skillName);
+    // 1) 发布维度：hasStorage 为 true 时，加入「发布 skill」子项
+    if (g.hasStorage) {
       const meta = readSkillMeta(rootDir, g.skillName);
       const version = meta?.version;
-      const text = version ? `「${label}」 v${version}` : `「${label}」`;
-      bullets.push({ level: 1, text });
+      publishChildren.push(
+        version ? `「${label}」 v${version}` : `「${label}」`
+      );
+    }
+
+    // 2) 非发布维度：根据 getSkillAction 决定「新增/更新/删除」
+    //    注意 getSkillAction 对「更新+发布」返回 '更新'（因为 isUpdate 优先于 hasStorage），
+    //    对「纯发布」（只动了 storage）返回 '发布'——这种情况已经在上面处理了，跳过。
+    const action = getSkillAction(g);
+    if (action === '发布') continue; // 纯发布，只走 publishChildren
+    if (action === '删除') {
+      actionBullets.push({ level: 0, text: `删除 skill「${label}」` });
+      continue;
+    }
+    if (action === '新增') {
+      actionBullets.push({
+        level: 0,
+        text: `新增 skill「${label}」${descPart}`,
+      });
+      continue;
+    }
+    if (action === '更新') {
+      // 更新场景：列出变更细节（文档 / 配置 / 其他）
+      const details = [];
+      if (g.hasDoc) details.push('文档');
+      if (g.hasMeta) details.push('配置');
+      const otherCount = g.files.filter(
+        (f) => !isCoreFile(f.file) && !isStorageFile(f.file)
+      ).length;
+      if (otherCount > 0) details.push('其他');
+      const detailStr = details.length > 0 ? `（${details.join('、')}）` : '';
+      actionBullets.push({
+        level: 0,
+        text: `更新 skill「${label}」${detailStr}${descPart}`,
+      });
+    }
+  }
+
+  // 输出顺序：先 action bullets（新增/更新/删除），再「发布 skill」父+子项
+  bullets.push(...actionBullets);
+
+  if (publishChildren.length > 0) {
+    bullets.push({ level: 0, text: '发布 skill' });
+    for (const child of publishChildren) {
+      bullets.push({ level: 1, text: child });
     }
   }
 
@@ -332,7 +302,8 @@ export function consolidateBullets(bullets) {
   // 5) 其他条目按文本去重
   const otherBullets = new Map();
   // 6) 脏前缀清理缓存
-  const dirtyPrefixRe = /^(feat|fix|docs|chore|build|ci|style|refactor|perf|test|revert)\s*[:：]\s*/i;
+  const dirtyPrefixRe =
+    /^(feat|fix|docs|chore|build|ci|style|refactor|perf|test|revert)\s*[:：]\s*/i;
 
   let hasPublishParent = false;
 
@@ -513,10 +484,18 @@ export async function updateChangelog(options = {}) {
     return { updated: false, changelogPath: resolvedPath, commitCount: 0 };
   }
 
-  // 收集新增的 manual message（基于文本去重，避免重复）
-  const existingTexts = new Set();
+  // 收集已有 bullets 的 action:label 维度（用于 manual message 去重）
+  // 不再用全文本去重——否则 7-17 和 7-24 两次「新增 skill「X」；description」
+  // 文本完全相同会被误判为重复，导致 7-24 的更新条目被吞掉。
+  // 改为按 `${action}:${label}` 去重，和 consolidateBullets 维度一致，
+  // 让 consolidateBullets 在日期内部决定保留哪条（更详细的优先）。
+  const existingKeys = new Set();
+  const SKILL_ACTION_KEY_RE = /^(新增|更新|删除) skill「([^」]+)」/;
   for (const bullets of parsed.entries.values()) {
-    for (const b of bullets) existingTexts.add(b.text);
+    for (const b of bullets) {
+      const m = (b.text || '').match(SKILL_ACTION_KEY_RE);
+      if (m) existingKeys.add(`${m[1]}:${m[2]}`);
+    }
   }
 
   // marker 取"最近一次被处理过文件变更的 commit"——即 allCommits 的第一个。
@@ -542,7 +521,12 @@ export async function updateChangelog(options = {}) {
   if (message) {
     const date = (options.now || new Date()).toISOString().slice(0, 10);
     const text = message.replace(/[；;]\s*$/, '').trim();
-    if (!existingTexts.has(text)) {
+    // 按 action:label 去重：如果 manual message 是「新增/更新/删除 skill「X」」
+    // 且已有同 action:label 的条目，则跳过（consolidateBullets 会保留更详细的）
+    const m = text.match(SKILL_ACTION_KEY_RE);
+    const key = m ? `${m[1]}:${m[2]}` : null;
+    const isDupAction = key && existingKeys.has(key);
+    if (!isDupAction) {
       if (!parsed.entries.has(date)) parsed.entries.set(date, []);
       parsed.entries.get(date).push({ level: 0, text });
     }

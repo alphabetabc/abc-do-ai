@@ -1,6 +1,14 @@
 # Changelog
 
-<!-- changelog-last-commit: 141eef281b3bb5b760893a003340c420a7f10373 -->
+<!-- changelog-last-commit: 64335736323d1e72bad5cfd650721abcaf939a6a -->
+
+## 2026-07-24
+
+- 发布 skill
+    - 「noc-shaanxi-emergency-support-center」 v0.0.0；
+- 变更文件: scripts/__test_today.mjs、scripts/commit.mjs、scripts/skill-classifier.mjs、scripts/update-changelog.mjs、scripts/workflow.mjs；
+- 变更文件: scripts/__test_today.mjs、scripts/commit.mjs、scripts/update-changelog.mjs；
+- 更新 skill「noc-shaanxi-emergency-support-center」（文档、配置、其他）；维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模块（中屏...；
 
 ## 2026-07-23
 
@@ -9,7 +17,7 @@
     - 「oss-visual-material-project-env」 v0.0.0；
 - 新增 skill「oss-visual-designer-project-env」；管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpmfile.c...；
 - 新增 skill「oss-visual-material-project-env」；Maintains pnpm workspace config (pnpm-workspace.yaml) and pn...；
-- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件: skills/.beehive-skills-manager-db/projects/list.json、scripts/update-changelog.mjs；
 
 ## 2026-07-20
 

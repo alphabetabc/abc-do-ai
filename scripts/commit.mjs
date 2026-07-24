@@ -24,9 +24,23 @@ import { execSync } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, basename, extname, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { updateChangelog } from './update-changelog.mjs';
+import {
+  SKILLS_DIR,
+  STORAGE_DIR,
+  SKILL_META_FILE,
+  SKILL_DOC_FILE,
+  extractSkillName,
+  readSkillMeta,
+  readSkillFrontmatter,
+  classifyFiles as groupFilesBySkill,
+  isStorageFile,
+  getSkillAction,
+} from './skill-classifier.mjs';
 
-const CHANGELOG_FILE = 'skills/CHANGELOG.md';
+export const CHANGELOG_FILE = 'skills/CHANGELOG.md';
 
 // ─── 工具函数 ───────────────────────────────────────────
 
@@ -105,114 +119,20 @@ const COMMIT_TYPES = [
   { label: 'revert:   回滚提交', value: 'revert' },
 ];
 
-// ─── Skill 识别 ──────────────────────────────────────────
+// ─── skill-classifier 适配层 ───────────────────────────
+// skill-classifier 的 readSkillMeta / readSkillFrontmatter 需要 (rootDir, skillName)
+// commit.mjs 历史上只传 (skillName)，这里做一层薄包装保持调用点不变
 
-const SKILLS_DIR = 'skills/packages';
-const STORAGE_DIR = 'skills/storage';
-const SKILL_META_FILE = 'beehive-skill.json';
-const SKILL_DOC_FILE = 'SKILL.md';
-
-/**
- * 从文件路径中提取 skill 名称
- * skills/packages/agent-creator/SKILL.md → agent-creator
- * skills/storage/agent-creator/agent-creator@0.0.0.tgz → agent-creator
- */
-function extractSkillName(filePath) {
-  const normalized = filePath.replace(/\\/g, '/');
-  // skills/packages/<name>/...
-  const pkgMatch = normalized.match(new RegExp(`^${SKILLS_DIR}/([^/]+)/`));
-  if (pkgMatch) return pkgMatch[1];
-  // skills/storage/<name>/...
-  const storMatch = normalized.match(new RegExp(`^${STORAGE_DIR}/([^/]+)/`));
-  if (storMatch) return storMatch[1];
-  return null;
-}
-
-/**
- * 读取 skill 元信息（从 beehive-skill.json）
- */
-function readSkillMeta(skillName) {
-  const metaPath = resolve(
-    process.cwd(),
-    SKILLS_DIR,
-    skillName,
-    SKILL_META_FILE
-  );
-  if (existsSync(metaPath)) {
-    try {
-      return JSON.parse(readFileSync(metaPath, 'utf-8'));
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
-
-/**
- * 从 SKILL.md frontmatter 提取 name 和 description
- */
-function readSkillFrontmatter(skillName) {
-  const mdPath = resolve(process.cwd(), SKILLS_DIR, skillName, SKILL_DOC_FILE);
-  if (!existsSync(mdPath)) return null;
-  try {
-    const content = readFileSync(mdPath, 'utf-8');
-    const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    if (!fmMatch) return null;
-    const fm = fmMatch[1];
-    const nameMatch = fm.match(/name:\s*['"]?([^'"\n]+)['"]?/);
-    const descMatch = fm.match(/description:\s*['"]?([^'"\n]+)['"]?/);
-    return {
-      name: nameMatch?.[1]?.trim() || '',
-      description: descMatch?.[1]?.trim() || '',
-    };
-  } catch {
-    return null;
-  }
-}
-
-/**
- * 将 diff 文件分组到 skill 维度
- */
-function groupFilesBySkill(files) {
-  const groups = {};
-  const nonSkillFiles = [];
-
-  for (const f of files) {
-    const skillName = extractSkillName(f.file);
-    if (skillName) {
-      if (!groups[skillName]) {
-        groups[skillName] = {
-          skillName,
-          files: [],
-          hasMeta: false,
-          hasDoc: false,
-          hasStorage: false,
-          isNew: false,
-        };
-      }
-      groups[skillName].files.push(f);
-      const base = basename(f.file);
-      if (base === SKILL_META_FILE) groups[skillName].hasMeta = true;
-      if (base === SKILL_DOC_FILE) groups[skillName].hasDoc = true;
-      if (f.file.includes(STORAGE_DIR)) groups[skillName].hasStorage = true;
-      if (f.status === 'A') groups[skillName].isNew = true;
-      if (f.status === 'D' && !f.file.includes(`${STORAGE_DIR}/`)) {
-        groups[skillName].isDeleted = true;
-      }
-    } else {
-      nonSkillFiles.push(f);
-    }
-  }
-
-  return { skillGroups: Object.values(groups), nonSkillFiles };
-}
+const readMeta = (skillName) => readSkillMeta(process.cwd(), skillName);
+const readFrontmatter = (skillName) =>
+  readSkillFrontmatter(process.cwd(), skillName);
 
 // ─── Diff 分析引擎 ──────────────────────────────────────
 
 /**
  * 解析 git diff 的结构化信息
  */
-function analyzeDiff() {
+export function analyzeDiff() {
   const result = {
     files: [],
     stats: { insertions: 0, deletions: 0, files: 0 },
@@ -295,7 +215,7 @@ function analyzeDiff() {
 /**
  * 从文件路径推断 scope（优先识别 skill 名称）
  */
-function inferScope(diff) {
+export function inferScope(diff) {
   if (diff.files.length === 0) return '';
 
   // 如果只涉及一个 skill group，用 skill 名称
@@ -331,95 +251,73 @@ function inferScope(diff) {
 }
 
 /**
- * 构建 skill 变更描述
- */
-function describeSkillChanges(group) {
-  const meta = readSkillMeta(group.skillName);
-  const fm = readSkillFrontmatter(group.skillName);
-  const label = fm?.name || group.skillName;
-
-  const actions = [];
-  if (group.isDeleted) {
-    actions.push('删除');
-  } else if (group.hasStorage) {
-    actions.push('发布');
-  } else if (group.isNew) {
-    actions.push('新增');
-  } else {
-    actions.push('更新');
-  }
-
-  // 判断变更细节
-  const detail = [];
-  if (group.hasDoc) detail.push('文档');
-  if (group.hasMeta) detail.push('配置');
-  const otherFiles = group.files.filter(
-    (f) =>
-      basename(f.file) !== SKILL_DOC_FILE &&
-      basename(f.file) !== SKILL_META_FILE &&
-      !f.file.includes(STORAGE_DIR)
-  );
-  if (otherFiles.length > 0) detail.push(`${otherFiles.length} 个其他文件`);
-
-  let desc = `${actions[0]} skill「${label}」`;
-  if (detail.length > 0 && !group.hasStorage) {
-    desc += `（${detail.join('、')}）`;
-  }
-  if (meta?.version && group.hasStorage) {
-    desc += ` v${meta.version}`;
-  }
-
-  return desc;
-}
-
-/**
  * 基于规则推断 commit type 和 message（项目定制版）
+ *
+ * 核心场景：
+ *   - 新增 skill：核心文件（SKILL.md / beehive-skill.json）是 A 状态
+ *   - 更新 skill：核心文件是 M 状态
+ *   - 发布 skill：storage 打包产物有变更
+ *   - 删除 skill：packages 下文件全是 D 状态
+ *
+ * 同一个 commit 里「更新 + 发布」会同时满足 isUpdate + hasStorage，
+ * 生成两条 message：「更新 skill「X」」+「发布 skill「X」 v...」
  */
-function ruleBasedGenerate(diff) {
+export function ruleBasedGenerate(diff) {
   let type = 'chore';
   const messages = [];
 
   const allFiles = diff.files.map((f) => f.file.toLowerCase());
   const { skillGroups, nonSkillFiles } = diff;
 
-  // ── Skill 维度分析（项目核心逻辑） ──
-
   const hasSkillChanges = skillGroups.length > 0;
   const hasOnlySkillChanges = hasSkillChanges && nonSkillFiles.length === 0;
-  const hasStorageOnly =
-    hasSkillChanges &&
-    skillGroups.every((g) => g.hasStorage && g.files.length === 1);
 
-  // 场景 1：纯 storage 发布（打包产物）
-  if (hasStorageOnly && hasOnlySkillChanges) {
+  // 用 skill-classifier 的 getSkillAction 统一判定，避免和分类器逻辑脱节
+  const groupsWithAction = skillGroups.map((g) => ({
+    group: g,
+    action: getSkillAction(g),
+  }));
+
+  // ── 场景 1：纯删除 skill ──
+  const deletedGroups = groupsWithAction.filter(
+    ({ action, group }) =>
+      action === '删除' &&
+      group.files.every((f) => f.status === 'D' || isStorageFile(f.file))
+  );
+  if (
+    deletedGroups.length > 0 &&
+    hasOnlySkillChanges &&
+    skillGroups.every((g) => getSkillAction(g) === '删除')
+  ) {
     type = 'chore';
-    const names = skillGroups.map((g) => {
-      const fm = readSkillFrontmatter(g.skillName);
-      return fm?.name || g.skillName;
+    const names = deletedGroups.map(({ group }) => {
+      const fm = readFrontmatter(group.skillName);
+      return fm?.name || group.skillName;
     });
-    if (names.length <= 3) {
-      messages.push(`发布 skill: ${names.join('、')}`);
+    if (names.length === 1) {
+      messages.push(`删除 skill「${names[0]}」`);
     } else {
-      messages.push(`发布 ${names.length} 个 skill`);
+      messages.push(`删除 ${names.length} 个 skill: ${names.join('、')}`);
     }
     return { type, message: messages.join('；') };
   }
 
-  // 场景 2：新增 skill 模块
-  const newSkills = skillGroups.filter((g) => g.isNew && g.hasDoc && g.hasMeta);
+  // ── 场景 2：纯新增 skill（不带发布）──
+  const newGroups = groupsWithAction.filter(({ action }) => action === '新增');
   if (
-    newSkills.length > 0 &&
-    nonSkillFiles.length === 0 &&
-    skillGroups.every((g) => g.isNew)
+    newGroups.length > 0 &&
+    hasOnlySkillChanges &&
+    skillGroups.every((g) => getSkillAction(g) === '新增')
   ) {
     type = 'feat';
-    const names = newSkills.map((g) => {
-      const fm = readSkillFrontmatter(g.skillName);
-      return fm?.name || g.skillName;
+    const names = newGroups.map(({ group }) => {
+      const fm = readFrontmatter(group.skillName);
+      return fm?.name || group.skillName;
     });
     if (names.length === 1) {
+      const { group } = newGroups[0];
       messages.push(`新增 skill「${names[0]}」`);
-      const fm = readSkillFrontmatter(newSkills[0].skillName);
+      const fm = readFrontmatter(group.skillName);
       if (fm?.description) {
         messages.push(
           fm.description.length > 60
@@ -433,52 +331,72 @@ function ruleBasedGenerate(diff) {
     return { type, message: messages.join('；') };
   }
 
-  // 场景 2.5：删除 skill 模块
-  const deletedSkills = skillGroups.filter(
-    (g) => g.isDeleted && g.files.every((f) => f.status === 'D')
+  // ── 场景 3：含更新 / 发布的 skill 变更（含「更新 + 发布」组合）──
+  // 覆盖：纯更新、纯发布、更新+发布
+  // 关键：getSkillAction 对「更新+发布」只返回 '更新'，所以需要单独检查
+  // group.hasStorage 来生成「发布」message。
+  const changeGroups = skillGroups.filter(
+    (g) =>
+      getSkillAction(g) === '更新' ||
+      getSkillAction(g) === '发布' ||
+      getSkillAction(g) === '新增'
   );
-  if (
-    deletedSkills.length > 0 &&
-    nonSkillFiles.length === 0 &&
-    skillGroups.every((g) => g.isDeleted)
-  ) {
-    type = 'chore';
-    const names = deletedSkills.map((g) => {
-      const fm = readSkillFrontmatter(g.skillName);
-      return fm?.name || g.skillName;
-    });
-    if (names.length === 1) {
-      messages.push(`删除 skill「${names[0]}」`);
-    } else {
-      messages.push(`删除 ${names.length} 个 skill: ${names.join('、')}`);
-    }
-    return { type, message: messages.join('；') };
-  }
+  if (changeGroups.length > 0 && hasOnlySkillChanges) {
+    const hasUpdate = changeGroups.some((g) => getSkillAction(g) === '更新');
+    const hasNew = changeGroups.some((g) => getSkillAction(g) === '新增');
+    type = hasUpdate || hasNew ? 'feat' : 'chore';
 
-  // 场景 3：更新已有 skill（SKILL.md 或 beehive-skill.json）
-  const updatedSkills = skillGroups.filter((g) => !g.isNew && !g.hasStorage);
-  if (updatedSkills.length > 0 && nonSkillFiles.length === 0) {
-    type = 'feat';
-    if (updatedSkills.length <= 2) {
-      for (const g of updatedSkills) {
-        messages.push(describeSkillChanges(g));
+    for (const group of changeGroups) {
+      const label = readFrontmatter(group.skillName)?.name || group.skillName;
+      const meta = readMeta(group.skillName);
+      const version = meta?.version ? ` v${meta.version}` : '';
+      const action = getSkillAction(group);
+
+      // 1) 非发布维度的 message（新增 / 更新 / 删除）
+      if (action === '新增') {
+        messages.push(`新增 skill「${label}」`);
+      } else if (action === '更新') {
+        const fm = readFrontmatter(group.skillName);
+        const descPart =
+          fm?.description && changeGroups.length === 1
+            ? `；${
+                fm.description.length > 60
+                  ? fm.description.slice(0, 60) + '...'
+                  : fm.description
+              }`
+            : '';
+        messages.push(`更新 skill「${label}」${descPart}`);
       }
-    } else {
-      messages.push(`更新 ${updatedSkills.length} 个 skill`);
+
+      // 2) 发布维度的 message：hasStorage 为 true 时追加「发布 skill「X」 v...」
+      //    （「更新+发布」会同时输出「更新」+「发布」两条 message）
+      if (group.hasStorage) {
+        messages.push(`发布 skill「${label}」${version}`);
+      }
     }
     return { type, message: messages.join('；') };
   }
 
-  // 场景 4：混合变更（skill + 非 skill）
+  // ── 场景 4：混合变更（skill + 非 skill）──
   if (hasSkillChanges && nonSkillFiles.length > 0) {
     type = 'feat';
-    for (const g of skillGroups.slice(0, 2)) {
-      messages.push(describeSkillChanges(g));
+    for (const { group, action } of changeGroups.slice(0, 2)) {
+      const label = readFrontmatter(group.skillName)?.name || group.skillName;
+      if (action === '更新') {
+        messages.push(`更新 skill「${label}」`);
+      } else if (action === '发布') {
+        const meta = readMeta(group.skillName);
+        const version = meta?.version ? ` v${meta.version}` : '';
+        messages.push(`发布 skill「${label}」${version}`);
+      } else if (action === '新增') {
+        messages.push(`新增 skill「${label}」`);
+      } else if (action === '删除') {
+        messages.push(`删除 skill「${label}」`);
+      }
     }
-    if (skillGroups.length > 2) {
-      messages.push(`等 ${skillGroups.length} 个 skill`);
+    if (changeGroups.length > 2) {
+      messages.push(`等 ${changeGroups.length} 个 skill`);
     }
-    // 非 skill 文件概述
     messages.push(`其他 ${nonSkillFiles.length} 个文件变更`);
     return { type, message: messages.join('；') };
   }
@@ -676,7 +594,7 @@ async function aiGenerate(diff) {
 
 // ─── CLI / 自动提交 ───────────────────────────────────────
 
-function parseCliArgs(argv) {
+export function parseCliArgs(argv) {
   return {
     auto: argv.includes('--auto') || argv.includes('-y'),
     skipChangelog: argv.includes('--no-changelog'),
@@ -684,12 +602,12 @@ function parseCliArgs(argv) {
   };
 }
 
-function extractCommitSubject(commitMsg) {
+export function extractCommitSubject(commitMsg) {
   const match = commitMsg.match(/^(\w+)(?:\([^)]*\))?:\s*(.+)$/);
   return match ? match[2] : commitMsg;
 }
 
-function ensureGitRepo() {
+export function ensureGitRepo() {
   try {
     exec('git rev-parse --is-inside-work-tree');
   } catch {
@@ -698,7 +616,7 @@ function ensureGitRepo() {
   }
 }
 
-function stageChangesExcludingChangelog() {
+export function stageChangesExcludingChangelog() {
   let stagedFiles;
   try {
     stagedFiles = exec('git diff --cached --name-only');
@@ -724,15 +642,19 @@ function stageChangesExcludingChangelog() {
   }
 }
 
-function performCommit(commitMsg) {
+export function performCommit(commitMsg) {
   const escapedMsg = commitMsg.replace(/"/g, '\\"');
   exec(`git commit -m "${escapedMsg}"`);
 }
 
-async function syncChangelog(commitMsg) {
-  const title = extractCommitSubject(commitMsg);
+export async function syncChangelog(commitMsg) {
+  // 不再把 commit subject 作为 manual message 传入。
+  // 原因：commit subject 现在可能是「更新 skill「X」；desc；发布 skill「X」 v...」
+  // 这种组合文本，作为 manual message 传给 updateChangelog 会和
+  // buildBulletsFromCommit 生成的结构化 bullets 冲突，导致 consolidateBullets
+  // 把「更新」和「发布」混在一条文本里。
+  // buildBulletsFromCommit 已经从 frontmatter 读取 description，信息完整。
   const result = await updateChangelog({
-    message: title,
     rootDir: process.cwd(),
   });
 
@@ -747,7 +669,7 @@ async function syncChangelog(commitMsg) {
   return true;
 }
 
-async function pushCurrentBranch() {
+export async function pushCurrentBranch() {
   try {
     printInfo('正在推送...');
     let branch;
@@ -764,14 +686,14 @@ async function pushCurrentBranch() {
   }
 }
 
-function printDiffSummary(diff) {
+export function printDiffSummary(diff) {
   println(`\n\x1b[1m本次变更:\x1b[0m`);
   println('');
 
   if (diff.skillGroups.length > 0) {
     for (const g of diff.skillGroups) {
-      const meta = readSkillMeta(g.skillName);
-      const fm = readSkillFrontmatter(g.skillName);
+      const meta = readMeta(g.skillName);
+      const fm = readFrontmatter(g.skillName);
       const label = fm?.name || g.skillName;
       const ver = meta?.version ? ` \x1b[90mv${meta.version}\x1b[0m` : '';
       let action;
@@ -844,7 +766,7 @@ function printDiffSummary(diff) {
   println('');
 }
 
-async function runAutoCommit(options) {
+export async function runAutoCommit(options) {
   println('\n\x1b[1m🤖 Git Auto Commit\x1b[0m\n');
   ensureGitRepo();
 
@@ -943,8 +865,8 @@ async function main() {
   // 按 skill 分组展示
   if (diff.skillGroups.length > 0) {
     for (const g of diff.skillGroups) {
-      const meta = readSkillMeta(g.skillName);
-      const fm = readSkillFrontmatter(g.skillName);
+      const meta = readMeta(g.skillName);
+      const fm = readFrontmatter(g.skillName);
       const label = fm?.name || g.skillName;
       const ver = meta?.version ? ` \x1b[90mv${meta.version}\x1b[0m` : '';
       // 生成动作描述
@@ -1188,8 +1110,15 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((err) => {
-  printError(err.message);
-  rl.close();
-  process.exit(1);
-});
+// 仅在直接运行本文件时执行 main，被 import 时不自动执行
+const __isMain =
+  process.argv[1] &&
+  fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+
+if (__isMain) {
+  main().catch((err) => {
+    printError(err.message);
+    rl.close();
+    process.exit(1);
+  });
+}
