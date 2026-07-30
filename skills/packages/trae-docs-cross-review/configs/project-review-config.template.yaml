@@ -1,0 +1,52 @@
+schema_version: "1"
+project_name: "example-project"
+
+# Optional. Use when the project wants a stable default review mode.
+# Allowed values: repo-backed, doc-only, mixed
+default_mode: "repo-backed"
+
+# Optional. The generic skill can search these paths first when the user
+# does not explicitly specify a document to review.
+default_doc_paths:
+  - ".trae/documents/plans/task-*.md"
+  - ".trae/documents/research/**/*.md"
+  - ".trae/documents/design/**/*.md"
+
+# Optional. Files or directories that should not be reviewed as document targets.
+exclude_paths:
+  - "AGENTS.md"
+  - ".trae/rules/**"
+  - "**/*.bak"
+  - "**/backup/**"
+
+# Optional. Override the generic default report path.
+report_default_path: ".local-review/r{N}.md"
+
+# Optional. Project contracts injected into the generic skill's logic review.
+contracts:
+  - name: "State write path"
+    description: "Structural updates must use the approved write path."
+    checks:
+      - "Tree changes must go through the structural update entry."
+      - "Field patch changes must go through the field update entry."
+
+# Optional. Known forbidden APIs or patterns.
+forbidden_apis:
+  - name: "legacy-api"
+    reason: "Deprecated and must not appear in new plans or designs."
+
+# Optional. Blindspot checks injected into the generic skill's blindspot review.
+blindspot_checks:
+  - keyword: "useFieldConf|useUpdateFieldConfig"
+    expected_scene: "All field-level subscriptions use approved hooks."
+    detection_rule: "If deleted or legacy APIs appear nearby, flag as residual usage."
+
+# Optional. Performance or scale constraints to keep in mind during review.
+performance_rules:
+  - name: "Large page scenario"
+    rule: "Any render-path or dispatch-frequency change must consider high-node-count scenarios."
+
+# Optional. Freeform notes for the reviewer.
+notes:
+  - "Explain repository-specific terminology before using it in findings."
+  - "Prefer runtime-path descriptions over source-path assumptions."
