@@ -1,5 +1,5 @@
 {
-  "contentHash": "c30e3a8edcb55674a298670d67e32bf111dd786b0bbd0728e283f9f9f87beec6",
+  "contentHash": "d781d97e88557a79ec2e0028a0838f754a2b7dd566784b7b5848a42a2b700fb1",
   "files": [
     "./scripts/",
     "./references/"
@@ -8,5 +8,6 @@
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-07-31T04:02:55.663Z",
   "version": "0.0.0"
 }

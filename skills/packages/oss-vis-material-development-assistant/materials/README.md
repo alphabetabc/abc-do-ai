@@ -40,7 +40,7 @@ glob.sync('src/packages/**/oss-material.json')
 | 状态 / 标签             | 2       | 0          | 2                                 |
 | 边框 / 装饰             | 25      | 0          | 0                                 |
 | 其他                    | 6       | 0          | 0                                 |
-| **合计**                | **146** | **20**     | **36**                            |
+| **合计**                | **146** | **21**     | **36**                            |
 
 > 最后更新：2026-06-17（新增 oss-chart-map 物料文档）
 
@@ -56,7 +56,7 @@ glob.sync('src/packages/**/oss-material.json')
 
 ---
 
-## ✅ 已完成 5+1 文档化的物料（20）
+## ✅ 已完成 5+1 文档化的物料（21）
 
 | 物料 | 分类 | 复杂度 | 核心特点 | 关键踩坑 |
 | --- | --- | --- | --- | --- |
@@ -80,9 +80,13 @@ glob.sync('src/packages/**/oss-material.json')
 | [**popover-check**](./popover-check/README.md) | 表单 / 筛选 | 中 | 单/多选下拉 + TooltipBorder SVG 装饰边框 + 点击外部关闭 + 派发 select/selectLabel | ⚠️ **隐式字段 `defaultCheckedValue`**（代码读，schema 未声明）；`document.click` 全局监听；`containerStyle.borderWidth` 写死 2px |
 | [**top-rank**](./top-rank/README.md) | 列表 / 排行 | 中 | TOP 排名 + 前 3 名独立配色（ArrayCollapse）+ 序号圆形 + 4 种字体样式面板 | ⚠️ **doc/README.md 与代码多处不一致**（声称点击派发 / TOP 数量 / 动画均未实现）；`value` 字段类型与实际值不一致；`id` 字段未使用 |
 
-> 十九个物料都基于 **`develop` 分支当前代码**（2026-06-16 commit）生成，与 `release` 分支的兼容代码已剥离。
+> 二十一个物料都基于 **`develop` 分支当前代码**生成，与 `release` 分支的兼容代码已剥离。
 >
 > ⚠️ 本批新增的 3 个物料（circular-progress、popover-check、top-rank）在文档化过程中**未修复源码问题**，仅在 gotchas.md 中记录，后续 PR 处理。
+>
+> ⚠️ `table-detail` 文档化过程中发现 12 条踩坑点（详见 [materials/table-detail/gotchas.md](./table-detail/gotchas.md)），其中 **§ 5（组件本身不触发 API 请求）** 是设计上的"被动消费"模式，**不属于组件 bug**；其他 11 条均未在文档化 PR 范围修复，需后续单独处理。
+>
+> 🔄 2026-07-30 迭代：新增 3 个能力（`useCarousel` 自动轮播 / `enableTableHeader` 显隐表头 / `columnsRenderTemplate` 列字段模板），gotchas 现已扩展至 18 条；详见 [table-detail/CHANGELOG.md](../../src/packages/table-detail/doc/CHANGELOG.md)。
 
 ---
 
@@ -151,7 +155,7 @@ glob.sync('src/packages/**/oss-material.json')
 | `expandable-table`   | 中     | ⏳ 待补充 | —    |
 | `pagination-table`   | 中     | ⏳ 待补充 | —    |
 | `table`              | 中     | ⏳ 待补充 | —    |
-| `table-detail`       | 中     | ⏳ 待补充 | —    |
+| **`table-detail`** | **中** | [📄](./table-detail/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
 | `table-fixedColumns` | 中     | ⏳ 待补充 | —    |
 | `table-transpose`    | 中     | ⏳ 待补充 | —    |
 | `transfer-table`     | 中     | ⏳ 待补充 | —    |

@@ -1,0 +1,6 @@
+{
+  "id": "meta-human-context-env",
+  "version": "0.0.0",
+  "targets": ["trae"],
+  "files": ["./research/", "./lip-sync-extension/", "./subprojects/"]
+}
