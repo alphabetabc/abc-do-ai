@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: 530c985a93354794f2c94a75301d44bad40382fe -->
+<!-- changelog-last-commit: 38a3a086e18b05300ff809342c858858f893cbb2 -->
+
+## 2026-08-04
+
+- 发布 skill
+    - 「git-worktree-cross-branch-port」 v0.0.0；
+- 新增 skill「git-worktree-cross-branch-port」；
 
 ## 2026-08-03
 
