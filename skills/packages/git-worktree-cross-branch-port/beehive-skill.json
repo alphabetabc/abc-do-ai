@@ -1,0 +1,9 @@
+{
+  "contentHash": "04dcc97f86da014e277bdbebfef85454acb13169e3462882944d8b0836d64d97",
+  "files": [],
+  "id": "git-worktree-cross-branch-port",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
