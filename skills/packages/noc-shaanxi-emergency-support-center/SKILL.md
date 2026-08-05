@@ -189,6 +189,48 @@ export enum MapTypeEnum {
 - **跨 Tab 复用**：两个 Tab 的 GIS 组件不应抽公共组件，但 `GisLegend` 是唯一例外——tab2 的 `Gis` 直接从 `../../../../../tab-content-1/components/center-gis/components/gis-legend` 引用。新增复用组件前请与用户确认。
 - 修改完必须 `Read` 受影响的 `.tsx / .less` 文件确认类型与样式一致，避免 build 失败。
 
+## GIS 地图图标命名规则（`alarmLevel` → 图标自动匹配）
+
+当 `VectorLayer` 设置 `isGongZhanByType={true}` 时，fedx-gis 自动根据每个点的 `neType` + `alarmLevel` 字段拼接图标路径：
+
+```
+${constants.IMAGE_PATH}/emergency-support/map/{neType}/{alarmLevel}.png
+```
+
+### `alarmLevel` 构造
+
+由 API 层在 `web/services/emergency-support/center/api.ts` 构造（机房和传输接口）：
+
+```ts
+alarmLevel: `${Number(item.repairLevel) || ''}${item.isAlarm}`
+```
+
+- **机房接口**：`getEmergencyNormalGisMachineryRoomPointsApi`（api.ts#L1017）
+- **传输接口**：`getEmergencyNormalGisTransmissionPointsApi`（api.ts#L1101）
+
+### 文件名编码
+
+| 文件名 | `repairLevel`（十位） | `isAlarm`（个位） | 含义 |
+|--------|----------------------|-------------------|------|
+| `0.png` | 0 | 0 | 正常 |
+| `9.png` | — | — | 通用告警默认图标 |
+| `11.png` / `21.png` / `31.png` / `41.png` | 1/2/3/4级 | 告警(1) | 对应抢修等级的告警 |
+| `1.png` | — | 告警(1) | 无抢修等级的告警 |
+| `gongzhan*.png` | 对应等级 | 对应状态 | 在岗状态场景（与普通图标一一对应） |
+
+> 十位 = 抢修等级（1-4），个位 = 告警状态（0=正常, 1=告警）。
+
+### 图标资源目录
+
+图标文件按 neType 分目录存放：
+`public/static/images/emergency-support/map/{neType}/`
+
+例如 `map/1000502/` 目录下存放"停电机房"的所有状态图标（0.png / 1.png / 9.png / 11.png / 21.png / 31.png / 41.png / gongzhan*.png）。
+
+### 图例中的抢修等级下拉
+
+GIS 图例（`GisLegend`）有"推荐抢修等级"下拉选择框，选择特定等级时后端过滤数据，`alarmLevel` 的十位就是该等级，加载对应图标。选择"全部"（`-1`）时返回所有等级。更多细节见 [fedx-gis/vector-layer.md](references/fedx-gis/vector-layer.md) 「`alarmLevel` → 图标自动匹配」章节。
+
 ## 详细组件文档（references）
 
 每个组件的详细文档拆分到 `references/` 目录，便于按需查阅、不污染入口上下文。
@@ -235,6 +277,6 @@ export enum MapTypeEnum {
 - "排查中屏双击下钻 / 中屏智能问答 / 中屏 Tab 切换"
 - 涉及 `emergency-support/modules/center` 目录下任何文件的新增、修改、bug 排查
 
-> **当前 skill 版本：v1.11 · 2026-07-24**
+> **当前 skill 版本：v1.12 · 2026-08-05**
 >
-> skill 自身的演进历史已挪到 [CHANGELOG.md](CHANGELOG.md)，不再放在 SKILL.md 里（避免污染模块技术知识）。v1.11 同步 tab1 + tab2 聚合圆 tooltip 改走 `tooltipTileChildren`（tab1 外层 `toolTipWindowCircle1` 锚点 div 已注释；tab2 本就无外层锚点 div，仅同步文档；两边 `toolPupWindowId` 仍保留作 id 后缀约定）。
+> skill 自身的演进历史已挪到 [CHANGELOG.md](CHANGELOG.md)，不再放在 SKILL.md 里（避免污染模块技术知识）。v1.12 新增「GIS 地图图标命名规则」章节，记录 `alarmLevel` 字段如何决定 GIS 地图打点图标（`VectorLayer` `isGongZhanByType={true}` 模式下），含路径拼接规则、`alarmLevel` 构造代码、文件名编码表等。

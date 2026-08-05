@@ -378,24 +378,37 @@ export function ruleBasedGenerate(diff) {
   }
 
   // ── 场景 4：混合变更（skill + 非 skill）──
+  // 注意：这里必须用 groupsWithAction（{ group, action } 包装），
+  // 不能直接用 changeGroups —— changeGroups 是裸 skill group，
+  // 解构 { group, action } 会拿到 undefined，访问 group.skillName 会炸。
+  // 另外：hasStorage 的发布维度和场景 3 一样要单独追加一条「发布 skill「X」 v...」，
+  // 否则带发布的更新会被吞掉发布信息。
   if (hasSkillChanges && nonSkillFiles.length > 0) {
+    const changeGroupsWithAction = groupsWithAction.filter(
+      ({ action }) =>
+        action === '更新' || action === '发布' || action === '新增'
+    );
     type = 'feat';
-    for (const { group, action } of changeGroups.slice(0, 2)) {
+    for (const { group, action } of changeGroupsWithAction.slice(0, 2)) {
       const label = readFrontmatter(group.skillName)?.name || group.skillName;
-      if (action === '更新') {
-        messages.push(`更新 skill「${label}」`);
-      } else if (action === '发布') {
-        const meta = readMeta(group.skillName);
-        const version = meta?.version ? ` v${meta.version}` : '';
-        messages.push(`发布 skill「${label}」${version}`);
-      } else if (action === '新增') {
+      // 1) 非发布维度的 message（新增 / 更新 / 删除）
+      if (action === '新增') {
         messages.push(`新增 skill「${label}」`);
+      } else if (action === '更新') {
+        messages.push(`更新 skill「${label}」`);
       } else if (action === '删除') {
         messages.push(`删除 skill「${label}」`);
       }
+      // 2) 发布维度的 message（hasStorage 为 true 时追加，
+      //    「更新+发布」会同时输出「更新」+「发布」两条 message，和场景 3 一致）
+      if (group.hasStorage) {
+        const meta = readMeta(group.skillName);
+        const version = meta?.version ? ` v${meta.version}` : '';
+        messages.push(`发布 skill「${label}」${version}`);
+      }
     }
-    if (changeGroups.length > 2) {
-      messages.push(`等 ${changeGroups.length} 个 skill`);
+    if (changeGroupsWithAction.length > 2) {
+      messages.push(`等 ${changeGroupsWithAction.length} 个 skill`);
     }
     messages.push(`其他 ${nonSkillFiles.length} 个文件变更`);
     return { type, message: messages.join('；') };

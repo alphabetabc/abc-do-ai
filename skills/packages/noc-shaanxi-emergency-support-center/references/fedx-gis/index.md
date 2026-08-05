@@ -35,4 +35,14 @@ import 'fedx-gis/dist/gis-2d.css';
 - fedx-gis 是 OpenLayers 5 包装，`view` 参数透传给 OL `View`；projection `'EPSG:4326'`（默认）或自定义
 - 修改 fedx-gis 版本前**优先在本 skill 改文档**，不要直接改业务代码
 
-> 版本：v1.0 · 创建日期：2026-07-13
+## 图标自动匹配（`isGongZhanByType`）
+
+`VectorLayer` 配合 `isGongZhanByType={true}` 使用时，fedx-gis 会自动根据点数据的 `neType` + `alarmLevel` 字段拼接图标路径：
+
+```
+${constants.IMAGE_PATH}/emergency-support/map/{neType}/{alarmLevel}.png
+```
+
+`alarmLevel` 由 API 层构造：`${repairLevel}${isAlarm}`（十位=抢修等级，个位=告警状态）。详见 [vector-layer.md](vector-layer.md) 「`alarmLevel` → 图标自动匹配」章节。
+
+> 版本：v1.1 · 更新日期：2026-08-05

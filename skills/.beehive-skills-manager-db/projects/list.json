@@ -3,7 +3,7 @@
     {
       "id": "2314fed60ad0",
       "projectDir": "E:\\oss-fe-git\\phoenix\\oss-noc-shaanxi",
-      "label": "陕西noc",
+      "label": "陕西-noc",
       "addedAt": "2026-06-24T06:02:18.278Z"
     },
     {
@@ -28,6 +28,12 @@
       "id": "e1a230a3e325",
       "projectDir": "E:\\oss-fe-git\\phoenix\\oss-visual-gd-emergency-support-next",
       "label": "oss-visual-gd-emergency-support-next",
+      "addedAt": "2026-05-27T07:49:10.909Z"
+    },
+    {
+      "id": "f1a230a3e329",
+      "projectDir": "E:\\oss-fe-git\\phoenix\\oss-shaanxi-emergency-support",
+      "label": "陕西-故障中心-应急",
       "addedAt": "2026-05-27T07:49:10.909Z"
     }
   ]

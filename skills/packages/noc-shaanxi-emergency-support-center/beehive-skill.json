@@ -1,5 +1,5 @@
 {
-  "contentHash": "3da8caccdfda43f754da172de31a6d77baabd9e84491cde0ee7c5849db770c2a",
+  "contentHash": "31be5f5912954a42061e0666ca9395ec0350952f3c7bede321537d5e66a5a153",
   "files": [
     "./references/",
     "./CHANGELOG.md"
@@ -8,5 +8,6 @@
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-08-05T04:08:55.129Z",
   "version": "0.0.0"
 }

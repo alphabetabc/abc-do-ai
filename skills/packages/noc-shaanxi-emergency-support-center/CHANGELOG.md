@@ -4,6 +4,20 @@
 
 > 本文件不记录未来规划/讨论稿——见 SKILL.md「维护原则 2 · 只做增量」。
 
+## v1.12 · 2026-08-05
+
+- **新增 GIS 地图图标命名规则文档**：记录 `alarmLevel` 字段如何决定 GIS 地图打点图标（`VectorLayer` `isGongZhanByType={true}` 模式下）。
+- **核心发现**：
+  - `alarmLevel` 由 API 层构造：`${Number(item.repairLevel) || ''}${item.isAlarm}`（api.ts#L1017 机房、api.ts#L1101 传输）
+  - 图标路径拼接规则：`${IMAGE_PATH}/emergency-support/map/{neType}/{alarmLevel}.png`
+  - 文件名编码：十位=抢修等级（1-4），个位=告警状态（0=正常，1=告警）
+  - 例：`alarmLevel="11"` → `map/1000502/11.png`（1级抢修 + 告警）
+- **文档同步**：
+  - [SKILL.md](SKILL.md)：新增「GIS 地图图标命名规则（`alarmLevel` → 图标自动匹配）」章节
+  - [references/fedx-gis/vector-layer.md](references/fedx-gis/vector-layer.md)：新增「`alarmLevel` → 图标自动匹配（`isGongZhanByType` 核心机制）」章节，含路径拼接规则、`alarmLevel` 构造代码、文件名编码表、适用图层表、抢修等级筛选联动说明
+  - [references/fedx-gis/index.md](references/fedx-gis/index.md)：新增「图标自动匹配（`isGongZhanByType`）」章节 + 版本号 v1.0 → v1.1
+- **不涉及代码逻辑变化**：纯文档沉淀——探索 GIS 图标命名规则并文档化。
+
 ## v1.11 · 2026-07-24
 
 - **tab1 聚合圆 tooltip 改走 `tooltipTileChildren` prop**（`tab-content-1/components/center-gis/components/gis/index.tsx#L911`）：外层 `<div id="toolTipWindowCircle1">{tooltipWindowCircle()}</div>` 注释掉。`CircleView.tsx` 的 `onCircleViewMouseMove` 内 `document.getElementById(toolPupWindowId) + appendChild` 分支因 `tooltipTileChildren` 已传入（`#L892`）而短路（`if (div && !props.tooltipTileChildren)` 守卫），锚点 div 不再被寻址。调用方仍传 `toolPupWindowId="toolTipWindowCircle1"`（`#L886`）——保留是为了维持与 tab2 的 id 后缀约定（不重叠即可），实际未被消费。

@@ -295,8 +295,11 @@ export function consolidateBullets(bullets) {
   const publishChildren = [];
   // 2) skill 动作去重：key = `${action}:${label}`
   const skillActions = new Map();
-  // 3) 变更文件条目去重
-  const fileListMap = new Map();
+  // 3) 变更文件条目：同一天多个 commit 产生的条目合并为单条，文件集合取并集
+  //    之前用 Map 按精确文本去重，遇到 git reset / rebase 导致新旧条目文本
+  //    略有差异时会全部保留，产生重复。这里改成集合合并。
+  const fileSet = new Set();
+  const FILE_LIST_RE = /^变更文件:\s*(.+)$/;
   // 4) 低价值 generic count 条目，仅作为兜底保留
   const genericBullets = [];
   // 5) 其他条目按文本去重
@@ -340,9 +343,14 @@ export function consolidateBullets(bullets) {
     }
 
     // 变更文件: ...
-    if (text.startsWith('变更文件:')) {
-      if (!fileListMap.has(text)) {
-        fileListMap.set(text, { level: 0, text });
+    // 不再按精确文本去重，改为收集所有出现过的文件，最后合并成单条。
+    // 兼容历史条目末尾可能残留的 `；`
+    const fm = text.match(FILE_LIST_RE);
+    if (fm) {
+      const files = fm[1].replace(/[；;]\s*$/, '').split('、');
+      for (const f of files) {
+        const trimmed = f.trim();
+        if (trimmed) fileSet.add(trimmed);
       }
       continue;
     }
@@ -404,7 +412,11 @@ export function consolidateBullets(bullets) {
   }
 
   // c) 变更文件 / 其他条目
-  for (const b of fileListMap.values()) result.push(b);
+  // 合并后的"变更文件"条目：去重 + 排序，确保输出稳定
+  if (fileSet.size > 0) {
+    const sortedFiles = [...fileSet].sort();
+    result.push({ level: 0, text: `变更文件: ${sortedFiles.join('、')}` });
+  }
   for (const b of otherBullets.values()) result.push(b);
 
   // d) generic count 仅在没有任何有意义 bullets 时兜底
@@ -480,9 +492,12 @@ export async function updateChangelog(options = {}) {
     (c) => !CHANGELOG_COMMIT_SUBJECT.test(c.subject)
   );
 
-  if (newCommits.length === 0 && !message) {
-    return { updated: false, changelogPath: resolvedPath, commitCount: 0 };
-  }
+  // 注意：不要在这里 early return。
+  // 即使 newCommits 为空，也要跑一遍 consolidateBullets 去清理已有条目
+  // （处理 git reset / rebase 之后 CHANGELOG 里残留的重复条目），
+  // 最后用"渲染前后内容是否相同"来决定是否真正写文件 —— 这样既不会
+  // 产生空 commit，又能自我修复脏数据。
+  // 兼容：手动 message 时也走完整流程。
 
   // 收集已有 bullets 的 action:label 维度（用于 manual message 去重）
   // 不再用全文本去重——否则 7-17 和 7-24 两次「新增 skill「X」；description」
@@ -543,6 +558,17 @@ export async function updateChangelog(options = {}) {
   }
 
   const newContent = renderChangelog(latestCommit, parsed.entries);
+
+  // 渲染内容如果和原文件一致（没有新 commit、没有 manual message、
+  // consolidation 也没产生实质变化），就不写文件，避免产生空 changelog commit
+  if (newContent === content) {
+    return {
+      updated: false,
+      changelogPath: resolvedPath,
+      commitCount: newCommits.length,
+    };
+  }
+
   await writeFile(resolvedPath, newContent, 'utf8');
   return {
     updated: true,
