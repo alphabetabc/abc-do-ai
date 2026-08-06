@@ -1,12 +1,19 @@
 # Changelog
 
-<!-- changelog-last-commit: 91dd58213a3eeed9e5ae6958f27dc3dff6befdc3 -->
+<!-- changelog-last-commit: bb7b73f12e490a8460213b211acf2734657deb8d -->
+
+## 2026-08-06
+
+- 发布 skill
+    - 「oss-visual-designer-docs-cross-review」 v0.0.0；
+- 新增 skill「oss-visual-designer-docs-cross-review」；
+- 新增 skill「trae-docs-cross-review」；
 
 ## 2026-08-05
 
 - 发布 skill
     - 「noc-shaanxi-emergency-support-center」 v0.0.0；
-- 变更文件: fedx-agents/leader/leader.knowledge.md、scripts/commit.mjs、scripts/update-changelog.mjs、skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件: fedx-agents/leader/leader-evaluation.md、fedx-agents/leader/leader-meeting-transcript-2026-07-17.md、fedx-agents/leader/leader-meeting-transcript-2026-07-29.md、fedx-agents/leader/leader.knowledge.md、fedx-agents/leader/workplace-strategist.prompt.md、scripts/commit.mjs、scripts/update-changelog.mjs、skills/.beehive-skills-manager-db/projects/list.json；
 - 更新 skill「noc-shaanxi-emergency-support-center」（文档、配置、其他）；维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模块（中屏...；
 
 ## 2026-08-04
