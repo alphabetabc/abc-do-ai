@@ -1,0 +1,12 @@
+{
+  "contentHash": "983f3dbe5841c68ce1524f85034682d8a7e29b8ccdc74ca86fa5fe5cd07bf383",
+  "files": [
+    "./configs/oss-project-config.yaml",
+    "./templates/report-format.md"
+  ],
+  "id": "oss-visual-designer-docs-cross-review",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

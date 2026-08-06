@@ -1,8 +1,8 @@
 ---
 name: 'oss-visual-designer-docs-cross-review'
 description: '针对 oss-visual-designer 项目的交叉 review skill：对 `.trae/documents/` 下的变更计划 / 调研 / 设计文档做深度交叉 review（三视角 + 对抗式交叉验证），专门检查设计器状态写路径契约与已删除 API 禁区。Invoke when user asks for doc review, cross review, or before executing any plan to ensure it can actually support development.'
-version: '1.2.0'
-date: '2026-07-30'
+version: '1.3.0'
+date: '2026-08-06'
 triggers:
   - 交叉 review
   - 深度 review
@@ -14,7 +14,7 @@ triggers:
 
 对 oss-visual-designer 项目的 `.trae/documents/` 文档做深度交叉 review，目标是让文档**真的能支撑开发**（事实可验证 + 逻辑闭环 + 盲区排查，三者缺一不可）。
 
-> 本 skill 自包含完整方法论 + 项目特化配置，可独立安装和运行。
+> 本 skill 自包含完整方法论 + 项目特化配置，可独立安装和运行；与通用版（`trae-docs-cross-review`）无依赖关系。
 
 ---
 
@@ -68,7 +68,7 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 | 视角                    | 推荐执行方式                                            | 关注点                                                                                                  | 产出                           |
 | ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | **A. 事实核查员**       | 优先用代码库检索能力较强的 subagent；没有就由主对话执行 | 文档里每个事实结论能否用仓库检索/文件读取当场验证？行号/路径/API 签名是否准确？是否有幻觉？             | 事实错误清单（带仓库验证证据） |
-| **B. 架构与逻辑审查员** | 优先用通用推理型 subagent；没有就由主对话执行           | 背景→现状→目标→步骤→验证→风险→回退 的逻辑链是否闭环？决策是否自洽？方案是否可行？                       | 逻辑断点清单 + 决策质疑        |
+| **B. 架构与逻辑审查员** | 优先用通用推理型 subagent；没有就由主对话执行           | 背景→现状→目标→步骤→验证→风险→回退 的逻辑链是否闭环？决策是否自洽？方案是否可行性？                     | 逻辑断点清单 + 决策质疑        |
 | **C. 盲区排查员**       | 优先用代码库检索能力较强的 subagent；没有就由主对话执行 | 主动找未覆盖的文件/调用方/边界场景。关键 API 的所有调用方是否都被摸清？有没有漏掉的死代码/死字段/边界？ | 盲区清单（带检索证据）         |
 
 ### 4.3 对抗式交叉验证（第二轮）
@@ -103,6 +103,8 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 2. review 报告存到哪个路径？（用户每次指定；默认 `.local-review/r{N}.md`，其中 `N` 为 `.local-review/` 下下一个可用序号）
 3. 是否有特别关注的点？（如"重点看性能预算是否合理"）
 
+**同时加载 oss project config**（详见 §9）：subagent 在启动前应读取 `./configs/oss-project-config.yaml`（项目方版本优先，skill 包内默认兜底），作为项目特化检查的注入源。
+
 ### 5.2 步骤 2：并行启动三个视角进行 review
 
 优先使用**当前环境支持的并行 subagent 能力**一次性拉起 3 个视角（最大化并行）；如果环境不支持并行 subagent，就由主对话按 A → B → C 顺序执行。
@@ -129,6 +131,7 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 **关键**：每个子任务的指令必须包含：
 
 - 被 review 文档的绝对路径
+- 本次加载到的 oss project config 内容（`contracts` / `blindspot_checks` / `performance_rules` 等字段）
 - 该视角的具体检查清单（见第 7 节）
 - 要求产出格式（带仓库证据，禁止推测当结论）
 - 明确"不要修改任何文件，只做 review 产出"
@@ -142,9 +145,9 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 3. 按严重程度分级：**高（必须修）/ 中（建议优化）/ 低（可选改进）**
 4. 每条带：具体问题 + 仓库证据 + 修复建议
 
-### 5.4 步骤 4：写 review 报告到用户指定路径
+### 5.4 步骤 4：写 review 报告
 
-报告格式见第 8 节。
+完整模板见 [`./templates/report-format.md`](./templates/report-format.md)；按其字段填充后写到用户指定路径。
 
 ### 5.5 步骤 5：等用户确认是否修改
 
@@ -172,7 +175,7 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 
 ---
 
-## 7. 各视角检查清单
+## 7. 各视角检查清单（通用版）
 
 ### 7.1 视角 A：事实核查员
 
@@ -198,7 +201,7 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 4. **风险覆盖**：识别的风险是否都有缓解措施？有没有"识别了风险但没给缓解"的悬空风险？
 5. **验证完整性**：验证方案是否覆盖所有改动点？有没有"改了 X 但验证清单里没 X"的遗漏？
 6. **回退方案**：每个步骤的 git revert 路径是否真的能回退？有没有"步骤 X 和 Y 改了同一文件，revert X 会破坏 Y"的冲突？
-7. **契约一致性**：参见第 9.3 节"项目特化契约检查清单"——结构性变更走 `setComponents`，字段级走 `updateFieldConfig`；禁止引入已删除的 API（如 `useDesigner` / `getFieldConf` / `DesignerContext`）
+7. **契约一致性**：参见 oss project config 的 `contracts` 字段——结构性变更走 `setComponents`，字段级走 `updateFieldConfig`；禁止引入已删除的 API（如 `useDesigner` / `getFieldConf` / `DesignerContext`）
 8. **反例与边界测试**（嫁接自 design-reviewer 维度）：针对文档中的 API/函数/流程，强制找至少 **3 个恶意/异常输入场景**（空值、超大并发、权限越权、状态悬挂）。检查文档是否明确了这些场景下的系统行为（报错？降级？重试？）。未覆盖 → 标记**【高影响漏洞】**
 9. **假设显式化**（嫁接自 design-reviewer 维度）：扫描文档中的模糊描述（"通常"、"一般"、"预期"、"依赖外部"），转为显式假设表：
 
@@ -224,157 +227,84 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 5. **文档间引用一致性**：文档 A 引用文档 B 的 §X.Y，B 里是否真的有这个章节？内容是否一致？
 6. **备份文件/历史遗留**：grep `.bak`，有没有备份文件没被清理？
 7. **跨目录影响**：改 src/store/ 的东西，是否影响 packages/\* 或 src/pages/preview/？
-8. **项目特化盲区检查点**：参见第 9.4 节
+8. **项目特化盲区检查点**：参见 oss project config 的 `blindspot_checks` 字段
 
 ---
 
 ## 8. Report Format
 
-```markdown
-# {被 review 文档名} 交叉 review
+报告必须按统一格式产出。**完整模板字符串见 [`./templates/report-format.md`](./templates/report-format.md)**；本节只列章节清单与填充规范。
 
-> Reviewer：oss-visual-designer-docs-cross-review skill（三视角 + 对抗式交叉验证） Review 日期：{YYYY-MM-DD} Review 对象：`{文档路径}` 项目特化检查：已应用 §9 Project-Specific Config 事实依据：{列出 subagent 用的 Grep/Read 证据来源}
+**必须包含的章节**：
 
----
+| 章节              | 内容要点                                                                              | 必填 |
+| ----------------- | ------------------------------------------------------------------------------------- | ---- |
+| 顶部元数据        | Reviewer / 日期 / 文档路径 / Review Mode（固定 repo-backed）/ 项目特化检查 / 事实依据 | ✅   |
+| §0 总评           | 评级（A / B+ / B / C）+ 一句话总评 + 整体判断（2-3 句）                               | ✅   |
+| §1 必须修复（高） | 每个问题带 事实 / 风险 / 修复建议 / 验证视角                                          | ✅   |
+| §2 建议优化（中） | 同 §1 格式                                                                            | ✅   |
+| §3 可选改进（低） | 同 §1 格式                                                                            | ✅   |
+| §4 关键事实补充   | subagent 独立验证的事实，与文档陈述对照                                               | ✅   |
+| §5 总结           | 必须修 / 建议 / 可选 三档摘要 + 进入下一阶段判断                                      | ✅   |
 
-## 0. 总评
+**填充规范**：
 
-**评级：{A / B+ / B / C}（{一句话总评}）**
-
-**整体判断**：{2-3 句话概述文档质量、主要优点、主要问题}
-
-按漏洞严重程度分 3 档列出（高 / 中 / 低），每条带具体修复建议。
-
----
-
-## 1. 必须修复（高优先级）
-
-### 1.1 [高] {问题标题}
-
-**事实**：{subagent 发现的问题，带仓库证据}
-
-**风险**：{如果不修会怎样}
-
-**修复建议**：{具体怎么改}
-
-**验证视角**：{A 事实核查 / B 架构逻辑 / C 盲区排查 / 交叉验证}
+- 严重度标签：`[高]` / `[中]` / `[低]`，分别对应 §1 / §2 / §3
+- 占位符 `{xxx}` 在产出时替换为真实数据，不要把花括号留在报告里
+- **降级标注**：如果本次 review 降级为单视角（见 §6），必须在 §0 总评里加一行"本次 review 降级为单视角 X，未做完整三视角交叉验证"
+- **Review Mode**：oss 项目版默认 `repo-backed`，模板顶部元数据里固定写明（无 doc-only / mixed 切换）
 
 ---
 
-## 2. 建议优化（中优先级）
+## 9. oss Project Config（项目配置）
 
-（同上格式）
+oss 项目版的所有项目特化信息（审查路径、契约、盲区、性能红线等）都通过**独立配置文件**管理，**不写死在 SKILL.md 里**。配置字段与通用版（`trae-docs-cross-review`）的 `project-review-config.template.yaml` 一一对应。
 
----
+完整默认配置见 [`./configs/oss-project-config.yaml`](./configs/oss-project-config.yaml)。
 
-## 3. 可选改进（低优先级）
+### 9.1 配置位置
 
-（同上格式）
+按以下优先级加载：
 
----
+1. **项目方显式指定的 config 路径**（优先级最高）
+2. **项目根目录下的配置**：`./configs/oss-project-config.yaml`（项目方自己维护）
+3. **skill 包内的默认配置**：`./configs/oss-project-config.yaml`（兜底）
+4. **仍未找到**：在报告"总评"里标注"项目 config 未找到，本次按纯通用方法论执行"，不注入项目特化检查
 
-## 4. 关键事实补充（独立验证）
+### 9.2 字段说明
 
-{列出 subagent 独立验证的事实，与文档陈述对照}
+| 字段                  | 用途                                         | 对应原内联 §9.x |
+| --------------------- | -------------------------------------------- | --------------- |
+| `default_doc_paths`   | 审查对象路径覆盖                             | §9.1            |
+| `exclude_paths`       | 不审查清单                                   | §9.2            |
+| `contracts`           | 项目特化契约清单（注入视角 B 第 7 条）       | §9.3            |
+| `blindspot_checks`    | 项目特化盲区检查点（注入视角 C 第 8 条）     | §9.4            |
+| `performance_rules`   | 性能红线                                     | §9.5            |
+| `report_default_path` | 报告存放路径（保留 oss 既有 `r{N}.md` 格式） | §9.6            |
+| `notes`               | 自由备注（持久化约束等）                     | §9.7            |
 
----
+字段 schema 与通用版一致，详见通用版 SKILL.md §9 / §9.4。
 
-## 5. 总结
+### 9.3 加载顺序
 
-### 5.1 必须修
+执行 review 时按以下顺序加载配置：
 
-### 5.2 建议优化
+1. 项目方显式指定的 config 路径（优先级最高）
+2. 项目根目录 `./configs/oss-project-config.yaml`
+3. skill 包内 `./configs/oss-project-config.yaml`（默认配置）
+4. 仍未找到 → 按纯通用方法论执行
 
-### 5.3 可选改进
+### 9.4 配置文件加载失败的处理
 
-### 5.4 可以进入下一阶段吗？
+1. **文件不存在** → 静默回退到下一个来源
+2. **YAML 解析失败** → 不要猜测，按通用方法论执行；在报告"总评"里标注"项目 config 解析失败，本次未应用项目特化规则"
+3. **字段类型错误**（如 `contracts` 写成字符串而不是数组）→ 跳过该字段，其他字段正常生效；在报告里列出被跳过的字段
 
-**{可以 / 不可以}**，理由：{...}
-```
+### 9.5 项目方使用须知（必读）
 
----
-
-## 9. Project-Specific Config（项目特化配置）
-
-本章节是 oss-visual-designer 项目专属的检查配置，由本 skill §7.2 第 7 条"契约一致性"与 §7.3 第 8 条"项目特化盲区"引用。下面提到的文档路径，默认都是**安装到目标项目后的运行态路径**。修改本章节前请先核对目标项目中的 `.trae/documents/design/designer-canvas/06-principles.md` 与 `.trae/documents/design/designer-canvas/02-write-path.md`。
-
-### 9.1 审查对象路径覆盖
-
-| 类型          | 项目特化路径                                                              | 优先级 |
-| ------------- | ------------------------------------------------------------------------- | ------ |
-| 变更计划      | `.trae/documents/plans/task-*.md`                                         | 高     |
-| 元方案        | `.trae/documents/plans/{YYYY-MM-DD}-handoff-*.md` / `task-*-meta-plan.md` | 高     |
-| 调研文档      | `.trae/documents/research/**/*.md`                                        | 中     |
-| 设计/架构文档 | `.trae/documents/design/**/*.md`（含 `designer-canvas/` 子目录）          | 中     |
-
-### 9.2 不审查清单（项目特化）
-
-- `AGENTS.md` / `.trae/rules/`：规则源，非被审查对象
-- 纯代码 diff：走代码 review，非本 skill 职责
-- `*.bak` / `src/store/backup/`：历史快照，非活代码（grep 时排除，见 AGENTS.md §10.2）
-- `src/packages/`（注意与根 `packages/` workspace 子包区别）：本地物料包目录，仅当文档显式涉及才纳入
-
-### 9.3 项目特化契约检查清单（注入视角 B 第 7 条）
-
-执行 review 时，负责该视角的执行者必须按以下契约清单核查：
-
-1. **状态写路径契约**（来源：`designer-canvas/02-write-path.md`）
-   - ✅ 结构性变更（拖拽/成组/重组/树结构变化）必须走 `dispatch(setComponents(newTree))`
-   - ✅ 字段级 O(1) 更新（单字段 patch）必须走 `dispatch(updateFieldConfig(id, patch))`
-   - ❌ 禁止直接 mutation `state.components`（Immer frozen，违反会抛 `TypeError: Cannot assign to read only property`）
-
-2. **已删除 API 禁区**（来源：`designer-canvas/06-principles.md` §禁区清单）
-   - ❌ `useDesigner` / `DesignerContext` / `DesignerContext.Provider` / `DataProvider` 闭包（task-011 已删）
-   - ❌ `useDesignerSettingChange` / `runtimeComponentsTrigger`（EventBus 已删）
-   - ❌ `getFieldConf` / `getParent`（O(n) 工具函数已删，改用 `getFieldNodeById` 或 `useFieldConf`）
-   - ❌ `useDebounceMergeConfig`（task-008 已删）
-   - ❌ `useLevelPath` / `setLevelPath` 永久放弃语义（task-007 引入，新代码禁用）
-
-3. **Redux Action 模式契约**（来源：AGENTS.md §4.4 混合模式）
-   - 老 slice（`designerCanvas` / `component` / `app`）：字符串 `action.type` + `switch`
-   - 新 slice（`viewCanvas` / `viewUI`）：RTK `createSlice` + typed action creator
-   - 新增 slice 优先用 `createSlice`，但不得把现有老 slice 强制改 `createSlice`（避免大爆炸）
-
-4. **路径别名契约**（来源：AGENTS.md §4.2）
-   - ✅ `import xxx from '@Src/xxx'`（主源码）/ `'@Common/xxx'` / `'@Components/xxx'`
-   - ❌ 禁止 `@Configs/*`（死别名，`src/configs/` 不存在）
-   - ❌ 禁止用相对路径 `../../../` 跨多个目录
-
-5. **工具用完即留契约**（来源：`.trae/rules/项目规则.md` §6）
-   - ❌ 禁止创建 `context-scanner.js` 之类持久化脚本生成 `project-context.json`（产生规则双源）
-   - ❌ 禁止用 PowerShell `Set-Content` / `Get-Content` 修改含中文文件（破坏 UTF-8）
-   - 脚本读写文件必须显式 `utf-8` 编码
-
-### 9.4 项目特化盲区检查点（注入视角 C 第 8 条）
-
-执行 review 时，负责该视角的执行者必须主动 grep 检查：
-
-| 关键词                                              | 期望场景                        | 盲区识别模式                                                                                                |
-| --------------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `useFieldConf\|useUpdateFieldConfig`                | 所有字段级订阅必须走这两个 hook | grep 出现 `useDesigner\|DesignerContext\|useDesignerSettingChange` 等已删除 API → 标记**【已删 API 残留】** |
-| `setComponents\|updateFieldConfig`                  | 写路径只有这两条                | grep 出现 `dispatch.*setState\|dispatch.*setDesignerCanvasState(.*newTree)` → 检查是否符合写路径契约        |
-| `byId\|parentMap`                                   | 派生索引                        | grep 出现 `byId\.\w+\s*=`（直接赋值） → 标记**【直接 mutation byId】**                                      |
-| `mergeByIdIntoTree\|fieldPreserve\|dirtyConfigKeys` | byId/树合并机制                 | grep 出现 → 标记 task-2026-07-27-001 单源重构 in-progress，需确认是否会被新方案替代                         |
-| `\.bak\|/backup/`                                   | 备份文件                        | grep 命中 → 标记**【备份文件残留】**（AGENTS.md §10.2 已规定不参考其实现）                                  |
-| `useFieldNodeById\|getFieldNodeById`                | task-012-a 新增                 | grep 出现 `getFieldConf\|getParent` → 标记**【已删 API 残留】**                                             |
-| `cloneDeep`                                         | 不可变改造前残留                | grep `cloneDeep` 在 src/designer/ 出现 → 标记**【可能存在 mutation 残留】**（task-009/012 落地情况）        |
-| `setLevelPath\|useLevelPath`                        | task-007 放弃语义               | grep 出现 → 标记**【放弃语义 API 残留】**                                                                   |
-| `useOnDrop`                                         | 已知 mutation 残留（2 行）      | grep `state\.components\.\w+\.\w+\s*=` 在该文件 → 标记**【直接 mutation 残留】**                            |
-
-### 9.5 性能红线检查（项目特化）
-
-- **440 组件场景**：所有涉及画布渲染 / dispatch 频率的改动，必须考虑 440 组件场景下的性能影响（来源：`designer-canvas/01-data-model.md` §buildIndex 性能）
-- **`useFieldConf` 订阅粒度**：禁止把整个 `state.components` 作为 `useSelector` 入参（导致全量订阅）
-- **画布组件必须 `React.memo`**（来源：AGENTS.md §4.5）
-
-### 9.6 报告存放路径
-
-默认：`.local-review/r{N}.md`（`N` 为 `.local-review/` 下下一个可用序号）。用户可显式指定其他路径。
-
-### 9.7 持久化产物约束
-
-- ❌ 禁止在 review 过程中创建 `project-context.json` / `codebase-summary.md` 等持久化产物（违反"工具用完即留"）
-- ✅ 只产出 review 报告 + 必要时在 task 文档的"实施记录"章节追加发现
+- oss 项目版**没有 beehive-skill.json 锁定机制**，理论上项目方可以直接修改 skill 包内的 `configs/oss-project-config.yaml`
+- 但**仍建议**在自己项目目录下创建 `./configs/oss-project-config.yaml` 覆盖默认配置，保持 skill 包内文件不变（便于以后升级 skill 时不冲突）
+- 项目方在修改默认配置前，应先核对目标项目中的 `.trae/documents/design/designer-canvas/06-principles.md` 与 `.trae/documents/design/designer-canvas/02-write-path.md`，确认 `contracts` / `blindspot_checks` 还适用
 
 ---
 
@@ -401,5 +331,5 @@ Trae 主对话只有一个模型，但可以借助**当前环境支持的并行�
 3. 判断是否降级：该文档是架构设计文档且篇幅较大 → 不降级，走完整三视角
 4. 用当前环境支持的并行 subagent 能力启动 3 个视角（A 事实核查 / B 架构逻辑 / C 盲区排查），指令中显式提示"参考本 skill §9 Project-Specific Config 注入项目特化检查项"
 5. 三个 subagent 返回后，主对话汇总 + 对抗式交叉验证
-6. 写报告到 `.local-review/oss-docs-review.md`
+6. 按 `./templates/report-format.md` 模板格式写报告到 `.local-review/oss-docs-review.md`
 7. 暂停，等用户确认哪些条目要修

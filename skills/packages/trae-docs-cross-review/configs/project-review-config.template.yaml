@@ -1,52 +1,69 @@
-schema_version: "1"
-project_name: "example-project"
+# ============================================================
+# ⚠️ skill 包内部文件 - 项目方请勿修改
+# ============================================================
+# 本文件是 trae-docs-cross-review skill 包的一部分，已被
+# beehive-skill.json 的 files 字段锁定。任何修改都会被判定
+# 为"修改 skill"，需要回写源码仓库同步。
+#
+# 项目方正确的使用方式：
+#   1. 不要修改本文件
+#   2. 在自己的项目根目录下创建独立 config 文件
+#      （推荐 ./configs/project-review-config.yaml）
+#   3. 按本文件的 schema 填写真实项目特化信息
+#   4. 删除本文件里的所有示例内容（contracts / forbidden_apis /
+#      blindspot_checks / performance_rules / notes），
+#      按需填入真实项目数据
+# ============================================================
 
-# Optional. Use when the project wants a stable default review mode.
-# Allowed values: repo-backed, doc-only, mixed
-default_mode: "repo-backed"
+schema_version: '1'
+project_name: 'example-project'
 
-# Optional. The generic skill can search these paths first when the user
-# does not explicitly specify a document to review.
+# 可选。项目希望锁定默认 review 模式时使用。
+# 允许的值：repo-backed, doc-only, mixed
+default_mode: 'repo-backed'
+
+# 可选。用户未显式指定 review 文档时，通用 skill 优先从这些路径中查找。
 default_doc_paths:
-  - ".trae/documents/plans/task-*.md"
-  - ".trae/documents/research/**/*.md"
-  - ".trae/documents/design/**/*.md"
+  - '.trae/documents/plans/task-*.md'
+  - '.trae/documents/research/**/*.md'
+  - '.trae/documents/design/**/*.md'
 
-# Optional. Files or directories that should not be reviewed as document targets.
+# 可选。不应被作为 review 对象的文件或目录。
 exclude_paths:
-  - "AGENTS.md"
-  - ".trae/rules/**"
-  - "**/*.bak"
-  - "**/backup/**"
+  - 'AGENTS.md'
+  - '.trae/rules/**'
+  - '**/*.bak'
+  - '**/backup/**'
 
-# Optional. Override the generic default report path.
-report_default_path: ".local-review/r{N}.md"
+# 可选。覆盖通用默认的报告路径。
+# 未填时默认：.local-review/report-{NNN}.md（参见 §2.2 序号取数规则）
+report_default_path: '.local-review/report-{NNN}.md'
 
-# Optional. Project contracts injected into the generic skill's logic review.
+# 可选。注入到通用 skill 视角 B 的项目契约。
 contracts:
-  - name: "State write path"
-    description: "Structural updates must use the approved write path."
+  - name: '状态写路径'
+    description: '结构化变更必须使用经过批准的写路径。'
     checks:
-      - "Tree changes must go through the structural update entry."
-      - "Field patch changes must go through the field update entry."
+      - '树的变更必须走结构化更新入口。'
+      - '字段级 patch 变更必须走字段更新入口。'
 
-# Optional. Known forbidden APIs or patterns.
+# 可选。已知的禁区 API 或模式。
 forbidden_apis:
-  - name: "legacy-api"
-    reason: "Deprecated and must not appear in new plans or designs."
+  - name: '已废弃 API'
+    reason: '已废弃，不得在新方案或设计文档中出现。'
 
-# Optional. Blindspot checks injected into the generic skill's blindspot review.
+# 可选。注入到通用 skill 视角 C 的盲区检查点。
 blindspot_checks:
-  - keyword: "useFieldConf|useUpdateFieldConfig"
-    expected_scene: "All field-level subscriptions use approved hooks."
-    detection_rule: "If deleted or legacy APIs appear nearby, flag as residual usage."
+  - keyword: 'useFieldConf|useUpdateFieldConfig'
+    expected_scene: '所有字段级订阅应使用批准的 hook。'
+    detection_rule: '如果附近出现已删除的旧 API，标记为残留使用。'
 
-# Optional. Performance or scale constraints to keep in mind during review.
+# 可选。review 时需要考虑的性能或规模约束。
 performance_rules:
-  - name: "Large page scenario"
-    rule: "Any render-path or dispatch-frequency change must consider high-node-count scenarios."
+  - name: '大页面场景'
+    rule: '任何渲染路径或 dispatch 频率的改动都必须考虑高节点数场景。'
 
-# Optional. Freeform notes for the reviewer.
+# 可选。给 reviewer 的补充说明（自由格式）。
 notes:
-  - "Explain repository-specific terminology before using it in findings."
-  - "Prefer runtime-path descriptions over source-path assumptions."
+  - '在使用项目专属术语前先解释其含义。'
+  - '优先使用运行时路径描述，避免基于源码路径的假设。'

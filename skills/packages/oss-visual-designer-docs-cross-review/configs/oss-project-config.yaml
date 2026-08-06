@@ -1,0 +1,144 @@
+# ============================================================
+# OSS Visual Designer 项目特化配置
+# ============================================================
+# 本文件是 oss-visual-designer-docs-cross-review skill 的项目特化配置
+# 与 trae-docs-cross-review 通用版的 project-review-config.template.yaml
+# 字段一一对应，详见 oss SKILL.md §9。
+#
+# ⚠️ 注意：oss 项目版没有 beehive-skill.json 锁定机制，
+# 项目方在原理上可以直接修改本文件；
+# 但仍建议在自己的项目目录下创建 ./configs/oss-project-config.yaml
+# 覆盖本文件，保持 skill 包内文件不变。
+#
+# 使用方式：
+#   1. 默认情况：subagent 直接读本文件作为 oss 项目特化配置
+#   2. 项目方覆盖：在自己的项目根目录下创建 ./configs/oss-project-config.yaml，
+#      subagent 优先读取项目目录下的版本
+# ============================================================
+
+schema_version: '1'
+project_name: 'oss-visual-designer'
+
+# 默认 review 模式（oss 项目版固定为 repo-backed，不支持 doc-only / mixed）
+default_mode: 'repo-backed'
+
+# 审查对象路径（来自原 §9.1）
+default_doc_paths:
+  - '.trae/documents/plans/task-*.md'
+  - '.trae/documents/plans/*-meta-plan.md'
+  - '.trae/documents/plans/*-handoff-*.md'
+  - '.trae/documents/research/**/*.md'
+  - '.trae/documents/design/**/*.md'
+
+# 不审查清单（来自原 §9.2）
+exclude_paths:
+  - 'AGENTS.md'
+  - '.trae/rules/**'
+  - '**/*.bak'
+  - '**/backup/**'
+  - 'src/store/backup/**'
+  - 'src/packages/**'  # 本地物料包，仅当文档显式涉及才纳入
+
+# 报告存放路径（保留 oss 既有 r{N}.md 格式，不和通用版统一）
+report_default_path: '.local-review/r{N}.md'
+
+# 项目特化契约检查清单（来自原 §9.3，注入视角 B 第 7 条）
+contracts:
+  - name: '状态写路径契约'
+    description: '结构性变更必须走批准入口；禁止直接 mutation state.components'
+    source: '.trae/documents/design/designer-canvas/02-write-path.md'
+    checks:
+      - '结构性变更（拖拽/成组/重组/树结构变化）必须走 dispatch(setComponents(newTree))'
+      - '字段级 O(1) 更新（单字段 patch）必须走 dispatch(updateFieldConfig(id, patch))'
+      - '禁止直接 mutation state.components（Immer frozen，违反会抛 TypeError）'
+
+  - name: '已删除 API 禁区'
+    description: '禁止使用 task-007/008/011 等已删除的 API'
+    source: '.trae/documents/design/designer-canvas/06-principles.md §禁区清单'
+    checks:
+      - '禁止 useDesigner / DesignerContext / DesignerContext.Provider / DataProvider 闭包（task-011 已删）'
+      - '禁止 useDesignerSettingChange / runtimeComponentsTrigger（EventBus 已删）'
+      - '禁止 getFieldConf / getParent（O(n) 工具函数已删，改用 getFieldNodeById 或 useFieldConf）'
+      - '禁止 useDebounceMergeConfig（task-008 已删）'
+      - '禁止 useLevelPath / setLevelPath 永久放弃语义（task-007 引入，新代码禁用）'
+
+  - name: 'Redux Action 模式契约'
+    description: '老 slice 用字符串 action.type + switch；新 slice 用 createSlice'
+    source: 'AGENTS.md §4.4 混合模式'
+    checks:
+      - '老 slice（designerCanvas / component / app）使用字符串 action.type + switch'
+      - '新 slice（viewCanvas / viewUI）使用 RTK createSlice + typed action creator'
+      - '新增 slice 优先 createSlice，但不强制改老 slice（避免大爆炸）'
+
+  - name: '路径别名契约'
+    description: '主源码用 @Src/* 等别名；禁止 @Configs/* 和多层相对路径'
+    source: 'AGENTS.md §4.2'
+    checks:
+      - 'import xxx from @Src/xxx（主源码）/ @Common/xxx / @Components/xxx'
+      - '禁止 @Configs/*（死别名，src/configs/ 不存在）'
+      - '禁止 ../../../ 跨多个目录'
+
+  - name: '工具用完即留'
+    description: '禁止持久化脚本；UTF-8 编码'
+    source: '.trae/rules/项目规则.md §6'
+    checks:
+      - '禁止创建 context-scanner.js 等持久化脚本生成 project-context.json（产生规则双源）'
+      - '禁止 PowerShell Set-Content / Get-Content 修改中文文件（破坏 UTF-8）'
+      - '脚本读写文件必须显式 utf-8 编码'
+
+# 项目特化盲区检查点（来自原 §9.4，注入视角 C 第 8 条）
+blindspot_checks:
+  - keyword: 'useFieldConf|useUpdateFieldConfig'
+    expected_scene: '所有字段级订阅必须走这两个 hook'
+    detection_rule: 'grep 出现 useDesigner|DesignerContext|useDesignerSettingChange 等已删除 API → 标记【已删 API 残留】'
+
+  - keyword: 'setComponents|updateFieldConfig'
+    expected_scene: '写路径只有这两条'
+    detection_rule: 'grep 出现 dispatch.*setState|dispatch.*setDesignerCanvasState(.*newTree) → 检查是否符合写路径契约'
+
+  - keyword: 'byId|parentMap'
+    expected_scene: '派生索引'
+    detection_rule: 'grep 出现 byId\.\w+\s*=（直接赋值）→ 标记【直接 mutation byId】'
+
+  - keyword: 'mergeByIdIntoTree|fieldPreserve|dirtyConfigKeys'
+    expected_scene: 'byId/树合并机制'
+    detection_rule: 'grep 出现 → 标记 task-2026-07-27-001 单源重构 in-progress，需确认是否会被新方案替代'
+
+  - keyword: '\.bak|/backup/'
+    expected_scene: '备份文件'
+    detection_rule: 'grep 命中 → 标记【备份文件残留】（AGENTS.md §10.2 已规定不参考其实现）'
+
+  - keyword: 'useFieldNodeById|getFieldNodeById'
+    expected_scene: 'task-012-a 新增'
+    detection_rule: 'grep 出现 getFieldConf|getParent → 标记【已删 API 残留】'
+
+  - keyword: 'cloneDeep'
+    expected_scene: '不可变改造前残留'
+    detection_rule: 'grep cloneDeep 在 src/designer/ 出现 → 标记【可能存在 mutation 残留】（task-009/012 落地情况）'
+
+  - keyword: 'setLevelPath|useLevelPath'
+    expected_scene: 'task-007 放弃语义'
+    detection_rule: 'grep 出现 → 标记【放弃语义 API 残留】'
+
+  - keyword: 'useOnDrop'
+    expected_scene: '已知 mutation 残留（2 行）'
+    detection_rule: 'grep state\.components\.\w+\.\w+\s*= 在该文件 → 标记【直接 mutation 残留】'
+
+# 性能红线（来自原 §9.5）
+performance_rules:
+  - name: '440 组件场景'
+    rule: '所有画布渲染 / dispatch 频率的改动必须考虑 440 组件场景下的性能影响'
+    source: 'designer-canvas/01-data-model.md §buildIndex 性能'
+
+  - name: 'useFieldConf 订阅粒度'
+    rule: '禁止把整个 state.components 作为 useSelector 入参（导致全量订阅）'
+
+  - name: '画布组件必须 React.memo'
+    rule: '画布组件必须用 React.memo 包裹'
+    source: 'AGENTS.md §4.5'
+
+# 自由备注（来自原 §9.7）
+notes:
+  - '禁止创建 project-context.json / codebase-summary.md 等持久化产物（违反"工具用完即留"）'
+  - '只产出 review 报告 + 必要时在 task 文档的"实施记录"章节追加发现'
+  - 'oss 项目版默认 review 模式固定为 repo-backed，不支持 doc-only / mixed 切换'

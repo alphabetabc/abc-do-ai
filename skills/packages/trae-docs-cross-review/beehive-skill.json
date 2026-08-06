@@ -1,0 +1,9 @@
+{
+  "files": [
+    "./configs/project-review-config.template.yaml",
+    "./templates/report-format.md"
+  ],
+  "id": "trae-docs-cross-review",
+  "targets": ["trae"],
+  "version": "0.0.0"
+}
