@@ -481,6 +481,207 @@ if (columSetting.contentShowType === CellType.Capsule) {        // 走 enums 着
 
 ---
 
+## 19. `dataFilterTypeFieldName` 字段名配错导致表格全空 ⚠️
+
+**症状**：
+
+-   用户配置了 `dataExtraSetting.dataFilterTypeFieldName = 'platformName'`，但实际数据字段叫 `policyPlatform`
+-   表格整个变空（看不到任何行）
+
+**原因**：
+
+过滤逻辑会取 `dataItem[platformName]`，但 `dataItem` 里没有这个字段，返回 `undefined`。字符串化后是 `'undefined'`，与订阅值永远不相等 → **全部被过滤掉**。
+
+**定位方法**：
+
+```typescript
+// index.tsx visibleDataSource useMemo 加 console.log
+console.log('[dataFilterTypeFieldName]', {
+    dataFilterTypeFieldName,
+    subscribeDataFilterType,
+    rawLength: dataSource?.length,
+    filteredLength: data?.length,
+});
+// rawLength > 0 && filteredLength === 0 → 字段名或订阅值有问题
+```
+
+**正确做法**：
+
+| 检查项 | 说明 |
+| --- | --- |
+| 字段名拼写 | 与 dataSource 中真实字段名**完全一致**（区分大小写） |
+| 字段值类型 | 订阅值必须能转成与 `record[dataFilterTypeFieldName]` 相同的字符串（用 `\`${}\`` 已自动兼容） |
+| 订阅值确实有值 | `subscribeDataFilterType` 不能是 `undefined` / `null` / `''` |
+
+**示例**：
+
+```typescript
+// dataSource
+[{ policyPlatform: '财政厅1', ... }, { policyPlatform: '财政厅2', ... }]
+
+// ✅ 正确
+dataFilterTypeFieldName: 'policyPlatform',
+subscribeDataFilterType: '财政厅1',
+// → 1 行
+
+// ❌ 字段名拼错
+dataFilterTypeFieldName: 'platformName',  // 实际叫 policyPlatform
+subscribeDataFilterType: '财政厅1',
+// → 0 行（全部被过滤）
+```
+
+**修复**（已落地）：
+
+- 字段名靠用户责任（schema 不做强校验）
+- doc/readme.md「数据额外配置」段落给出明确示例
+- component-logic.md § 2.2.10 列出边界行为
+
+---
+
+## 20. `dataFilterTypeFieldName` 与搜索栏过滤的顺序 ⚠️
+
+**症状**：
+
+- 用户同时配了 `dataFilterTypeFieldName` 和搜索栏过滤（如 `serverCount: '36'`）
+- 不知道过滤叠加顺序，调试时容易混乱
+
+**叠加顺序**（从先到后）：
+
+```
+dataSource (原始)
+    │ ① dataFilterTypeFieldName 过滤（订阅值联动）
+    ▼
+    │ ② searchParams 过滤（搜索栏输入）
+    ▼
+visibleDataSource
+```
+
+**调试建议**：
+
+```typescript
+// index.tsx visibleDataSource 加 console.log
+console.log('[visibleDataSource pipeline]', {
+    raw: dataSource?.length,
+    afterDataFilterTypeFieldName: afterStep1?.length,
+    afterSearchParams: afterStep2?.length,
+});
+```
+
+**典型场景**：
+
+- `dataFilterTypeFieldName = 'policyPlatform'` + 订阅值 `'财政厅2'` → 留下 `policyPlatform='财政厅2'` 的行
+- 再在搜索栏输 `serverCount: '24'` → 在上一步基础上再过滤
+- 最终只剩同时满足两个条件的行
+
+---
+
+## 21. 订阅值为 `0` / `false` / `NaN` 时被错误跳过 ⚠️
+
+**症状**：
+
+-   订阅字段 `subscribeDataFilterType` 传入数字 `0`（如过滤 `policyPlatformId === '0'` 的记录）
+-   **过滤未生效**，所有数据保留
+
+**原因**：
+
+之前用 `_.isEmpty(subscribeDataFilterType)` 判断"订阅值是否为空"。但 lodash 中：
+
+| 值 | `_.isEmpty()` |
+| --- | --- |
+| `undefined` / `null` / `''` | `true` |
+| `0` | `true` ❌ |
+| `false` | `true` ❌ |
+| `NaN` | `true` ❌ |
+
+`0` 是合法的过滤目标值（如过滤 ID = 0 的记录），但 `_.isEmpty(0)` 返回 `true`，导致 `!_.isEmpty(0) === false`，跳过过滤。
+
+**正确做法**：
+
+```typescript
+// ❌ 错误：用 _.isEmpty
+if (dataFilterTypeFieldName && !_.isEmpty(subscribeDataFilterType)) { ... }
+
+// ✅ 正确：显式列出空值
+if (dataFilterTypeFieldName && ![null, '', undefined].includes(subscribeDataFilterType)) { ... }
+
+// ✅ 也可：!_.isNil() + !== ''
+if (dataFilterTypeFieldName && !_.isNil(subscribeDataFilterType) && subscribeDataFilterType !== '') { ... }
+```
+
+**已修复**：
+
+- `index.tsx` 改用 `![null, '', undefined].includes(subscribeDataFilterType)`
+- doc/readme.md 标注警告
+- component-logic.md § 2.2.10 表格说明
+
+---
+
+## 22. Card + object 双层 schema 结构：`$color` / `$scrollbar` 包装器 ⚠️
+
+**症状**：
+
+看 schema 时经常困惑：
+
+```typescript
+$paginationSetting: {
+    properties: {
+        // ... enable / hidePagination / enableCarousel ...
+        $color: {                          // ← 这层是什么？
+            type: 'void',
+            'x-component': 'Card',         // ← Card 组件
+            'x-component-props': { ... },
+            properties: {
+                color: {                   // ← 数据真正存在这里
+                    type: 'object',
+                    properties: {
+                        prevNextColor: { ... ColorPicker },
+                        ...
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**结构解释**（参考 `cone-bar-line` 的 `$xAxisSettings`）：
+
+| 层 | 字段 | 类型 | 作用 |
+| --- | --- | --- | --- |
+| 外层 | `$color` / `$scrollbar` | `type: 'void'` | **仅作视觉分组容器**，无对应数据字段 |
+| 外层 | `'x-component': 'Card'` | 组件 | 项目自定义 Card，提供带 title 的卡片视觉 |
+| 内层 | `color` / `scrollbar` | `type: 'object'` | **真正承载数据**（5 / 2 个 ColorPicker 子字段） |
+
+**为什么用双层**：
+
+1. **外层 Card** 提供带 `title` 的视觉分组（`bordered: false`）
+2. **内层 object** 提供数据契约 + 嵌套 ColorPicker 字段空间
+3. 组件**只读内层** `paginationSetting.color` / `commonSettings.scrollbar`，外层 `$color` / `$scrollbar` 不进数据流
+
+**配置面板上的样子**：
+
+```
+┌─ 分页器配置 ────────────────────┐
+│  启用        [✓]                │
+│  隐藏分页器  [ ]                │
+│  ...                            │
+│  ┌─ 分页器颜色 ──────────────┐   │  ← Card 标题
+│  │  上/下一页颜色  [color]    │   │
+│  │  分页项边框颜色 [color]    │   │
+│  │  ...                       │   │
+│  └────────────────────────────┘   │
+└──────────────────────────────────┘
+```
+
+**常见误区**：
+
+- ❌ 读 `paginationSetting.$color`（错误：$color 是 void，不存值）
+- ✅ 读 `paginationSetting.color`（正确：object 承载数据）
+
+**未来扩展**：新增"主题色配置"分组时，沿用 `Card + object` 模式（如 `$tooltipColor` → `tooltipColor`）。
+
+---
+
 ## N. 调试小技巧
 
 ### N.1 查看当前 props.dataSource 结构
@@ -524,6 +725,8 @@ const showPagination = enablePagination; // 移除 total! > 1 判断
 | 日期       | 问题     | 修复                                                 |
 | ---------- | -------- | ---------------------------------------------------- |
 | 2026-07-30 | 文档化   | 首次编写 gotchas；列出 12 条踩坑点                   |
+| 2026-07-30 | 新增踩坑 | § 19 / § 20：dataFilterTypeFieldName 字段名拼错 + 过滤叠加顺序 |
+| 2026-07-30 | 新增踩坑 | § 21：订阅值 0/false 被 _.isEmpty 误判跳过过滤 |
 | 2026-07-30 | 新增踩坑 | § 17 / § 18：列字段模板生效范围 + 优先级             |
 | 2026-07-30 | 新增踩坑 | § 16：enable vs hidePagination 容易混淆              |
 | 2026-07-30 | 新增踩坑 | § 15：enableTableHeader=false 多项配置静默失效       |

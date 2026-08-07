@@ -503,3 +503,202 @@ columnsRenderTemplate: [
 > ⚠️ 详见 [gotchas.md § 17 / § 18](./gotchas.md)（生效范围 + 优先级）
 
 ---
+
+## 任务 14：使用「数据过滤」实现联动外部订阅
+
+**场景描述**：大屏场景下希望表格数据根据外部订阅值实时过滤，例如根据外部门选择的政务平台过滤当前表格。
+
+涉及：
+- 🟦 Schema 配置：[schema.md § 2.8](./schema.md#28-数据额外配置-dataextrasetting)（`dataExtraSetting.dataFilterTypeFieldName`）
+- 🟦 Schema 订阅：[schema/interactions.ts](./schema/interactions.ts) 的 `subscribeDataFilterType`（在「订阅参数」分组）
+- 🟨 组件逻辑：[component-logic.md § 2.2.10](./component-logic.md#2210-数据过滤-dataextrasettingdatafiltertypefieldname)
+- ⚠️ 踩坑：[gotchas.md § 19](./gotchas.md#19-datafiltertypefieldname-字段名配错导致表格全空-)（字段名拼错全空）
+
+**步骤**：
+
+1. 在「数据额外配置」分组配置 `dataFilterTypeFieldName`，指定要过滤的字段名（如 `policyPlatform`）
+2. 在「交互」→「订阅参数」启用 `subscribeDataFilterType`（已默认存在 schema）
+3. 外部事件发起方派发该订阅值（如另一个物料的点击事件）
+
+**示例数据**：
+
+```typescript
+[
+    { policyPlatform: '财政厅1', serverCount: 36, ... },
+    { policyPlatform: '财政厅2', serverCount: 24, ... },
+    { policyPlatform: '财政厅3', serverCount: 18, ... },
+]
+```
+
+**示例配置**：
+
+```typescript
+// config.dataExtraSetting.dataFilterTypeFieldName = 'policyPlatform'
+
+// 外部物料派发（典型场景：点击外部门列表）
+// → 通过 interaction.dispatch 写入 subscribeDataFilterType
+// props.interactionProps.subscribeDataFilterType = '财政厅2'
+
+// 过滤后
+[{ policyPlatform: '财政厅2', serverCount: 24, ... }]
+```
+
+### 14.1 不过滤的两种情况
+
+| 情况 | 行为 |
+| --- | --- |
+| `dataFilterTypeFieldName` 未配置 | 跳过过滤 |
+| `subscribeDataFilterType` 为 `undefined` / `null` / `''` | `[null, '', undefined].includes()` 返回 true，跳过过滤（**注意：不能用 `_.isEmpty`，它会把 `0` / `false` 视为 empty**） |
+
+### 14.2 与搜索栏过滤叠加
+
+执行顺序：
+
+```
+dataSource (原始)
+    │ ① dataFilterTypeFieldName 过滤
+    ▼
+    │ ② searchParams 过滤（搜索栏输入）
+    ▼
+visibleDataSource
+```
+
+详见 [gotchas.md § 20](./gotchas.md#20-datafiltertypefieldname-与搜索栏过滤的顺序-)。
+
+### 14.3 调试过滤是否生效
+
+```typescript
+// index.tsx visibleDataSource useMemo 加 console.log
+console.log('[dataFilterTypeFieldName]', {
+    dataFilterTypeFieldName,
+    subscribeDataFilterType,
+    rawLength: dataSource?.length,
+    filteredLength: visibleDataSource?.length,
+});
+// rawLength > 0 && filteredLength === 0 → 字段名配错或订阅值为空
+```
+
+**反例（错误做法）**：
+
+```typescript
+// ❌ 字段名拼错：表格全空
+dataExtraSetting: { dataFilterTypeFieldName: 'platformName' },  // 实际叫 policyPlatform
+
+// ❌ 订阅值类型不一致（数字 vs 字符串）
+//   subscribeDataFilterType: 1
+//   record.policyPlatform: '1'
+//   已通过 `${}` 自动兼容，但需注意
+
+// ❌ 把 dataFilterTypeFieldName 字段名当成"完整路径"
+dataExtraSetting: { dataFilterTypeFieldName: 'platforms[0].name' },  // 当前不支持嵌套路径
+```
+
+**正例**：
+
+```typescript
+// ✅ 简单字段名（最常见）
+dataExtraSetting: { dataFilterTypeFieldName: 'policyPlatform' },
+
+// ✅ 配合订阅使用（外部事件发起方按需 dispatch）
+interaction: {
+    subscribe: { subscribeDataFilterType: true },
+    dispatch: { ... }
+},
+```
+
+> ⚠️ 详见 [gotchas.md § 19 / § 20](./gotchas.md)
+
+---
+
+## 任务 15：自定义滚动条 / 分页器主题色
+
+通过 `paginationSetting.color` 和 `commonSettings.scrollbar` 两个分组实现主题色定制。
+
+### 15.1 自定义分页器颜色（active 项高亮）
+
+```typescript
+// 配置：仅改选中项背景色 + 文字色
+config: {
+    paginationSetting: {
+        color: {
+            itemActiveColor: '#00DEFF',     // 选中项背景：青色
+            itemTextColor: '#FFFFFF',        // 全部分页项文字：白色
+        },
+    },
+},
+```
+
+**渲染结果**：
+
+- `.oss-ui-pagination-item` 文字色：白
+- `.oss-ui-pagination-item.oss-ui-pagination-item-active` 背景：青色
+- 其他字段未配置 → `initial` 兜底，不影响原有样式
+
+### 15.2 自定义滚动条颜色
+
+```typescript
+// 配置：滑块青色 + 轨道半透明
+config: {
+    commonSettings: {
+        scrollbar: {
+            thumbColor: 'rgba(0, 222, 255, 0.8)',
+            trackColor: 'rgba(255, 255, 255, 0.1)',
+        },
+    },
+},
+```
+
+**渲染结果**：
+
+- `.oss-ui-table-body::-webkit-scrollbar-thumb` 背景：青色 80% 透明
+- `.oss-ui-table-body::-webkit-scrollbar-track` 背景：白色 10% 透明
+- 滚动条 `width: 6px` 尺寸不变
+
+### 15.3 调试主题色是否生效
+
+```typescript
+// components/styled/index.tsx 顶部
+console.log('[StyledContainer]', { commonSettings, paginationColorSetting });
+
+// 浏览器开发者工具 → Elements
+// 搜索 ".oss-ui-pagination-item-active"
+// 看是否有内联 background-color 样式（styled-components 生成的 class）
+```
+
+**反例**：
+
+```typescript
+// ❌ 在 .oss-ui-pagination-item-active 上加 background-color
+//   StyledContainer 注入的样式在 styled-components class 内
+//   如果 index.less 中用 !important，会覆盖注入样式
+
+// ❌ 期望分页器尺寸调整（width 改不了）
+//   注入样式只覆盖 background-color，不改 width: 6px
+```
+
+**正例**：
+
+```typescript
+// ✅ 只覆盖需要改的字段，其余留空用 initial
+paginationSetting: {
+    color: {
+        itemActiveColor: '#00DEFF',  // 单独改一项，不影响其他
+    },
+},
+
+// ✅ 滚动条 + 分页器组合使用
+commonSettings: {
+    scrollbar: {
+        thumbColor: 'rgba(0, 222, 255, 0.8)',
+    },
+},
+paginationSetting: {
+    color: {
+        itemActiveColor: '#00DEFF',
+    },
+},
+```
+
+> ⚠️ 详见 [component-logic.md § 2.2.11](./component-logic.md) / [gotchas.md § 22](./gotchas.md)
+
+---

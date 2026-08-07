@@ -75,7 +75,8 @@ src/packages/table-detail/
 - ⚠️ ProTable 自带的 `reload / density / fullScreen / setting` 全部 **disabled**（[component-logic.md § 2.2.5](./component-logic.md)）
 
 ### 5. 交互体系
-- **行点击效果**：`clickEffect.open + style`，可设激活行背景色 / 边框
+
+- **行单击效果**：开启后点击行高亮（背景色 + 边框），单行激活；点击表格外区域或按 `Esc` 可取消激活；弹出 Modal/Drawer 内点击视为表格上下文，激活态保留；详见 [component-logic.md § 2.2.8](./component-logic.md#228-行单击效果与取消)
 - **单元格点击派发**：`dynamicEvents` 数组配置（Modal / Drawer / Dispatch）
 - **下钻事件**：`drilldownEvent` 全局配置（Modal / Drawer）
 - **分页器订阅**：`subscribePaginationCurrent` / `subscribePaginationPageSize`（外部控制）
@@ -110,6 +111,24 @@ src/packages/table-detail/
 - 仅对 `plainText` 类型的列生效；其他类型（Capsule/Icon/DigitalFlop/Checkbox）无效
 - 优先级：聚合展示（`groupSet.includesFields`）> 模板 > 默认值；`enumRender` 仍可覆盖模板文本
 - 详见 [component-logic.md § 2.2.9](./component-logic.md#229-列字段模板渲染-columnsrendertemplate)
+
+### 11. 数据过滤（新增）
+通过 `dataExtraSetting.dataFilterTypeFieldName` 配置 + 订阅字段 `subscribeDataFilterType`（交互面板）实现基于外部值的过滤：
+- `dataFilterTypeFieldName` 指定要过滤的字段名
+- `subscribeDataFilterType` 是外部传入的订阅值
+- 过滤规则：`record[dataFilterTypeFieldName] === subscribeDataFilterType`（字符串化比较）
+- 订阅值为空 / 未配置过滤字段 → 不过滤
+- 与搜索栏过滤叠加（先 `dataFilterTypeFieldName` 再 `searchParams`）
+- 详见 [component-logic.md § 2.2.10](./component-logic.md#2210-数据过滤-dataextrasettingdatafiltertypefieldname)
+
+### 12. 主题色注入（新增）
+通过 `paginationSetting.color` 和 `commonSettings.scrollbar` 两个分组对滚动条和分页器进行主题色定制：
+- **`paginationSetting.color`**（分页器颜色）：5 个字段（`prevNextColor` / `itemBorderColor` / `itemNormalColor` / `itemActiveColor` / `itemTextColor`）
+- **`commonSettings.scrollbar`**（通用滚动条颜色）：2 个字段（`thumbColor` / `trackColor`）
+- 实现方式：`styled-components` 在 `StyledContainer` 上动态生成 CSS，覆盖 `index.less` 中写死的主题样式
+- 默认行为：未配置时使用 `initial` / `inherit`，**完全不影响原样式**
+- 覆盖范围：仅 `background-color` / `color` / `border-color`，不修改滚动条 `width: 6px` 尺寸
+- 详见 [component-logic.md § 2.2.11](./component-logic.md#2211-主题色注入-styledcontainer)
 
 ## 默认配置
 

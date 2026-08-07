@@ -1,8 +1,8 @@
 ---
 title: 物料清单索引
-description: src/packages 下所有带 oss-material.json 的有效物料清单（146 个），按分类组织，标注文档化状态
-version: 1.3.0
-last_updated: 2026-06-16
+description: src/packages 下所有带 oss-material.json 的有效物料清单（147 个），按分类组织，标注文档化状态
+version: 1.4.0
+last_updated: 2026-08-04
 ---
 
 # 物料清单索引
@@ -39,10 +39,10 @@ glob.sync('src/packages/**/oss-material.json')
 | 进度 / 加载             | 6       | 4          | 2                                 |
 | 状态 / 标签             | 2       | 0          | 2                                 |
 | 边框 / 装饰             | 25      | 0          | 0                                 |
-| 其他                    | 6       | 0          | 0                                 |
-| **合计**                | **146** | **21**     | **36**                            |
+| 其他                    | 7       | 1          | 1                                 |
+| **合计**                | **147** | **22**     | **37**                            |
 
-> 最后更新：2026-06-17（新增 oss-chart-map 物料文档）
+> 最后更新：2026-08-04（新增 params-trigger 物料文档）
 
 ## 状态说明
 
@@ -79,14 +79,15 @@ glob.sync('src/packages/**/oss-material.json')
 | [**circular-progress**](./circular-progress/README.md) | 进度 / 加载 | 简单 | D3.js 圆环 + 渐变 / 起点标识 / 4 起点方向 + 中心 DigitalFlop + 翻牌器复用 | ⚠️ **数组模式字段名不一致**（dataModel `percent/title` vs 代码 `value/name`）；`digitalFlopResolve` 直接修改 config；`Label.fontColor` 隐式未用 |
 | [**popover-check**](./popover-check/README.md) | 表单 / 筛选 | 中 | 单/多选下拉 + TooltipBorder SVG 装饰边框 + 点击外部关闭 + 派发 select/selectLabel | ⚠️ **隐式字段 `defaultCheckedValue`**（代码读，schema 未声明）；`document.click` 全局监听；`containerStyle.borderWidth` 写死 2px |
 | [**top-rank**](./top-rank/README.md) | 列表 / 排行 | 中 | TOP 排名 + 前 3 名独立配色（ArrayCollapse）+ 序号圆形 + 4 种字体样式面板 | ⚠️ **doc/README.md 与代码多处不一致**（声称点击派发 / TOP 数量 / 动画均未实现）；`value` 字段类型与实际值不一致；`id` 字段未使用 |
+| [**params-trigger**](./params-trigger/README.md) | 其他 / 交互工具 | 简单 | 纯逻辑物料：参数转换映射 + 10 个语义化订阅槽位 + 派发字段名前缀（`paramsTrigger_`）+ 设计器占位 / 运行时 null | ⚠️ **matchedKeys 对比必须加前缀**；`constants.ts` 必须独立成文件以保 tree-shaking；subscribe 槽位框架不支持运行时动态注册 |
 
-> 二十一个物料都基于 **`develop` 分支当前代码**生成，与 `release` 分支的兼容代码已剥离。
+> 二十二个物料都基于 **`develop` 分支当前代码**生成，与 `release` 分支的兼容代码已剥离。
 >
 > ⚠️ 本批新增的 3 个物料（circular-progress、popover-check、top-rank）在文档化过程中**未修复源码问题**，仅在 gotchas.md 中记录，后续 PR 处理。
 >
 > ⚠️ `table-detail` 文档化过程中发现 12 条踩坑点（详见 [materials/table-detail/gotchas.md](./table-detail/gotchas.md)），其中 **§ 5（组件本身不触发 API 请求）** 是设计上的"被动消费"模式，**不属于组件 bug**；其他 11 条均未在文档化 PR 范围修复，需后续单独处理。
 >
-> 🔄 2026-07-30 迭代：新增 3 个能力（`useCarousel` 自动轮播 / `enableTableHeader` 显隐表头 / `columnsRenderTemplate` 列字段模板），gotchas 现已扩展至 18 条；详见 [table-detail/CHANGELOG.md](../../src/packages/table-detail/doc/CHANGELOG.md)。
+> 🔄 2026-07-30 迭代：新增 5 个能力（`useCarousel` 自动轮播 / `enableTableHeader` 显隐表头 / `hidePagination` 隐藏分页器 / `columnsRenderTemplate` 列字段模板 / `dataFilterTypeFieldName` 数据过滤 / `commonSettings` + `paginationSetting.color` 主题色注入），gotchas 现已扩展至 22 条；详见 [table-detail/CHANGELOG.md](../../src/packages/table-detail/doc/CHANGELOG.md)。
 
 ---
 
@@ -352,16 +353,17 @@ glob.sync('src/packages/**/oss-material.json')
 | `decoration/hexagon`     | ⏳ 待补充 | —    |
 | `decoration/flash-point` | ⏳ 待补充 | —    |
 
-## 18. 其他（6）
+## 18. 其他（7）
 
-| 物料                     | 复杂度 | 文档      | 状态 |
-| ------------------------ | ------ | --------- | ---- |
-| `carousel-image-list`    | 简单   | ⏳ 待补充 | —    |
-| `ind-list-echarts-gauge` | 简单   | ⏳ 待补充 | —    |
-| `pagination-display`     | 简单   | ⏳ 待补充 | —    |
-| `popover-checkparam`     | 简单   | ⏳ 待补充 | —    |
-| `stats-indi-group`       | 中     | ⏳ 待补充 | —    |
-| `tab-list-static`        | 中     | ⏳ 待补充 | —    |
+| 物料                     | 复杂度 | 文档      | 状态           |
+| ------------------------ | ------ | --------- | -------------- |
+| `carousel-image-list`    | 简单   | ⏳ 待补充 | —              |
+| `ind-list-echarts-gauge` | 简单   | ⏳ 待补充 | —              |
+| `pagination-display`     | 简单   | ⏳ 待补充 | —              |
+| `params-trigger`         | 简单   | [📄](./params-trigger/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
+| `popover-checkparam`     | 简单   | ⏳ 待补充 | —              |
+| `stats-indi-group`       | 中     | ⏳ 待补充 | —              |
+| `tab-list-static`        | 中     | ⏳ 待补充 | —              |
 
 ---
 

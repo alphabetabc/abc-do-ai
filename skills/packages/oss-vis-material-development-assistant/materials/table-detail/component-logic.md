@@ -203,7 +203,71 @@ const onPaginationChange = usePersistFn((info) => {
 });
 ```
 
-### 2.2.8 自动轮播 `useCarousel`
+#### 2.2.8 行单击效果与取消
+
+`rowSetting.clickEffect.open = true` 时，行被点击会高亮（取 `fieldNameForKey` 字段值或 `rowIndex` 作为 key，写入 `activeRowKey`）。当前支持的取消触发：
+
+```typescript
+// 1) 点击行：写入激活 key（不含 toggle）
+const onRowClick = usePersistFn((event, record, rowIndex) => {
+    event?.stopPropagation();
+    if (!enableRowClickEffect) return;
+
+    const nextKey = rowSetting.fieldNameForKey ? record[rowSetting.fieldNameForKey] : rowIndex;
+    // 再次点击已激活行 → 取消高亮
+    setActiveRowKey(nextKey);
+});
+
+// 2) 点表格外部 / 3) 按 Esc → 取消（document 级监听，仅在开启时挂）
+useEffect(() => {
+    if (!enableRowClickEffect) return;
+    const rootEl = rootElementRef.current;
+    if (!rootEl) return;
+
+    const isOutsideTable = (e: MouseEvent) => {
+        const target = e.target as Element;
+        if (rootEl.contains(target)) return false;
+        // 弹出的 Modal/Drawer 容器在 ConfigProvider prefixCls="oss-ui" 下类名带 oss-ui- 前缀
+        return !target.closest(
+            '.oss-ui-modal, .oss-ui-modal-wrap, .oss-ui-modal-mask, .oss-ui-drawer, .oss-ui-drawer-content',
+        );
+    };
+
+    const onDocClick = (e: MouseEvent) => {
+        if (isOutsideTable(e)) setActiveRowKey(undefined);
+    };
+    const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setActiveRowKey(undefined);
+    };
+    document.addEventListener('mousedown', onDocClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+        document.removeEventListener('mousedown', onDocClick);
+        document.removeEventListener('keydown', onKey);
+    };
+}, [enableRowClickEffect]);
+```
+
+##### 行为对照
+
+| 场景 | 行为 |
+| --- | --- |
+| 点击非激活行 | 高亮新行（`activeRowKey` 设为 `nextKey`） |
+| 再次点击已激活行 | state 值不变，仍高亮 |
+| 点击表格外部 | 取消高亮（`setActiveRowKey(undefined)`） |
+| 点击弹出的 Modal / Drawer 内部 | 视作仍属表格上下文，不取消 |
+| 按 Esc | 取消高亮 |
+
+##### 关键设计点
+
+| 设计 | 说明 |
+| --- | --- |
+| 用 `mousedown` 而非 `click` | 在 `click` 之前触发，避免行点击自身把高亮"擦掉" |
+| 监听器只挂在 `document`，deps 仅依赖 `enableRowClickEffect` | 组件生命周期内只挂/摘一次；切换激活行不重新注册 |
+| Modal/Drawer 容器算"内部" | `ConfigProvider prefixCls="oss-ui"`，容器类名带 `oss-ui-` 前缀；`closest` 兼容覆盖 wrapper / mask / drawer-content 多层 |
+| `activeRowKey` 类型 | `string \| number \| undefined`，避免 `useState(undefined)` 被推成 `undefined` 单类型 |
+
+### 2.2.9 自动轮播 `useCarousel`
 
 新增能力：启用后表格按指定间隔自动翻页，末页回到第 1 页循环。
 
@@ -319,6 +383,90 @@ if (controlledField && controlMode) {                                       // �
 
 `template()` 工具函数见 `src/utils/template.ts`，详见 `src/utils/template.ts` 头部 JSDoc。
 
+### 2.2.10 数据过滤 `dataExtraSetting.dataFilterTypeFieldName`
+
+新增能力：基于外部订阅值过滤 dataSource，配合 `subscribeDataFilterType` 使用。
+
+**数据流**：
+
+```
+config.dataExtraSetting.dataFilterTypeFieldName (要过滤的字段名)
+        ↓ 解构
+index.tsx (顶层变量 dataFilterTypeFieldName)
+        ↓ visibleDataSource useMemo
+props.interactionProps.subscribeDataFilterType (订阅值)
+        ↓
+filter((item) => `${item[dataFilterTypeFieldName]}` === `${subscribeDataFilterType}`)
+        ↓
+visibleDataSource（已过滤的 dataSource）
+        ↓
+分页计算 / 渲染
+```
+
+**过滤逻辑**（`visibleDataSource` useMemo）：
+
+```typescript
+// index.tsx
+const { dataExtraSetting } = config;
+const { dataFilterTypeFieldName } = dataExtraSetting || {};
+const { subscribeDataFilterType } = props.interactionProps || {};
+
+const visibleDataSource = useMemo(() => {
+    let data = dataSource;
+
+    // ① 数据过滤（dataFilterTypeFieldName + subscribeDataFilterType）
+    //    用 [null, '', undefined].includes 显式判断，不用 _.isEmpty
+    //    因为 lodash _.isEmpty(0) === true，会导致订阅值为 0 时跳过过滤
+    if (dataFilterTypeFieldName && ![null, '', undefined].includes(subscribeDataFilterType)) {
+        data = (data || []).filter((dataItem: any) => {
+            return `${dataItem?.[dataFilterTypeFieldName]}` === `${subscribeDataFilterType}`;
+        });
+    }
+
+    // ② 搜索栏过滤（原有）
+    const searchParamsEntries = ...;
+    if (_.isEmpty(searchParamsEntries) || _.isEmpty(data)) return data;
+    return data.filter(...);
+}, [searchParams, dataSource, dataFilterTypeFieldName, subscribeDataFilterType]);
+```
+
+**边界行为**：
+
+| 场景 | 行为 |
+| --- | --- |
+| `dataFilterTypeFieldName` 未配置 | 跳过过滤，走原有逻辑 |
+| `subscribeDataFilterType` 为 `undefined` / `null` / `''` | `[null, '', undefined].includes()` 返回 true，跳过过滤（**注意：不能用 `_.isEmpty`，因为它会把 `0` / `false` 视为 empty**） |
+| `dataSource` 为 `undefined` | `(data \|\| [])` 兜底，返回空数组 |
+| 字段值类型不一致（数字 vs 字符串） | `\`${...}\`` 字符串化统一比较 |
+| 字段名拼写错误（指向不存在字段） | 数据全部过滤掉，表格为空（**用户责任**） |
+| 与搜索栏同时启用 | 两层过滤叠加（先 `dataFilterTypeFieldName` 再 `searchParams`） |
+
+**对下游的影响**：
+
+| 下游 | 影响 |
+| --- | --- |
+| `tableInfo.dataSource` | 自动响应（依赖 `visibleDataSource`） |
+| `tableInfo.total`（本地分页） | 自动响应（过滤后页数可能变少） |
+| `servicePagination.total`（服务端分页） | 不变（仍为 `dataSource.length`） |
+| 分页器 | 重新计算页数 |
+
+**示例**：
+
+```typescript
+// dataSource
+[
+    { policyPlatform: '财政厅1', serverCount: 36, ... },
+    { policyPlatform: '财政厅2', serverCount: 24, ... },
+    { policyPlatform: '财政厅3', serverCount: 18, ... },
+]
+
+// config.dataExtraSetting.dataFilterTypeFieldName = 'policyPlatform'
+// props.interactionProps.subscribeDataFilterType = '财政厅2'
+
+// 过滤后
+[{ policyPlatform: '财政厅2', serverCount: 24, ... }]
+```
+
 ### 2.3 维护检查清单
 
 - [ ] 新增列字段时同步在 `dataModel.json` 加 indicator
@@ -328,6 +476,77 @@ if (controlledField && controlMode) {                                       // �
 - [ ] 滚动联动（`useScroll`）依赖 `paginationElementRef`，**不可移除分页器 ref**
 - [ ] 调整自动轮播（`useCarousel`）时同步检查 `safeTotal > 1` 守卫；改动 `interval` 字段范围同步 schema `x-component-props`
 - [ ] 新增/修改 `columnsRenderTemplate` 时同步检查 schema 字段定义、CellRenderer 模板逻辑、doc 三个入口（schema.md / doc/readme.md / gotchas）
+- [ ] 调整 `dataExtraSetting.dataFilterTypeFieldName` 时同步检查：订阅字段 `subscribeDataFilterType` schema、visibleDataSource deps、分页重算影响
+- [ ] 调整 `paginationSetting.color` / `commonSettings.scrollbar` 颜色时同步检查 StyledContainer 选择器是否仍生效、`index.less` 中是否有更高优先级样式
+
+### 2.2.11 主题色注入 `StyledContainer`
+
+新增能力：通过 `styled-components` 在 `StyledContainer` 上**动态生成主题样式**，作用对象为滚动条与分页器。
+
+**核心设计**：
+
+```
+config.paginationSetting.color
+config.commonSettings.scrollbar
+        ↓ 解构
+index.tsx (顶层变量 paginationColorSetting / commonSettings)
+        ↓ <StyledContainer /> 传 props
+styled.div 内部用 ${({ commonSettings, paginationColorSetting }) => `...`} 生成 CSS
+        ↓
+CSS 注入到 DOM（覆盖 index.less 中写死的主题样式）
+```
+
+**关键代码**（`components/styled/index.tsx`）：
+
+```typescript
+export const StyledContainer = styled.div<{
+    commonSettings?: CommonSettings;
+    paginationColorSetting?: PaginationColorSetting;
+}>`
+    ${({ commonSettings, paginationColorSetting }) => {
+        const sc = commonSettings?.scrollbar || {};
+        const pc = paginationColorSetting || {};
+        const safe = (v?: string, fallback = 'initial') => v || fallback;
+
+        return `
+            /* 滚动条 */
+            .oss-ui-table-body::-webkit-scrollbar-thumb {
+                background-color: ${safe(sc.thumbColor)};
+            }
+            .oss-ui-table-body::-webkit-scrollbar-track {
+                background-color: ${safe(sc.trackColor)};
+            }
+            /* 分页器 */
+            .table-detail-pagination {
+                .oss-ui-pagination-prev,
+                .oss-ui-pagination-next {
+                    color: ${safe(pc.prevNextColor, 'inherit')};
+                }
+                .oss-ui-pagination-item {
+                    border-color: ${safe(pc.itemBorderColor)};
+                    background-color: ${safe(pc.itemNormalColor)};
+                    color: ${safe(pc.itemTextColor, 'inherit')};
+                    &.oss-ui-pagination-item-active {
+                        background-color: ${safe(pc.itemActiveColor, pc.itemNormalColor)};
+                    }
+                }
+            }
+        `;
+    }}
+`;
+```
+
+**默认行为**（`safe()` 兜底）：
+
+| 字段未配置 | fallback | 说明 |
+| --- | --- | --- |
+| `thumbColor` / `trackColor` | `initial` | 不覆盖 `index.less` 中原有滚动条样式 |
+| `prevNextColor` / `itemTextColor` | `inherit` | 沿用父级文字色 |
+| `itemBorderColor` / `itemNormalColor` / `itemActiveColor` | `initial` | 不覆盖原有样式 |
+
+**样式注入位置**：仅覆盖 `background-color` / `color` / `border-color`，**不修改 `width: 6px` 滚动条尺寸**。
+
+**Card + object 双层 schema 结构**：schema 中 `$color`（Card）→ `color`（object）、`$scrollbar`（Card）→ `scrollbar`（object）；组件**只读内层 object**，外层 Card 仅作视觉分组。
 
 ## 3. 子组件 `CellRenderer`（`components/cell/index.tsx`）
 
@@ -527,6 +746,8 @@ scroll={undefined}  // 不传 scroll.y
 
 | 日期 | 变更 | 原因 |
 |---|---|---|
+| 2026-07-30 | 新增 dataFilterTypeFieldName | 数据过滤能力（`dataExtraSetting.dataFilterTypeFieldName` + `subscribeDataFilterType` 订阅联动） |
+| 2026-07-30 | 新增 commonSettings + paginationSetting.color | 主题色注入能力（`StyledContainer` 动态样式，作用于滚动条 / 分页器） |
 | 2026-07-30 | 新增 columnsRenderTemplate | 列字段模板能力（顶层配置 + CellRenderer plainText 分支集成 `template()`） |
 | 2026-07-30 | 新增 hidePagination | 隐藏分页器 UI，不影响自动轮播（`paginationSetting.hidePagination`） |
 | 2026-07-30 | 新增 enableTableHeader | 显隐表头能力（`headerStyle.enableTableHeader`） |

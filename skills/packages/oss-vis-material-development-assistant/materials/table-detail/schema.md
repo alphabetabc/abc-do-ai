@@ -127,8 +127,44 @@ last_updated: 2026-07-30
 | `enableCarousel` | boolean | 启用自动轮播 | `Switch` | `false` | 启用后表格按间隔自动翻页；仅本地分页生效（服务端分页下不启动，详见 component-logic § 2.2.8） |
 | `carouselInterval` | number | 轮播间隔（秒） | `NumberPicker` | `5` | 仅 `enableCarousel=true` 时显示，范围 1 ~ 60 |
 | `pauseOnHover` | boolean | 鼠标悬停时暂停 | `Switch` | `true` | 仅 `enableCarousel=true` 时显示 |
+| `color` | object | 分页器颜色 | （嵌套 `$color` 卡片） | `{}` | 嵌套卡片 `$color` 包裹，下含 5 个 ColorPicker 字段（→ component-logic.md § 2.2.11） |
 
-### 2.8 其他配置 `otherStyleSetting`
+#### 2.7.1 分页器颜色 `$color.color`
+
+> **Card + object 双层结构**：外层 `$color`（`type: 'void'` + `x-component: 'Card'`）仅作视觉分组（带 `title: '分页器颜色'`、`bordered: false`）；内层 `color`（`type: 'object'`）承载数据。
+
+| 字段 | 类型 | 标题 | x-component | 默认值 | 说明 |
+| --- | --- | --- | --- | --- | --- |
+| `prevNextColor` | string | 上/下一页颜色 | `ColorPicker` | — | 作用于 `.oss-ui-pagination-prev / .oss-ui-pagination-next` |
+| `itemBorderColor` | string | 分页项边框颜色 | `ColorPicker` | — | 作用于 `.oss-ui-pagination-item` |
+| `itemNormalColor` | string | 分页项正常背景色 | `ColorPicker` | — | 作用于 `.oss-ui-pagination-item` |
+| `itemActiveColor` | string | 分页项选中背景色 | `ColorPicker` | — | 作用于 `.oss-ui-pagination-item.oss-ui-pagination-item-active` |
+| `itemTextColor` | string | 分页项文字颜色 | `ColorPicker` | — | 作用于 `.oss-ui-pagination-item` 文字 |
+
+### 2.8 外观设置 `commonSettings`
+
+> **通用外观配置**。结构同 § 2.7.1：**Card + object 双层**。外层 `$scrollbar`（Card）作视觉分组，内层 `scrollbar`（object）承载数据。
+
+| 字段 | 类型 | 标题 | x-component | 默认值 | 说明 |
+| --- | --- | --- | --- | --- | --- |
+| `scrollbar` | object | 通用滚动条颜色 | （嵌套 `$scrollbar` 卡片） | `{}` | 嵌套卡片 `$scrollbar` 包裹，下含 2 个 ColorPicker 字段（→ component-logic.md § 2.2.11） |
+
+#### 2.8.1 通用滚动条颜色 `$scrollbar.scrollbar`
+
+| 字段 | 类型 | 标题 | x-component | 默认值 | 说明 |
+| --- | --- | --- | --- | --- | --- |
+| `thumbColor` | string | 滑块颜色 | `ColorPicker` | — | 作用于 `.oss-ui-table-body::-webkit-scrollbar-thumb` |
+| `trackColor` | string | 轨道颜色 | `ColorPicker` | — | 作用于 `.oss-ui-table-body::-webkit-scrollbar-track` |
+
+> **样式覆盖范围**：仅覆盖 `background-color`，不修改 `index.less` 中写死的 `width: 6px` 滚动条尺寸。
+
+### 2.9 数据额外配置 `dataExtraSetting`
+
+| 字段 | 类型 | 标题 | x-component | 默认值 | 说明 |
+|---|---|---|---|---|---|
+| `dataFilterTypeFieldName` | string | 数据过滤字段 | `Input` | `''` | dataSource 中用于过滤的字段名；配合订阅字段 `subscribeDataFilterType` 使用；订阅值为空时不生效（→ component-logic.md § 2.2.10） |
+
+### 2.10 其他配置 `otherStyleSetting`
 
 | 字段                | 类型    | 标题       | x-component | 默认值 | 说明                                            |
 | ------------------- | ------- | ---------- | ----------- | ------ | ----------------------------------------------- |
