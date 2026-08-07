@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: bb7b73f12e490a8460213b211acf2734657deb8d -->
+<!-- changelog-last-commit: f68731c9572fe959968941dca6f1c24b1bea10ba -->
+
+## 2026-08-07
+
+- 发布 skill
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+- 更新 skill「oss-vis-material-development-assistant」（配置、其他）；物料维护助手。维护、更新、拓展 src/packages 下所有带 oss-material.json 的有效物料。涵盖...；
 
 ## 2026-08-06
 
