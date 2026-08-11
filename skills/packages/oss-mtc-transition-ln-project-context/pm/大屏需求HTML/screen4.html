@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>辽宁省军转厅国产化改造项目 - 需求说明书</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="s4">
+
+<div class="header">
+  <h1>辽宁省军转厅国产化改造项目 · 需求说明书</h1>
+  <div class="subtitle">大屏4：信访数据比对 · 本地 REG_AUTHORITY=2 vs 进京 REG_AUTHORITY=1</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-index">总览</a>
+    <a href="screen1.html" class="nav-s1">大屏1：人员信息</a>
+    <a href="screen2.html" class="nav-s2">大屏2：辽宁信访信息</a>
+    <a href="screen3.html" class="nav-s3">大屏3：进京信访信息</a>
+    <a href="screen4.html" class="nav-s4 active">大屏4：信访数据比对</a>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="screen-title">
+    <div class="icon" style="background: rgba(188,140,255,.15);">📊</div>
+    <h2>大屏4：信访数据比对</h2>
+    <span class="badge badge-purple">6个模块</span>
+    <span class="badge badge-purple">本地(2) vs 进京(1) 对比</span>
+  </div>
+  <p style="color: var(--text-dim); font-size: 14px; margin-top: 8px;">
+    提供辽宁范围信访数据比对大数据综合展示功能，将本地信访与进京信访数据进行对比展示。
+  </p>
+
+  <div class="module-list">
+
+    <!-- Module 1 -->
+    <div class="module-card">
+      <div class="module-header expanded" onclick="toggleModule(this)">
+        <span class="module-num">1</span>
+        <span class="module-name">信访量趋势对比</span>
+        <span class="chart-type">折线图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body">
+        <p style="margin-bottom: 12px;">
+          以折线图展示本地和进京的三类信访渠道（网上信访、来访、来信）的和的最近12个月信息量变化。
+        </p>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>LETTER_SCREEN_2</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 本地信访（REG_AUTHORITY=2）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="cmt">-- 本地信访12个月趋势，按渠道分组后求和</span>
+<span class="kw">SELECT</span> <span class="kw">SUM</span>(NUM_0), <span class="kw">SUM</span>(NUM_1), <span class="kw">SUM</span>(NUM_2), <span class="kw">SUM</span>(NUM_3),
+       <span class="kw">SUM</span>(NUM_4), <span class="kw">SUM</span>(NUM_5), <span class="kw">SUM</span>(NUM_6), <span class="kw">SUM</span>(NUM_7),
+       <span class="kw">SUM</span>(NUM_8), <span class="kw">SUM</span>(NUM_9), <span class="kw">SUM</span>(NUM_10), <span class="kw">SUM</span>(NUM_11)
+<span class="kw">FROM</span> LETTER_SCREEN_2
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">GROUP BY</span> ACCEPT_SOURCE
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</div>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 进京信访（REG_AUTHORITY=1）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="cmt">-- 进京信访12个月趋势，SQL同上，仅 REG_AUTHORITY 改为 1</span>
+<span class="kw">SELECT</span> <span class="kw">SUM</span>(NUM_0), <span class="kw">SUM</span>(NUM_1), <span class="kw">SUM</span>(NUM_2), <span class="kw">SUM</span>(NUM_3),
+       <span class="kw">SUM</span>(NUM_4), <span class="kw">SUM</span>(NUM_5), <span class="kw">SUM</span>(NUM_6), <span class="kw">SUM</span>(NUM_7),
+       <span class="kw">SUM</span>(NUM_8), <span class="kw">SUM</span>(NUM_9), <span class="kw">SUM</span>(NUM_10), <span class="kw">SUM</span>(NUM_11)
+<span class="kw">FROM</span> LETTER_SCREEN_2
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">1</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">GROUP BY</span> ACCEPT_SOURCE
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">2</span>
+        <span class="module-name">信访主要诉求占比对比</span>
+        <span class="chart-type">双雷达图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <p style="margin-bottom: 12px;">双雷达图展示本地和进京各类信访诉求的数量及占比。</p>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>LETTER_SCREEN_1</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 本地各诉求分类（REG_AUTHORITY=2）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> ITEM_NAME, REG_MAIN_APPEAL_ONE, NUM
+<span class="kw">FROM</span> LETTER_SCREEN_1
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 进京各诉求分类（REG_AUTHORITY=1）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> ITEM_NAME, REG_MAIN_APPEAL_ONE, NUM
+<span class="kw">FROM</span> LETTER_SCREEN_1
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">1</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">3</span>
+        <span class="module-name">信访量概要情况对比</span>
+        <span class="chart-type">数字 + 列表</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <p style="margin-bottom: 12px;">
+          顶部展示昨日信访量、昨日集体访批次、昨日集体访人次；下方展示各渠道信访量。
+          每个指标同时展示：合计 = 本地 + 进京。
+        </p>
+        <table class="ind-table">
+          <thead><tr><th>指标</th><th>取值字段</th><th>对比说明</th></tr></thead>
+          <tbody>
+            <tr><td>昨日网上信访量</td><td><span class="field">JTWX</span></td><td>合计 = 本地(JTWX, REG=2) + 进京(JTWX, REG=1)</td></tr>
+            <tr><td>累计网上信访量</td><td><span class="field">ZWX</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>昨日来访量</td><td><span class="field">JTLF</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>累计来访量</td><td><span class="field">ZLF</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>昨日集体访批次</td><td><span class="field">JTJTFPC</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>昨日集体访人次</td><td><span class="field">JTJTFRC</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>累计来信量</td><td><span class="field">ZLX</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>昨日来信量</td><td><span class="field">JTLX</span></td><td>合计 = 本地 + 进京</td></tr>
+            <tr><td>昨日信访量</td><td><span class="field">JTWX + JTLF + JTLX</span></td><td>三渠道之和；合计 = 本地SUM + 进京SUM</td></tr>
+          </tbody>
+        </table>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>LETTER_SCREEN_6</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 本地信访（REG_AUTHORITY=2）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> JTWX, ZWX, JTLF, ZLF,
+       JTJTFPC, JTJTFRC, ZLX, JTLX,
+       (JTWX + JTLF + JTLX) <span class="kw">AS</span> yesterday_total
+<span class="kw">FROM</span> LETTER_SCREEN_6
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 进京信访（REG_AUTHORITY=1）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> JTWX, ZWX, JTLF, ZLF,
+       JTJTFPC, JTJTFRC, ZLX, JTLX,
+       (JTWX + JTLF + JTLX) <span class="kw">AS</span> yesterday_total
+<span class="kw">FROM</span> LETTER_SCREEN_6
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">1</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">4</span>
+        <span class="module-name">区域信访热力地图</span>
+        <span class="chart-type">地图（浅蓝→红橙渐变）</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <p style="margin-bottom: 12px;">以辽宁省区域地图展示各地区本地和进京的信访量密度分布，颜色从浅蓝到红橙渐变。</p>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>LETTER_SCREEN_4</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 本地 + 进京合并统计（REG_AUTHORITY IN(1,2)）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="cmt">-- 将 REG_AUTHORITY=1（进京）和 REG_AUTHORITY=2（本地）的 NUM 求和</span>
+<span class="kw">SELECT</span> CANT_NAME, CANT_CODE, <span class="kw">SUM</span>(NUM) <span class="kw">AS</span> NUM
+<span class="kw">FROM</span> LETTER_SCREEN_4
+<span class="kw">WHERE</span> REG_AUTHORITY <span class="kw">IN</span> (<span class="str">1</span>, <span class="str">2</span>)
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">GROUP BY</span> CANT_NAME, CANT_CODE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">5</span>
+        <span class="module-name">各地区信访件数量对比</span>
+        <span class="chart-type">柱状图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <p style="margin-bottom: 12px;">以柱状图展示辽宁各地区本地和进京信访件数量排名。</p>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>LETTER_SCREEN_5</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 本地各地区信访件数量排名（REG_AUTHORITY=2）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> CANT_NAME, CANT_CODE, NUM, MAX_TIME
+<span class="kw">FROM</span> LETTER_SCREEN_5
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">ORDER BY</span> NUM <span class="kw">DESC</span></div>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 进京各地区信访件数量排名（REG_AUTHORITY=1）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> CANT_NAME, CANT_CODE, NUM, MAX_TIME
+<span class="kw">FROM</span> LETTER_SCREEN_5
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">1</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">ORDER BY</span> NUM <span class="kw">DESC</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">6</span>
+        <span class="module-name">信访人员身份类型对比</span>
+        <span class="chart-type">分组柱状图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <p style="margin-bottom: 12px;">以分组柱状图展示11种身份类型本地和进京信访数据。</p>
+        <table class="ind-table">
+          <thead><tr><th>字段名</th><th>中文身份类型</th></tr></thead>
+          <tbody>
+            <tr><td><span class="field">SB_NCYWB</span></td><td>农村籍义务兵</td></tr>
+            <tr><td><span class="field">SB_CZYWB</span></td><td>城镇籍义务兵</td></tr>
+            <tr><td><span class="field">SB_ZYSG</span></td><td>转业志愿兵/士官</td></tr>
+            <tr><td><span class="field">SB_FYSG</span></td><td>复员士官</td></tr>
+            <tr><td><span class="field">GB_JHFP</span></td><td>计划分配军转干部</td></tr>
+            <tr><td><span class="field">GB_ZZZY</span></td><td>自主择业军转干部</td></tr>
+            <tr><td><span class="field">GB_QYJZGB</span></td><td>企业军转干部</td></tr>
+            <tr><td><span class="field">GB_ZYJZGB</span></td><td>自谋自择就业军转干部</td></tr>
+            <tr><td><span class="field">GB_JXGB</span></td><td>军休干部</td></tr>
+            <tr><td><span class="field">GB_FY</span></td><td>复员干部</td></tr>
+            <tr><td><span class="field">RY_QT</span></td><td>其他</td></tr>
+          </tbody>
+        </table>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>LETTER_SCREEN_3</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 本地11种身份类型分渠道信访数据（REG_AUTHORITY=2）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> SB_NCYWB, SB_CZYWB, SB_ZYSG, SB_FYSG,
+       GB_JHFP, GB_ZZZY, GB_QYJZGB, GB_ZYJZGB,
+       GB_JXGB, GB_FY, RY_QT,
+       ACCEPT_SOURCE
+<span class="kw">FROM</span> LETTER_SCREEN_3
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</div>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL · 进京11种身份类型分渠道信访数据（REG_AUTHORITY=1）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> SB_NCYWB, SB_CZYWB, SB_ZYSG, SB_FYSG,
+       GB_JHFP, GB_ZZZY, GB_QYJZGB, GB_ZYJZGB,
+       GB_JXGB, GB_FY, RY_QT,
+       ACCEPT_SOURCE
+<span class="kw">FROM</span> LETTER_SCREEN_3
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">1</span>
+  <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleModule(el) {
+  el.classList.toggle('expanded');
+  var body = el.nextElementSibling;
+  body.classList.toggle('collapsed');
+}
+function copySql(btn) {
+  var content = btn.parentElement.nextElementSibling.textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(content).then(function(){
+      btn.textContent = '已复制';
+      setTimeout(function(){ btn.textContent = '复制'; }, 1500);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = content; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '已复制';
+    setTimeout(function(){ btn.textContent = '复制'; }, 1500);
+  }
+}
+</script>
+</body>
+</html>

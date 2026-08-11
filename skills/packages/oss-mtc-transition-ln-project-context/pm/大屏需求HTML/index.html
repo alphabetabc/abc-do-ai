@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>辽宁省军转厅国产化改造项目 - 大屏需求拆解</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .screen-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 16px;
+    }
+    .screen-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .screen-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+    }
+    .screen-card.s1::before { background: var(--accent); }
+    .screen-card.s2::before { background: var(--green); }
+    .screen-card.s3::before { background: var(--accent2); }
+    .screen-card.s4::before { background: var(--purple); }
+    .screen-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border);
+    }
+    .screen-card.s1:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(88,166,255,.1); }
+    .screen-card.s2:hover { border-color: var(--green); box-shadow: 0 8px 24px rgba(63,185,80,.1); }
+    .screen-card.s3:hover { border-color: var(--accent2); box-shadow: 0 8px 24px rgba(247,129,102,.1); }
+    .screen-card.s4:hover { border-color: var(--purple); box-shadow: 0 8px 24px rgba(188,140,255,.1); }
+    .screen-card .sc-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .screen-card .sc-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .screen-card.s1 .sc-icon { background: rgba(88,166,255,.15); color: var(--accent); }
+    .screen-card.s2 .sc-icon { background: rgba(63,185,80,.15); color: var(--green); }
+    .screen-card.s3 .sc-icon { background: rgba(247,129,102,.15); color: var(--accent2); }
+    .screen-card.s4 .sc-icon { background: rgba(188,140,255,.15); color: var(--purple); }
+    .screen-card .sc-title { font-size: 16px; font-weight: 600; }
+    .screen-card .sc-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .screen-card .sc-body { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+    .screen-card .sc-meta {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .screen-card .sc-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .screen-card .sc-arrow { color: var(--text-dim); font-size: 18px; }
+    .screen-card.s1:hover .sc-arrow { color: var(--accent); }
+    .screen-card.s2:hover .sc-arrow { color: var(--green); }
+    .screen-card.s3:hover .sc-arrow { color: var(--accent2); }
+    .screen-card.s4:hover .sc-arrow { color: var(--purple); }
+    .desc-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .desc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .desc-item {
+      display: flex;
+      gap: 12px;
+    }
+    .desc-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      background: var(--surface2);
+    }
+    .desc-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .desc-item p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+    .section-title.index::before { background: linear-gradient(90deg, var(--accent), var(--purple)); }
+    .data-table-summary {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .data-table-summary th {
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--surface2);
+      color: var(--text-dim);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table-summary td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .data-table-summary tr:last-child td { border-bottom: none; }
+    .data-table-summary .tname {
+      font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+      color: var(--yellow);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>辽宁省军转厅国产化改造项目 - 大屏需求拆解</h1>
+    <div class="subtitle">总览 · 4个大屏 · 24个展示模块 · 8张数据表</div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-index active">总览</a>
+      <a href="screen1.html" class="nav-s1">大屏1：人员信息</a>
+      <a href="screen2.html" class="nav-s2">大屏2：辽宁信访信息</a>
+      <a href="screen3.html" class="nav-s3">大屏3：进京信访信息</a>
+      <a href="screen4.html" class="nav-s4">大屏4：信访数据比对</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="overview-grid">
+      <div class="overview-card c1">
+        <div class="num">4</div>
+        <div class="label">大屏数量</div>
+      </div>
+      <div class="overview-card c2">
+        <div class="num">24</div>
+        <div class="label">展示模块</div>
+      </div>
+      <div class="overview-card c3">
+        <div class="num">8</div>
+        <div class="label">数据表</div>
+      </div>
+      <div class="overview-card c4">
+        <div class="num">5</div>
+        <div class="label">公共参数</div>
+      </div>
+    </div>
+
+    <div class="section-title index">整体说明</div>
+    <div class="desc-block">
+      <div class="desc-grid">
+        <div class="desc-item">
+          <div class="desc-icon" style="color: var(--accent);">🗺️</div>
+          <div>
+            <h4>地图能力</h4>
+            <p>支持行政区划两级下钻：cantType=4（市级）→ cantType=6（区县），通过 cantCode 参数控制当前展示区域。</p>
+          </div>
+        </div>
+        <div class="desc-item">
+          <div class="desc-icon" style="color: var(--green);">📍</div>
+          <div>
+            <h4>沈抚新区合并</h4>
+            <p>沈抚新区作为独立区域与沈阳市并列展示，地图和统计数据中需单独处理，不归属任何地级市。</p>
+          </div>
+        </div>
+        <div class="desc-item">
+          <div class="desc-icon" style="color: var(--accent2);">🔄</div>
+          <div>
+            <h4>导航切换</h4>
+            <p>顶部导航栏可自由切换 4 个大屏页面，页面间跳转保持公共参数（cantCode、cantType等）状态一致。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title index">大屏总览</div>
+    <div class="screen-cards">
+      <a href="screen1.html" class="screen-card s1">
+        <div class="sc-header">
+          <div class="sc-icon">👥</div>
+          <div>
+            <div class="sc-title">大屏1：人员信息</div>
+            <div class="sc-sub">6个展示模块</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          展示全省军转人员基础信息分布，包括人员统计、类别分析、地区分布等核心指标。
+        </div>
+        <div class="sc-meta">
+          <div class="sc-badges">
+            <span class="badge badge-blue">人员</span>
+          </div>
+          <div class="sc-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="screen2.html" class="screen-card s2">
+        <div class="sc-header">
+          <div class="sc-icon">✉️</div>
+          <div>
+            <div class="sc-title">大屏2：辽宁信访信息</div>
+            <div class="sc-sub">6个展示模块 · REG_AUTHORITY=2</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          展示辽宁省内信访数据，包括来信数量、信访类型、地区分布、办理状态等维度分析。
+        </div>
+        <div class="sc-meta">
+          <div class="sc-badges">
+            <span class="badge badge-green">省内信访</span>
+          </div>
+          <div class="sc-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="screen3.html" class="screen-card s3">
+        <div class="sc-header">
+          <div class="sc-icon">🏛️</div>
+          <div>
+            <div class="sc-title">大屏3：进京信访信息</div>
+            <div class="sc-sub">6个展示模块 · REG_AUTHORITY=1</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          展示进京信访数据，包括进京信访数量、信访类型、地区分布、重点人员等维度分析。
+        </div>
+        <div class="sc-meta">
+          <div class="sc-badges">
+            <span class="badge badge-orange">进京信访</span>
+          </div>
+          <div class="sc-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="screen4.html" class="screen-card s4">
+        <div class="sc-header">
+          <div class="sc-icon">📊</div>
+          <div>
+            <div class="sc-title">大屏4：信访数据比对</div>
+            <div class="sc-sub">6个展示模块 · 本地 vs 进京</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          本地信访与进京信访数据横向对比，包括数量对比、类型对比、地区对比、趋势对比等。
+        </div>
+        <div class="sc-meta">
+          <div class="sc-badges">
+            <span class="badge badge-purple">数据比对</span>
+          </div>
+          <div class="sc-arrow">→</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="section-title index">涉及数据表汇总</div>
+    <table class="data-table-summary">
+      <thead>
+        <tr>
+          <th style="width: 280px;">表名</th>
+          <th>用途说明</th>
+          <th style="width: 240px;">涉及大屏</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tname">STATS_JDLK_PERSION_INFOR_CANT</span></td>
+          <td>军转人员信息按行政区划统计表，存储各地区人员数量、类别等核心指标。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-blue">大屏1</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">abi_zb_tyjrjqyfdx</span></td>
+          <td>退役军队人员企业队伍相关数据表，用于人员类别细分分析。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-blue">大屏1</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">aa_jycy</span></td>
+          <td>就业创业人员数据表，用于军转人员就业创业情况统计分析。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-blue">大屏1</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">LETTER_SCREEN_1</span></td>
+          <td>信访大屏数据表1 - 信访总量与趋势统计，用于核心指标展示。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-green">大屏2</span>
+              <span class="badge badge-orange">大屏3</span>
+              <span class="badge badge-purple">大屏4</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">LETTER_SCREEN_2</span></td>
+          <td>信访大屏数据表2 - 信访类型分类统计，用于信访类型分布分析。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-green">大屏2</span>
+              <span class="badge badge-orange">大屏3</span>
+              <span class="badge badge-purple">大屏4</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">LETTER_SCREEN_3</span></td>
+          <td>信访大屏数据表3 - 地区分布统计表，用于各地区信访数据对比。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-green">大屏2</span>
+              <span class="badge badge-orange">大屏3</span>
+              <span class="badge badge-purple">大屏4</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">LETTER_SCREEN_4</span></td>
+          <td>信访大屏数据表4 - 办理状态统计表，用于信访办理进度分析。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-green">大屏2</span>
+              <span class="badge badge-orange">大屏3</span>
+              <span class="badge badge-purple">大屏4</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">LETTER_SCREEN_5</span></td>
+          <td>信访大屏数据表5 - 重点人员/事项统计表，用于重点关注对象展示。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-green">大屏2</span>
+              <span class="badge badge-orange">大屏3</span>
+              <span class="badge badge-purple">大屏4</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tname">LETTER_SCREEN_6</span></td>
+          <td>信访大屏数据表6 - 信访趋势明细表，用于时间维度趋势分析。</td>
+          <td>
+            <div class="badge-group">
+              <span class="badge badge-green">大屏2</span>
+              <span class="badge badge-orange">大屏3</span>
+              <span class="badge badge-purple">大屏4</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title index">公共参数说明</div>
+    <table class="param-table">
+      <thead>
+        <tr>
+          <th style="width: 180px;">参数名</th>
+          <th style="width: 160px;">取值</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pname">cantCode</span></td>
+          <td><span class="pval">行政区划代码</span></td>
+          <td>当前选中的行政区划编码，省级为 210000（辽宁省），市级如 210100（沈阳市），区县级如 210102（和平区）。与 cantType 配合使用，控制地图下钻层级和数据过滤范围。</td>
+        </tr>
+        <tr>
+          <td><span class="pname">cantType</span></td>
+          <td><span class="pval">4 / 6</span></td>
+          <td>行政区划层级类型：4 表示市级（展示全省14个地级市 + 沈抚新区），6 表示区县级（展示某地级市下属区县）。cantType=4 时 cantCode 为省级或市级代码，cantType=6 时 cantCode 为市级代码。</td>
+        </tr>
+        <tr>
+          <td><span class="pname">ORGANID</span></td>
+          <td><span class="pval">机构ID</span></td>
+          <td>当前登录用户所属机构ID，用于数据权限控制，仅展示该机构及其下属机构管辖范围内的数据。默认值为辽宁省军转厅机构ID。</td>
+        </tr>
+        <tr>
+          <td><span class="pname">REG_AUTHORITY</span></td>
+          <td><span class="pval">1 / 2</span></td>
+          <td>信访数据归属标记：1 表示进京信访数据（大屏3使用），2 表示辽宁省内信访数据（大屏2使用）。大屏4同时使用两个值进行比对分析。</td>
+        </tr>
+        <tr>
+          <td><span class="pname">ACCEPT_SOURCE</span></td>
+          <td><span class="pval">来源编码</span></td>
+          <td>信访受理渠道来源编码，如：来信、来访、网上信访、电话信访等。用于按来源维度筛选和统计信访数据，支持多选或全选。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function toggleModule(el) {
+      el.classList.toggle('expanded');
+      var body = el.nextElementSibling;
+      body.classList.toggle('collapsed');
+    }
+    function copySql(btn) {
+      var content = btn.parentElement.nextElementSibling.textContent;
+      navigator.clipboard.writeText(content).then(()=>{
+        btn.textContent='已复制';
+        setTimeout(()=>{btn.textContent='复制';},1500);
+      });
+    }
+  </script>
+</body>
+</html>

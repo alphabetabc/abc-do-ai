@@ -1,0 +1,14 @@
+{
+  "contentHash": "5b48b6bdb9dc51bfc7931868b69d8c6292b67ba51e9e0a52489e4b7f70ef7289",
+  "files": [
+    "./design/",
+    "./env/",
+    "./plans/",
+    "./pm/"
+  ],
+  "id": "oss-mtc-transition-ln-project-context",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

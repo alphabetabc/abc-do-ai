@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大屏1：人员信息 - 辽宁省军转厅国产化改造项目</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="s1">
+
+<div class="header">
+  <h1>辽宁省军转厅国产化改造项目 - 大屏需求拆解</h1>
+  <div class="subtitle">大屏1：人员信息 · 6个展示模块</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-index">总览</a>
+    <a href="screen1.html" class="nav-s1 active">大屏1：人员信息</a>
+    <a href="screen2.html" class="nav-s2">大屏2：辽宁信访信息</a>
+    <a href="screen3.html" class="nav-s3">大屏3：进京信访信息</a>
+    <a href="screen4.html" class="nav-s4">大屏4：信访数据比对</a>
+  </div>
+</div>
+
+<div class="content">
+  <div class="screen-title">
+    <div class="icon" style="background: rgba(88,166,255,.15);">👥</div>
+    <h2>大屏1：人员信息</h2>
+    <span class="badge badge-blue">6个模块</span>
+    <span class="badge badge-blue">无REG_AUTHORITY</span>
+  </div>
+  <p style="color: var(--text-dim); margin-top: 8px; margin-bottom: 8px;">提供退役军人人员信息大数据综合展示功能。</p>
+
+  <div class="module-list">
+
+    <!-- Module 1 -->
+    <div class="module-card">
+      <div class="module-header expanded" onclick="toggleModule(this)">
+        <span class="module-num">1</span>
+        <span class="module-name">退役军人统计</span>
+        <span class="chart-type">环形饼图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body">
+        <div class="info-grid">
+          <div class="key">说明</div>
+          <div class="val">展示总数+三类占比（退役军官/军士/义务兵）</div>
+        </div>
+
+        <div class="section-title">指标定义</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>指标名称</th><th>字段</th><th>计算方式</th><th>数据表</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>退役军人总数</td><td class="field">VETERAN</td><td>直接取值</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>2</td><td>退役军官人数</td><td class="field">OFFICER</td><td>直接取值</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>3</td><td>军官占比</td><td class="field">OFFICER_RATIO</td><td>OFFICER / VETERAN * 100%</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>4</td><td>退役军士人数</td><td class="field">SERGEANT</td><td>直接取值</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>5</td><td>军士占比</td><td class="field">SERGEANT_RATIO</td><td>SERGEANT / VETERAN * 100%</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>6</td><td>退役义务兵人数</td><td class="field">CONSCRIPTS</td><td>直接取值</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>7</td><td>义务兵占比</td><td class="field">CONSCRIPTS_RATIO</td><td>CONSCRIPTS / VETERAN * 100%</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">数据表</div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--accent);"></span>STATS_JDLK_PERSION_INFOR_CANT</span>
+        </div>
+
+        <div class="section-title">SQL 查询</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 查询退役军人统计数据（省维度 cantCode=21）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> VETERAN, OFFICER, SERGEANT, CONSCRIPTS,
+       <span class="cmt">-- 军官占比 = OFFICER / VETERAN * 100%</span>
+       <span class="cmt">-- 军士占比 = SERGEANT / VETERAN * 100%</span>
+       <span class="cmt">-- 义务兵占比 = CONSCRIPTS / VETERAN * 100%</span>
+<span class="kw">FROM</span> STATS_JDLK_PERSION_INFOR_CANT
+<span class="kw">WHERE</span> PROVINCE_CODE = <span class="param">#{cantCode}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">2</span>
+        <span class="module-name">退役军人及其他优抚对象总人数统计</span>
+        <span class="chart-type">分层下钻展示</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">说明</div>
+          <div class="val">分层下钻展示：退役军人（军官/军士/义务兵）及其他优抚对象各类别明细人数</div>
+        </div>
+
+        <div class="section-title">下钻子集明细</div>
+
+        <div class="drill-detail">
+          <div class="drill-title">退役军官（10项）</div>
+          <div class="drill-tags">
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">离休干部 (lxgb)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">退休军官 (txjg)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">转业军官计划分配 (zyjg)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">自主择业 (zzzyjzgb)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">企业 (qyjzgb)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">自愿自行就业 (zyzxjyjzgb)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">复员 (fyjg)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">逐月领取退役金 (zylqtyjtyjg)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">现役转改文职 (xygbzgwzry)</span>
+            <span class="drill-tag" style="background: rgba(88,166,255,.1); color: var(--accent);">集体转制 (jtzygb)</span>
+          </div>
+        </div>
+
+        <div class="drill-detail">
+          <div class="drill-title">退役军士（10项）</div>
+          <div class="drill-tags">
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">安排工作退役军士 (apgztyjs)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">自谋职业 (zysg)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">灵活就业退役军士 (zmzytyjs)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">灵活就业退役军士 (lhjytyjs)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">自主就业退役军士 (zzjytyjs)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">国家供养退役军士 (gjgytyjs)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">逐月领取退役金 (zylqtyjtyjs)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">复员军士 (fysg)</span>
+            <span class="drill-tag" style="background: rgba(63,185,80,.1); color: var(--green);">集体转制军士 (jtzysg)</span>
+          </div>
+        </div>
+
+        <div class="drill-detail">
+          <div class="drill-title">退役义务兵（7项）</div>
+          <div class="drill-tags">
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">安排工作退役义务兵 (apgztyywb)</span>
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">自谋职业退役义务兵 (zmzytyywb)</span>
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">灵活就业退役义务兵 (lhjytyywb)</span>
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">自主就业退役义务兵 (zzjytyywb)</span>
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">国家供养退役义务兵 (gjgytyywb)</span>
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">集体转制义务兵 (jtzyywb)</span>
+            <span class="drill-tag" style="background: rgba(247,129,102,.1); color: var(--accent2);">回乡生产退役义务兵 (hxscshtyywb)</span>
+          </div>
+        </div>
+
+        <div class="drill-detail">
+          <div class="drill-title">其他优抚对象（10项）</div>
+          <div class="drill-tags">
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">烈士遗属抚恤 (yfxsgjdqfxlsys)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">烈士老年子女补助 (yfxsgjdqbzlslnzn)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">烈士遗属无抚恤 (yfbxsgjdqfxbzlsys)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">因公牺牲抚恤 (yfxsgjdqfxygxsjrys)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">因公牺牲无抚恤 (yfbxsgjdqfxygxsjrys)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">病故抚恤 (yfxsgjdqfxbgjrys)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">病故无抚恤 (yfbxsgjdqfxbgjrys)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">伤残预备役 (yfscybyrymbmg)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">伤残民警 (yfscrmjc)</span>
+            <span class="drill-tag" style="background: rgba(188,140,255,.1); color: var(--purple);">因公伤残 (yfygscry)</span>
+          </div>
+        </div>
+
+        <div class="section-title">指标定义（5行主指标 + 37行子集）</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>指标名称</th><th>字段</th><th>数据表</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>退役军人总数</td><td class="field">VETERAN</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>2</td><td>退役军官</td><td class="field">OFFICER</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>3</td><td>退役军士</td><td class="field">SERGEANT</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>4</td><td>退役义务兵</td><td class="field">CONSCRIPTS</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>5</td><td>其他优抚对象</td><td class="field">CAT_PRE_OBJECT</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td colspan="4" style="background: var(--surface2); color: var(--accent); font-weight: 600;">退役军官子集（10项）</td></tr>
+            <tr><td>6</td><td>离休干部</td><td class="field">lxgb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>7</td><td>退休军官</td><td class="field">txjg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>8</td><td>转业军官计划分配</td><td class="field">zyjg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>9</td><td>自主择业</td><td class="field">zzzyjzgb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>10</td><td>企业</td><td class="field">qyjzgb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>11</td><td>自愿自行就业</td><td class="field">zyzxjyjzgb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>12</td><td>复员</td><td class="field">fyjg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>13</td><td>逐月领取退役金</td><td class="field">zylqtyjtyjg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>14</td><td>现役转改文职</td><td class="field">xygbzgwzry</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>15</td><td>集体转制</td><td class="field">jtzygb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td colspan="4" style="background: var(--surface2); color: var(--green); font-weight: 600;">退役军士子集（10项）</td></tr>
+            <tr><td>16</td><td>安排工作退役军士</td><td class="field">apgztyjs</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>17</td><td>自谋职业</td><td class="field">zysg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>18</td><td>灵活就业退役军士</td><td class="field">zmzytyjs</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>19</td><td>灵活就业退役军士</td><td class="field">lhjytyjs</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>20</td><td>自主就业退役军士</td><td class="field">zzjytyjs</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>21</td><td>国家供养退役军士</td><td class="field">gjgytyjs</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>22</td><td>逐月领取退役金</td><td class="field">zylqtyjtyjs</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>23</td><td>复员军士</td><td class="field">fysg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>24</td><td>集体转制军士</td><td class="field">jtzysg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td colspan="4" style="background: var(--surface2); color: var(--accent2); font-weight: 600;">退役义务兵子集（7项）</td></tr>
+            <tr><td>25</td><td>安排工作退役义务兵</td><td class="field">apgztyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>26</td><td>自谋职业退役义务兵</td><td class="field">zmzytyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>27</td><td>灵活就业退役义务兵</td><td class="field">lhjytyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>28</td><td>自主就业退役义务兵</td><td class="field">zzjytyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>29</td><td>国家供养退役义务兵</td><td class="field">gjgytyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>30</td><td>集体转制义务兵</td><td class="field">jtzyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>31</td><td>回乡生产退役义务兵</td><td class="field">hxscshtyywb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td colspan="4" style="background: var(--surface2); color: var(--purple); font-weight: 600;">其他优抚对象子集（10项）</td></tr>
+            <tr><td>32</td><td>烈士遗属抚恤</td><td class="field">yfxsgjdqfxlsys</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>33</td><td>烈士老年子女补助</td><td class="field">yfxsgjdqbzlslnzn</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>34</td><td>烈士遗属无抚恤</td><td class="field">yfbxsgjdqfxbzlsys</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>35</td><td>因公牺牲抚恤</td><td class="field">yfxsgjdqfxygxsjrys</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>36</td><td>因公牺牲无抚恤</td><td class="field">yfbxsgjdqfxygxsjrys</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>37</td><td>病故抚恤</td><td class="field">yfxsgjdqfxbgjrys</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>38</td><td>病故无抚恤</td><td class="field">yfbxsgjdqfxbgjrys</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>39</td><td>伤残预备役</td><td class="field">yfscybyrymbmg</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>40</td><td>伤残民警</td><td class="field">yfscrmjc</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>41</td><td>因公伤残</td><td class="field">yfygscry</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">数据表</div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--accent);"></span>STATS_JDLK_PERSION_INFOR_CANT</span>
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>abi_zb_tyjrjqyfdx</span>
+        </div>
+
+        <div class="section-title">SQL 查询 1 - 主表（5大主指标）</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 查询主表5大主指标</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> VETERAN, OFFICER, SERGEANT, CONSCRIPTS, CAT_PRE_OBJECT
+<span class="kw">FROM</span> STATS_JDLK_PERSION_INFOR_CANT
+<span class="kw">WHERE</span> PROVINCE_CODE = <span class="param">#{cantCode}</span></div>
+        </div>
+
+        <div class="section-title">SQL 查询 2 - 子集（37个字段全选）</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 查询子集37个字段明细</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> lxgb, txjg, zyjg, zzzyjzgb, qyjzgb, zyzxjyjzgb, fyjg, zylqtyjtyjg, xygbzgwzry, jtzygb,
+       tyjs, apgztyjs, zysg, zmzytyjs, lhjytyjs, zzjytyjs, gjgytyjs, zylqtyjtyjs, fysg, jtzysg,
+       apgztyywb, zmzytyywb, lhjytyywb, zzjytyywb, gjgytyywb, jtzyywb, hxscshtyywb,
+       yfxsgjdqfxlsys, yfxsgjdqbzlslnzn, yfbxsgjdqfxbzlsys, yfxsgjdqfxygxsjrys,
+       yfbxsgjdqfxygxsjrys, yfxsgjdqfxbgjrys, yfbxsgjdqfxbgjrys, yfscybyrymbmg,
+       yfscrmjc, yfygscry
+<span class="kw">FROM</span> abi_zb_tyjrjqyfdx
+<span class="kw">WHERE</span> cant_code = <span class="param">#{cantCode}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">3</span>
+        <span class="module-name">辽宁省区域地图</span>
+        <span class="chart-type">地图（浅蓝→红橙渐变）</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">说明</div>
+          <div class="val">展示辽宁省各地市/区县退役军人分布情况，颜色从浅蓝到红橙渐变表示人数多少</div>
+          <div class="key">维度切换</div>
+          <div class="val">cantType=4（地市级别） / cantType=6（区县级别）</div>
+        </div>
+
+        <div class="section-title">指标定义</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>指标名称</th><th>字段</th><th>数据表</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>区域名称</td><td class="field">STATS_UNIT_NAME</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>2</td><td>退役军人人数</td><td class="field">VETERAN</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">数据表</div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--accent);"></span>STATS_JDLK_PERSION_INFOR_CANT</span>
+        </div>
+
+        <div class="section-title">SQL 查询</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 查询区域地图数据（cantType=4地市 / cantType=6区县）</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> STATS_UNIT_NAME, VETERAN
+<span class="kw">FROM</span> STATS_JDLK_PERSION_INFOR_CANT
+<span class="kw">WHERE</span> CANT_TYPE = <span class="param">#{cantType}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">4</span>
+        <span class="module-name">各地区人数统计</span>
+        <span class="chart-type">统计图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">说明</div>
+          <div class="val">以图表形式展示各地区退役军人人数统计排名</div>
+        </div>
+
+        <div class="section-title">指标定义</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>指标名称</th><th>字段</th><th>数据表</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>区域名称</td><td class="field">STATS_UNIT_NAME</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+            <tr><td>2</td><td>退役军人人数</td><td class="field">VETERAN</td><td class="table-name">STATS_JDLK_PERSION_INFOR_CANT</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">数据表</div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--accent);"></span>STATS_JDLK_PERSION_INFOR_CANT</span>
+        </div>
+
+        <div class="section-title">SQL 查询</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 查询各地区人数统计数据</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> STATS_UNIT_NAME, VETERAN
+<span class="kw">FROM</span> STATS_JDLK_PERSION_INFOR_CANT
+<span class="kw">WHERE</span> CANT_TYPE = <span class="param">#{cantType}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">5</span>
+        <span class="module-name">优抚对象人数统计</span>
+        <span class="chart-type">柱状图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">说明</div>
+          <div class="val">7类优抚对象人数柱状图展示：优抚对象总数、退役残疾军人、在乡复员军人、带病回乡、年满60农村籍、三属、其他人员</div>
+        </div>
+
+        <div class="section-title">指标定义（7类）</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>指标名称</th><th>字段 / 计算方式</th><th>数据表</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>优抚对象总数</td><td class="field">lxgb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>2</td><td>退役残疾军人</td><td class="field">yftycjjr</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>3</td><td>在乡复员军人</td><td class="field">yfzxfyjr</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>4</td><td>带病回乡</td><td class="field">yfdbhxtyjr</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>5</td><td>年满60农村籍</td><td class="field">yfnmlszsncjtysb</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>6</td><td>三属（烈士遗属+因公牺牲+病故+其他）</td><td class="field">yfxsgjdqfxlsys + yfxsgjdqbzlslnzn + yfxsgjdqfxygxsjrys + yfxsgjdqfxbgjrys <span class="kw">AS</span> sanshu</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+            <tr><td>7</td><td>其他人员</td><td class="field">yfscybyrymbmg + yfscrmjc + yfygscry <span class="kw">AS</span> qtry</td><td class="table-name">abi_zb_tyjrjqyfdx</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">数据表</div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--purple);"></span>abi_zb_tyjrjqyfdx</span>
+        </div>
+
+        <div class="section-title">SQL 查询</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 查询优抚对象7类人数统计</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> lxgb,
+       yftycjjr,
+       yfzxfyjr,
+       yfdbhxtyjr,
+       yfnmlszsncjtysb,
+       (yfxsgjdqfxlsys + yfxsgjdqbzlslnzn + yfxsgjdqfxygxsjrys + yfxsgjdqfxbgjrys) <span class="kw">AS</span> sanshu,
+       (yfscybyrymbmg + yfscrmjc + yfygscry) <span class="kw">AS</span> qtry
+<span class="kw">FROM</span> abi_zb_tyjrjqyfdx
+<span class="kw">WHERE</span> cant_code = <span class="param">#{cantCode}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">6</span>
+        <span class="module-name">部分人员类别就业状况</span>
+        <span class="chart-type">统计图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">说明</div>
+          <div class="val">按人员类别分组统计就业状况：已就业、未就业、失业三类人数</div>
+        </div>
+
+        <div class="section-title">指标定义</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>指标名称</th><th>字段 / 计算方式</th><th>数据表</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>人员类别</td><td class="field">rylb</td><td class="table-name">aa_jycy</td></tr>
+            <tr><td>2</td><td>已就业人数</td><td class="field"><span class="kw">SUM</span>(<span class="kw">CASE</span> <span class="kw">WHEN</span> cbzt=<span class="str">'已就业'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> EMPLOYMENT</td><td class="table-name">aa_jycy</td></tr>
+            <tr><td>3</td><td>未就业人数</td><td class="field"><span class="kw">SUM</span>(<span class="kw">CASE</span> <span class="kw">WHEN</span> cbzt=<span class="str">'未就业'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> UNEMPLOYMENT</td><td class="table-name">aa_jycy</td></tr>
+            <tr><td>4</td><td>失业人数</td><td class="field"><span class="kw">SUM</span>(<span class="kw">CASE</span> <span class="kw">WHEN</span> cbzt=<span class="str">'失业'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> LOSE_JOB</td><td class="table-name">aa_jycy</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">数据表</div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--yellow);"></span>aa_jycy</span>
+        </div>
+
+        <div class="section-title">SQL 查询</div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>-- 按人员类别分组统计就业状况</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> rylb,
+       <span class="kw">SUM</span>(<span class="kw">CASE</span> <span class="kw">WHEN</span> cbzt = <span class="str">'已就业'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> EMPLOYMENT,
+       <span class="kw">SUM</span>(<span class="kw">CASE</span> <span class="kw">WHEN</span> cbzt = <span class="str">'未就业'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> UNEMPLOYMENT,
+       <span class="kw">SUM</span>(<span class="kw">CASE</span> <span class="kw">WHEN</span> cbzt = <span class="str">'失业'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> LOSE_JOB
+<span class="kw">FROM</span> aa_jycy
+<span class="kw">GROUP</span> <span class="kw">BY</span> rylb</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleModule(el) {
+  el.classList.toggle('expanded');
+  var body = el.nextElementSibling;
+  body.classList.toggle('collapsed');
+}
+function copySql(btn) {
+  var content = btn.parentElement.nextElementSibling.textContent;
+  navigator.clipboard.writeText(content).then(()=>{
+    btn.textContent='已复制';
+    setTimeout(()=>{btn.textContent='复制';},1500);
+  });
+}
+</script>
+
+</body>
+</html>

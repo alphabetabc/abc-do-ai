@@ -1,0 +1,15 @@
+{
+    "name": "oss-mtc-transition-ln",
+    "version": "0.1.0",
+    "private": true,
+    "description": "辽宁省退役军人事务综合管理服务平台 - 仓库根入口",
+    "packageManager": "pnpm@10.13.1",
+    "engines": {
+        "node": ">=20",
+        "pnpm": ">=10"
+    },
+    "scripts": {
+        "dev:backend": "cd backend && uv run uvicorn app.main:app --reload --port 8000",
+        "dev:frontend": "cd frontend && pnpm dev"
+    }
+}

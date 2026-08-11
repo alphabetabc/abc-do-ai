@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>辽宁省军转厅国产化改造项目 - 需求说明书</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="s2">
+
+<div class="header">
+  <h1>辽宁省军转厅国产化改造项目 · 需求说明书</h1>
+  <div class="subtitle">大屏2：辽宁信访信息（本地） · REG_AUTHORITY = 2</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-index">总览</a>
+    <a href="screen1.html" class="nav-s1">大屏1：人员信息</a>
+    <a href="screen2.html" class="nav-s2 active">大屏2：辽宁信访信息</a>
+    <a href="screen3.html" class="nav-s3">大屏3：进京信访信息</a>
+    <a href="screen4.html" class="nav-s4">大屏4：信访数据比对</a>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="screen-title">
+    <div class="icon" style="background: rgba(63,185,80,.15);">📋</div>
+    <h2>大屏2：辽宁信访信息</h2>
+    <span class="badge badge-green">6个模块</span>
+    <span class="badge badge-green">REG_AUTHORITY = 2（本地）</span>
+  </div>
+  <p style="color: var(--text-dim); font-size: 14px; margin-top: 8px;">提供辽宁范围信访信息大数据综合展示功能。</p>
+
+  <div class="module-list">
+
+    <!-- Module 1 -->
+    <div class="module-card">
+      <div class="module-header expanded" onclick="toggleModule(this)">
+        <span class="module-num">1</span>
+        <span class="module-name">信访量趋势</span>
+        <span class="chart-type">折线图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body">
+        <div class="info-grid">
+          <div class="key">图表类型</div><div class="val">折线图（多系列）</div>
+          <div class="key">展示维度</div><div class="val">最近12个月，分三类信访渠道</div>
+          <div class="key">数据系列</div><div class="val">网上信访（ACCEPT_SOURCE=1）、来访（ACCEPT_SOURCE=2）、来信（ACCEPT_SOURCE=3）</div>
+          <div class="key">数据字段</div><div class="val">NUM_0 ~ NUM_11 分别代表最近12个月的信访量</div>
+        </div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--green);"></span>LETTER_SCREEN_2</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL 查询语句</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="cmt">-- REG_AUTHORITY=2 代表本地</span>
+<span class="cmt">-- ACCEPT_SOURCE: 1=网上信访, 2=来访, 3=来信, 7=特殊人员信访</span>
+<span class="kw">SELECT</span> <span class="kw">SUM</span>(NUM_0), <span class="kw">SUM</span>(NUM_1), <span class="kw">SUM</span>(NUM_2), <span class="kw">SUM</span>(NUM_3), <span class="kw">SUM</span>(NUM_4), <span class="kw">SUM</span>(NUM_5), <span class="kw">SUM</span>(NUM_6), <span class="kw">SUM</span>(NUM_7), <span class="kw">SUM</span>(NUM_8), <span class="kw">SUM</span>(NUM_9), <span class="kw">SUM</span>(NUM_10), <span class="kw">SUM</span>(NUM_11)
+<span class="kw">FROM</span> LETTER_SCREEN_2
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span> <span class="kw">AND</span> ACCEPT_SOURCE = <span class="str">1</span> <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">GROUP BY</span> ACCEPT_SOURCE <span class="kw">ORDER BY</span> ACCEPT_SOURCE
+<span class="cmt">（来访 ACCEPT_SOURCE=2，来信 ACCEPT_SOURCE=3，分别执行相同SQL）</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">2</span>
+        <span class="module-name">信访主要诉求占比</span>
+        <span class="chart-type">环形饼图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">图表类型</div><div class="val">环形饼图</div>
+          <div class="key">展示维度</div><div class="val">各主要诉求分类数量及占比</div>
+          <div class="key">数据字段</div><div class="val">ITEM_NAME（诉求名称）、REG_MAIN_APPEAL_ONE（诉求编码）、NUM（数量）</div>
+        </div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--green);"></span>LETTER_SCREEN_1</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL 查询语句</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> ITEM_NAME, REG_MAIN_APPEAL_ONE, NUM
+<span class="kw">FROM</span> LETTER_SCREEN_1
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span> <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">3</span>
+        <span class="module-name">信访量概要情况</span>
+        <span class="chart-type">数字 + 列表</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">展示形式</div><div class="val">关键指标数字卡片 + 详细列表</div>
+          <div class="key">指标数量</div><div class="val">9个核心指标</div>
+        </div>
+        <div class="section-title">指标明细（9项）</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>指标名称</th><th>字段</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>昨日网上信访量</td><td class="field">JTWX</td><td>前一日通过网上渠道提交的信访件数量</td></tr>
+            <tr><td>累计网上信访量</td><td class="field">ZWX</td><td>历史累计网上信访件总数</td></tr>
+            <tr><td>昨日来访量</td><td class="field">JTLF</td><td>前一日来访接待的信访件数量</td></tr>
+            <tr><td>累计来访量</td><td class="field">ZLF</td><td>历史累计来访接待总数</td></tr>
+            <tr><td>昨日集体访批次</td><td class="field">JTJTFPC</td><td>前一日集体上访的批次数量</td></tr>
+            <tr><td>昨日集体访人次</td><td class="field">JTJTFRC</td><td>前一日集体上访的总人次</td></tr>
+            <tr><td>累计来信量</td><td class="field">ZLX</td><td>历史累计收到的来信总数</td></tr>
+            <tr><td>昨日来信量</td><td class="field">JTLX</td><td>前一日收到的来信数量</td></tr>
+            <tr><td>昨日信访总量</td><td class="field">yesterday_total</td><td>= JTWX + JTLF + JTLX（三类渠道昨日合计）</td></tr>
+          </tbody>
+        </table>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--green);"></span>LETTER_SCREEN_6</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL 查询语句</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> JTWX, ZWX, JTLF, ZLF, JTJTFPC, JTJTFRC, ZLX, JTLX, (JTWX + JTLF + JTLX) <span class="kw">AS</span> yesterday_total
+<span class="kw">FROM</span> LETTER_SCREEN_6
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span> <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">4</span>
+        <span class="module-name">各地区地图信访数据</span>
+        <span class="chart-type">地图（浅蓝→红橙渐变）</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">图表类型</div><div class="val">辽宁省行政区划地图（支持两级下钻）</div>
+          <div class="key">颜色映射</div><div class="val">浅蓝 → 红橙 渐变色带，数值越大颜色越深</div>
+          <div class="key">下钻规则</div><div class="val">第一级：省级看板展示各地市；点击地市下钻到区县</div>
+          <div class="key">数据合并</div><div class="val">沈抚新区（2115）数据合并到抚顺市（2104）</div>
+        </div>
+        <table class="param-table">
+          <thead>
+            <tr><th>参数</th><th>含义</th><th>取值说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="pname">ORGANID</td><td>行政区域编号（信访用）</td><td class="pval">第一级省级看板传省编码，下钻传对应地市/区县编码</td></tr>
+          </tbody>
+        </table>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--green);"></span>LETTER_SCREEN_4</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL 查询语句</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="cmt">-- 第一级省级看板展示各地市，ORGANID 传入省的编码</span>
+<span class="kw">SELECT</span> CANT_NAME, CANT_CODE, NUM
+<span class="kw">FROM</span> LETTER_SCREEN_4
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span> <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">5</span>
+        <span class="module-name">各地区信访件数量</span>
+        <span class="chart-type">柱状图（排名）</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">图表类型</div><div class="val">柱状图（横向/纵向排名）</div>
+          <div class="key">排序规则</div><div class="val">按信访件数量 NUM 降序排列</div>
+          <div class="key">数据字段</div><div class="val">CANT_NAME（地区名称）、CANT_CODE（地区编码）、NUM（信访件数）、MAX_TIME（数据更新时间）</div>
+        </div>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--green);"></span>LETTER_SCREEN_5</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL 查询语句</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> CANT_NAME, CANT_CODE, NUM, MAX_TIME
+<span class="kw">FROM</span> LETTER_SCREEN_5
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span> <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">ORDER BY</span> NUM <span class="kw">DESC</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="module-card">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="module-num">6</span>
+        <span class="module-name">信访人员身份类型情况</span>
+        <span class="chart-type">分组柱状图</span>
+        <span class="toggle-arrow">▶</span>
+      </div>
+      <div class="module-body collapsed">
+        <div class="info-grid">
+          <div class="key">图表类型</div><div class="val">分组柱状图（11种身份 × 多渠道）</div>
+          <div class="key">分组维度</div><div class="val">按 ACCEPT_SOURCE（信访渠道）分组展示</div>
+        </div>
+        <div class="section-title">身份类型明细（11种）</div>
+        <table class="ind-table">
+          <thead>
+            <tr><th>序号</th><th>身份类型</th><th>字段</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>农村籍义务兵</td><td class="field">SB_NCYWB</td></tr>
+            <tr><td>2</td><td>城镇籍义务兵</td><td class="field">SB_CZYWB</td></tr>
+            <tr><td>3</td><td>转业志愿兵/士官</td><td class="field">SB_ZYSG</td></tr>
+            <tr><td>4</td><td>复员士官</td><td class="field">SB_FYSG</td></tr>
+            <tr><td>5</td><td>计划分配军转干部</td><td class="field">GB_JHFP</td></tr>
+            <tr><td>6</td><td>自主择业军转干部</td><td class="field">GB_ZZZY</td></tr>
+            <tr><td>7</td><td>企业军转干部</td><td class="field">GB_QYJZGB</td></tr>
+            <tr><td>8</td><td>自谋自择就业军转干部</td><td class="field">GB_ZYJZGB</td></tr>
+            <tr><td>9</td><td>军休干部</td><td class="field">GB_JXGB</td></tr>
+            <tr><td>10</td><td>复员干部</td><td class="field">GB_FY</td></tr>
+            <tr><td>11</td><td>其他</td><td class="field">RY_QT</td></tr>
+          </tbody>
+        </table>
+        <div class="data-tables">
+          <span class="data-table-tag"><span class="dot" style="background: var(--green);"></span>LETTER_SCREEN_3</span>
+        </div>
+        <div class="sql-block">
+          <div class="sql-header">
+            <span>SQL 查询语句</span>
+            <button class="copy-btn" onclick="copySql(this)">复制</button>
+          </div>
+          <div class="sql-content"><span class="kw">SELECT</span> SB_NCYWB, SB_CZYWB, SB_ZYSG, SB_FYSG, GB_JHFP, GB_ZZZY, GB_QYJZGB, GB_ZYJZGB, GB_JXGB, GB_FY, RY_QT, ACCEPT_SOURCE
+<span class="kw">FROM</span> LETTER_SCREEN_3
+<span class="kw">WHERE</span> REG_AUTHORITY = <span class="str">2</span> <span class="kw">AND</span> ORGAN_ID = <span class="param">#{ORGANID}</span>
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleModule(header) {
+  const body = header.nextElementSibling;
+  const isCollapsed = body.classList.contains('collapsed');
+  if (isCollapsed) {
+    body.classList.remove('collapsed');
+    header.classList.add('expanded');
+  } else {
+    body.classList.add('collapsed');
+    header.classList.remove('expanded');
+  }
+}
+
+function copySql(btn) {
+  const sqlContent = btn.closest('.sql-block').querySelector('.sql-content');
+  const text = sqlContent.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.innerText;
+    btn.innerText = '已复制 ✓';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    setTimeout(() => {
+      btn.innerText = original;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1500);
+  }).catch(err => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    const original = btn.innerText;
+    btn.innerText = '已复制 ✓';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    setTimeout(() => {
+      btn.innerText = original;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1500);
+  });
+}
+</script>
+
+</body>
+</html>

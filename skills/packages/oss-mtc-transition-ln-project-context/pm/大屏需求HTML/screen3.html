@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大屏3：进京信访信息 - 辽宁省军转厅国产化改造项目</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="s3">
+  <div class="header">
+    <h1>辽宁省军转厅国产化改造项目 · 大数据综合展示</h1>
+    <div class="subtitle">大屏3：进京信访信息（进京） · REG_AUTHORITY = 1</div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-index">总览</a>
+      <a href="screen1.html" class="nav-s1">大屏1：人员信息</a>
+      <a href="screen2.html" class="nav-s2">大屏2：辽宁信访信息</a>
+      <a href="screen3.html" class="nav-s3 active">大屏3：进京信访信息</a>
+      <a href="screen4.html" class="nav-s4">大屏4：信访数据比对</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="screen-title">
+      <div class="icon" style="background: rgba(247,129,102,.15);">🚨</div>
+      <h2>大屏3：进京信访信息</h2>
+      <span class="badge badge-orange">6个模块</span>
+      <span class="badge badge-orange">REG_AUTHORITY = 1（进京）</span>
+    </div>
+    <p style="color: var(--text-dim); margin-bottom: 8px;">提供辽宁范围进京信访信息大数据综合展示功能。</p>
+
+    <div class="module-list">
+
+      <!-- Module 1 -->
+      <div class="module-card">
+        <div class="module-header expanded" onclick="toggleModule(this)">
+          <div class="module-num">1</div>
+          <div class="module-name">进京信访量趋势</div>
+          <span class="chart-type">折线图</span>
+          <span class="toggle-arrow">▶</span>
+        </div>
+        <div class="module-body">
+          <div class="info-grid">
+            <div class="key">功能说明</div>
+            <div class="val">展示最近12个月进京信访量趋势，按渠道（网上信访、来访、来信）分组展示三条折线</div>
+            <div class="key">图表类型</div>
+            <div class="val">多系列折线图（3条线：网上信访、来访、来信）</div>
+            <div class="key">核心指标</div>
+            <div class="val">最近12个月每个月各渠道进京信访件数量</div>
+            <div class="key">关联API</div>
+            <div class="val"><code>/service/vetertans/letter/getLettersTrendData</code>（POST）</div>
+            <div class="key">涉及数据表</div>
+            <div class="val">
+              <div class="data-tables">
+                <span class="data-table-tag"><span class="dot" style="background: var(--accent2);"></span>LETTER_SCREEN_2</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">请求参数</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="pname">code</td><td>String</td><td>是</td><td>组织编码 ORGAN_ID（省级=21，地市传对应4位编码）</td></tr>
+              <tr><td class="pname">type</td><td>String</td><td>是</td><td>数据类型标记，非空值触发 REG_AUTHORITY=1（进京）</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">SQL 查询</h3>
+          <div class="sql-block">
+            <div class="sql-header">
+              <span>getLettersTrendData · ILetterScreenMapper.xml</span>
+              <button class="copy-btn" onclick="copySql(this)">复制</button>
+            </div>
+            <pre class="sql-content"><span class="kw">SELECT</span>
+    <span class="kw">SUM</span>(NUM_0)  NUM_0,
+    <span class="kw">SUM</span>(NUM_1)  NUM_1,
+    <span class="kw">SUM</span>(NUM_2)  NUM_2,
+    <span class="kw">SUM</span>(NUM_3)  NUM_3,
+    <span class="kw">SUM</span>(NUM_4)  NUM_4,
+    <span class="kw">SUM</span>(NUM_5)  NUM_5,
+    <span class="kw">SUM</span>(NUM_6)  NUM_6,
+    <span class="kw">SUM</span>(NUM_7)  NUM_7,
+    <span class="kw">SUM</span>(NUM_8)  NUM_8,
+    <span class="kw">SUM</span>(NUM_9)  NUM_9,
+    <span class="kw">SUM</span>(NUM_10) NUM_10,
+    <span class="kw">SUM</span>(NUM_11) NUM_11
+<span class="kw">FROM</span>
+    LETTER_SCREEN_2
+<span class="kw">WHERE</span>
+    ORGAN_ID = #{code,jdbcType=<span class="str">VARCHAR</span>}
+    <span class="kw">AND</span> <span class="param">REG_AUTHORITY = 1</span>
+<span class="kw">GROUP BY</span> ACCEPT_SOURCE
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</pre>
+          </div>
+
+          <h3 class="section-title">响应字段说明</h3>
+          <table class="ind-table">
+            <thead>
+              <tr><th>字段</th><th>说明</th><th>备注</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="field">NUM_0 ~ NUM_11</td><td>第0月~第11月进京信访数量</td><td>共12个月份，NUM_11为最近1个月</td></tr>
+              <tr><td class="field">ACCEPT_SOURCE</td><td>信访渠道分组</td><td>1=网上信访, 2=来访, 3=来信（共3条记录）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 2 -->
+      <div class="module-card">
+        <div class="module-header" onclick="toggleModule(this)">
+          <div class="module-num">2</div>
+          <div class="module-name">进京信访主要诉求占比</div>
+          <span class="chart-type">环形饼图</span>
+          <span class="toggle-arrow">▶</span>
+        </div>
+        <div class="module-body collapsed">
+          <div class="info-grid">
+            <div class="key">功能说明</div>
+            <div class="val">展示进京信访各主要诉求分类的数量及占比，环形饼图直观呈现各诉求分布</div>
+            <div class="key">图表类型</div>
+            <div class="val">环形饼图（Doughnut Chart）</div>
+            <div class="key">核心指标</div>
+            <div class="val">各诉求分类名称、对应数量、占比百分比</div>
+            <div class="key">关联API</div>
+            <div class="val"><code>/service/vetertans/letter/getlettersAppealPer</code>（POST）</div>
+            <div class="key">涉及数据表</div>
+            <div class="val">
+              <div class="data-tables">
+                <span class="data-table-tag"><span class="dot" style="background: var(--accent2);"></span>LETTER_SCREEN_1</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">请求参数</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="pname">code</td><td>String</td><td>是</td><td>组织编码 ORGAN_ID</td></tr>
+              <tr><td class="pname">type</td><td>String</td><td>是</td><td>数据类型标记，非空值触发 REG_AUTHORITY=1（进京）</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">SQL 查询</h3>
+          <div class="sql-block">
+            <div class="sql-header">
+              <span>getlettersAppealPer · ILetterScreenMapper.xml</span>
+              <button class="copy-btn" onclick="copySql(this)">复制</button>
+            </div>
+            <pre class="sql-content"><span class="kw">SELECT</span>
+    ITEM_NAME,
+    REG_MAIN_APPEAL_ONE,
+    NUM,
+    ORGAN_ID
+<span class="kw">FROM</span>
+    LETTER_SCREEN_1
+<span class="kw">WHERE</span>
+    ORGAN_ID = #{code,jdbcType=<span class="str">VARCHAR</span>}
+    <span class="kw">AND</span> <span class="param">REG_AUTHORITY = 1</span></pre>
+          </div>
+
+          <h3 class="section-title">响应字段说明</h3>
+          <table class="ind-table">
+            <thead>
+              <tr><th>字段</th><th>说明</th><th>示例</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="field">ITEM_NAME</td><td>诉求项名称</td><td>退役安置类、优待抚恤类、就业创业类等</td></tr>
+              <tr><td class="field">REG_MAIN_APPEAL_ONE</td><td>一级主要诉求分类编码</td><td>诉求分类编码字段</td></tr>
+              <tr><td class="field">NUM</td><td>该诉求进京信访数量</td><td>对应数值用于饼图扇区大小</td></tr>
+              <tr><td class="field">ORGAN_ID</td><td>组织编码</td><td>数据所属行政区划编码</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 3 -->
+      <div class="module-card">
+        <div class="module-header" onclick="toggleModule(this)">
+          <div class="module-num">3</div>
+          <div class="module-name">进京信访量概要情况</div>
+          <span class="chart-type">数字+列表</span>
+          <span class="toggle-arrow">▶</span>
+        </div>
+        <div class="module-body collapsed">
+          <div class="info-grid">
+            <div class="key">功能说明</div>
+            <div class="val">核心概览指标卡片展示，包含昨日/累计各渠道进京信访量、昨日集体访批次/人次等9个关键指标</div>
+            <div class="key">展示形式</div>
+            <div class="val">大号数字卡片 + 指标明细列表</div>
+            <div class="key">关联API</div>
+            <div class="val"><code>/service/vetertans/letter/getLetterInfo</code>（POST）</div>
+            <div class="key">涉及数据表</div>
+            <div class="val">
+              <div class="data-tables">
+                <span class="data-table-tag"><span class="dot" style="background: var(--accent2);"></span>LETTER_SCREEN_6</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">请求参数</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="pname">code</td><td>String</td><td>是</td><td>组织编码 ORGAN_ID</td></tr>
+              <tr><td class="pname">type</td><td>String</td><td>是</td><td>数据类型标记，非空值触发 REG_AUTHORITY=1（进京）</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">SQL 查询</h3>
+          <div class="sql-block">
+            <div class="sql-header">
+              <span>getLetterInfo · ILetterScreenMapper.xml</span>
+              <button class="copy-btn" onclick="copySql(this)">复制</button>
+            </div>
+            <pre class="sql-content"><span class="kw">SELECT</span>
+    JTWX    JTWX,
+    ZWX     ZWX,
+    JTLF    JTLF,
+    ZLF     ZLF,
+    JTJTFPC JTJTFPC,
+    JTJTFRC JTJTFRC,
+    ZLX     ZLX,
+    JTLX    JTLX
+<span class="kw">FROM</span>
+    LETTER_SCREEN_6
+<span class="kw">WHERE</span>
+    ORGAN_ID = #{code,jdbcType=<span class="str">VARCHAR</span>}
+    <span class="kw">AND</span> <span class="param">REG_AUTHORITY = 1</span></pre>
+          </div>
+
+          <h3 class="section-title">9 个核心指标明细</h3>
+          <table class="ind-table">
+            <thead>
+              <tr><th>序号</th><th>指标名称</th><th>字段名</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>昨日进京信访量</td><td class="field">JTWX + JTLF + JTLX</td><td>昨日总量 = 网上+来访+来信（前端动态计算）</td></tr>
+              <tr><td>2</td><td>昨日网上进京信访量</td><td class="field">JTWX</td><td>昨日网上信访渠道进京数量</td></tr>
+              <tr><td>3</td><td>累计网上进京信访量</td><td class="field">ZWX</td><td>历史累计网上进京信访总量</td></tr>
+              <tr><td>4</td><td>昨日来京访量</td><td class="field">JTLF</td><td>昨日来访渠道进京数量</td></tr>
+              <tr><td>5</td><td>累计来京访量</td><td class="field">ZLF</td><td>历史累计来京访总量</td></tr>
+              <tr><td>6</td><td>昨日集体访批次</td><td class="field">JTJTFPC</td><td>昨日进京集体访批次数</td></tr>
+              <tr><td>7</td><td>昨日集体访人次</td><td class="field">JTJTFRC</td><td>昨日进京集体访人次数</td></tr>
+              <tr><td>8</td><td>累计来京信量</td><td class="field">ZLX</td><td>历史累计来信渠道进京总量</td></tr>
+              <tr><td>9</td><td>昨日来京信量</td><td class="field">JTLX</td><td>昨日来信渠道进京数量</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 4 -->
+      <div class="module-card">
+        <div class="module-header" onclick="toggleModule(this)">
+          <div class="module-num">4</div>
+          <div class="module-name">各地区地图进京信访数据</div>
+          <span class="chart-type">地图</span>
+          <span class="toggle-arrow">▶</span>
+        </div>
+        <div class="module-body collapsed">
+          <div class="info-grid">
+            <div class="key">功能说明</div>
+            <div class="val">辽宁省行政区划地图可视化展示各地区进京信访量密度分布，浅蓝→红橙渐变配色，支持两级下钻</div>
+            <div class="key">图表类型</div>
+            <div class="val">ECharts 地图（辽宁省市县两级下钻）</div>
+            <div class="key">核心指标</div>
+            <div class="val">各行政区划名称、编码、进京信访件数量</div>
+            <div class="key">关联API</div>
+            <div class="val"><code>/service/vetertans/letter/getlettersMap</code>（POST）</div>
+            <div class="key">涉及数据表</div>
+            <div class="val">
+              <div class="data-tables">
+                <span class="data-table-tag"><span class="dot" style="background: var(--accent2);"></span>LETTER_SCREEN_4</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="drill-detail">
+            <div class="drill-title">🔍 地图钻取规则</div>
+            <div class="drill-tags">
+              <span class="drill-tag">第一级：省级视图 → 展示各地市数据（cantType=4）</span>
+              <span class="drill-tag">第二级：点击地市 → 下钻到区县（cantType=6）</span>
+              <span class="drill-tag">沈抚新区（2115）数据合并到抚顺市（2104）</span>
+            </div>
+          </div>
+
+          <h3 class="section-title">请求参数</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="pname">code</td><td>String</td><td>是</td><td>组织编码 ORGAN_ID（钻取时传对应层级编码）</td></tr>
+              <tr><td class="pname">type</td><td>String</td><td>是</td><td>数据类型标记，非空值触发 REG_AUTHORITY=1（进京）</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">SQL 查询</h3>
+          <div class="sql-block">
+            <div class="sql-header">
+              <span>getlettersMap · ILetterScreenMapper.xml（已修正原SQL缺s问题）</span>
+              <button class="copy-btn" onclick="copySql(this)">复制</button>
+            </div>
+            <pre class="sql-content"><span class="kw">SELECT</span>
+    CANT_NAME,
+    CANT_CODE,
+    NUM,
+    ORGAN_ID
+<span class="kw">FROM</span>
+    LETTER_SCREEN_4
+<span class="kw">WHERE</span>
+    ORGAN_ID = #{code,jdbcType=<span class="str">VARCHAR</span>}
+    <span class="kw">AND</span> <span class="param">REG_AUTHORITY = 1</span></pre>
+          </div>
+
+          <h3 class="section-title">响应字段说明</h3>
+          <table class="ind-table">
+            <thead>
+              <tr><th>字段</th><th>说明</th><th>地图用途</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="field">CANT_NAME</td><td>行政区划名称</td><td>地图区域标签（沈阳市、大连市等）</td></tr>
+              <tr><td class="field">CANT_CODE</td><td>行政区划编码</td><td>6位国标编码，支持 substr 钻取截取</td></tr>
+              <tr><td class="field">NUM</td><td>进京信访件数量</td><td>地图热力值，颜色深浅由 NUM 决定</td></tr>
+              <tr><td class="field">ORGAN_ID</td><td>组织编码</td><td>数据所属行政区划编码</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 5 -->
+      <div class="module-card">
+        <div class="module-header" onclick="toggleModule(this)">
+          <div class="module-num">5</div>
+          <div class="module-name">各地区进京信访件数量</div>
+          <span class="chart-type">柱状图排名</span>
+          <span class="toggle-arrow">▶</span>
+        </div>
+        <div class="module-body collapsed">
+          <div class="info-grid">
+            <div class="key">功能说明</div>
+            <div class="val">柱状图展示各行政区划进京信访件数量排名，按数量降序排列，TOP N 地区一目了然</div>
+            <div class="key">图表类型</div>
+            <div class="val">垂直柱状图（Bar Chart，降序排列）</div>
+            <div class="key">核心指标</div>
+            <div class="val">各地区名称、进京信访件数量、数据统计时间</div>
+            <div class="key">关联API</div>
+            <div class="val"><code>/service/vetertans/letter/getlettersPro</code>（POST）</div>
+            <div class="key">涉及数据表</div>
+            <div class="val">
+              <div class="data-tables">
+                <span class="data-table-tag"><span class="dot" style="background: var(--accent2);"></span>LETTER_SCREEN_5</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">请求参数</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="pname">code</td><td>String</td><td>是</td><td>组织编码 ORGAN_ID</td></tr>
+              <tr><td class="pname">type</td><td>String</td><td>是</td><td>数据类型标记，非空值触发 REG_AUTHORITY=1（进京）</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">SQL 查询</h3>
+          <div class="sql-block">
+            <div class="sql-header">
+              <span>getlettersPro · ILetterScreenMapper.xml（已修正原SQL多s问题）</span>
+              <button class="copy-btn" onclick="copySql(this)">复制</button>
+            </div>
+            <pre class="sql-content"><span class="kw">SELECT</span>
+    CANT_NAME,
+    CANT_CODE,
+    NUM,
+    ORGAN_ID,
+    MAX_TIME
+<span class="kw">FROM</span>
+    LETTER_SCREEN_5
+<span class="kw">WHERE</span>
+    ORGAN_ID = #{code,jdbcType=<span class="str">VARCHAR</span>}
+    <span class="kw">AND</span> <span class="param">REG_AUTHORITY = 1</span>
+<span class="kw">ORDER BY</span> NUM <span class="kw">DESC</span></pre>
+          </div>
+
+          <h3 class="section-title">响应字段说明</h3>
+          <table class="ind-table">
+            <thead>
+              <tr><th>字段</th><th>说明</th><th>示例</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="field">CANT_NAME</td><td>行政区划名称</td><td>柱状图 X 轴标签（沈阳市、大连市…）</td></tr>
+              <tr><td class="field">CANT_CODE</td><td>行政区划编码</td><td>支持后续钻取联动</td></tr>
+              <tr><td class="field">NUM</td><td>进京信访件数量</td><td>柱状图 Y 轴数值</td></tr>
+              <tr><td class="field">ORGAN_ID</td><td>组织编码</td><td>数据所属行政区划编码</td></tr>
+              <tr><td class="field">MAX_TIME</td><td>数据统计截至时间戳</td><td>13位毫秒时间戳，前端可转日期显示</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 6 -->
+      <div class="module-card">
+        <div class="module-header" onclick="toggleModule(this)">
+          <div class="module-num">6</div>
+          <div class="module-name">进京信访身份类型情况</div>
+          <span class="chart-type">分组柱状图(11种身份)</span>
+          <span class="toggle-arrow">▶</span>
+        </div>
+        <div class="module-body collapsed">
+          <div class="info-grid">
+            <div class="key">功能说明</div>
+            <div class="val">堆叠/分组柱状图展示11种人员身份类型，按三个信访渠道（网上信访、来访、来信）分组展示进京信访数据</div>
+            <div class="key">图表类型</div>
+            <div class="val">分组堆叠柱状图（3组渠道 × 11种身份类型）</div>
+            <div class="key">关联API</div>
+            <div class="val"><code>/service/vetertans/letter/getlettersSection</code>（POST）</div>
+            <div class="key">涉及数据表</div>
+            <div class="val">
+              <div class="data-tables">
+                <span class="data-table-tag"><span class="dot" style="background: var(--accent2);"></span>LETTER_SCREEN_3</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">请求参数</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="pname">code</td><td>String</td><td>是</td><td>组织编码 ORGAN_ID</td></tr>
+              <tr><td class="pname">type</td><td>String</td><td>是</td><td>数据类型标记，非空值触发 REG_AUTHORITY=1（进京）</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">SQL 查询</h3>
+          <div class="sql-block">
+            <div class="sql-header">
+              <span>getlettersSection · ILetterScreenMapper.xml</span>
+              <button class="copy-btn" onclick="copySql(this)">复制</button>
+            </div>
+            <pre class="sql-content"><span class="kw">SELECT</span>
+    SB_NCYWB,
+    SB_CZYWB,
+    SB_ZYSG,
+    SB_FYSG,
+    GB_JHFP,
+    GB_ZZZY,
+    GB_QYJZGB,
+    GB_ZYJZGB,
+    GB_JXGB,
+    GB_FY,
+    RY_QT,
+    ORGAN_ID,
+    ACCEPT_SOURCE
+<span class="kw">FROM</span>
+    LETTER_SCREEN_3
+<span class="kw">WHERE</span>
+    ORGAN_ID = #{code,jdbcType=<span class="str">VARCHAR</span>}
+    <span class="kw">AND</span> <span class="param">REG_AUTHORITY = 1</span>
+<span class="kw">ORDER BY</span> ACCEPT_SOURCE</pre>
+          </div>
+
+          <h3 class="section-title">11 种身份类型字段说明</h3>
+          <table class="ind-table">
+            <thead>
+              <tr><th>序号</th><th>身份类型名称</th><th>字段名</th><th>分类</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>农村籍义务兵</td><td class="field">SB_NCYWB</td><td>士兵类</td></tr>
+              <tr><td>2</td><td>城镇籍义务兵</td><td class="field">SB_CZYWB</td><td>士兵类</td></tr>
+              <tr><td>3</td><td>转业志愿兵/士官</td><td class="field">SB_ZYSG</td><td>士官类</td></tr>
+              <tr><td>4</td><td>复员士官</td><td class="field">SB_FYSG</td><td>士官类</td></tr>
+              <tr><td>5</td><td>计划分配军转干部</td><td class="field">GB_JHFP</td><td>干部类</td></tr>
+              <tr><td>6</td><td>自主择业军转干部</td><td class="field">GB_ZZZY</td><td>干部类</td></tr>
+              <tr><td>7</td><td>企业军转干部</td><td class="field">GB_QYJZGB</td><td>干部类</td></tr>
+              <tr><td>8</td><td>自愿自行就业军转干部</td><td class="field">GB_ZYJZGB</td><td>干部类</td></tr>
+              <tr><td>9</td><td>军休干部</td><td class="field">GB_JXGB</td><td>干部类</td></tr>
+              <tr><td>10</td><td>复员干部</td><td class="field">GB_FY</td><td>干部类</td></tr>
+              <tr><td>11</td><td>其他</td><td class="field">RY_QT</td><td>其他</td></tr>
+            </tbody>
+          </table>
+
+          <div class="drill-detail" style="margin-top: 16px;">
+            <div class="drill-title">📊 渠道分组说明</div>
+            <div class="drill-tags">
+              <span class="drill-tag">ACCEPT_SOURCE = 1 → 网上信访</span>
+              <span class="drill-tag">ACCEPT_SOURCE = 2 → 来访</span>
+              <span class="drill-tag">ACCEPT_SOURCE = 3 → 来信</span>
+              <span class="drill-tag">共返回 3 条记录，每条记录含上述 11 个身份字段</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 class="section-title" style="margin-top: 48px;">公共参数汇总</h3>
+    <table class="param-table">
+      <thead>
+        <tr><th>参数名</th><th>含义</th><th>大屏3取值</th><th>备注</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="pname">cantCode / ORGAN_ID</td><td>行政区域编号</td><td>省级初始=21，钻取传对应编码</td><td>省=21，地市=4位，区县=6位</td></tr>
+        <tr><td class="pname">cantType</td><td>行政区域类型</td><td>省级视图=4，下钻区县=6</td><td>4=地市级，6=区县级</td></tr>
+        <tr><td class="pname"><span class="param">REG_AUTHORITY</span></td><td>登记机构</td><td><span class="pval">= 1（进京）</span></td><td>1=进京，2=本地，0=未添加</td></tr>
+        <tr><td class="pname">ACCEPT_SOURCE</td><td>信访形式</td><td>按接口自动分组</td><td>1=网上信访，2=来访，3=来信</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function toggleModule(header) {
+      const body = header.nextElementSibling;
+      const isCollapsed = body.classList.contains('collapsed');
+      if (isCollapsed) {
+        body.classList.remove('collapsed');
+        header.classList.add('expanded');
+      } else {
+        body.classList.add('collapsed');
+        header.classList.remove('expanded');
+      }
+    }
+
+    function copySql(btn) {
+      const sqlContent = btn.closest('.sql-block').querySelector('.sql-content');
+      const text = sqlContent.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const oldText = btn.textContent;
+        btn.textContent = '已复制 ✓';
+        btn.style.color = 'var(--green)';
+        btn.style.borderColor = 'var(--green)';
+        setTimeout(() => {
+          btn.textContent = oldText;
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
