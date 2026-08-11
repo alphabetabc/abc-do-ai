@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: f68731c9572fe959968941dca6f1c24b1bea10ba -->
+<!-- changelog-last-commit: 2c6d4a36a28a045d206dcf49b3fb7268f6645cf2 -->
+
+## 2026-08-11
+
+- 发布 skill
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+- 新增 skill「oss-mtc-transition-ln-project-context」；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人/草稿」上下文——记录不便写进...；
+- 变更文件: "skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-\351\200\232\350\257\273\347\233\230\347\202\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-001-docs-\351\200\232\350\257\273\344\270\216\345\276\205\345\212\236\347\233\230\347\202\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-001-\344\272\272\345\221\230\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-002-\350\276\275\345\256\201\344\277\241\350\256\277\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-003-\350\277\233\344\272\254\344\277\241\350\256\277\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-004-\344\277\241\350\256\277\346\225\260\346\215\256\346\257\224\345\257\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/assets/style.css"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/index.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen1.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen2.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen3.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen4.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202\346\213\206\350\247\243.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\350\276\275\345\256\201\347\234\201\345\206\233\350\275\254\345\216\205\345\233\275\344\272\247\345\214\226\346\224\271\351\200\240\351\241\271\347\233\256\351\234\200\346\261\202\350\257\264\346\230\216\344\271\246\357\274\210\346\234\200\346\226\260-20260805\357\274\211-2026\345\271\2648\346\234\21010\346\227\245.md"；
 
 ## 2026-08-07
 
