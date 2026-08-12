@@ -4,14 +4,16 @@
 
 写进这里的标准：「别的同事需要看到这个吗？」—— 否。
 
-## 文件
+## 文件索引
 
-- `private-notes.md` — 私人备忘、踩坑、与 AI Agent 的约定
-
-## 文件命名建议
-
-- `private-notes.md`：长期累计的私人备忘（坑、偏好、约定）
-- `YYYY-MM-DD-<topic>.md`：按日期与主题命名的临时草稿
-- `sprint-<n>.md`、`milestone-<name>.md`：迭代 / 里程碑个人视图
+| 文件 | 主题 |
+|------|------|
+| `private-notes.md` | 私人备忘、踩坑、与 AI Agent 的约定 |
+| `roadmap-2026-08-11-big-screen.md` | 大屏可视化分析 roadmap（决策矩阵 + 里程碑 + 任务索引 + 提案） |
+| `task-2026-08-11-009-skill文档全面优化.md` | skill 文档全面优化 task（独立，不进 roadmap §4） |
+| `templates/` | task 模板归档（复制即用，不进 `done/`） |
+| `templates/task-template-sdd-全流程.md` | SDD 全流程 task 模板（三阶段 + 闸门 + 内嵌 prompt，新特性专用） |
+| `templates/task-template-通用.md` | 通用轻量 task 模板（元信息 + 步骤 + 依据，单一改动专用） |
+| `done/` | 已完成的 task 文件归档 |
 
 > **状态变更**：草稿/未拍板的内容放这里；经讨论 / 验证拍板后，**迁移**到 `docs/specs/`、`docs/design/` 或根 `AGENTS.md`，并在此处保留一行 `[→ docs/...]` 出处即可。

@@ -13,18 +13,11 @@
 | `local-development.md` | 本地开发（工具链、命令、端口、迁移、命令速查） |
 | `deployment.md` | Docker Compose 部署（含生产加固清单） |
 
-## 文件命名建议
-
-- `local-dev.md`：本地开发环境
-- `toolchain.md`：工具链版本与安装
-- `env-vars.md`：环境变量清单
-- `deployment.md`：部署说明
-
 ## 速览
 
-- 前端：`cd frontend && pnpm install && pnpm dev`
-- 后端：`cd backend && uv run uvicorn app.main:app --reload --port 8000`
-- 一键：`mise run dev`
+- 一键启动：`mise run dev`
 - 工具链：`mise install`（参见仓库根 `mise.toml`）
 - 部署：`docker compose --env-file .env.docker up -d --build`
 - 数据库：Kingbase（外部实例，通过 `.env.docker` 配置连接）
+
+> 详细启动命令与端口见 `local-development.md` §4；部署细节见 `deployment.md`。

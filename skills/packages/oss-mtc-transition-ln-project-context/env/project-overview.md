@@ -136,7 +136,7 @@
 | (待建) | **信访信息大屏**                              | 数据源 `dw_basic_lc.letter_screen_*` 已有；前端待建 |
 | (待建) | **大数据综合展示** `/visual/big-screen`       | 由 035 spec §1.4 列出，独立 spec 待建               |
 
-> 可视化分析相关开发管理详见仓库根 `AGENTS.md`。
+> 可视化分析相关开发管理详见仓库根 `AGENTS.md`；AGENTS 模块表详见 `project-meta.md` §1。
 
 ---
 
@@ -171,10 +171,8 @@ oss-mtc-transition-ln/
 │   └── pyproject.toml                 # uv 管理依赖
 ├── docs/                              # 正式文档（specs / design / skills / standards / workflows）
 ├── assets/                            # 历史 SQL 源（迁移输入）
-│   ├── 可视化分析/                    # 人员/信访信息大屏 SQL 源
-│   ├── 报表/
-│   ├── 比对系统/
-│   └── 账号管理/
+│   ├── 账号管理/                       # umc.sql（实际存在）
+│   └── ⚠️ 可视化分析/                  # AGENTS §2.2 引用但实际不存在；SQL 源在 pm/ 私人输入中
 ├── docker-compose.yml                 # 一体化部署
 ├── .env.docker(.example)              # 部署环境变量
 ├── mise.toml                          # 工具链版本管理
