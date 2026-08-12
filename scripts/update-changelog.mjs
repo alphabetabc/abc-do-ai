@@ -73,19 +73,105 @@ async function gitExec(args, cwd) {
 }
 
 /**
+ * 还原 git quotepath 产生的转义路径。
+ *
+ * git 在 core.quotepath=true（默认）时，会把非 ASCII 字节转成 `\NNN`
+ * 八进制序列，并用 C 字符串双引号包裹整个路径，例如：
+ *   "skills/\351\200\232\350\257\273.md"
+ * 需要还原成原始 UTF-8 字符串：skills/通读.md
+ *
+ * 同时处理 \" \\ \t 等常规 C 字符串转义。
+ */
+function decodeGitPath(raw) {
+  let s = raw;
+  // 剥离外层双引号
+  if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) {
+    s = s.slice(1, -1);
+  }
+  // 还原 \NNN 八进制序列（UTF-8 字节）→ 先收集字节再按 UTF-8 解码
+  if (s.includes('\\')) {
+    const bytes = [];
+    let i = 0;
+    while (i < s.length) {
+      const ch = s[i];
+      if (ch === '\\') {
+        const next = s[i + 1];
+        if (next === '"') {
+          bytes.push(0x22);
+          i += 2;
+        } else if (next === '\\') {
+          bytes.push(0x5c);
+          i += 2;
+        } else if (next === 't') {
+          bytes.push(0x09);
+          i += 2;
+        } else if (next === 'n') {
+          bytes.push(0x0a);
+          i += 2;
+        } else {
+          // 八进制 \NNN（1-3 位）
+          const octMatch = s.slice(i + 1).match(/^[0-7]{1,3}/);
+          if (octMatch) {
+            bytes.push(parseInt(octMatch[0], 8));
+            i += 1 + octMatch[0].length;
+          } else {
+            bytes.push(ch.charCodeAt(0));
+            i += 1;
+          }
+        }
+      } else {
+        // 非 ASCII 字符（已经是 UTF-8 编码的 char code）
+        const code = ch.charCodeAt(0);
+        if (code < 0x80) {
+          bytes.push(code);
+        } else {
+          // 多字节 UTF-8 字符：用 TextEncoder 拆成字节
+          for (const b of new TextEncoder().encode(ch)) {
+            bytes.push(b);
+          }
+        }
+        i += 1;
+      }
+    }
+    try {
+      return new TextDecoder('utf-8', { fatal: false }).decode(
+        new Uint8Array(bytes)
+      );
+    } catch {
+      return s;
+    }
+  }
+  return s;
+}
+
+/**
  * 获取指定 commit 的文件变更列表
+ *
+ * 关键：必须加 `-c core.quotepath=false`，否则 git 默认会把
+ * 非 ASCII 路径（如中文）转义成八进制序列（\351\200\232...），
+ * 直接写入 CHANGELOG.md 产生乱码。
  */
 async function getCommitFiles(rootDir, hash) {
   const stdout = await gitExec(
-    ['show', '--name-status', '--no-renames', '--format=', hash],
+    [
+      '-c',
+      'core.quotepath=false',
+      'show',
+      '--name-status',
+      '--no-renames',
+      '--format=',
+      hash,
+    ],
     rootDir
   );
   if (!stdout) return [];
   return stdout
     .split('\n')
     .map((line) => {
-      const m = line.match(/^([AMD])\s+(.+)$/);
-      return m ? { status: m[1], file: m[2] } : null;
+      // 行格式：`A\tpath` 或 `A\t"path with spaces"`
+      const m = line.match(/^([AMD])\t(.+)$/);
+      if (!m) return null;
+      return { status: m[1], file: decodeGitPath(m[2]) };
     })
     .filter(Boolean);
 }
@@ -108,10 +194,12 @@ export function buildBulletsFromCommit(commit, rootDir) {
   );
 
   if (skillGroups.length === 0) {
-    // 无 skill 变更：尝试用"变更文件: ..."列出本次非 skill 改动
+    // 无 skill 变更：用「变更文件」父 bullet + 每个文件一个子 bullet
     if (otherNonSkill.length > 0) {
-      const names = otherNonSkill.map((f) => f.file).join('、');
-      bullets.push({ level: 0, text: `变更文件: ${names}` });
+      bullets.push({ level: 0, text: '变更文件' });
+      for (const f of otherNonSkill) {
+        bullets.push({ level: 1, text: f.file });
+      }
     } else {
       bullets.push({ level: 0, text: commit.subject });
     }
@@ -189,10 +277,12 @@ export function buildBulletsFromCommit(commit, rootDir) {
     }
   }
 
-  // 3) 非 skill 文件：一条 "变更文件: ..."，排除 CHANGELOG 自身
+  // 3) 非 skill 文件：「变更文件」父 bullet + 每个文件一个子 bullet
   if (otherNonSkill.length > 0) {
-    const names = otherNonSkill.map((f) => f.file).join('、');
-    bullets.push({ level: 0, text: `变更文件: ${names}` });
+    bullets.push({ level: 0, text: '变更文件' });
+    for (const f of otherNonSkill) {
+      bullets.push({ level: 1, text: f.file });
+    }
   }
 
   return bullets;
@@ -280,7 +370,7 @@ function renderBullets(bullets) {
  *   1. 多个 "发布 skill" 父条目 → 合并为一个，子项去重 + 排序
  *   2. 同 action + 同 skill 名称的条目 → 只保留最详细的那条（带 description 的优先）
  *   3. 低价值的 "新增/更新/变更 N 个文件" 条目 → 仅在没有其他有意义 bullets 时保留
- *   4. 完全重复的 "变更文件: ..." 条目 → 只保留一条
+ *   4. "变更文件" 条目（旧式 `变更文件: a、b、c` 或新式父+子列表）→ 合并为一个父+子列表
  *   5. 按固定顺序输出：发布 skill → 新增 → 更新 → 删除 → 变更文件 → 其他
  */
 export function consolidateBullets(bullets) {
@@ -290,16 +380,16 @@ export function consolidateBullets(bullets) {
   const GENERIC_COUNT_RE = /^(新增|更新|删除|变更)\s*\d+\s*个文件$/;
   const PUBLISH_PARENT_TEXT = '发布 skill';
   const PUBLISH_CHILD_RE = /^「(.+?)」(?: (v\S+))?$/;
+  const FILE_PARENT_TEXT = '变更文件';
+  // 兼容旧式 `变更文件: a、b、c` 单行格式
+  const FILE_LIST_RE = /^变更文件:\s*(.+)$/;
 
   // 1) 发布 skill 子项收集
   const publishChildren = [];
   // 2) skill 动作去重：key = `${action}:${label}`
   const skillActions = new Map();
-  // 3) 变更文件条目：同一天多个 commit 产生的条目合并为单条，文件集合取并集
-  //    之前用 Map 按精确文本去重，遇到 git reset / rebase 导致新旧条目文本
-  //    略有差异时会全部保留，产生重复。这里改成集合合并。
+  // 3) 变更文件收集：同一天多个 commit 合并，文件集合取并集
   const fileSet = new Set();
-  const FILE_LIST_RE = /^变更文件:\s*(.+)$/;
   // 4) 低价值 generic count 条目，仅作为兜底保留
   const genericBullets = [];
   // 5) 其他条目按文本去重
@@ -310,11 +400,31 @@ export function consolidateBullets(bullets) {
 
   let hasPublishParent = false;
 
+  // 遍历时跟踪"当前是否处于「变更文件」父 bullet 的子项区间"：
+  // 遇到 level 0 的「变更文件」父 bullet 后，后续连续的 level 1 子项
+  // 都作为文件路径收集，直到遇到下一个 level 0 bullet 为止。
+  let inFileListChildren = false;
+
   for (const b of bullets) {
     const rawText = (b.text || '').trim();
     if (!rawText) continue;
 
-    // 发布 skill 子项（level === 1 且属于发布 skill 组）
+    // level 0 bullet：终止「变更文件」子项区间
+    if (b.level === 0) {
+      inFileListChildren = false;
+    }
+
+    // 「变更文件」子项（level 1 且处于子项区间）
+    if (b.level === 1 && inFileListChildren) {
+      // 子项是文件路径，清洗 git quotepath 转义后收集
+      const filePath = decodeGitPath(
+        rawText.replace(/[；;]\s*$/, '').trim()
+      );
+      if (filePath) fileSet.add(filePath);
+      continue;
+    }
+
+    // 发布 skill 子项（level 1 且属于发布 skill 组）
     if (b.level === 1 && PUBLISH_CHILD_RE.test(rawText)) {
       publishChildren.push(rawText);
       continue;
@@ -323,6 +433,12 @@ export function consolidateBullets(bullets) {
     // 发布 skill 父条目
     if (b.level === 0 && rawText === PUBLISH_PARENT_TEXT) {
       hasPublishParent = true;
+      continue;
+    }
+
+    // 「变更文件」父条目（新式）：开启子项区间
+    if (b.level === 0 && rawText === FILE_PARENT_TEXT) {
+      inFileListChildren = true;
       continue;
     }
 
@@ -342,14 +458,14 @@ export function consolidateBullets(bullets) {
       continue;
     }
 
-    // 变更文件: ...
-    // 不再按精确文本去重，改为收集所有出现过的文件，最后合并成单条。
-    // 兼容历史条目末尾可能残留的 `；`
+    // 变更文件: a、b、c（旧式单行）
+    // 兼容历史条目：拆分后入 fileSet
     const fm = text.match(FILE_LIST_RE);
     if (fm) {
       const files = fm[1].replace(/[；;]\s*$/, '').split('、');
       for (const f of files) {
-        const trimmed = f.trim();
+        // 清洗 git quotepath 转义（历史脏数据可能带八进制序列）
+        const trimmed = decodeGitPath(f.trim());
         if (trimmed) fileSet.add(trimmed);
       }
       continue;
@@ -411,11 +527,13 @@ export function consolidateBullets(bullets) {
     result.push(b);
   }
 
-  // c) 变更文件 / 其他条目
-  // 合并后的"变更文件"条目：去重 + 排序，确保输出稳定
+  // c) 变更文件：父 bullet + 每个文件一个子 bullet（去重 + 排序）
   if (fileSet.size > 0) {
     const sortedFiles = [...fileSet].sort();
-    result.push({ level: 0, text: `变更文件: ${sortedFiles.join('、')}` });
+    result.push({ level: 0, text: FILE_PARENT_TEXT });
+    for (const f of sortedFiles) {
+      result.push({ level: 1, text: f });
+    }
   }
   for (const b of otherBullets.values()) result.push(b);
 

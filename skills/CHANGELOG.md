@@ -1,12 +1,31 @@
 # Changelog
 
-<!-- changelog-last-commit: b8a878830c7569a3578f3dfcbc436eaf70988a4c -->
+<!-- changelog-last-commit: 624b8f2b10318a84c592663c150d5d678b53c3c4 -->
 
 ## 2026-08-12
 
 - 发布 skill
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
-- 变更文件: "skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-\351\200\232\350\257\273\347\233\230\347\202\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/2026-08-11-docs-\351\200\232\350\257\273\347\233\230\347\202\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-003-\346\232\202\345\201\234-spec-\346\213\206\345\210\206\347\262\222\345\272\246\345\206\263\347\255\226.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-004-\346\232\202\345\201\234-\345\220\216\347\253\257API\345\275\242\347\212\266\344\270\216\351\211\264\346\235\203\345\206\263\347\255\226.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-009-skill\346\226\207\346\241\243\345\205\250\351\235\242\344\274\230\345\214\226.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-010-scaler-container-\345\237\272\347\241\200\347\273\204\344\273\266\345\260\201\350\243\205.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-011-ec-map-\345\237\272\347\241\200\347\273\204\344\273\266\346\224\271\351\200\240.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-012-scaler-container-overflow\344\270\216\345\205\250\345\261\217\345\242\236\345\274\272.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-12-013-038-spec\344\272\224\344\273\266\345\245\227\347\224\237\346\210\220.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-12-014-038-m0\346\226\207\346\241\243\345\256\241\346\211\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/task-2026-08-12-015-038-\347\274\226\347\240\201\345\211\215\347\275\256\351\230\273\345\241\236\346\270\205\347\220\206.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/task-2026-08-12-016-038-\347\274\226\347\240\201\345\274\200\345\217\221.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/templates/task-template-\351\200\232\347\224\250.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/templates/task-template-sdd-\345\205\250\346\265\201\347\250\213.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-003-\350\277\233\344\272\254\344\277\241\350\256\277\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-004-\344\277\241\350\256\277\346\225\260\346\215\256\346\257\224\345\257\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/references/001-docs\345\220\215\350\257\215\350\247\243\351\207\212\344\270\216\347\273\264\346\212\244\344\275\277\347\224\250\346\214\207\345\215\227.md"、"skills/packages/oss-mtc-transition-ln-project-context/references/002-\345\237\272\344\272\216skill\344\270\216docs\347\232\204\345\215\217\344\275\234\345\274\200\345\217\221workflow.md"、skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
+    - skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-通读盘点.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/2026-08-11-docs-通读盘点.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-003-暂停-spec-拆分粒度决策.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-004-暂停-后端API形状与鉴权决策.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-009-skill文档全面优化.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-010-scaler-container-基础组件封装.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-011-ec-map-基础组件改造.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-012-scaler-container-overflow与全屏增强.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-12-013-038-spec五件套生成.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-12-014-038-m0文档审批.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/task-2026-08-12-015-038-编码前置阻塞清理.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/task-2026-08-12-016-038-编码开发.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/templates/task-template-sdd-全流程.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/templates/task-template-通用.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-003-进京信访信息.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-004-信访数据比对.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/references/001-docs名词解释与维护使用指南.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/references/002-基于skill与docs的协作开发workflow.md；
 - 更新 skill「oss-mtc-transition-ln-project-context」（文档、配置、其他）；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人/草稿」上下文——记录不便写进...；
 
 ## 2026-08-11
@@ -14,7 +33,21 @@
 - 发布 skill
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
 - 新增 skill「oss-mtc-transition-ln-project-context」；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人/草稿」上下文——记录不便写进...；
-- 变更文件: "skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-\351\200\232\350\257\273\347\233\230\347\202\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-001-docs-\351\200\232\350\257\273\344\270\216\345\276\205\345\212\236\347\233\230\347\202\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-001-\344\272\272\345\221\230\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-002-\350\276\275\345\256\201\344\277\241\350\256\277\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-003-\350\277\233\344\272\254\344\277\241\350\256\277\344\277\241\346\201\257.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202-004-\344\277\241\350\256\277\346\225\260\346\215\256\346\257\224\345\257\271.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/assets/style.css"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/index.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen1.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen2.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen3.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202HTML/screen4.html"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\345\244\247\345\261\217\351\234\200\346\261\202\346\213\206\350\247\243.md"、"skills/packages/oss-mtc-transition-ln-project-context/pm/\350\276\275\345\256\201\347\234\201\345\206\233\350\275\254\345\216\205\345\233\275\344\272\247\345\214\226\346\224\271\351\200\240\351\241\271\347\233\256\351\234\200\346\261\202\350\257\264\346\230\216\344\271\246\357\274\210\346\234\200\346\226\260-20260805\357\274\211-2026\345\271\2648\346\234\21010\346\227\245.md"；
+- 变更文件
+    - skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-通读盘点.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-001-docs-通读与待办盘点.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-001-人员信息.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-002-辽宁信访信息.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-003-进京信访信息.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-004-信访数据比对.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/assets/style.css；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/index.html；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen1.html；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen2.html；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen3.html；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen4.html；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求拆解.md；
+    - skills/packages/oss-mtc-transition-ln-project-context/pm/辽宁省军转厅国产化改造项目需求说明书（最新-20260805）-2026年8月10日.md；
 
 ## 2026-08-07
 
@@ -33,7 +66,15 @@
 
 - 发布 skill
     - 「noc-shaanxi-emergency-support-center」 v0.0.0；
-- 变更文件: fedx-agents/leader/leader-evaluation.md、fedx-agents/leader/leader-meeting-transcript-2026-07-17.md、fedx-agents/leader/leader-meeting-transcript-2026-07-29.md、fedx-agents/leader/leader.knowledge.md、fedx-agents/leader/workplace-strategist.prompt.md、scripts/commit.mjs、scripts/update-changelog.mjs、skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件
+    - fedx-agents/leader/leader-evaluation.md；
+    - fedx-agents/leader/leader-meeting-transcript-2026-07-17.md；
+    - fedx-agents/leader/leader-meeting-transcript-2026-07-29.md；
+    - fedx-agents/leader/leader.knowledge.md；
+    - fedx-agents/leader/workplace-strategist.prompt.md；
+    - scripts/commit.mjs；
+    - scripts/update-changelog.mjs；
+    - skills/.beehive-skills-manager-db/projects/list.json；
 - 更新 skill「noc-shaanxi-emergency-support-center」（文档、配置、其他）；维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模块（中屏...；
 
 ## 2026-08-04
@@ -63,7 +104,9 @@
 
 - 新增 skill「oss-visual-designer-project-env」；
 - 新增 skill「oss-visual-material-project-env」；Maintains pnpm workspace config (pnpm-workspace.yaml) and pn...；
-- 变更文件: scripts/update-changelog.mjs、skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件
+    - scripts/update-changelog.mjs；
+    - skills/.beehive-skills-manager-db/projects/list.json；
 - 「oss-visual-designer-project-env」 v0.0.0；
 - 「oss-visual-material-project-env」 v0.0.0；
 - 更新 skill「oss-visual-designer-project-env」（文档、配置、其他）；管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpmfile.c...；
@@ -72,7 +115,20 @@
 ## 2026-07-20
 
 - 新增 skill「ai-coding-project-initializer」；
-- 变更文件: fedx-agents/leader/ai-coding/ai-coding-training/cheatsheet.md、fedx-agents/leader/ai-coding/ai-coding-training/html/assets/styles.css、fedx-agents/leader/ai-coding/ai-coding-training/html/cheatsheet.html、fedx-agents/leader/ai-coding/ai-coding-training/html/index.html、fedx-agents/leader/ai-coding/ai-coding-training/html/legacy-project.html、fedx-agents/leader/ai-coding/ai-coding-training/html/mindset.html、fedx-agents/leader/ai-coding/ai-coding-training/html/new-project.html、fedx-agents/leader/ai-coding/ai-coding-training/legacy-project.md、fedx-agents/leader/ai-coding/ai-coding-training/mindset.md、fedx-agents/leader/ai-coding/ai-coding-training/new-project.md、fedx-agents/leader/leader.skill.md、scripts/commit.mjs、skills/package.json；
+- 变更文件
+    - fedx-agents/leader/ai-coding/ai-coding-training/cheatsheet.md；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/assets/styles.css；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/cheatsheet.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/index.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/legacy-project.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/mindset.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/new-project.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/legacy-project.md；
+    - fedx-agents/leader/ai-coding/ai-coding-training/mindset.md；
+    - fedx-agents/leader/ai-coding/ai-coding-training/new-project.md；
+    - fedx-agents/leader/leader.skill.md；
+    - scripts/commit.mjs；
+    - skills/package.json；
 
 ## 2026-07-17
 
@@ -82,7 +138,8 @@
 ## 2026-07-14
 
 - 新增 skill「gd-es-next-right-dispatch-tasks」；维护右屏；
-- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 - 「gd-es-next-right-dispatch-tasks」 v0.0.0；
 
 ## 2026-07-13
@@ -92,7 +149,42 @@
 
 ## 2026-07-09
 
-- 变更文件: learn-skill/grill-me-main/.claude-plugin/plugin.json、learn-skill/grill-me-main/CLAUDE.md、learn-skill/grill-me-main/LICENSE、learn-skill/grill-me-main/scripts/link-skills.sh、learn-skill/grill-me-main/skills/engineering/diagnose/SKILL.md、learn-skill/grill-me-main/skills/engineering/diagnose/scripts/hitl-loop.template.sh、learn-skill/grill-me-main/skills/engineering/github-triage/AGENT-BRIEF.md、learn-skill/grill-me-main/skills/engineering/github-triage/OUT-OF-SCOPE.md、learn-skill/grill-me-main/skills/engineering/github-triage/SKILL.md、learn-skill/grill-me-main/skills/engineering/grill-with-docs/ADR-FORMAT.md、learn-skill/grill-me-main/skills/engineering/grill-with-docs/CONTEXT-FORMAT.md、learn-skill/grill-me-main/skills/engineering/grill-with-docs/SKILL.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/DEEPENING.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/INTERFACE-DESIGN.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/LANGUAGE.md、learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/SKILL.md、learn-skill/grill-me-main/skills/engineering/tdd/SKILL.md、learn-skill/grill-me-main/skills/engineering/tdd/deep-modules.md、learn-skill/grill-me-main/skills/engineering/tdd/interface-design.md、learn-skill/grill-me-main/skills/engineering/tdd/mocking.md、learn-skill/grill-me-main/skills/engineering/tdd/refactoring.md、learn-skill/grill-me-main/skills/engineering/tdd/tests.md、learn-skill/grill-me-main/skills/engineering/to-issues/SKILL.md、learn-skill/grill-me-main/skills/engineering/to-prd/SKILL.md、learn-skill/grill-me-main/skills/engineering/zoom-out/SKILL.md、learn-skill/grill-me-main/skills/misc/git-guardrails-claude-code/SKILL.md、learn-skill/grill-me-main/skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh、learn-skill/grill-me-main/skills/misc/migrate-to-shoehorn/SKILL.md、learn-skill/grill-me-main/skills/misc/scaffold-exercises/SKILL.md、learn-skill/grill-me-main/skills/misc/setup-pre-commit/SKILL.md、learn-skill/grill-me-main/skills/personal/edit-article/SKILL.md、learn-skill/grill-me-main/skills/personal/obsidian-vault/SKILL.md、learn-skill/grill-me-main/skills/productivity/caveman/SKILL.md、learn-skill/grill-me-main/skills/productivity/grill-me/SKILL.md、learn-skill/grill-me-main/skills/productivity/write-a-skill/SKILL.md；
+- 变更文件
+    - learn-skill/grill-me-main/.claude-plugin/plugin.json；
+    - learn-skill/grill-me-main/CLAUDE.md；
+    - learn-skill/grill-me-main/LICENSE；
+    - learn-skill/grill-me-main/scripts/link-skills.sh；
+    - learn-skill/grill-me-main/skills/engineering/diagnose/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/diagnose/scripts/hitl-loop.template.sh；
+    - learn-skill/grill-me-main/skills/engineering/github-triage/AGENT-BRIEF.md；
+    - learn-skill/grill-me-main/skills/engineering/github-triage/OUT-OF-SCOPE.md；
+    - learn-skill/grill-me-main/skills/engineering/github-triage/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/grill-with-docs/ADR-FORMAT.md；
+    - learn-skill/grill-me-main/skills/engineering/grill-with-docs/CONTEXT-FORMAT.md；
+    - learn-skill/grill-me-main/skills/engineering/grill-with-docs/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/DEEPENING.md；
+    - learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/INTERFACE-DESIGN.md；
+    - learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/LANGUAGE.md；
+    - learn-skill/grill-me-main/skills/engineering/improve-codebase-architecture/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/tdd/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/tdd/deep-modules.md；
+    - learn-skill/grill-me-main/skills/engineering/tdd/interface-design.md；
+    - learn-skill/grill-me-main/skills/engineering/tdd/mocking.md；
+    - learn-skill/grill-me-main/skills/engineering/tdd/refactoring.md；
+    - learn-skill/grill-me-main/skills/engineering/tdd/tests.md；
+    - learn-skill/grill-me-main/skills/engineering/to-issues/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/to-prd/SKILL.md；
+    - learn-skill/grill-me-main/skills/engineering/zoom-out/SKILL.md；
+    - learn-skill/grill-me-main/skills/misc/git-guardrails-claude-code/SKILL.md；
+    - learn-skill/grill-me-main/skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh；
+    - learn-skill/grill-me-main/skills/misc/migrate-to-shoehorn/SKILL.md；
+    - learn-skill/grill-me-main/skills/misc/scaffold-exercises/SKILL.md；
+    - learn-skill/grill-me-main/skills/misc/setup-pre-commit/SKILL.md；
+    - learn-skill/grill-me-main/skills/personal/edit-article/SKILL.md；
+    - learn-skill/grill-me-main/skills/personal/obsidian-vault/SKILL.md；
+    - learn-skill/grill-me-main/skills/productivity/caveman/SKILL.md；
+    - learn-skill/grill-me-main/skills/productivity/grill-me/SKILL.md；
+    - learn-skill/grill-me-main/skills/productivity/write-a-skill/SKILL.md；
 - 更新 skill「agent-creator」（文档、配置、其他）；
 
 ## 2026-07-08
@@ -101,7 +193,9 @@
 - 删除 skill「gd-es-next-right-damage-to-towns」；
 - 删除 skill「gd-es-next-right-network-scale-maintenance」；
 - 删除 skill「gd-es-next-warn-gis-risk-prediction-points」；
-- 变更文件: scripts/commit.mjs、scripts/update-changelog.mjs；
+- 变更文件
+    - scripts/commit.mjs；
+    - scripts/update-changelog.mjs；
 - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
 - 「gd-es-next-right-damage-to-towns」；
 - 「gd-es-next-right-network-scale-maintenance」；
@@ -150,7 +244,8 @@
 - 删除 skill「ui-emap-gis」；
 - 删除 skill「warn-gis-maintenance」；
 - 删除 skill「warn-gis-risk-prediction-points」；
-- 变更文件: skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 - 「assurance-progress」；
 - 「damage-to-towns-exit-service-detail」；
 - 「demo-skill」；
@@ -184,7 +279,8 @@
 
 - 新增 skill「gd-es-next-header」；
 - 新增 skill「gd-es-next-interaction-fields」；
-- 变更文件: scripts/commit.mjs；
+- 变更文件
+    - scripts/commit.mjs；
 - 「gd-es-next-header」 v0.0.0；
 - 「gd-es-next-interaction-fields」 v0.0.0；
 - 「oss-vis-material-advisor」 v0.0.0；
@@ -198,7 +294,11 @@
 
 - 新增 skill「gd-es-next-right-damage-to-towns」；
 - 新增 skill「oss-vis-material-advisor」；
-- 变更文件: package.json、scripts/commit.mjs、scripts/update-changelog.mjs、skills/package.json；
+- 变更文件
+    - package.json；
+    - scripts/commit.mjs；
+    - scripts/update-changelog.mjs；
+    - skills/package.json；
 - 「demo-skill」；
 - 「gd-es-next-right-damage-to-towns」；
 - 「oss-vis-material-advisor」 v0.0.0；
@@ -212,7 +312,11 @@
 ## 2026-06-15
 
 - 新增 skill「oss-vis-material-development-assistant」；
-- 变更文件: .gitignore、package.json、scripts/commit.mjs、skills/.beehive-skills-manager-db/projects/list.json；
+- 变更文件
+    - .gitignore；
+    - package.json；
+    - scripts/commit.mjs；
+    - skills/.beehive-skills-manager-db/projects/list.json；
 - 「dispatch-gis-maintenance」；
 - 「oss-vis-material-development-assistant」 v0.0.0；
 - 更新 skill「dispatch-gis-maintenance」（文档、配置、其他）；
@@ -244,7 +348,11 @@
 - 新增 skill「ui-emap-gis」；
 - 新增 skill「warn-gis-maintenance」；
 - 新增 skill「warn-gis-risk-prediction-points」；
-- 变更文件: .gitignore、skills/.beehive-skills-manager-db/projects/list.json、skills/package.json、skills/packages/toc.md；
+- 变更文件
+    - .gitignore；
+    - skills/.beehive-skills-manager-db/projects/list.json；
+    - skills/package.json；
+    - skills/packages/toc.md；
 - 「assurance-progress」；
 - 「damage-to-towns-exit-service-detail」；
 - 「dispatch-gis-maintenance」；
@@ -256,5 +364,7 @@
 
 ## 2026-05-26
 
-- 变更文件: .prettierrc、package.json；
+- 变更文件
+    - .prettierrc；
+    - package.json；
 
