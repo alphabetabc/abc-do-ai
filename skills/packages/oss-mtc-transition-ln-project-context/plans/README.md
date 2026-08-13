@@ -8,7 +8,6 @@
 
 | 文件 | 主题 |
 |------|------|
-| `private-notes.md` | 私人备忘、踩坑、与 AI Agent 的约定 |
 | `roadmap-2026-08-11-big-screen.md` | 大屏可视化分析 roadmap（决策矩阵 + 里程碑 + 任务索引 + 提案） |
 | `task-2026-08-11-009-skill文档全面优化.md` | skill 文档全面优化 task（独立，不进 roadmap §4） |
 | `templates/` | task 模板归档（复制即用，不进 `done/`） |

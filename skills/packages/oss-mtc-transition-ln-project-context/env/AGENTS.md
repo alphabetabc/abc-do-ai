@@ -20,12 +20,15 @@
 
 ### 2.1 已存在 / 已规划的大屏模块
 
-| 模块           | 数据源（schema · 表）                                               | Spec                                                         | 前端路由（计划）               |
-| -------------- | ------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------ |
-| 人员信息大屏   | `dw_basic_lc` · `stats_jdlk_persion_age_group` 等（§6 data-models） | 待新建 spec                                                  | `/visual/big-screen/personnel` |
-| 信访信息大屏   | `dw_basic_lc` · `letter_screen_1`–`6`（§7 data-models）             | 待新建 spec                                                  | `/visual/big-screen/petition`  |
-| 大数据综合展示 | TBD                                                                 | `035-visual-monthly-statistics/spec.md` §1.4 提到「另 spec」 | `/visual/big-screen`           |
-| 统计分析月报   | `dw_basic_lc` · `abi_*` / `analysis_report_file_info`               | `035-visual-monthly-statistics`                              | `/visual/stats/*`              |
+> 前端路由详见 `design/003-big-screen-routes.md`（大屏路由唯一权威记录点）。
+
+| 模块             | 数据源（schema · 表）                                               | Spec                                                         | 现状（待同步）                         |
+| ---------------- | ------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------- |
+| 人员信息大屏     | `dw_basic_lc` · `stats_jdlk_persion_age_group` 等（§6 data-models） | `038-bigdata-personnel-display`                              | `/visual/big-screen/personnel`（漂移） |
+| 辽宁信访大屏     | `dw_basic_lc` · `letter_screen_1`–`6`（§7 data-models）             | `039-bigdata-petition-display`（仅有 PM 输入，未生成五件套） | —（暂不动）                            |
+| 进京信访大屏     | `dw_basic_lc` · `letter_screen_*`                                   | `040-bigdata-beijing-petition-display`（同上）               | —（暂不动）                            |
+| 信访数据比对大屏 | TBD                                                                 | `041-bigdata-petition-comparison-display`（同上）            | —（暂不动）                            |
+| 统计分析月报     | `dw_basic_lc` · `abi_*` / `analysis_report_file_info`               | `035-visual-monthly-statistics`                              | `/visual/stats/*`（不变）              |
 
 ### 2.2 涉及的关键文档
 
@@ -36,7 +39,6 @@
 - 技术栈：[docs/design/tech-stack.md](docs/design/tech-stack.md)
 - 月报统计规格：[docs/specs/035-visual-monthly-statistics/spec.md](docs/specs/035-visual-monthly-statistics/spec.md)
 - Kingbase 方言规范：[docs/skills/database/kingbase/coding.md](docs/skills/database/kingbase/coding.md)
-- 大屏 SQL 来源脚本：`assets/可视化分析/人员信息大屏/人员信息大屏.sql` 与 `assets/可视化分析/信访信息大屏/信访信息大屏.sql`
 
 > ⚠️ 添加新大屏模块前，先在 `docs/specs/` 下新建 spec（沿用 `NNN-<name>/spec.md` 五件套：`spec` / `plan` / `tasks` / `data-model-extensions` / `acceptance-tests`）。
 
@@ -44,26 +46,32 @@
 
 ## 3. 前端目录约定
 
-约定位置（实际目录以仓库当前结构为准；不存在时请先确认）：
+约定位置（**目录与 PM 原文路由前缀对齐**，实际以仓库当前结构为准；不存在时请先确认）：
 
 ```
 frontend/src/
 ├── pages/
+│   ├── bigdata/
+│   │   └── Personnel/            # 人员信息大屏（路由 /bigdata/personnel）
+│   ├── dashboard/
+│   │   ├── Petition/             # 辽宁信访大屏（路由 /dashboard/petition）
+│   │   ├── PetitionBeijing/      # 进京信访大屏（路由 /dashboard/beijing-petition）
+│   │   └── PetitionComparison/   # 信访比对大屏（路由 /dashboard/petition-comparison）
 │   └── visual/
-│       ├── big-screen/
-│       │   ├── Personnel/        # 人员信息大屏
-│       │   ├── Petition/         # 信访信息大屏
-│       │   └── Overview/         # 大数据综合展示
-│       └── stats/                # 035 统计分析（月报）
+│       └── stats/                # 035 统计分析（月报，保持不变）
 ├── components/
-│   └── big-screen/               # 通用大屏组件（数字翻牌、地图、轮播等）
+│   └── big-screen/               # 通用大屏组件（数字翻牌、地图、轮播等，与路由前缀无关）
 ├── api/
-│   └── visual/                   # 大屏相关 API 封装
+│   └── visual/                   # 大屏相关 API 封装（前端 API 路径与路由不一致，按 API 契约）
 └── hooks/
     └── visual/
 ```
 
-**注意**：本仓库 `frontend/src/` 下目前**尚未确认**有 `pages/visual/` 目录。开始大屏开发时，**先核对**目录结构，避免在错误路径下新建文件。
+**注意**：
+
+- 本仓库 `frontend/src/` 下目前**尚未确认**有 `pages/bigdata/` 或 `pages/dashboard/` 目录。开始大屏开发时，**先核对**目录结构，避免在错误路径下新建文件。
+- **页面目录路径 = 路由前缀**（PM 原文）；**API 目录**不受路由前缀影响，仍按业务命名。
+- 详情见 memo R7（路由以 PM 文档为权威）。
 
 ---
 
@@ -149,10 +157,11 @@ frontend/src/
 
 ## 9. 变更记录
 
-| 日期       | 变更                                                                                   | 备注               |
-| ---------- | -------------------------------------------------------------------------------------- | ------------------ |
-| 2026-08-11 | 初始化 AGENTS.md，建立大屏开发管理入口                                                 | 初版               |
-| 2026-08-11 | 新增 §10 文档修改门禁（L1/L2/L3），与 `plans/roadmap-2026-08-11-big-screen.md` §6 联动 | R-AGENTS-L1L2L3    |
-| 2026-08-11 | 新增 §10.1 task 文件生命周期（完成 task 移至 `plans/done/`）                                      | R-AGENTS-TASK-DONE  |
-| 2026-08-11 | §8 禁止行为新增 4 条反幻觉规则（不得编造路径/端点/表字段/章节编号/数据/操作状态）                | R-AGENTS-ANTI-HALLUCINATION |
-| 2026-08-12 | §1 新增会话启动条目：AI Agent 须先加载 skill `oss-mtc-transition-ln-project-context`            | R-AGENTS-SKILL-AUTOLOAD     |
+| 日期       | 变更                                                                                   | 备注                        |
+| ---------- | -------------------------------------------------------------------------------------- | --------------------------- |
+| 2026-08-11 | 初始化 AGENTS.md，建立大屏开发管理入口                                                 | 初版                        |
+| 2026-08-11 | 新增 §10 文档修改门禁（L1/L2/L3），与 `plans/roadmap-2026-08-11-big-screen.md` §6 联动 | R-AGENTS-L1L2L3             |
+| 2026-08-11 | 新增 §10.1 task 文件生命周期（完成 task 移至 `plans/done/`）                           | R-AGENTS-TASK-DONE          |
+| 2026-08-11 | §8 禁止行为新增 4 条反幻觉规则（不得编造路径/端点/表字段/章节编号/数据/操作状态）      | R-AGENTS-ANTI-HALLUCINATION |
+| 2026-08-12 | §1 新增会话启动条目：AI Agent 须先加载 skill `oss-mtc-transition-ln-project-context`   | R-AGENTS-SKILL-AUTOLOAD     |
+| 2026-08-13 | §2.1 路由权威源引用改为 `design/003-big-screen-routes.md`（原引用 project-meta.md §1） | R-AGENTS-ROUTE-REF          |

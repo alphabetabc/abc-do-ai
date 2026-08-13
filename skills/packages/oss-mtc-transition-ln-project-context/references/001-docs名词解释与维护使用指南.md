@@ -172,13 +172,7 @@ docs/ 下分 6 个子目录。每个子目录标：**作用** / **何时修改**
 
 ## 4. 文档修改门禁
 
-源自 [001 §0](../design/001-big-screen-dev-guide.md) + [AGENTS.md §10](AGENTS.md)。
-
-| 等级 | 范围 | 修改方式 |
-| --- | --- | --- |
-| **L1 自由** | `.trae/skills/oss-mtc-transition-ln-project-context/**` | 当前会话可直接编辑 |
-| **L2 授权** | 仓库根 `AGENTS.md` | 须走 `plans/roadmap-*.md` §6 提案审批 |
-| **L3 严控** | `docs/**/*.md` / `README.md` / `docs/specs/_template/**` | 须走同上提案审批 + PM / 架构师会签 |
+> 详见 `AGENTS.md` §10（L1 自由 / L2 授权 / L3 严控）。
 
 **`docs/` 内不同子目录的 L3 严格度差异**：
 - `docs/specs/_template/**`：仅 PM + 架构双签可改
@@ -393,22 +387,7 @@ docs/ 下分 6 个子目录。每个子目录标：**作用** / **何时修改**
 
 ## 10. 实现期硬规则（通用部分）
 
-> 完整 14 条见 [001 §3](../design/001-big-screen-dev-guide.md)。本节列**通用且跨特性适用**的子集（编号沿用 001 便于对照）。
-
-| # | 规则 | 出处 | 适用层 |
-| --- | --- | --- | --- |
-| R1 | 运行时查询 SQL 不入 migration，放 `backend/app/repositories/sql/` 或 `backend/app/services/visual/sql/` | architecture §4.1 + kingbase/coding.md §5.5 | 后端 |
-| R2 | Kingbase Oracle 兼容模式：DDL 目录 `kingbase_oracle/`，用 `VARCHAR2` / `NUMBER` / `COMMENT ON`；勿粘 MySQL `int(11)` / `AUTO_INCREMENT` | kingbase/coding.md §3.1 | 后端 / DB |
-| R3 | 新入口须 patch Kingbase 版本探测：`patch_psycopg2_server_version_detection()` | kingbase/coding.md §2.2 | 后端 |
-| R4 | 全限定 schema.table：手写 SQL 用 `dw_basic_lc.letter_screen_1` 等，不依赖 `search_path` | kingbase/coding.md §2.3 | 后端 |
-| R6 | 菜单级鉴权：`require_menu_key("xxx")`；无权限 → 403 | system-overview §2.4 | 后端 + 前端 |
-| R7 | 大屏 / 统计只读：仅消费统计表快照，不写明细库 | AGENTS §5.2 | 后端 |
-| R9 | 包管理唯一 pnpm，禁用 npm/yarn；React 19 + AntD 6 + Vite 8 | react/coding.md §1 | 前端 |
-| R10 | HTTP 客户端 axios 单例，统一 Bearer + 401/续约/登出拦截器 | react/coding.md §5 | 前端 |
-| R11 | 加载 / 空态 / 错误态必须实现：401→`/login`，403→`/403`，5xx 走契约统一错误体 | AGENTS §5.4 + system-overview §2.3 | 前端 |
-| R12 | 参数化查询 mandatory，禁止拼接用户输入；日志不输出密码 / 连接串 | kingbase/coding.md §6 | 后端 |
-| R13 | docs 禁止引用 `.trae/` / `AGENTS.md` / `.local-*` | docs-no-private-refs 规则 | 文档 |
-| R14 | L3 文档改动须走 roadmap §6 提案审批 | AGENTS §10 | 文档 |
+> 详见 [../design/001-big-screen-dev-guide.md](../design/001-big-screen-dev-guide.md) §3（R1–R14）。
 
 ---
 

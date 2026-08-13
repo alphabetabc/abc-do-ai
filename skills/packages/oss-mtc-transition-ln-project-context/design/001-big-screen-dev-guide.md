@@ -9,13 +9,7 @@
 
 ## 0. 文档修改门禁
 
-| 等级        | 范围                                                    | 修改方式                              |
-| ----------- | ------------------------------------------------------- | ------------------------------------- |
-| **L1 自由** | `.trae/skills/oss-mtc-transition-ln-project-context/**` | 当前会话可直接编辑                    |
-| **L2 授权** | 仓库根 `AGENTS.md`                                      | 须走 `plans/roadmap-*.md` §6 提案审批 |
-| **L3 严控** | `docs/**`、`README.md`、`docs/specs/_template/**`       | 须走同上提案审批 + PM / 架构师会签    |
-
-> 详见 `AGENTS.md` §10 / §10.1
+> 详见 `AGENTS.md` §10 / §10.1（L1 自由 / L2 授权 / L3 严控 + task 生命周期）
 
 ---
 
@@ -37,7 +31,7 @@
 
 | 章节                  | 已有内容                                       | 占位 / 待建                                                 | 与大屏关系                                                       |
 | --------------------- | ---------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------- |
-| §2.2.2 菜单与路由表   | 035 的 7 行 `/visual/stats/*` 已登记 spec 链接 | `/visual/big-screen` 标「待建」；`/visual/query` 标「待建」 | **高**：大屏 4 屏需在此表登记路由                                |
+| §2.2.2 菜单与路由表   | 035 的 7 行 `/visual/stats/*` + 038 人员大屏 `/bigdata/personnel`（PM 原文）已登记 spec 链接 | 039–041 待建（路由见 `env/project-meta.md` §1） | **高**：大屏 4 屏需在此表登记路由                                |
 | §2.4 权限与可见性     | 菜单级 RBAC、按角色过滤、403 页                | —                                                           | **高**：大屏菜单 key 设计依据                                    |
 | §2.4.1 数据可见性策略 | `none` / `org_tree` / `self`                   | —                                                           | **高**：大屏按 `REG_AUTHORITY` 过滤，属 `org_tree` 变体或 `none` |
 | §2.5 与设计系统关系   | Ant Design + ProLayout mix                     | 主题令牌待定                                                | 中：大屏分辨率 / 图表样式                                        |
@@ -55,11 +49,11 @@
 
 | 章节                   | 已有内容                                           | 占位 / 缺失                                |
 | ---------------------- | -------------------------------------------------- | ------------------------------------------ |
-| §7.1 索引 - 业务模块   | 035 的 `/api/visual/stats/*` 已登记（§7.35–§7.40） | **大屏 `/api/visual/big-screen/*` 未登记** |
+| §7.1 索引 - 业务模块   | 035 的 `/api/visual/stats/*`（§7.35–§7.40）+ 038 人员大屏 `/api/visual/big-screen/personnel/*`（§7.18）已登记 | ✅ 已登记                                  |
 | §7.35–§7.40            | 035 月报 + 分析报告端点详述                        | ✅ 可作大屏端点写法模板                    |
-| §7.1 索引（visual 域） | §7.4x 预留空间存在（当前 §7.40 为 035 末）         | 大屏端点应从 §7.41 起编                    |
+| §7.18                 | 038 人员大屏 6 个端点详述                          | ✅ 已登记（task-014 执行）                |
 
-> ⚠️ `api-contracts.md` §7.1 索引表存在未解决的 Git 合并冲突标记（`<<<<<<< HEAD` / `=======` / `>>>>>>>`，约 L155–L194）。记入 `002` 决策日志 D8。
+> ✅ `api-contracts.md` §7.1 索引表 Git 合并冲突标记已解决（D8 已关闭）。
 
 #### data-models.md
 
@@ -137,18 +131,18 @@
 
 | #   | 步骤                                                                                                                                  | 前置依赖    | 阻塞决策             | 输出文件                                                                       | L 等级                   |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- | ------------------------------------------------------------------------------ | ------------------------ |
-| 1   | 在 `docs/specs/index.md` 分配编号与目录名（`038-visual-big-screen-*`）                                                                | D2 拍板     | **D2** ✅ 已关闭     | `docs/specs/index.md`                                                          | L3                       |
+| 1   | 在 `docs/specs/index.md` 分配编号与目录名（`038-bigdata-*`）                                                                         | D2 拍板     | **D2** ✅ 已关闭     | `docs/specs/index.md`                                                          | L3                       |
 | 2   | 复制 `docs/specs/_template/` 五件套到新目录                                                                                           | 步骤 1      | —                    | `docs/specs/038-*/{spec,plan,tasks,data-model-extensions,acceptance-tests}.md` | L3                       |
-| 3   | 把 PM 输入迁移到 `docs/specs/038-*/pm-inputs/`：assets（4 份分屏 md + HTML 原型 + 设计稿截图）+ 生成 `pm-requirements-input.md`       | 步骤 2 + D6 | **D6**               | `docs/specs/038-*/pm-inputs/assets/*` + `pm-requirements-input.md`             | L3                       |
+| 3   | 把 PM 输入迁移到 `docs/specs/038-*/pm-inputs/`：assets（4 份分屏 md + HTML 原型 + 设计稿截图）+ 生成 `pm-requirements-input.md`       | 步骤 2 + D6 | **D6** ✅ 038 已解锁 | `docs/specs/038-*/pm-inputs/assets/*` + `pm-requirements-input.md`             | L3                       |
 | 4   | 在 `docs/design/data-models.md` §6 / §7 确认/扩展统计表模型（核对 `letter_screen_4` 缺失、确认 `REG_AUTHORITY` 过滤口径）             | 步骤 3      | **D9** ✅ 已关闭     | `docs/design/data-models.md` §6/§7                                             | L3                       |
-| 5   | 在 `docs/design/api-contracts.md` §7.41+ 登记 `/api/visual/big-screen/*` 端点 + OpenAPI                                               | 步骤 4 + D3 | **D3** ✅ 已关闭     | `docs/design/api-contracts.md` §7.41+                                          | L3                       |
+| 5   | 在 `docs/design/api-contracts.md` §7.18 登记 `/api/visual/big-screen/personnel/*` 端点 + OpenAPI                                      | 步骤 4 + D3 | **D3** ✅ 已关闭     | `docs/design/api-contracts.md` §7.18                                           | L3                       |
 | 6   | 在 `docs/design/architecture.md` 数据库章节登记（如有新表/视图/函数）                                                                 | 步骤 4      | —                    | `docs/design/architecture.md` §5.3                                             | L3                       |
 | 7   | 在 `docs/design/system-overview.md` §2.2.2 对齐大屏菜单/路由                                                                          | 步骤 1 + D7 | **D7** ✅ 已关闭     | `docs/design/system-overview.md` §2.2.2                                        | L3                       |
 | 8   | 在 `docs/specs/038-*/spec.md` §0 / §9 写技术决策（图表选型 D1 ✅、4 屏平级 vs 1 菜单 4 tab D-R4 ✅、地图下钻策略 R2）                  | 步骤 3–7    | **D1** ✅ / **D-R4** ✅ | `docs/specs/038-*/spec.md` §0/§9                                               | L3                       |
 | 9   | 按 `ai-prompts-guide.md` §2.2 分轮生成五件套：第 1 轮 spec + extensions → 第 1.5 轮人工澄清 → 第 2 轮 acceptance → 第 3 轮 plan/tasks | 步骤 3–8    | —                    | `docs/specs/038-*/{spec,data-model-extensions,acceptance-tests,plan,tasks}.md` | L3                       |
 | 10  | 按 `tdd-process.md` 写 acceptance-tests Gherkin + 后端单测/合同测试                                                                   | 步骤 9      | —                    | `acceptance-tests.md` + `backend/tests/`                                       | L3（docs）/ 代码         |
 | 11  | 联调后更新 `AGENTS.md` §2.1 模块表 + `docs/specs/index.md` 状态列 + `system-overview.md` §2.2.2 spec 链接                             | M5 联调通过 | —                    | `AGENTS.md` §2.1 / `specs/index.md` / `system-overview.md`                     | L2（AGENTS）/ L3（docs） |
-| 12  | 清理 `api-contracts.md` §7.1 索引的 Git 合并冲突标记（D8）                                                                            | 独立        | **D8**               | `docs/design/api-contracts.md` §7.1                                            | L3                       |
+| 12  | ~~清理 `api-contracts.md` §7.1 索引的 Git 合并冲突标记（D8）~~ ✅ 已解决                                                              | 独立        | **D8** ✅ 已关闭     | `docs/design/api-contracts.md` §7.1                                            | L3                       |
 
 ---
 
@@ -156,7 +150,6 @@
 
 | #   | 矛盾                                                                                                                                                                                           | 位置                        | 处理                                                                                      |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------- |
-| 1   | `api-contracts.md` §7.1 索引表 Git 合并冲突标记未清理                                                                                                                                          | L155–L194                   | 记入 `002` D8，不擅改                                                                     |
+| 1   | ~~`api-contracts.md` §7.1 索引表 Git 合并冲突标记未清理~~ ✅ 已解决                                                                                                                              | L155–L194                   | D8 已关闭；合并冲突标记已清理                                                            |
 | 2   | `data-models.md` §7 信访大屏表号跳过 `letter_screen_4`                                                                                                                                         | §7.1–§7.5                   | ✅ 已确认：PM 需求明确使用 `_4`（地图模块），`data-models.md` §7 需补录（已立案 L3 提案） |
-| 3   | AGENTS §2.2 引用 `assets/可视化分析/人员信息大屏/人员信息大屏.sql`，但仓库 `assets/` 下**不存在**该文件                                                                                        | AGENTS §2.2                 | assets 实际只有 `账号管理/umc.sql`；SQL 源在 PM 私人输入中，须迁入 spec pm-inputs/assets/ |
 | 4   | `system-overview.md` §2.2.2 中部分比对模块路由与 `specs/index.md` 说明不一致（如 012 `/account/dict` vs `/account/dictionaries`；034 `/comparison/petition-appeal` vs `/comparison/petition`） | system-overview §2.2.2 备注 | specs/index.md 已标注「待对齐」；非大屏范围，不处理                                       |

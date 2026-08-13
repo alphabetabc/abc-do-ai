@@ -164,13 +164,16 @@ export function classifyFiles(files) {
     }
   }
 
-  // 二次判定：如果 packages 下所有文件都是 D，才是真正的删除
+  // 二次判定：只有 packages 下所有文件都是 D，才是真正的删除；
+  // 否则把循环里宽松置上的 isDeleted 清掉，避免单个 D 文件误判
   for (const g of groups.values()) {
     const pkgFiles = g.files.filter((f) => !isStorageFile(f.file));
     if (pkgFiles.length > 0 && pkgFiles.every((f) => f.status === 'D')) {
       g.isDeleted = true;
       g.isNew = false;
       g.isUpdate = false;
+    } else {
+      g.isDeleted = false;
     }
   }
 
