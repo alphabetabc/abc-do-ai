@@ -1,31 +1,22 @@
 # Changelog
 
-<!-- changelog-last-commit: 624b8f2b10318a84c592663c150d5d678b53c3c4 -->
+<!-- changelog-last-commit: c17ad504d0476ec6ace307963e739878f07fe4e4 -->
+
+## 2026-08-13
+
+- 发布 skill
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+- 变更文件
+    - scripts/skill-classifier.mjs；
+- 更新 skill「oss-mtc-transition-ln-project-context」（配置、其他）；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人/草稿」上下文——记录不便写进...；
 
 ## 2026-08-12
 
 - 发布 skill
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
 - 变更文件
+    - scripts/update-changelog.mjs；
     - skills/.beehive-skills-manager-db/projects/list.json；
-    - skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-通读盘点.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/2026-08-11-docs-通读盘点.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-003-暂停-spec-拆分粒度决策.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-004-暂停-后端API形状与鉴权决策.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-009-skill文档全面优化.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-010-scaler-container-基础组件封装.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-011-ec-map-基础组件改造.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-012-scaler-container-overflow与全屏增强.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-12-013-038-spec五件套生成.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-12-014-038-m0文档审批.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/task-2026-08-12-015-038-编码前置阻塞清理.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/task-2026-08-12-016-038-编码开发.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/templates/task-template-sdd-全流程.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/templates/task-template-通用.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-003-进京信访信息.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-004-信访数据比对.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/references/001-docs名词解释与维护使用指南.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/references/002-基于skill与docs的协作开发workflow.md；
 - 更新 skill「oss-mtc-transition-ln-project-context」（文档、配置、其他）；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人/草稿」上下文——记录不便写进...；
 
 ## 2026-08-11
@@ -33,21 +24,6 @@
 - 发布 skill
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
 - 新增 skill「oss-mtc-transition-ln-project-context」；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人/草稿」上下文——记录不便写进...；
-- 变更文件
-    - skills/packages/oss-mtc-transition-ln-project-context/design/2026-08-11-docs-通读盘点.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/plans/done/task-2026-08-11-001-docs-通读与待办盘点.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-001-人员信息.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-002-辽宁信访信息.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-003-进京信访信息.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求-004-信访数据比对.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/assets/style.css；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/index.html；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen1.html；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen2.html；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen3.html；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求HTML/screen4.html；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/大屏需求拆解.md；
-    - skills/packages/oss-mtc-transition-ln-project-context/pm/辽宁省军转厅国产化改造项目需求说明书（最新-20260805）-2026年8月10日.md；
 
 ## 2026-08-07
 
@@ -79,14 +55,16 @@
 
 ## 2026-08-04
 
+- 发布 skill
+    - 「git-worktree-cross-branch-port」 v0.0.0；
 - 新增 skill「git-worktree-cross-branch-port」；
-- 「git-worktree-cross-branch-port」 v0.0.0；
 
 ## 2026-08-03
 
+- 发布 skill
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+    - 「oss-visual-designer-project-env」 v0.0.0；
 - 新增 skill「meta-human-context-env」；
-- 「oss-vis-material-development-assistant」 v0.0.0；
-- 「oss-visual-designer-project-env」 v0.0.0；
 - 更新 skill「oss-vis-material-development-assistant」（配置、其他）；
 - 更新 skill「oss-visual-designer-project-env」（文档、配置、其他）；
 
@@ -97,18 +75,20 @@
 
 ## 2026-07-24
 
-- 「noc-shaanxi-emergency-support-center」 v0.0.0；
+- 发布 skill
+    - 「noc-shaanxi-emergency-support-center」 v0.0.0；
 - 更新 skill「noc-shaanxi-emergency-support-center」（文档、配置、其他）；维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模块（中屏...；
 
 ## 2026-07-23
 
+- 发布 skill
+    - 「oss-visual-designer-project-env」 v0.0.0；
+    - 「oss-visual-material-project-env」 v0.0.0；
 - 新增 skill「oss-visual-designer-project-env」；
 - 新增 skill「oss-visual-material-project-env」；Maintains pnpm workspace config (pnpm-workspace.yaml) and pn...；
 - 变更文件
     - scripts/update-changelog.mjs；
     - skills/.beehive-skills-manager-db/projects/list.json；
-- 「oss-visual-designer-project-env」 v0.0.0；
-- 「oss-visual-material-project-env」 v0.0.0；
 - 更新 skill「oss-visual-designer-project-env」（文档、配置、其他）；管理 oss-visual-designer 项目的 pnpm-workspace.yaml 与 .pnpmfile.c...；
 - 更新 skill「oss-visual-material-project-env」（文档、配置、其他）；
 
@@ -132,20 +112,23 @@
 
 ## 2026-07-17
 
+- 发布 skill
+    - 「noc-shaanxi-emergency-support-center」 v0.0.0；
 - 新增 skill「noc-shaanxi-emergency-support-center」；维护 oss-noc-shaanxi 中屏 emergency-support/modules/center 模块（中屏...；
-- 「noc-shaanxi-emergency-support-center」 v0.0.0；
 
 ## 2026-07-14
 
+- 发布 skill
+    - 「gd-es-next-right-dispatch-tasks」 v0.0.0；
 - 新增 skill「gd-es-next-right-dispatch-tasks」；维护右屏；
 - 变更文件
     - skills/.beehive-skills-manager-db/projects/list.json；
-- 「gd-es-next-right-dispatch-tasks」 v0.0.0；
 
 ## 2026-07-13
 
+- 发布 skill
+    - 「fedx-gis-api-helper」 v0.0.0；
 - 新增 skill「fedx-gis-api-helper」；Helps business developers use the fedx-gis npm package to bu...；
-- 「fedx-gis-api-helper」 v0.0.0；
 
 ## 2026-07-09
 
@@ -189,6 +172,13 @@
 
 ## 2026-07-08
 
+- 发布 skill
+    - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-right-damage-to-towns」；
+    - 「gd-es-next-right-network-scale-maintenance」；
+    - 「gd-es-next-right-real-time-impact」 v0.0.0；
+    - 「gd-es-next-warn-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-warn-gis-risk-prediction-points」；
 - 新增 skill「gd-es-next-right-real-time-impact」；
 - 删除 skill「gd-es-next-right-damage-to-towns」；
 - 删除 skill「gd-es-next-right-network-scale-maintenance」；
@@ -196,21 +186,16 @@
 - 变更文件
     - scripts/commit.mjs；
     - scripts/update-changelog.mjs；
-- 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
-- 「gd-es-next-right-damage-to-towns」；
-- 「gd-es-next-right-network-scale-maintenance」；
-- 「gd-es-next-right-real-time-impact」 v0.0.0；
-- 「gd-es-next-warn-gis-maintenance」 v0.0.0；
-- 「gd-es-next-warn-gis-risk-prediction-points」；
 - 更新 skill「gd-es-next-dispatch-gis-maintenance」（文档、配置、其他）；
 - 更新 skill「gd-es-next-warn-gis-maintenance」（文档、配置、其他）；
 
 ## 2026-06-30
 
-- 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
-- 「gd-es-next-ui-emap-gis」 v0.0.0；
-- 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
-- 「oss-vis-material-advisor」 v0.0.0；
+- 发布 skill
+    - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-ui-emap-gis」 v0.0.0；
+    - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
+    - 「oss-vis-material-advisor」 v0.0.0；
 - 更新 skill「gd-es-next-dispatch-gis-maintenance」（文档、配置、其他）；
 - 更新 skill「gd-es-next-ui-emap-gis」（文档、配置、其他）；
 - 更新 skill「noc-shaanxi-chinese-database-adapter」（配置）；
@@ -218,14 +203,36 @@
 
 ## 2026-06-25
 
-- 「gd-es-next-ui-emap-gis」 v0.0.0；
-- 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
+- 发布 skill
+    - 「gd-es-next-ui-emap-gis」 v0.0.0；
+    - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
 - 更新 skill「noc-shaanxi-chinese-database-adapter」（配置、其他）；帮助Node.js项目适配国产数据库（达梦DMDB、OceanBase、GaussDB、人大金仓KingBase、GBa...；
 - 更新 skill「gd-es-next-ui-emap-gis」（文档、配置、其他）；
 - 更新 skill「noc-shaanxi-chinese-database-adapter」（文档、配置）；
 
 ## 2026-06-24
 
+- 发布 skill
+    - 「assurance-progress」；
+    - 「damage-to-towns-exit-service-detail」；
+    - 「demo-skill」；
+    - 「dispatch-gis-maintenance」；
+    - 「emergency-api-generator」；
+    - 「gd-es-next-assurance-progress」 v0.0.0；
+    - 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-emergency-api-generator」 v0.0.0；
+    - 「gd-es-next-header」 v0.0.0；
+    - 「gd-es-next-right-network-scale-maintenance」；
+    - 「gd-es-next-ui-emap-gis」 v0.0.0；
+    - 「gd-es-next-warn-gis-maintenance」 v0.0.0；
+    - 「gd-es-next-warn-gis-risk-prediction-points」；
+    - 「network-scale-maintenance」；
+    - 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
+    - 「noc-shaanxi-management-overview-first」 v0.0.0；
+    - 「noc-shaanxi-ui-streamer-path」 v0.0.0；
+    - 「ui-emap-gis」；
+    - 「warn-gis-maintenance」；
+    - 「warn-gis-risk-prediction-points」；
 - 新增 skill「gd-es-next-assurance-progress」；
 - 新增 skill「gd-es-next-dispatch-gis-maintenance」；
 - 新增 skill「gd-es-next-emergency-api-generator」；
@@ -246,52 +253,40 @@
 - 删除 skill「warn-gis-risk-prediction-points」；
 - 变更文件
     - skills/.beehive-skills-manager-db/projects/list.json；
-- 「assurance-progress」；
-- 「damage-to-towns-exit-service-detail」；
-- 「demo-skill」；
-- 「dispatch-gis-maintenance」；
-- 「emergency-api-generator」；
-- 「gd-es-next-assurance-progress」 v0.0.0；
-- 「gd-es-next-dispatch-gis-maintenance」 v0.0.0；
-- 「gd-es-next-emergency-api-generator」 v0.0.0；
-- 「gd-es-next-header」 v0.0.0；
-- 「gd-es-next-right-network-scale-maintenance」；
-- 「gd-es-next-ui-emap-gis」 v0.0.0；
-- 「gd-es-next-warn-gis-maintenance」 v0.0.0；
-- 「gd-es-next-warn-gis-risk-prediction-points」；
-- 「network-scale-maintenance」；
-- 「noc-shaanxi-chinese-database-adapter」 v0.0.0；
-- 「noc-shaanxi-management-overview-first」 v0.0.0；
-- 「noc-shaanxi-ui-streamer-path」 v0.0.0；
-- 「ui-emap-gis」；
-- 「warn-gis-maintenance」；
-- 「warn-gis-risk-prediction-points」；
 - 更新 skill「gd-es-next-header」（配置、其他）；
 - 更新 skill「oss-vis-material-advisor」（配置、其他）；
 
 ## 2026-06-22
 
+- 发布 skill
+    - 「pm-agent-skill」 v0.0.0；
 - 新增 skill「pm-agent-skill」；PM 智能体 — 主动接管 + 透明 + 授权制 + 上下文对齐 + 技术栈无关。当产品经理开始新项目、讨论原型开发、需...；
-- 「pm-agent-skill」 v0.0.0；
 - 更新 skill「pm-agent-skill」（配置）；PM 智能体 — 主动接管 + 透明 + 授权制 + 上下文对齐 + 技术栈无关。当产品经理开始新项目、讨论原型开发、需...；
 
 ## 2026-06-17
 
+- 发布 skill
+    - 「gd-es-next-header」 v0.0.0；
+    - 「gd-es-next-interaction-fields」 v0.0.0；
+    - 「oss-vis-material-advisor」 v0.0.0；
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+    - 「warn-gis-risk-prediction-points」；
 - 新增 skill「gd-es-next-header」；
 - 新增 skill「gd-es-next-interaction-fields」；
 - 变更文件
     - scripts/commit.mjs；
-- 「gd-es-next-header」 v0.0.0；
-- 「gd-es-next-interaction-fields」 v0.0.0；
-- 「oss-vis-material-advisor」 v0.0.0；
-- 「oss-vis-material-development-assistant」 v0.0.0；
-- 「warn-gis-risk-prediction-points」；
 - 更新 skill「oss-vis-material-advisor」（配置、其他）；
 - 更新 skill「oss-vis-material-development-assistant」（配置、其他）；
 - 更新 skill「warn-gis-risk-prediction-points」（文档、配置、其他）；
 
 ## 2026-06-16
 
+- 发布 skill
+    - 「demo-skill」；
+    - 「gd-es-next-right-damage-to-towns」；
+    - 「oss-vis-material-advisor」 v0.0.0；
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+    - 「warn-gis-risk-prediction-points」；
 - 新增 skill「gd-es-next-right-damage-to-towns」；
 - 新增 skill「oss-vis-material-advisor」；
 - 变更文件
@@ -299,11 +294,6 @@
     - scripts/commit.mjs；
     - scripts/update-changelog.mjs；
     - skills/package.json；
-- 「demo-skill」；
-- 「gd-es-next-right-damage-to-towns」；
-- 「oss-vis-material-advisor」 v0.0.0；
-- 「oss-vis-material-development-assistant」 v0.0.0；
-- 「warn-gis-risk-prediction-points」；
 - 更新 skill「gd-es-next-right-damage-to-towns」（配置）；
 - 更新 skill「oss-vis-material-development-assistant」（配置、其他）；
 - 更新 skill「warn-gis-risk-prediction-points」（配置、其他）；
@@ -311,34 +301,46 @@
 
 ## 2026-06-15
 
+- 发布 skill
+    - 「dispatch-gis-maintenance」；
+    - 「oss-vis-material-development-assistant」 v0.0.0；
 - 新增 skill「oss-vis-material-development-assistant」；
 - 变更文件
     - .gitignore；
     - package.json；
     - scripts/commit.mjs；
     - skills/.beehive-skills-manager-db/projects/list.json；
-- 「dispatch-gis-maintenance」；
-- 「oss-vis-material-development-assistant」 v0.0.0；
 - 更新 skill「dispatch-gis-maintenance」（文档、配置、其他）；
 
 ## 2026-06-09
 
+- 发布 skill
+    - 「dispatch-gis-maintenance」；
+    - 「gd-es-next-left-emergency-resources」 v0.0.0；
+    - 「warn-gis-risk-prediction-points」；
 - 新增 skill「gd-es-next-left-emergency-resources」；
-- 「dispatch-gis-maintenance」；
-- 「gd-es-next-left-emergency-resources」 v0.0.0；
-- 「warn-gis-risk-prediction-points」；
 - 更新 skill「dispatch-gis-maintenance」（文档、配置、其他）；
 - 更新 skill「warn-gis-risk-prediction-points」（文档、配置、其他）；
 
 ## 2026-06-05
 
-- 「dispatch-gis-maintenance」；
-- 「ui-emap-gis」；
+- 发布 skill
+    - 「dispatch-gis-maintenance」；
+    - 「ui-emap-gis」；
 - 更新 skill「dispatch-gis-maintenance」（文档、配置、其他）；
 - 更新 skill「ui-emap-gis」（文档、其他）；
 
 ## 2026-05-27
 
+- 发布 skill
+    - 「assurance-progress」；
+    - 「damage-to-towns-exit-service-detail」；
+    - 「dispatch-gis-maintenance」；
+    - 「emergency-api-generator」；
+    - 「network-scale-maintenance」；
+    - 「ui-emap-gis」；
+    - 「warn-gis-maintenance」；
+    - 「warn-gis-risk-prediction-points」；
 - 新增 skill「agent-creator」；
 - 新增 skill「assurance-progress」；
 - 新增 skill「damage-to-towns-exit-service-detail」；
@@ -353,14 +355,6 @@
     - skills/.beehive-skills-manager-db/projects/list.json；
     - skills/package.json；
     - skills/packages/toc.md；
-- 「assurance-progress」；
-- 「damage-to-towns-exit-service-detail」；
-- 「dispatch-gis-maintenance」；
-- 「emergency-api-generator」；
-- 「network-scale-maintenance」；
-- 「ui-emap-gis」；
-- 「warn-gis-maintenance」；
-- 「warn-gis-risk-prediction-points」；
 
 ## 2026-05-26
 
