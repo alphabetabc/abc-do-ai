@@ -20,15 +20,19 @@
 
 ### 2.1 已存在 / 已规划的大屏模块
 
-> 前端路由详见 `design/003-big-screen-routes.md`（大屏路由唯一权威记录点）。
+> 前端路由详见 技能 `oss-mtc-transition-ln-project-context` 下 `design/003-big-screen-routes.md`（大屏路由唯一权威记录点）。
 
-| 模块             | 数据源（schema · 表）                                               | Spec                                                         | 现状（待同步）                         |
-| ---------------- | ------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------- |
-| 人员信息大屏     | `dw_basic_lc` · `stats_jdlk_persion_age_group` 等（§6 data-models） | `038-bigdata-personnel-display`                              | `/visual/big-screen/personnel`（漂移） |
-| 辽宁信访大屏     | `dw_basic_lc` · `letter_screen_1`–`6`（§7 data-models）             | `039-bigdata-petition-display`（仅有 PM 输入，未生成五件套） | —（暂不动）                            |
-| 进京信访大屏     | `dw_basic_lc` · `letter_screen_*`                                   | `040-bigdata-beijing-petition-display`（同上）               | —（暂不动）                            |
-| 信访数据比对大屏 | TBD                                                                 | `041-bigdata-petition-comparison-display`（同上）            | —（暂不动）                            |
-| 统计分析月报     | `dw_basic_lc` · `abi_*` / `analysis_report_file_info`               | `035-visual-monthly-statistics`                              | `/visual/stats/*`（不变）              |
+| 模块             | 数据源（schema · 表）                                               | Spec                                            | 现状                                                                              |
+| ---------------- | ------------------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------- |
+| 人员信息大屏     | `dw_basic_lc` · `stats_jdlk_persion_age_group` 等（§6 data-models） | `038-bigdata-personnel-display`                 | `/visual/big-screen?menu=personnel` ✅ 入口初始化完成（task-041）                |
+| 辽宁信访大屏     | `dw_basic_lc` · `letter_screen_1`–`6`（§7 data-models）             | `039-bigdata-petition-display`（仅有 PM 输入，未生成五件套） | `/visual/big-screen?menu=petition` ✅ 入口初始化完成（task-041）                  |
+| 进京信访大屏     | `dw_basic_lc` · `letter_screen_*`                                   | `040-bigdata-beijing-petition-display`（同上）  | `/visual/big-screen?menu=beijingPetition` ⏭️ 入口占位（待用户提供布局参数）     |
+| 信访数据比对大屏 | TBD                                                                 | `041-bigdata-petition-comparison-display`（同上） | `/visual/big-screen?menu=petitionComparison` ⏭️ 入口占位（待用户提供布局参数） |
+| 统计分析月报     | `dw_basic_lc` · `abi_*` / `analysis_report_file_info`               | `035-visual-monthly-statistics`                 | `/visual/stats/*`（不变）                                                          |
+
+> 4 大屏路由采用 **单路由 + `?menu=xxx`（驼峰 key）切换**方案。详见 `.trae/skills/oss-mtc-transition-ln-project-context/design/003-big-screen-routes.md` §1 + `.trae/skills/oss-mtc-transition-ln-project-context/design/004-big-screen-architecture.md` §1.1。
+>
+> 入口初始化（task-041 完成）：`Visual` 壳 + `Header`（导航 + 中间大标题）+ `Background` + personnel 5 卡片 + petition 6 卡片布局；业务实现（图表 / API / 数据渲染）属后续 task-016 M3/M4。
 
 ### 2.2 涉及的关键文档
 
@@ -92,7 +96,7 @@ frontend/src/
 2. **大屏只读**：大屏仅消费统计表（`stats_*` / `letter_screen_*` / `abi_*`）快照，不直接写明细库。
 3. **导出/下载**：大屏如需导出，沿用 `035` 的 Excel 导出与 `Content-Disposition` 文件名规范。
 4. **加载/空态/错误态**：必须实现；401 → `/login`，403 → `/403`，5xx 走契约统一错误体。
-5. **图表方案**：本期图表组件选型尚未确定，开始前需先在 spec 里约定（候选：ECharts / AntV / Recharts），并与设计资源对齐分辨率（建议 1920×1080 / 2K）。
+5. **图表方案**：已定选型 **ECharts 6.1.0 + echarts-for-react 3.0.6**（D1 已拍板，见 038/039 spec §0）；地图用 `EcMap` 共享组件；与设计资源对齐分辨率（建议 1920×1080 / 2K）。
 6. **响应式**：大屏主要面向大屏展示端，PC 管理端的列表页另行布局。
 
 ---
@@ -165,3 +169,4 @@ frontend/src/
 | 2026-08-11 | §8 禁止行为新增 4 条反幻觉规则（不得编造路径/端点/表字段/章节编号/数据/操作状态）      | R-AGENTS-ANTI-HALLUCINATION |
 | 2026-08-12 | §1 新增会话启动条目：AI Agent 须先加载 skill `oss-mtc-transition-ln-project-context`   | R-AGENTS-SKILL-AUTOLOAD     |
 | 2026-08-13 | §2.1 路由权威源引用改为 `design/003-big-screen-routes.md`（原引用 project-meta.md §1） | R-AGENTS-ROUTE-REF          |
+| 2026-08-17 | §5.5 图表方案改为已定选型（ECharts 6.1.0 + echarts-for-react 3.0.6，D1 已拍板）         | R-AGENTS-D1-CHART           |

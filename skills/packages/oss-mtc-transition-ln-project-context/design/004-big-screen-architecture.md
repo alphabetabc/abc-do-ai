@@ -57,69 +57,97 @@
 
 ## 1. 大屏布局模型
 
-### 1.1 大屏壳（Shell）—— 父路由 + Outlet 模式
+### 1.1 大屏壳（Shell）—— 单路由 + query 参数切换
 
-大屏壳采用**父路由组件 + Outlet** 模式，与项目现有的 `AppShell`（`/` 父路由）同构：
+> **2026-08-17 更新（task-041 经验）**：原计划的父路由 + Outlet 模式经实战发现 AppShell 嵌套导致大屏内容被套在 tab 卡片里（padding/白底/圆角）。最终采用**单路由 + query 参数切换**方案。
 
-```
-router.tsx
-  /                         → <AppShell>          ← 管理端布局壳
-    bigdata/personnel       →   <PersonnelScreen> ← 大屏页面（不是 AppShell 子路由）
-    dashboard/petition      →   <PetitionScreen>
-    ...
-```
-
-**大屏壳是独立的大屏父路由组件**（`BigScreenShell`），不嵌套在 `AppShell` 内：
+**实战方案**：
 
 ```
-router.tsx
-  /                              → <AppShell>          ← 管理端（Header + Sider + TabBar）
-    bigdata/personnel            →   <BigScreenShell>  ← 大屏父路由（独立壳）
-                                    └─ <Outlet />      →   <PersonnelScreen />（大屏内容）
-    dashboard/petition           →   <BigScreenShell>
-                                    └─ <Outlet />      →   <PetitionScreen />
-    dashboard/beijing-petition   →   <BigScreenShell>
-                                    └─ <Outlet />      →   <BeijingPetitionScreen />
-    dashboard/petition-comparison →  <BigScreenShell>
-                                    └─ <Outlet />      →   <PetitionComparisonScreen />
+router.tsx（appRoutes 仍走 AppShell children，保留登录校验 + tab 体系）
+  /                       → <AppShell>                                  ← 管理端布局壳
+    visual/big-screen     →   <Visual>                                  ← 大屏入口（单路由）
+                              ├─ <Header>                              ← 顶部导航
+                              ├─ <Background>                           ← 背景层
+                              └─ <Page>（?menu=xxx 切换 4 大屏子页）   ← useSearchParams 读 menu
+                                  ├─ ?menu=personnel   → <PersonnelPage>
+                                  ├─ ?menu=petition      → <PetitionPage>
+                                  ├─ ?menu=beijingPetition → <BeijingPetitionPage>
+                                  └─ ?menu=petitionComparison → <PetitionComparisonPage>
 ```
 
-> 大屏路由具体挂在 `AppShell` 下还是独立为 `/` 的兄弟顶层路由，在编码阶段确定。
+**为什么是单路由 + query 而非 4 路由 + Outlet**：
 
-**壳职责**：
+| 方案                                         | 优点                                                          | 缺点                                                              | 决策                          |
+| -------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------- |
+| 4 路由 + 父路由 `<Visual><Outlet/></Visual>` | 路由语义清晰、嵌套层级少                                      | AppShell 把大屏套在 tab 卡片里（padding/白底/圆角），内容无法全屏 | ❌ 已废弃                     |
+| 顶级路由脱离 AppShell                        | tab 不创建，内容可全屏                                        | 脱离菜单体系，鉴权需独立处理                                      | ❌ 已废弃                     |
+| ROUTE_WHITELIST 白名单 + AppShell 跳过 tab   | tab 跳过创建                                                  | 绕过 AGENTS §4「菜单项粒度鉴权」                                  | ❌ 已废弃（违反 §8 禁止行为） |
+| ✅ **单路由 + query 切换**                   | pathname 不变 → tab 不重复创建；子页切换走 lazy；保留菜单鉴权 | URL 不直观（要查 menu 参数）                                      | ✅ **最终方案**               |
+
+**Visual 壳职责**：
 
 - `ScalerContainer` 缩放适配（1920×1080 设计稿）
-- 深蓝色科技风格背景
-- 顶部标题 + 当前时间 + 导航按钮
-- 三栏 + 底部布局槽位
-- `<Outlet />` 渲染当前大屏页面内容
+- `<Header />` 渲染（左导航 + 中间大标题「大数据综合展示」+ 右导航）
+- `<Background />` 渲染（`/static/images/background-1.png`）
+- `useSearchParams` 读 `?menu=xxx`（驼峰 key）
+- `lazy()` 加载对应子页 + `Suspense` 包裹 + `Spin` loading
+- 4 大屏公共壳层（背景/导航/scaler），不关心具体大屏内容
 
-**导航按钮**：对应各大屏，当前屏高亮，其余跳转对应路由（路由见 `003-big-screen-routes.md`）。导航按钮点击行为待设计（memo R9）。
+**导航切换行为**：导航按钮点击 `setSearchParams({ menu: key }, { replace: true })` → pathname 不变 → AppShell 不创建新 tab 页签。
 
-### 1.2 槽位协议（Slot Protocol）
+### 1.2 槽位协议（Slot Protocol）—— 基于像素坐标的绝对定位
 
-`BigScreenShell` 通过 Outlet 渲染大屏页面，大屏页面内部按槽位组织模块。槽位命名规则：
+> **2026-08-17 更新（task-041 经验）**：原计划的「三栏 + 底部 + 槽位名」模型在实战中演化为**基于 PM 像素坐标的 InfoCard 绝对定位**。每个 InfoCard 是一个绝对定位的卡片，宽高/left/top 由 PM 提供的设计稿决定。
 
-| 槽位      | 位置   | 职责                                 |
-| --------- | ------ | ------------------------------------ |
-| `top-bar` | 顶部栏 | 标题 + 时间 + 导航按钮（壳组件渲染） |
-| `left-1`  | 左栏上 | 图表模块（页面填充）                 |
-| `left-2`  | 左栏中 | 图表模块（页面填充）                 |
-| `left-3`  | 左栏下 | 图表模块（页面填充）                 |
-| `center`  | 中栏   | 地图 / 主视觉（页面填充）            |
-| `right`   | 右栏   | 数据卡片 / 图表（页面填充）          |
-| `bottom`  | 底部栏 | 图表 / 统计（页面填充）              |
+**实战模型**（以 personnel 大屏 5 卡片为例）：
 
-> `top-bar` 由壳组件统一渲染；其余槽位由大屏页面（Outlet 子路由）填充。各屏具体模块内容在各自 spec §4 中定义。
+```
+┌─────────────────────────────────────────────────────────────┐
+│  退役军人(35,108)        │  数据总量情况(555,108)             │
+│  InfoCard 500×240       │  InfoCard 1330×651                  │
+│  ──────────────────── │                                       │
+│  优抚对象(35,366)       │                                       │
+│  InfoCard 500×320      │                                       │
+│  ──────────────────── │                                       │
+│  部分人员类别(35,704)   │                                       │
+│  InfoCard 500×340      │                                       │
+│                        │  各地区人数统计(555,769)            │
+│                        │  InfoCard 1330×275                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**核心原则**：
+
+- 每个 InfoCard = 一个槽位 = `position: absolute` + `width/height/left/top`（PM 像素）
+- 子组件**自带定位样式**（`style` prop 内联 absolute 坐标），主入口仅做组合
+- 大屏主入口 `index.tsx` 仅负责 `import` + 组合各子组件，**不写绝对定位**
+- 子组件目录 `kebab-case`（如 `personnel/retired-soldier/`），组件函数 PascalCase
+
+**InfoCard titleBg 选型**（基于卡片宽度）：
+
+- `normal`（500px 短背景 `title.png`bg.png）→ 500px 卡片
+- `long`（1000-1300px 长背景 `title-bg2.png`）→ 1000-1300px 卡片
+- `max`（1300+px 最长背景 `title-bg-max.png`）→ 1300+px 卡片
+
+> `titleBg` 选型是设计还原关键点，宽度未对齐会出现拉伸或留白。具体宽度表见 `components/large-screen/info-card/index.tsx`。
+
+**槽位参数沉淀**：
+
+每个大屏的卡片参数（width/height/left/top/titleBg）在各自 task 文件 `§0.3.x` 沉淀（如 personnel → task-041 §0.3.1，petition → task-041 §0.3.2）。**修改卡片布局时须同步更新 task 沉淀表格**。
 
 ### 1.3 布局壳前端实现
 
-| 组件              | 路径                                                     | 状态                                                          |
-| ----------------- | -------------------------------------------------------- | ------------------------------------------------------------- |
-| `ScalerContainer` | `frontend/src/components/large-screen/scaler-container/` | ✅ 已实现（设计见 `components/001-scaler-container/`）        |
-| `BigScreenShell`  | 待建                                                     | ⚪ 大屏父路由壳组件（标题 + 时间 + 导航按钮 + 三栏 + Outlet） |
+| 组件              | 路径                                                          | 状态                                                                                                             |
+| ----------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `ScalerContainer` | `frontend/src/components/large-screen/scaler-container/`      | ✅ 已实现（设计见 `components/001-scaler-container/`）                                                           |
+| `Visual`          | `frontend/src/pages/visual/big-screen/index.tsx`              | ✅ 已实现（task-041）：单路由 + query 切换大屏入口，包裹 ScalerContainer + Header + Background + lazy 子页       |
+| `Header`          | `frontend/src/pages/visual/big-screen/components/header/`     | ✅ 已实现（task-041）：左导航 + 中间大标题「大数据综合展示」（YouSheBiaoTiHei / 48px / 双层 textShadow）+ 右导航 |
+| `Background`      | `frontend/src/pages/visual/big-screen/components/background/` | ✅ 已实现（task-041）：`/static/images/background-1.png` 全屏背景，`resolvePublicAssetUrl` 解析                  |
+| `InfoCard`        | `frontend/src/components/large-screen/info-card/`             | ✅ 已实现：大屏卡片基座；titleBg 三态（normal/long/max）；title 加 `white-space: nowrap`                         |
+| `BigScreenShell`  | 原计划组件                                                    | ❌ 已废弃：query 切换方案不需要独立壳组件；`Visual` 充当壳                                                       |
 
-> `BigScreenShell` 是大屏父路由组件，封装顶部栏 + 三栏骨架 + `<Outlet />`。各大屏页面作为子路由挂载，填充槽位内容。设计文档待建在 `components/004-big-screen-shell/`。
+> `Visual`（位于 `pages/visual/big-screen/`）替代了原计划的 `BigScreenShell`。`Visual` 是路由入口 + 4 大屏公共层（背景/导航/scaler），不感知具体大屏内容。具体大屏通过 `?menu=xxx` 切换子页。
 
 ---
 
@@ -461,11 +489,15 @@ EChartsMap.onClick(region)
 
 ## 9. 变更记录
 
-| 日期       | 变更                                                                                                 | 备注                       |
-| ---------- | ---------------------------------------------------------------------------------------------------- | -------------------------- |
-| 2026-08-13 | 初始创建；§1-§7 框架搭建                                                                             | 领导指示：大屏自顶向下设计 |
-| 2026-08-13 | 重构为方法论骨架：去掉 038 具体内容，038 验证案例移至附录；公共组件指向 `components/`                | 方法论与实例分离           |
-| 2026-08-13 | §1 大屏壳改为父路由 + Outlet 模式；§6 从泛化映射表改为五件套落地指引（逐文件说明应体现什么）         | 壳模式修正 + 五件套指引    |
-| 2026-08-13 | 新建 `design/_large-screen-template/`：大屏版五件套模板 + ai-prompts-guide（pm-inputs 沿用原版不变） | 大屏模板草稿               |
-| 2026-08-13 | 新增 §4 共享组件 spec 机制（生成流程、命名规则、去重约束）                                         | 公共组件沉淀机制           |
+| 日期       | 变更                                                                                                                                                                      | 备注                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| 2026-08-13 | 初始创建；§1-§7 框架搭建                                                                                                                                                  | 领导指示：大屏自顶向下设计 |
+| 2026-08-13 | 重构为方法论骨架：去掉 038 具体内容，038 验证案例移至附录；公共组件指向 `components/`                                                                                     | 方法论与实例分离           |
+| 2026-08-13 | §1 大屏壳改为父路由 + Outlet 模式；§6 从泛化映射表改为五件套落地指引（逐文件说明应体现什么）                                                                              | 壳模式修正 + 五件套指引    |
+| 2026-08-13 | 新建 `design/_large-screen-template/`：大屏版五件套模板 + ai-prompts-guide（pm-inputs 沿用原版不变）                                                                      | 大屏模板草稿               |
+| 2026-08-13 | 新增 §4 共享组件 spec 机制（生成流程、命名规则、去重约束）                                                                                                                | 公共组件沉淀机制           |
 | 2026-08-13 | §4 从派生机制改为共享组件 spec 机制：去掉派生命名（`{父编号}-shared-{父slug}`）和蒸馏到 skill，改为直接生成 `NNN-components-common/`；§3.1 去掉预设组件清单；同步更新模板 | 领导指示：方案调整         |
+| 2026-08-17 | §1.1 大屏壳模式实战修正：原计划父路由 + Outlet 方案在 task-041 实战中被废弃（AppShell 嵌套问题），改为**单路由 + query 参数切换**；`Visual` 组件替代 `BigScreenShell`     | task-041 实战反馈          |
+| 2026-08-17 | §1.2 槽位协议实战修正：原「三栏 + 底部 + 槽位名」演化为**基于像素坐标的 InfoCard 绝对定位**；业务子组件命名 `kebab-case` + 主入口仅做组合 + 子组件自带定位样式            | task-041 实战反馈          |
+| 2026-08-17 | §1.3 + §3.1 组件索引更新：新增 `Visual` / `Header` / `Background` / `InfoCard` 已实现登记；`BigScreenShell` 标记废弃                                                      | task-041 完成              |
+| 2026-08-17 | §8 开放问题：A1（壳形态）+ A5（路由方案）已关闭；新增 A6（AppShell 嵌套是否需 portal）                                                                                    | task-041 反馈              |
