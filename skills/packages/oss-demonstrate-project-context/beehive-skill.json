@@ -1,0 +1,13 @@
+{
+  "contentHash": "60923d74082e8142160e32c6674d60e0f505c26c82c3e355929b08560c229690",
+  "files": [
+    "./design/",
+    "./env/",
+    "./scripts/"
+  ],
+  "id": "oss-demonstrate-project-context",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

@@ -1,0 +1,15 @@
+{
+  "contentHash": "0076f78e39df221dd29a02d1975a1d28370d90b795df36fee384ac3a5319fba7",
+  "files": [
+    "./design/",
+    "./plans/",
+    "./scripts/",
+    "./status/",
+    "./templates/"
+  ],
+  "id": "oss-demonstrate-project-bj-cmcc-cmd-dispatcher",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
