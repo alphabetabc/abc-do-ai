@@ -106,6 +106,7 @@
 | T15 | 6 层级 base.png + outline.png 手动替换（company/district/street/community/station/logical） | status/current.md 待办 | UI     | `public/static/images/bj-cmcc-cmd-dispatcher/map/{level}/` | ✅（2026-08-25 验证 7 层级 MD5 互不相同） |
 | T16 | ~~业务数据真实接入（后端接口 / socket 推送）~~ —— 不实施（沿用 v1.0 决策：本项目无服务端）  | —                      | —      | —                                                          | ❌ 不做（决策记录）                       |
 | T17 | 录屏脚本走通 + 演示验证（覆盖 3 个场景：故障报告 / 趋势 / 历史回溯）                        | TBD                    | 双方   | 录屏视频                                                   | ⏳ 阻塞：M3 完成                          |
+| T18 | 前五层地图打点 mock（map-markers.json）+ 生成脚本（按用户提供多边形 + PM 业务语义分布；7 层级共 144 点位） | task008     | 前端    | `.trae/skills/.../scripts/gen-map-markers-mock.cjs` + `public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json`（144 点位） | ✅（2026-08-26） |
 
 ---
 
@@ -143,7 +144,7 @@
 
 | 文件                                  | 用途                                                                   | 关联 task  |
 | ------------------------------------- | ---------------------------------------------------------------------- | ---------- |
-| `map-markers.json`                    | 地图打点数据（27 个点位 / 7 层级）                                     | task002-01 |
+| `map-markers.json`                    | 地图打点数据（task008 已归档；7 个层级共 144 个点位：city 70 / company 34 / district 16 / street 12 / community 8 / station 3 / logical 1；按用户提供多边形 + PM 业务语义分布） | task002-01 + task008 |
 | `station-outage-trend-city.json`      | 基站退服趋势（city 层）                                                | task004    |
 | `station-outage-trend-company.json`   | 基站退服趋势（company 层）                                             | task004    |
 | `station-outage-trend-district.json`  | 基站退服趋势（district 层）                                            | task004    |
@@ -168,7 +169,7 @@
 -   [x] M1 模块骨架 + 地图基础（T1 ~ T4）→ task001 + task002-01 完成
 -   [x] M2 地图交互 + 模块图片补齐（T5 ~ T9）→ task002-02/03 + task003 + task004 完成
 -   [x] M3 交互深化 + 历史回溯（T10 ~ T11 完成 / T12~T14 待启动）→ task005 ✅ + task006 ✅，3 项 task003 遗留待启动
--   [x] M4 资源替换 + 录屏（T15 ✅ / T16 ❌ 不做 / T17 ⏳）→ 部分完成（T15 6 层级图片替换已验证，T16 不实施）
+-   [x] M4 资源替换 + 录屏（T15 ✅ / T16 ❌ 不做 / T17 ⏳ / T18 ✅）→ 部分完成（T15 6 层级图片替换已验证，T16 不实施，T18 task008 map-markers.json 144 点位已归档）
 
 > 看板每次 task 状态变更时同步更新（与 `plans/` 目录 task 文件 `> 状态：` 字段联动）。
 > 看板勾选状态 = task 完成状态之和（task 完成 → 对应 T 编号勾选 → 所属 M 里程碑勾选）。
@@ -177,5 +178,7 @@
 
 ## 文档元信息
 
-> 版本：v2.1.0
-> 日期：2026-08-25（v2.1.0：task006 归档完成——T11 ✅，M3 ✅；history-timeline.json 移入已落地 mock 清单；新增 scripts/ 管理约定）
+> 版本：v2.3.0
+> 日期：2026-08-26（v2.3.0：task010 归档完成——T19 ✅，趋势图 label 数据/视图分离 + PM 截断规则；9 个 mock 移除 label；新增 T19 任务分解；M4 看板新增 T19 勾选）
+> 历史：
+> - 2026-08-25（v2.1.0：task006 归档完成——T11 ✅，M3 ✅；history-timeline.json 移入已落地 mock 清单；新增 scripts/ 管理约定）

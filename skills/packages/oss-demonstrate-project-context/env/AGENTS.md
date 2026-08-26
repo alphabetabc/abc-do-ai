@@ -60,6 +60,30 @@ AGENTS.md           本文件（symlink → skill env/）
 
 修改仓库根的 `.pnpmfile.cjs` 或 `AGENTS.md` 前，请先确认对应 skill 的 `SKILL.md`。
 
+### markdown 链接约定（引用代码路径）
+
+在 `.md` / `.mdx` / 任何文档里引用仓库代码时，**必须用仓库根相对路径**，不要写基于当前 md 文件位置的反向相对路径。理由：
+
+-   反向路径（`../../../../web/...`）依赖当前 md 文件的目录深度，移动文件即失效
+-   仓库根相对路径（`web/...` / `src/...` / `public/...`）跨文件位置稳定，全项目统一
+
+```markdown
+<!-- 推荐：仓库根相对路径 -->
+[modules/service-recovery/index.tsx](web/pages/bj-cmcc-cmd-dispatcher/modules/service-recovery/index.tsx)
+[controller/index.ts](src/controller/index.ts)
+[map-markers.json](public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json)
+
+<!-- 反例：基于当前 md 文件的反向相对路径（移动文件即失效） -->
+[modules/service-recovery/index.tsx](../../../../web/pages/bj-cmcc-cmd-dispatcher/modules/service-recovery/index.tsx)
+[controller/index.ts](../../../../src/controller/index.ts)
+```
+
+**规则摘要**：
+-   `web/...` → 前端代码 / 组件 / 页面 / hook / store
+-   `src/...` → 后端（Midway controller / service / mock）
+-   `public/...` → 静态资源 / mock JSON
+-   skill 文档内部互相引用（`./` / `../`）**不适用**本规则——它们之间的相对路径照常写
+
 ## 提交流程
 
 1. 修改代码 / 配置

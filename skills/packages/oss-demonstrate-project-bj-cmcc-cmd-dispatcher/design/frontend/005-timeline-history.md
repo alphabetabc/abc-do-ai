@@ -291,7 +291,7 @@ interface CmdDispatcherState {
 
 #### 5.4.1 源码约束
 
--   `EFFECTIVE_LEVELS = ['city', 'company', 'district'] as const`（在 [map-stage.tsx](../../../../web/pages/bj-cmcc-cmd-dispatcher/modules/map/map-stage.tsx)）
+-   `EFFECTIVE_LEVELS = ['city', 'company', 'district'] as const`（在 [map-stage.tsx](web/pages/bj-cmcc-cmd-dispatcher/modules/map/map-stage.tsx)）
 -   `isEffectiveLevel(level)` 类型守卫
 -   `useRequest<HistoryData>` 以 `ready: isEffective` 守卫 → 不在有效层时不发请求
 

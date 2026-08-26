@@ -302,4 +302,138 @@
 
 ## 文档元信息
 
-> 日期：2026-08-25（归档更新：Task006 mock + map-stage 接入完成——history-timeline.json 生成 / EFFECTIVE_LEVELS 前三层方案 / types.ts HistoryData 类型 / scripts/gen-history-timeline-mock.cjs；已知问题移除"currentTimeIndex 未使用"；历史回溯待办勾选 ✅）
+> 日期：2026-08-26（归档更新：Task010 收口——趋势图 label 数据/视图分离 + PM 拍板截断规则落地（9 个 mock 移除 label；trend-chart.tsx / station-outage/index.tsx mount 时锚点生成 HH:mm / MM-DD / X月 label；日档截止当前小时、月档截止当前月 + 中文 X月 格式；markLine 索引定位），roadmap 勾选 M4 + T19，current.md mock 表 / 模块描述 / 待办同步，modules-params v1.3.0；新增 Task010 收口自检章节）
+> 历史：
+> - 2026-08-26（归档更新：Task009 收口——4G/5G 退服恢复趋势折线图落地（trend-chart.tsx 子组件 + 4 个 mock），roadmap 勾选 M4 + task009，current.md modules / mock 表同步；新增 Task009 收口自检章节）
+> - 2026-08-26（归档更新：Task008 收口——前五层地图打点 mock（map-markers.json 144 点位）落地，scripts/gen-map-markers-mock.cjs 生成脚本，roadmap 勾选 M4 + task008，current.md mock 表 / scripts 表 / 待办同步；新增 Task008 收口自检章节）
+> - 2026-08-25（归档更新：Task006 mock + map-stage 接入完成——history-timeline.json 生成 / EFFECTIVE_LEVELS 前三层方案 / types.ts HistoryData 类型 / scripts/gen-history-timeline-mock.cjs；已知问题移除"currentTimeIndex 未使用"；历史回溯待办勾选 ✅）
+
+---
+
+## Task008 收口自检（2026-08-26）
+
+> 详见 [done/task-2026-08-25-008-map-markers-mock.md](../../plans/done/task-2026-08-25-008-map-markers-mock.md)
+
+### 实施落地（全部 ✅）
+
+- [x] 新增 `.trae/skills/oss-demonstrate-project-bj-cmcc-cmd-dispatcher/scripts/gen-map-markers-mock.cjs`（生成 7 个层级共 144 个点位）
+- [x] 覆写 [public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json](../../../../public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json)：city 70 / company 34 / district 16 / street 12 / community 8 / station 3 / logical 1
+- [x] 资源打点带 `subType` + `category` 字段，`category` 与 `legendCheckboxes` label 一致（含 `'卫星便捷包'`）
+- [x] station / logical 层保留现有坐标不变（station 3 个 + logical 1 个）
+- [x] 脚本固定 LCG 随机种子 `_seed = 20260826`，同种子多次运行结果完全一致（已验证：备份 → 跑脚本 → diff → 完全一致 → 清理备份）
+- [x] 页面 `/bj-cmcc-cmd-dispatcher` 可正常打开（默认视图走 history-timeline，坐标偏差待后续 task 处理）
+
+### 文档同步（全部 ✅）
+
+- [x] `plans/done/task-2026-08-25-008-map-markers-mock.md` 已新增：以实际生成结果为准更新验收标准（144 点位 vs 原计划 117），记录设计偏差（city 局部加密 +34 / company 用 6 节点 vs 2 行政区 +4 / district -4 / street 物理站移到 station 层 -7）
+- [x] `status/current.md` 已更新（mock 数据表 144 点位 + scripts 清单 + 待办勾选 + 日期）
+- [x] `status/checklist.md` 新增 Task008 收口自检章节（本文）
+- [x] `roadmap.md` 已更新（M4 task008 勾选）
+- [x] task008 §六 文档同步要求表格项全部勾选
+
+### 不在本次范围
+
+- ❌ 像素坐标精确标定（当前为多边形内业务语义分布）
+- ❌ 图标资源准备（30 张 `sub-*.png`）
+- ❌ `history-timeline.json` 坐标同步（task006 产物，坐标与本任务打点不一致）
+- ❌ `presets.ts` / `map-stage.tsx` 代码修改（现有渲染逻辑兼容新 mock）
+
+### 已知问题 / 遗留
+
+- `history-timeline.json` 的 city / company / district markers 用的是旧坐标，L1/L2/L3 默认视图看不到新坐标；验证新坐标需下钻到 street / community 层
+- district 第 3 节点 `top: 5.57`（用户提供数据瑕疵，坐标在底图外不可见，不影响渲染）
+- city / company / district 节点偏差（70/34/16 vs 原计划 36/30/20）已在 task008 §四.1 记录偏差原因
+
+---
+
+## Task009 收口自检（2026-08-26）
+
+> 详见 [done/task-2026-08-26-009-service-recovery-trend-chart.md](../../plans/done/task-2026-08-26-009-service-recovery-trend-chart.md)
+
+### 实施落地（全部 ✅）
+
+- [x] 新增 `modules/service-recovery/trend-chart.tsx`：`ServiceRecoveryTrendChart` 子组件（echarts 折线图本体，无 level 守卫）
+- [x] 改 `modules/service-recovery/index.tsx`：import trend-chart + 无条件渲染 `<ServiceRecoveryTrendChart />`，保持原 `MY_LEVELS` + timeRange label + TimelineHistory 不变
+- [x] 新增 4 份 mock：`service-recovery-trend-{city,company,district,street}.json`（各 24 个 5min 间隔点 × {fourG, fiveG}）
+- [x] 4G/5G 配色：`rgba(68, 215, 182, 1)` 冷绿 / `rgba(24, 144, 255, 1)` 亮蓝（PM 拍板）
+- [x] grid 颜色：`rgba(48, 127, 214, 0.1)` 蓝色淡（PM 拍板）
+- [x] 轴 label 样式完整 spec：color `rgba(255,255,255,1)` + Microsoft YaHei 15px + fontWeight 400 + lineHeight 28 + letterSpacing 0 + align center
+- [x] markLine 时间轴指示线：订阅 store.currentTimeIndex，白色虚线 1px / opacity 0.7 / silent / animation:false
+- [x] 画布定位：`left:69 / top:920 / width:1766 / height:129`（PM review 微调后）
+- [x] 数据逻辑性校验：24 × 2 序列满足 `city > company > district >= street`（脚本校验通过）
+- [x] TS 编译 0 错误（trend-chart.tsx + service-recovery/index.tsx）
+
+### 文档同步（全部 ✅）
+
+- [x] `plans/done/task-2026-08-26-009-service-recovery-trend-chart.md` 已迁至 done/ 并补充 §九 实施记录 + 9 项决策偏差对照表
+- [x] `status/current.md` 已更新（modules 描述 + mock 表 + 元信息）
+- [x] `design/frontend/001-modules-params.md` 已更新（service-recovery 形态：复用组件 → 结构型叠加 + "结构型叠加变种"约定补充 service-recovery 子项，v1.2.0）
+- [x] `status/checklist.md` 新增 Task009 收口自检章节（本文）
+- [x] task009 §六 文档同步要求表格项全部 ✅
+
+### 不在本次范围
+
+- ❌ `退服恢复情况.png` 图片资源替换（PM 自己手动换）
+- ❌ markLine 拖动反向跳 timeline（仅展示，不交互）—— PM 未要求
+- ❌ tooltip 弹层 / 图例 / 4G/5G 颜色说明 —— PM 未要求
+- ❌ mock label 与 TimelineHistory mount 时刻对齐（mock 用占位 label 12:35-14:30，前端不校验）
+- ❌ street 层 y 轴量级自适应（4G 0~2 / 5G 0~3 接近 0，y 轴自适应可读性差；后续 task 可考虑 `splitNumber: 3`）
+
+### 已知问题 / 遗留
+
+- street 层折线图 y 轴接近 0~3 量级，与 city 层 0~18 量级视觉差异较大；建议后续 task 引入 `yAxis.splitNumber: 3` 或类似自适应
+- markLine 与 TimelineHistory thumb 颜色都是白色 `#FFFFFF`，在 timeline 滑轨上方会有视觉重叠（叠在 top:920 折线图区，timeline thumb 在 top:872~900，纵向不重叠；但 markLine 从 x 轴顶部延伸到底部时穿过 timeline 滑轨所在列）
+
+---
+
+## Task010 收口自检（2026-08-26）
+
+> 详见 [done/task-2026-08-26-010-dynamic-time-labels.md](../../plans/done/task-2026-08-26-010-dynamic-time-labels.md)
+
+### 实施落地（全部 ✅）
+
+- [x] **service-recovery 4 个 mock 移除 label**：`service-recovery-trend-{city,company,district,street}.json` 每点仅含 `{fourG, fiveG}`（无 `label` 字段）
+- [x] **station-outage 5 个 mock 移除 `day`/`week`/`month` 三档 label**：`station-outage-trend-{city,company,district,street,community}.json` 上述三档每点仅含 `{value}`；`custom` 档 label 保留供 `flatMap + filter` 区间过滤
+- [x] **service-recovery `trend-chart.tsx` 改造**：
+  - 新增常量 `POINT_COUNT = 24` / `POINT_INTERVAL_MIN = 5` / `pad2`
+  - 新增 `anchorMs = useMemo(() => Date.now(), [])` 挂载锚点
+  - 新增 `xLabels` useMemo 按锚点生成 24 个 HH:mm label
+  - `TrendPoint` 接口移除 `label: string`
+  - 删除 `axisLabel.formatter: val => val.slice(0,5)`（label 已为 HH:mm）
+  - markLine 改用索引定位 `xAxis: safeIndex`（`safeIndex = Math.max(0, Math.min(currentTimeIndex, 23))`）
+- [x] **station-outage `index.tsx` 改造**：
+  - 新增常量 `pad2` / `DAY_LABELS`（12 个 HH:mm，2 小时间隔）
+  - 新增工具函数 `dayCutoffCount(anchorMs) = floor(h/2)+1` / `monthCutoffCount(anchorMs) = getMonth()+1`
+  - 新增 `xLabels` useMemo 按 range + 锚点动态生成（day/week/month/custom 四档）
+  - `DataPoint` 接口 `label` 改为可选；`points` useMemo 按对应 cutoff 同步截取，与 xLabels 同长对齐
+- [x] **PM 拍板 — 日档截断**：demo 当前时刻 14:30 → 8 个点（00:00~14:00），不展示未来桶
+- [x] **PM 拍板 — 月档截断 + 中文化**：demo 当前 8 月 → 8 个中文 label（`1月`~`8月`）
+- [x] **markLine 索引化**：消除 label 漂移后 markLine 失锚的隐患
+- [x] TS 编译 0 错误（trend-chart.tsx + station-outage/index.tsx）
+- [x] demo 模拟 14:30 时刻：service-recovery 24 个 HH:mm 点 + station-outage 日档 8 点 + 月档 `1月`~`8月` + 周档 today-6~today 7 点
+
+### 文档同步（全部 ✅）
+
+- [x] `plans/done/task-2026-08-26-010-dynamic-time-labels.md` 已新增（9 字段 / 11 节 / 含 §九 实施记录 4 项决策偏差）
+- [x] `status/current.md` 已更新（mock 清单 9 行追加"task010 改造"备注；service-recovery / station-outage 模块描述追加 label 生成方式；mock 清单新增 station-outage 5 行；待办勾选 task010；元信息日期更新）
+- [x] `design/frontend/001-modules-params.md` 已更新（service-recovery / station-outage 行追加 label 生成方式；"结构型叠加变种"约定补充 task010 改造要点；v1.3.0）
+- [x] `plans/roadmap.md` 已更新（T19 任务分解新增；M4 看板勾选 T19；版本号 v2.3.0）
+- [x] `status/checklist.md` 新增 Task010 收口自检章节（本文）
+- [x] task010 §六 文档同步要求表格项全部 ✅
+
+### 不在本次范围
+
+- ❌ 跨日 / 跨月 demo 重启后 label 跳变（mount 锚点冻结，符合 task007 已沉淀模式）
+- ❌ `custom` 档 mock label 移除（保留以兼容既有 `flatMap + filter` 区间过滤逻辑；移除需重构为按 chunk `range` 字段匹配）
+- ❌ 月份"全年 vs 滚动 12 月"业务口径选择（按 PM 拍板"截止当前月"实现）
+- ❌ 日档 / 月档 label 实时刷新（沿用 task007 锚点模式，demo 场景下不引入 timer）
+- ❌ markLine hover label 提示（沿用 task009 §九 范围外声明）
+- ❌ 月档 `X月` vs `X 月`（空格）排版选择（按 PM 偏好用无空格）
+
+### 已知问题 / 遗留
+
+- station-outage `custom` 档 mock label 写死 `08-15` 等日期，跨月后用户选新区间可能无匹配切片（沿用 task004 §9.4 已知问题）
+- 趋势图 mount 后重新刷新会重算 anchorMs → label 跳变；当前 demo 演示场景无影响
+- 月档 1 月 demo 时刻只展示 1 个 `1月` 点，与既有 12 月 mock 节奏不一致，**符合 PM "截至当前月" 拍板**
+
+---

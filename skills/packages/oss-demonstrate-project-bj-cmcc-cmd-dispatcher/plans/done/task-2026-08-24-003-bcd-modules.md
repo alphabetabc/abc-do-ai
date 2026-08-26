@@ -155,7 +155,7 @@
 
 **改动**：
 
--   [modules/network-impact/index.tsx](../../../../web/pages/bj-cmcc-cmd-dispatcher/modules/network-impact/index.tsx)：
+-   [modules/network-impact/index.tsx](web/pages/bj-cmcc-cmd-dispatcher/modules/network-impact/index.tsx)：
     -   新增 `NETWORK_IMPACT_IMG: Record<Level, { get src(): string }>` 映射，5 层级各对应一张图：
         -   `city` → `网络影响.png`
         -   `company` → `网络影响-2.png`

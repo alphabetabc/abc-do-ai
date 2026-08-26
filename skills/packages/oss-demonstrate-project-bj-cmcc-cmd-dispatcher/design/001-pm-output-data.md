@@ -2,7 +2,7 @@
 
 > 文档定位：基于 [000-pm-北京移动大屏下钻样例数据-广宁东山链路.md](./000-pm-北京移动大屏下钻样例数据-广宁东山链路.md) 各层"下属清单"表 + §L3"资源打点清单"，整理出前五层（city / company / district / street / community）地图所需的节点打点 + 6 类资源打点数据。
 > 数据用途：写入 `public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json`，供 `map-stage.tsx` 按 `m.type === currentLevel` 过滤渲染。
-> 图标规则：`getMarkerIcon(level, marker)` —— 有 `subType` 时取 `sub-${subType}.png`，否则取 `${status}.png`（见 [presets.ts](../../../web/pages/bj-cmcc-cmd-dispatcher/modules/map/presets.ts#L17-L22)）。
+> 图标规则：`getMarkerIcon(level, marker)` —— 有 `subType` 时取 `sub-${subType}.png`，否则取 `${status}.png`（见 [presets.ts](web/pages/bj-cmcc-cmd-dispatcher/modules/map/presets.ts#L17-L22)）。
 
 ---
 
@@ -403,5 +403,5 @@
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 创建日期 | 2026-08-25                                                                                                                                                                     |
 | 数据来源 | [000-pm-北京移动大屏下钻样例数据-广宁东山链路.md](./000-pm-北京移动大屏下钻样例数据-广宁东山链路.md) §2.3 分公司兄弟节点 + L1–L4 各层下属清单 + §L3 资源打点清单 + §关联性说明 |
-| 代码引用 | [presets.ts](../../../web/pages/bj-cmcc-cmd-dispatcher/modules/map/presets.ts) / [map-markers.json](../../../public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json)       |
+| 代码引用 | [presets.ts](web/pages/bj-cmcc-cmd-dispatcher/modules/map/presets.ts) / [map-markers.json](public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json)       |
 | 状态     | 数量已按 PM 编制对齐，待 PM 补缺口 + 待标定坐标                                                                                                                                |

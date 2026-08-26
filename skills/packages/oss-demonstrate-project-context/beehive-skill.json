@@ -1,5 +1,5 @@
 {
-  "contentHash": "60923d74082e8142160e32c6674d60e0f505c26c82c3e355929b08560c229690",
+  "contentHash": "e8fee4f2c490f8ce13c0a2cf2a315205c56d7205e15043a705abc38dfe8262e6",
   "files": [
     "./design/",
     "./env/",
@@ -9,5 +9,6 @@
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-08-26T10:37:42.481Z",
   "version": "0.0.0"
 }
