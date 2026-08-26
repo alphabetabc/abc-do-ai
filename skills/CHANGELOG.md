@@ -1,6 +1,6 @@
 # Changelog
 
-<!-- changelog-last-commit: 36cae27742051e0889e4b23b0e27c09da7e5854b -->
+<!-- changelog-last-commit: 9c0c761ac41edf1da1c6547eca1b3d4ded232cd7 -->
 
 ## 2026-08-26
 
@@ -9,6 +9,10 @@
     - 「oss-demonstrate-project-context」 v0.0.0；
 - 新增 skill「oss-demonstrate-project-bj-cmcc-cmd-dispatcher」；
 - 新增 skill「oss-demonstrate-project-context」；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
+- 更新 skill「oss-demonstrate-project-bj-cmcc-cmd-dispatcher」（配置、其他）；
+- 更新 skill「oss-demonstrate-project-context」（配置、其他）；
 
 ## 2026-08-17
 
