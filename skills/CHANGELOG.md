@@ -1,6 +1,14 @@
 # Changelog
 
-<!-- changelog-last-commit: 30830a666cbc7bec24b786a0cb41e05e611e6b57 -->
+<!-- changelog-last-commit: 36cae27742051e0889e4b23b0e27c09da7e5854b -->
+
+## 2026-08-26
+
+- 发布 skill
+    - 「oss-demonstrate-project-bj-cmcc-cmd-dispatcher」 v0.0.0；
+    - 「oss-demonstrate-project-context」 v0.0.0；
+- 新增 skill「oss-demonstrate-project-bj-cmcc-cmd-dispatcher」；
+- 新增 skill「oss-demonstrate-project-context」；
 
 ## 2026-08-17
 
