@@ -17,8 +17,12 @@
 | `003-big-screen-routes.md` | 大屏路由权威表（4 屏路由 + 035 月报） |
 | `004-big-screen-architecture.md` | 大屏可视化架构母文档（布局模型 + 后端图表数据模型 + 组件契约 + 联动协议 + 4 屏共享差异矩阵） |
 | `005-big-screen-workflow.md` | 大屏开发通用工作流（7 步流程 + 依赖关系图 + 五件套映射） |
+| `006-big-screen-data-arrayification.md` | 大屏 API 数组化设计原则（SSOT 字段模型 + 三维扩展 + 反模式 + 自检清单） |
+| `006-001-data-arrayification-prompt.md` | 同上原则的 **团队可粘贴 AI prompt 副本**（直接复制给同事 / AI 助手使用） |
 | `components/001-scaler-container/` | ScalerContainer 组件设计 |
 | `components/002-ec-map/` | EChartsMap 组件设计 |
+| `components/003-interaction-store/` | 大屏交互 store 设计 |
+| `backend/` | 后端技术地图 + 端点开发工作流（业务无关，见其 README 索引） |
 | `temp.md` | 临时草稿（review 用，定稿后清空） |
 
 > 详细规格请同步维护到 `docs/specs/` 与 `docs/design/`，本目录用于沉淀关键设计要点与索引。

@@ -28,14 +28,14 @@
 
 ## 2. 文件结构
 
-| 类型        | 路径                                | 说明                                                       |
-| ----------- | ----------------------------------- | ---------------------------------------------------------- |
-| 组件入口    | `ec-map/index.tsx`                  | `EChartsMap` 状态守卫：mapConfig 未加载 → Spin；已加载 → `<Map>` |
-| 地图渲染    | `ec-map/map.tsx`                    | `Map` 组件：ECharts + Overlay + 事件绑定 + ref 暴露        |
-| Option 构建 | `ec-map/option.tsx`                 | 地图注册、geo/series option、overlay 渲染 hook             |
-| Overlay 层  | `ec-map/overlay/index.tsx`          | `Overlay` + `OverlayItem` + Context                        |
+| 类型        | 路径                                | 说明                                                               |
+| ----------- | ----------------------------------- | ------------------------------------------------------------------ |
+| 组件入口    | `ec-map/index.tsx`                  | `EChartsMap` 状态守卫：mapConfig 未加载 → Spin；已加载 → `<Map>`   |
+| 地图渲染    | `ec-map/map.tsx`                    | `Map` 组件：ECharts + Overlay + 事件绑定 + ref 暴露                |
+| Option 构建 | `ec-map/option.tsx`                 | 地图注册、geo/series option、overlay 渲染 hook                     |
+| Overlay 层  | `ec-map/overlay/index.tsx`          | `Overlay` + `OverlayItem` + Context                                |
 | 地图配置    | `ec-map/map-config.ts`              | `getMapConfig` + `useMapConfig`（加载区域配置，返回 loading 状态） |
-| 纹理图片    | `ec-map/images/texture-map-1-2.png` | 地图纹理贴图                                               |
+| 纹理图片    | `ec-map/images/texture-map-1-2.png` | 地图纹理贴图                                                       |
 
 > 遵循项目约定：kebab-case 目录名，组件名 PascalCase（`EChartsMap`）。
 > `index.tsx` 只做状态守卫和分发，地图渲染逻辑在 `map.tsx` 中。
@@ -189,3 +189,4 @@ return <EChartsMap adcode="210000" ecRef={ecRef} />;
 ## 5. 相关文档
 
 - [技术实现与边界情况](./reference.md)
+- [地图下钻机制（041 实例）](./drill-down.md)

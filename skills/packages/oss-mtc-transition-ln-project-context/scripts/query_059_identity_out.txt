@@ -1,0 +1,27 @@
+== Service get_petition_comparison_identity_data(organ_id=210000)
+   resolve_organ_ids -> ['210000000']
+   categories(11): ['农村籍义务兵', '城镇籍义务兵', '转业志愿兵/士官', '复员士官', '计划分配军转干部', '自主择业军转干部', '企业军转干部', '自谋自择就业军转干部', '军休干部', '复员干部', '其他']
+   series type=local name=本地
+      data(11)=[3, 6, 0, 0, 0, 0, 2, 4, 0, 0, 0]
+   series type=beijing name=进京
+      data(11)=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+== Service get_petition_comparison_identity_data(organ_id=210400)
+   resolve_organ_ids -> ['210400000', '211500000']
+   categories(11): ['农村籍义务兵', '城镇籍义务兵', '转业志愿兵/士官', '复员士官', '计划分配军转干部', '自主择业军转干部', '企业军转干部', '自谋自择就业军转干部', '军休干部', '复员干部', '其他']
+   series type=local name=本地
+      data(11)=[3, 6, 3, 4, 0, 8, 8, 16, 6, 7, 8]
+   series type=beijing name=进京
+      data(11)=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+== DB 直查（ORGAN_ID IN ('210000000',)，ACCEPT_SOURCE IN (1,2,3) SUM）
+   [local] (3.0, 6.0, None, None, None, None, 2.0, 4.0, None, None, None)
+   [beijing] (None, None, None, None, None, None, None, None, None, None, None)
+   [local+7对照] ACCEPT_SOURCE IN (1,2,3,7) = (3.0, 6.0, None, None, None, None, 2.0, 4.0, None, None, None)
+== DB 直查（ORGAN_ID IN ('210400000', '211500000')，ACCEPT_SOURCE IN (1,2,3) SUM）
+   [local] (3.0, 6.0, 3.0, 4.0, None, 8.0, 8.0, 16.0, 6.0, 7.0, 8.0)
+   [beijing] (None, None, None, None, None, None, None, None, None, None, None)
+   [local+7对照] ACCEPT_SOURCE IN (1,2,3,7) = (3.0, 6.0, 3.0, 4.0, None, 8.0, 8.0, 16.0, 6.0, 7.0, 8.0)
+== DB 直查（ACCEPT_SOURCE 全渠道分布：COUNT + SUM(SB_NCYWB)）
+   ACCEPT_SOURCE=1 rows=172 sum_ncywb=12.0
+   ACCEPT_SOURCE=2 rows=238 sum_ncywb=12.0
+   ACCEPT_SOURCE=3 rows=231 sum_ncywb=11.0
+   ACCEPT_SOURCE=None rows=30 sum_ncywb=None

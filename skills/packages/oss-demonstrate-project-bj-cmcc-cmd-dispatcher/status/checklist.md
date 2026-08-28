@@ -302,7 +302,7 @@
 
 ## 文档元信息
 
-> 日期：2026-08-26（归档更新：Task010 收口——趋势图 label 数据/视图分离 + PM 拍板截断规则落地（9 个 mock 移除 label；trend-chart.tsx / station-outage/index.tsx mount 时锚点生成 HH:mm / MM-DD / X月 label；日档截止当前小时、月档截止当前月 + 中文 X月 格式；markLine 索引定位），roadmap 勾选 M4 + T19，current.md mock 表 / 模块描述 / 待办同步，modules-params v1.3.0；新增 Task010 收口自检章节）
+> 日期：2026-08-27（归档更新：Task011 收口——覆盖两个目标——**目标 A**：退服恢复模块顶部新增自定义时间段 RangePicker（service-recovery/index.tsx 新增 customRange 本地 state + DatePicker.RangePicker，默认 [now-2h, now]，位置 left:1064/top:823/size="large"，纯本地不联动下游；保留 task007 原 timeRange 快照 label）；**目标 B**：map 弹窗样式微调（map-detail-modal.tsx right:50%→44% / top:40%→30% / zIndex:10→100 / 图片 width:420→620）+ 2 张图片资源更新（map/company/outline.png 83418→95694 bytes；地图弹窗-1.png 167989→479376 bytes 新版高分辨率）；roadmap 勾选 M4 + T20，current.md service-recovery + map 模块描述 / 资源表 / 待办同步，modules-params v1.4.0；新增 Task011 收口自检章节）
 > 历史：
 > - 2026-08-26（归档更新：Task009 收口——4G/5G 退服恢复趋势折线图落地（trend-chart.tsx 子组件 + 4 个 mock），roadmap 勾选 M4 + task009，current.md modules / mock 表同步；新增 Task009 收口自检章节）
 > - 2026-08-26（归档更新：Task008 收口——前五层地图打点 mock（map-markers.json 144 点位）落地，scripts/gen-map-markers-mock.cjs 生成脚本，roadmap 勾选 M4 + task008，current.md mock 表 / scripts 表 / 待办同步；新增 Task008 收口自检章节）
@@ -435,5 +435,87 @@
 - station-outage `custom` 档 mock label 写死 `08-15` 等日期，跨月后用户选新区间可能无匹配切片（沿用 task004 §9.4 已知问题）
 - 趋势图 mount 后重新刷新会重算 anchorMs → label 跳变；当前 demo 演示场景无影响
 - 月档 1 月 demo 时刻只展示 1 个 `1月` 点，与既有 12 月 mock 节奏不一致，**符合 PM "截至当前月" 拍板**
+
+---
+
+## Task011 收口自检（2026-08-27）
+
+> 详见 [done/task-2026-08-27-011-service-recovery-range-picker.md](../../plans/done/task-2026-08-27-011-service-recovery-range-picker.md)
+>
+> **设计要点**：本次 task 涵盖两个独立的 PM 演示微调，统一归档到 task011：
+> - **目标 A**：退服恢复模块（service-recovery）顶部新增 `DatePicker.RangePicker`，纯本地 `customRange` state，**不联动** TimelineHistory / store / 4G-5G 趋势图；保留 task007 原 `timeRange` 快照 label 不动（PM 2026-08-27 拍板「之前的保留」）
+> - **目标 B**：map 弹窗样式 PM 微调（`map-detail-modal.tsx` 位置 / zIndex / 图片宽度）+ 2 张图片资源更新（`map/company/outline.png` + `地图弹窗-1.png`）；业务逻辑（仅 street 层级守卫 + modalOpen + selectedId + 关闭按钮 onClose）保持不变
+
+### 实施落地（全部 ✅）
+
+#### 目标 A — RangePicker
+
+- [x] `modules/service-recovery/index.tsx` 新增 `DatePicker.RangePicker`：import `DatePicker` from antd + `type Dayjs` from dayjs（沿用模块内既有 `dayjs` from `@fedx-web-common/utils`）
+- [x] 新增本地 state `customRange: [Dayjs, Dayjs]`，mount 时惰性初始化默认值 `[dayjs().subtract(2, 'hour'), dayjs()]`
+- [x] `format="YYYY-MM-DD HH:mm:ss"` + `showTime={{ format: 'HH:mm:ss' }}`，精确到秒（与原 task007 `timeRange` 快照 label 风格一致）
+- [x] `size="large"`（PM 2026-08-27 拍板，便于触达）
+- [x] 位置 `left: 1064 / top: 823` / `zIndex: 100`（PM 拍板，微调自初版 `left: 53 / top: 782`）
+- [x] onChange 仅两端都齐才更新 state；半选 / 清空时保留旧值，避免 `[null, null]` 闪烁
+- [x] **保留** task007 原 `timeRange` 快照 label（位置 `left: 763 / top: 908` / `pointerEvents: none` 不动）+ `formatTime` 工具函数 + 原 `useState` 不变
+- [x] **不动** TimelineHistory、ServiceRecoveryTrendChart、ServiceRecoveryPanel、store、4 个 mock 任何代码
+- [x] **不联动** 任何下游（不订阅 store / 不调任何 setter）
+
+#### 目标 B — map 弹窗 + 图片
+
+- [x] `modules/map/map-detail-modal.tsx` 弹窗位置微调：`right: '50%' → '44%'`、`top: '40%' → '30%'`（PM 拍板，更靠左上）
+- [x] 弹窗 `zIndex: 10 → 100`（叠在 Background 之上，避免被半透明外框遮挡）
+- [x] 弹窗 `<img>` `width: 420 → 620`（PM 演示放大）
+- [x] `public/static/images/bj-cmcc-cmd-dispatcher/map/company/outline.png` 替换为新版（83418 → 95694 bytes，+14.7%）
+- [x] `public/static/images/bj-cmcc-cmd-dispatcher/地图弹窗-1.png` 替换为新版高分辨率版本（167989 → 479376 bytes，+185.4%）
+- [x] **业务逻辑未触动**：仅 street 层级守卫 + modalOpen + selectedId 触发条件；关闭按钮 onClose；`constants.IMAGE_PATH` 引用；注释掉的智能避让代码块全部保持原样
+
+#### 构建验证
+
+- [x] TS 编译 0 错误（cmd-dispatcher scope 内，4 个文件改动）
+- [x] git diff 校验：service-recovery 35 行新增、map-detail-modal 8 行修改、2 张图片 bytes 替换
+
+### 文档同步（全部 ✅）
+
+- [x] `plans/done/task-2026-08-27-011-service-recovery-range-picker.md` 已新增（10 节 / 含 §九 实施记录 A+B 两组共 10 项决策偏差对照）
+- [x] `status/current.md` 已更新（`modules/service-recovery/` 行追加 RangePicker 说明；`modules/map/map-detail-modal.tsx` 行追加样式微调说明；资源表更新 `map/company/outline.png` + `地图弹窗-1.png` bytes；待办勾选 task011；元信息日期 2026-08-27）
+- [x] `design/frontend/001-modules-params.md` 已更新（`service-recovery` 行资源列追加 RangePicker；"结构型叠加变种"约定补充 task011；版本号 v1.4.0）
+- [x] `plans/roadmap.md` 已更新（T20 任务分解新增；M4 看板勾选 T20；版本号 v2.4.0）
+- [x] `status/checklist.md` 新增 Task011 收口自检章节（覆盖 A + B，本文）
+- [x] task011 §六 文档同步要求表格项全部 ✅
+
+### 不在本次范围
+
+#### 目标 A — RangePicker
+
+- ❌ RangePicker 联动 TimelineHistory / store.currentTimeIndex
+- ❌ RangePicker 联动 4G/5G 趋势图 markLine / 数据切片
+- ❌ RangePicker 联动地图点位 / store 任何字段
+- ❌ RangePicker 反向被 TimelineHistory 驱动
+- ❌ 「最近 30min / 1h / 3h / 今日」快捷按钮组
+- ❌ 自定义档持久化（仅本地 state，刷新页面恢复默认）
+- ❌ RangePicker 深色背景 / 大屏配色定制（沿用 antd 默认）
+- ❌ 移除 task007 原 `timeRange` 快照 label（PM 拍板保留）
+
+#### 目标 B — map 弹窗
+
+- ❌ map 弹窗"智能避让"逻辑启用（task002-03 注释掉的 `getShapeCenterX` / `isLeftSide` 仍未启用）
+- ❌ map 弹窗内嵌 5 指标卡组件（结构化字段，task005 已声明图片兜底）
+- ❌ map 弹窗的拖动 / 缩放 / 关闭动画
+- ❌ outline.png 非 company 层（city/district/street/community/station/logical）的同步替换（T15 task 待办已跟踪）
+
+### 已知问题 / 遗留
+
+#### 目标 A — RangePicker
+
+- RangePicker 与 task007 原 `timeRange` 快照 label 视觉信息冗余（PM 拍板两者并存；后续若确认 label 冗余再移除）
+- antd 默认浅色 RangePicker 与大屏深色背景视觉差异较大；PM review 时若要求定制需独立 task
+- RangePicker 跨层级切换（city ↔ company ↔ district ↔ street）时维持当前用户选择，不按层级 reset（按 PM 要求不联动）
+- RangePicker 位置 `left: 1064 / top: 823` 按当前 `退服恢复情况.png` 估算；PM 更新图片后可能需要微调 ±5px
+
+#### 目标 B — map 弹窗
+
+- outline.png 仅 company 层替换，其它 6 层级沿用旧版（T15 task 待办已跟踪）
+- `地图弹窗-1.png` 高分辨率版本 479376 bytes，体积较大；如需 CDN 优化可单独压缩
+- 弹窗位置 `right: '44%' top: '30%'` 是百分比定位，跨分辨率可能与背景图装饰元素偏移（2880×1080 下视觉对齐）
 
 ---

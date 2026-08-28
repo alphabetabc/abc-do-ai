@@ -23,7 +23,6 @@
 - `/visual/big-screen?menu=beijingPetition` → 进京信访大屏
 - `/visual/big-screen?menu=petitionComparison` → 信访数据比对大屏
 
-> 数据源 / 现状列详见 `AGENTS.md` §2.1。
 > 路由方案演进与废弃方案详见 §1.1 + `.trae/skills/oss-mtc-transition-ln-project-context/design/004-big-screen-architecture.md` §1.1。
 > 业务子组件目录与命名约定详见 `.trae/skills/oss-mtc-transition-ln-project-context/design/004-big-screen-architecture.md` §1.2。
 

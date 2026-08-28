@@ -1,0 +1,77 @@
+== Service get_petition_comparison_appeal_data(organ_id=210000)
+   resolve_organ_ids -> ['210000000']
+   items(18):
+   appeal_local_1         name=退役安置类 label=1 type=local value=0 unit=件
+   appeal_local_2         name=优待抚恤类 label=2 type=local value=0 unit=件
+   appeal_local_3         name=就业创业类 label=3 type=local value=0 unit=件
+   appeal_local_4         name=褒扬纪念类 label=4 type=local value=0 unit=件
+   appeal_local_5         name=军休服务类 label=5 type=local value=0 unit=件
+   appeal_local_6         name=帮扶援助类 label=6 type=local value=0 unit=件
+   appeal_local_7         name=党员管理类 label=7 type=local value=0 unit=件
+   appeal_local_8         name=咨询建议类 label=8 type=local value=0 unit=件
+   appeal_local_9         name=其他 label=9 type=local value=0 unit=件
+   appeal_beijing_1       name=退役安置类 label=1 type=beijing value=0 unit=件
+   appeal_beijing_2       name=优待抚恤类 label=2 type=beijing value=0 unit=件
+   appeal_beijing_3       name=就业创业类 label=3 type=beijing value=0 unit=件
+   appeal_beijing_4       name=褒扬纪念类 label=4 type=beijing value=0 unit=件
+   appeal_beijing_5       name=军休服务类 label=5 type=beijing value=0 unit=件
+   appeal_beijing_6       name=帮扶援助类 label=6 type=beijing value=0 unit=件
+   appeal_beijing_7       name=党员管理类 label=7 type=beijing value=0 unit=件
+   appeal_beijing_8       name=咨询建议类 label=8 type=beijing value=0 unit=件
+   appeal_beijing_9       name=其他 label=9 type=beijing value=0 unit=件
+== Service get_petition_comparison_appeal_data(organ_id=210400)
+   resolve_organ_ids -> ['210400000', '211500000']
+   items(14):
+   appeal_local_1         name=退役安置类 label=1 type=local value=0 unit=件
+   appeal_local_2         name=优待抚恤类 label=2 type=local value=0 unit=件
+   appeal_local_4         name=褒扬纪念类 label=4 type=local value=0 unit=件
+   appeal_local_6         name=帮扶援助类 label=6 type=local value=0 unit=件
+   appeal_local_8         name=咨询建议类 label=8 type=local value=0 unit=件
+   appeal_local_9         name=其他 label=9 type=local value=0 unit=件
+   appeal_beijing_1       name=退役安置类 label=1 type=beijing value=0 unit=件
+   appeal_beijing_2       name=优待抚恤类 label=2 type=beijing value=0 unit=件
+   appeal_beijing_4       name=褒扬纪念类 label=4 type=beijing value=0 unit=件
+   appeal_beijing_5       name=军休服务类 label=5 type=beijing value=0 unit=件
+   appeal_beijing_6       name=帮扶援助类 label=6 type=beijing value=0 unit=件
+   appeal_beijing_7       name=党员管理类 label=7 type=beijing value=0 unit=件
+   appeal_beijing_8       name=咨询建议类 label=8 type=beijing value=0 unit=件
+   appeal_beijing_9       name=其他 label=9 type=beijing value=0 unit=件
+== DB 直查（ORGAN_ID IN ('210000000',)）
+   [local] 9 组
+    ('退役安置类', '1', 0)
+    ('优待抚恤类', '2', 0)
+    ('就业创业类', '3', 0)
+    ('褒扬纪念类', '4', 0)
+    ('军休服务类', '5', 0)
+    ('帮扶援助类', '6', 0)
+    ('党员管理类', '7', 0)
+    ('咨询建议类', '8', 0)
+    ('其他', '9', 0)
+   [beijing] 9 组
+    ('退役安置类', '1', 0)
+    ('优待抚恤类', '2', 0)
+    ('就业创业类', '3', 0)
+    ('褒扬纪念类', '4', 0)
+    ('军休服务类', '5', 0)
+    ('帮扶援助类', '6', 0)
+    ('党员管理类', '7', 0)
+    ('咨询建议类', '8', 0)
+    ('其他', '9', 0)
+== DB 直查（ORGAN_ID IN ('210400000', '211500000')）
+   [local] 7 组
+    ('退役安置类', '1', 0)
+    ('优待抚恤类', '2', 0)
+    ('褒扬纪念类', '4', 0)
+    ('帮扶援助类', '6', 0)
+    ('咨询建议类', '8', 0)
+    ('其他', '9', 0)
+    (None, None, 0)
+   [beijing] 8 组
+    ('退役安置类', '1', 0)
+    ('优待抚恤类', '2', 0)
+    ('褒扬纪念类', '4', 0)
+    ('军休服务类', '5', 0)
+    ('帮扶援助类', '6', 0)
+    ('党员管理类', '7', 0)
+    ('咨询建议类', '8', 0)
+    ('其他', '9', 0)

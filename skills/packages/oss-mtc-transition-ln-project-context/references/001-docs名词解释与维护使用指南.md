@@ -341,7 +341,7 @@ docs/ 下分 6 个子目录。每个子目录标：**作用** / **何时修改**
 │  .trae/skills/oss-mtc-transition-ln-project-context/            │
 │    ├─ SKILL.md              ← skill 入口                          │
 │    ├─ references/  (本目录) ← docs/ 名词解释与维护使用指南（稳定）  │
-│    ├─ design/               ← 大屏特化设计草案与决策（已重构为 001）│
+│    ├─ design/               ← 大屏特化架构母文档、决策日志与组件契约（含早期形态草稿/候选；已重构为 001）│
 │    ├─ env/                  ← 本地环境、项目元数据                  │
 │    ├─ plans/                ← 待办、task、roadmap                  │
 │    ├─ pm/                   ← PM 原始输入（只读）                  │

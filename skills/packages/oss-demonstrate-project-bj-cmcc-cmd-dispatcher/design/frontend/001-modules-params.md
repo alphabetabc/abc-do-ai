@@ -9,7 +9,7 @@
 | 模块（文件）            | Group | left | top | width | height | 形态         | 资源 / 占位                                     |
 | ----------------------- | ----- | ---- | --- | ----- | ------ | ------------ | ----------------------------------------------- |
 | `map`                   | 全局  | 0    | 0   | 2880  | 1080   | 图片型       | `北京市.png`（全屏底图，`pointerEvents: none`） |
-| `service-recovery`      | A     | 53   | 822 | 1790  | 238    | 结构型叠加   | `退服恢复情况.png`（背景）+ TimelineHistory（顶部）+ 4G/5G 双线趋势图（中部）+ timeRange label（左上） |
+| `service-recovery`      | A     | 53   | 822 | 1790  | 238    | 结构型叠加   | `退服恢复情况.png`（背景）+ 自定义时间段 RangePicker（顶部 task011）+ TimelineHistory（顶部）+ 4G/5G 双线趋势图（中部）+ timeRange label（左上 task007） |
 | `service-recovery-cell` | B/C/D | 53   | 822 | 1790  | 238    | 复用组件     | 占位（`variant="cell"`，未传 `src`）            |
 | `network-impact`        | A/B   | 1878 | 87  | 906   | 635    | 图片型       | `网络影响.png`                                  |
 | `station-outage`        | A/B   | 1878 | 726 | 906   | 323    | 结构型叠加   | `基站退服.png`（背景）+ 4 tab + 单位标签 + 折线图 + 自定义日期区间 |
@@ -27,14 +27,14 @@
 -   `MY_GROUP`（单组）或 `MY_GROUPS: Group[]`（多组共用）声明可见 Group，通过 `useVisibleGroup()` + `return null` 卸载
 -   `map` 模块特殊：**全局可见**，不订阅 `useVisibleGroup()`，始终渲染
 -   图片型模块统一 `<img objectFit="fill" pointerEvents: none">`；结构型占位统一 `border + 半透明背景 + 标题`
--   **结构型叠加变种**（`station-outage` / `service-recovery`）：保留 UI 出图作为背景（标题栏 + 装饰），上层叠加交互组件（tab / 表格 / 折线图 / 时间轴 / 时段 label）。背景图 `pointerEvents: none`，交互层正常响应
+-   **结构型叠加变种**（`station-outage` / `service-recovery`）：保留 UI 出图作为背景（标题栏 + 装饰），上层叠加交互组件（tab / 表格 / 折线图 / 时间轴 / 时段 label / RangePicker）。背景图 `pointerEvents: none`，交互层正常响应
     - `station-outage`（task004）：背景图 + 4 tab + 单位标签 + 折线图 + 自定义日期区间
-    - `service-recovery`（task009）：背景图 + TimelineHistory + 4G/5G 双线趋势图 + 时段 label
+    - `service-recovery`（task009 + task011）：背景图 + 自定义时间段 RangePicker（task011，模块最上方 `left:1064 / top:823`，纯本地 state，不联动 TimelineHistory / store / 趋势图）+ TimelineHistory + 4G/5G 双线趋势图 + 时段 label
 -   坐标基准为设计稿 `2880×1080`，模块 `position: absolute` 铺在 `cmd-dispatcher-stage` 容器内
 
 ---
 
 ## 文档元信息
 
-> 版本：v1.3.0
-> 日期：2026-08-26（v1.3.0：task010 — 趋势图 label 数据/视图分离；service-recovery / station-outage 行追加 label 生成方式说明（mount 时锚点动态生成）；"结构型叠加变种"约定补充 task010 改造要点（label 从 mock 抽到组件、日档/月档截断规则））
+> 版本：v1.4.0
+> 日期：2026-08-27（v1.4.0：task011 — 退服恢复模块顶部新增自定义时间段 RangePicker；service-recovery 行资源列追加 `+ 自定义时间段 RangePicker`；"结构型叠加变种"约定补充 task011（模块最上方 RangePicker + 纯本地 state 不联动下游））

@@ -107,6 +107,8 @@
 | T16 | ~~业务数据真实接入（后端接口 / socket 推送）~~ —— 不实施（沿用 v1.0 决策：本项目无服务端）  | —                      | —      | —                                                          | ❌ 不做（决策记录）                       |
 | T17 | 录屏脚本走通 + 演示验证（覆盖 3 个场景：故障报告 / 趋势 / 历史回溯）                        | TBD                    | 双方   | 录屏视频                                                   | ⏳ 阻塞：M3 完成                          |
 | T18 | 前五层地图打点 mock（map-markers.json）+ 生成脚本（按用户提供多边形 + PM 业务语义分布；7 层级共 144 点位） | task008     | 前端    | `.trae/skills/.../scripts/gen-map-markers-mock.cjs` + `public/static/mock/bj-cmcc-cmd-dispatcher/map-markers.json`（144 点位） | ✅（2026-08-26） |
+| T19 | 趋势图 label 数据/视图分离 + PM 拍板日档 / 月档截断 + markLine 索引化（service-recovery 4 mock + station-outage 5 mock 移除 label 字段，组件 mount 时锚点动态生成 HH:mm / MM-DD / 中文 X月） | task010 | 前端 | `modules/service-recovery/trend-chart.tsx` + `modules/station-outage/index.tsx` + 9 个 mock | ✅（2026-08-26） |
+| T20 | 退服恢复模块顶部新增自定义时间段 RangePicker（`DatePicker.RangePicker`，默认 `[now-2h, now]`，纯本地 state 不联动下游；保留 task007 原 timeRange 快照 label） + map 弹窗样式微调（`map-detail-modal.tsx` 位置/zIndex/图片宽度 PM 拍板）+ 2 张图片资源更新（`map/company/outline.png` + `地图弹窗-1.png`） | task011 | 前端 | `modules/service-recovery/index.tsx` 新增 `customRange` state + RangePicker + `modules/map/map-detail-modal.tsx` 样式调整 + `public/static/images/bj-cmcc-cmd-dispatcher/{map/company/outline.png, 地图弹窗-1.png}` | ✅（2026-08-27） |
 
 ---
 
@@ -169,7 +171,7 @@
 -   [x] M1 模块骨架 + 地图基础（T1 ~ T4）→ task001 + task002-01 完成
 -   [x] M2 地图交互 + 模块图片补齐（T5 ~ T9）→ task002-02/03 + task003 + task004 完成
 -   [x] M3 交互深化 + 历史回溯（T10 ~ T11 完成 / T12~T14 待启动）→ task005 ✅ + task006 ✅，3 项 task003 遗留待启动
--   [x] M4 资源替换 + 录屏（T15 ✅ / T16 ❌ 不做 / T17 ⏳ / T18 ✅）→ 部分完成（T15 6 层级图片替换已验证，T16 不实施，T18 task008 map-markers.json 144 点位已归档）
+-   [x] M4 资源替换 + 录屏（T15 ✅ / T16 ❌ 不做 / T17 ⏳ / T18 ✅ / T19 ✅ / T20 ✅）→ 部分完成（T15 6 层级图片替换已验证，T16 不实施，T18 task008 map-markers.json 144 点位已归档，T19 task010 趋势图 label 数据/视图分离 + PM 截断规则已归档，T20 task011 退服恢复 RangePicker + map 弹窗样式 + 2 张图片资源更新已归档）
 
 > 看板每次 task 状态变更时同步更新（与 `plans/` 目录 task 文件 `> 状态：` 字段联动）。
 > 看板勾选状态 = task 完成状态之和（task 完成 → 对应 T 编号勾选 → 所属 M 里程碑勾选）。
@@ -178,7 +180,7 @@
 
 ## 文档元信息
 
-> 版本：v2.3.0
-> 日期：2026-08-26（v2.3.0：task010 归档完成——T19 ✅，趋势图 label 数据/视图分离 + PM 截断规则；9 个 mock 移除 label；新增 T19 任务分解；M4 看板新增 T19 勾选）
+> 版本：v2.4.0
+> 日期：2026-08-27（v2.4.0：task011 归档完成——T20 ✅，覆盖两个目标——**目标 A**：退服恢复模块顶部新增自定义时间段 RangePicker（service-recovery/index.tsx 新增 customRange 本地 state + DatePicker.RangePicker，默认 [now-2h, now]，位置 left:1064/top:823/size="large"，纯本地不联动下游；保留 task007 原 timeRange 快照 label）；**目标 B**：map 弹窗样式微调（map-detail-modal.tsx 位置/zIndex/图片宽度 PM 拍板）+ 2 张图片资源更新（map/company/outline.png 83418→95694 bytes；地图弹窗-1.png 167989→479376 bytes 新版高分辨率）；新增 T20 任务分解；M4 看板新增 T20 勾选）
 > 历史：
 > - 2026-08-25（v2.1.0：task006 归档完成——T11 ✅，M3 ✅；history-timeline.json 移入已落地 mock 清单；新增 scripts/ 管理约定）
