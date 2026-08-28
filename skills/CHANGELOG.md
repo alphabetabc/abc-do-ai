@@ -1,6 +1,14 @@
 # Changelog
 
-<!-- changelog-last-commit: 9c0c761ac41edf1da1c6547eca1b3d4ded232cd7 -->
+<!-- changelog-last-commit: 84c5bcdd9f29b16f13be79d7a8b19b238edf6e5d -->
+
+## 2026-08-28
+
+- 发布 skill
+    - 「oss-demonstrate-project-bj-cmcc-cmd-dispatcher」 v0.0.0；
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+- 更新 skill「oss-demonstrate-project-bj-cmcc-cmd-dispatcher」（配置、其他）；
+- 更新 skill「oss-mtc-transition-ln-project-context」（文档、配置、其他）；
 
 ## 2026-08-26
 
