@@ -1,6 +1,12 @@
 # Changelog
 
-<!-- changelog-last-commit: 84c5bcdd9f29b16f13be79d7a8b19b238edf6e5d -->
+<!-- changelog-last-commit: a040d6a2acd5d5e4feb646ecee5d7345b08021a7 -->
+
+## 2026-09-01
+
+- 发布 skill
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+- 更新 skill「oss-mtc-transition-ln-project-context」（配置、其他）；为 AI Agent 与本人沉淀 oss-mtc-transition-ln 项目的「私人、非公开」上下文——记录不便或...；
 
 ## 2026-08-28
 
