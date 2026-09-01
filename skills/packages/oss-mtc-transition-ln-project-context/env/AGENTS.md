@@ -130,6 +130,7 @@ frontend/src/
 - ❌ **不得虚构 docs 章节编号或内容**；引用 `docs/` 任何章节前须确认当前文件中确实有该编号
 - ❌ **不得凭推测填充数据**（如编造表字段名、枚举值、SQL 结果）；未知数据须标「待验证」并记入 `plans/memo.md`
 - ❌ **不得声称"已完成"未实际执行的操作**；task 状态须与实际产出物一致
+- ❌ **不得在 `docs/` 文档中引用 `.trae/skills/.../plans/` 下的私有 task 编号**（如 `task-2026-09-01-068-...md`）；提案名（`R-XXX`）是公开命名约定，可在 docs/ 内引用，但**私有 task 文件路径 / 编号只允许出现在 `plans/roadmap-*.md` 与 `plans/task-*.md` 等私有计划文件内**。例：`docs/design/api-contracts.md` 描述 L3 提案落行可写 "R-DOCS-API-CONTRACTS-041-TREND-XAXIS 会签通过"，但不得写 "task-068 执行"；后者仅在 `roadmap-*.md` §3 任务索引 + `task-*.md` 内部流转。详见 `.trae/rules/docs-no-private-refs.md`（R-AGENTS-DOCS-NO-TASK-REF，2026-09-01 task-068 触发）
 
 ---
 
@@ -170,3 +171,4 @@ frontend/src/
 | 2026-08-12 | §1 新增会话启动条目：AI Agent 须先加载 skill `oss-mtc-transition-ln-project-context`   | R-AGENTS-SKILL-AUTOLOAD     |
 | 2026-08-13 | §2.1 路由权威源引用改为 `design/003-big-screen-routes.md`（原引用 project-meta.md §1） | R-AGENTS-ROUTE-REF          |
 | 2026-08-17 | §5.5 图表方案改为已定选型（ECharts 6.1.0 + echarts-for-react 3.0.6，D1 已拍板）        | R-AGENTS-D1-CHART           |
+| 2026-09-01 | §8 禁止行为新增 1 条：docs/ 文档禁止引用 `.trae/skills/.../plans/` 私有 task 编号（如 task-068）；提案名 R-XXX 可引用。task-068 触发                  | R-AGENTS-DOCS-NO-TASK-REF   |
