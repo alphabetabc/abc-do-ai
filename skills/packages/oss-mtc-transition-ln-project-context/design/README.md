@@ -19,6 +19,8 @@
 | `005-big-screen-workflow.md` | 大屏开发通用工作流（7 步流程 + 依赖关系图 + 五件套映射） |
 | `006-big-screen-data-arrayification.md` | 大屏 API 数组化设计原则（SSOT 字段模型 + 三维扩展 + 反模式 + 自检清单） |
 | `006-001-data-arrayification-prompt.md` | 同上原则的 **团队可粘贴 AI prompt 副本**（直接复制给同事 / AI 助手使用） |
+| `007-big-screen-data-linkage.md` | 大屏地图与周边数据联动（store + producer/consumer + organId 3 层级处理；task-075 派生） |
+| `008-big-screen-data-troubleshooting-lessons.md` | 大屏数据问题经验沉淀（task-074 派生：检查清单 + 架构约束 + spec 必填项 + 排查剧本 + 归因纪律，跨项目可复用） |
 | `components/001-scaler-container/` | ScalerContainer 组件设计 |
 | `components/002-ec-map/` | EChartsMap 组件设计 |
 | `components/003-interaction-store/` | 大屏交互 store 设计 |

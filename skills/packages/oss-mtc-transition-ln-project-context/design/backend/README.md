@@ -15,6 +15,7 @@
 | `001-tech-map.md` | 后端技术地图：技术栈 + 分层模型 + 目录地图 + 请求生命周期 + 基础设施速查 + 常用命令 |
 | `002-endpoint-workflow.md` | 端点开发工作流：7 步标准流程 + M1/M2 竖切 + 模块纵向切片 + 后端硬规则摘录 |
 | `003-alembic-migrations.md` | Alembic 迁移维护：双层编排机制 + 版本链全景 + 新增迁移固定动作 + 排障 + 边界 |
+| `004-sql-logging.md` | SQL 日志能力：生态调研结论 + 双路径捕获架构（psycopg2 cursor + engine event）+ request 上下文 + 配置项 + 日志格式 + 稳定性设计 |
 
 ## 与正式文档的关系
 

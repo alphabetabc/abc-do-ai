@@ -1,0 +1,17 @@
+{
+  "contentHash": "d3cf45dfd8381220ee9651a792ce24beda1c30cd11e9ca790337bc6ce8358da4",
+  "files": [
+    "./design/",
+    "./env/",
+    "./plans/",
+    "./pm/",
+    "./references/",
+    "./scripts/"
+  ],
+  "id": "oss-shaanxi-gold-building-project-context",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-09-04T11:06:00.075Z",
+  "version": "0.0.0"
+}
