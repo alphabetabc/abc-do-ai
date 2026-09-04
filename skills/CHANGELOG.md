@@ -1,6 +1,16 @@
 # Changelog
 
-<!-- changelog-last-commit: a040d6a2acd5d5e4feb646ecee5d7345b08021a7 -->
+<!-- changelog-last-commit: 56398c966c8647ba26937728fb28bbe5cf45ec9a -->
+
+## 2026-09-04
+
+- 发布 skill
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+    - 「oss-shaanxi-gold-building-project-context」 v0.0.0；
+- 新增 skill「oss-shaanxi-gold-building-project-context」；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
+- 更新 skill「oss-mtc-transition-ln-project-context」（配置、其他）；
 
 ## 2026-09-01
 
