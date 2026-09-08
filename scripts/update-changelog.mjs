@@ -226,7 +226,9 @@ export function buildBulletsFromCommit(commit, rootDir) {
     const descPart = desc ? `；${desc}` : '';
 
     // 1) 发布维度：hasStorage 为 true 时，加入「发布 skill」子项
-    if (g.hasStorage) {
+    //    注意：删除 skill 时其 storage .tgz 也是 D 状态（hasStorage=true），
+    //    必须排除 isDeleted，否则已删除的 skill 会被误记入「发布 skill」
+    if (g.hasStorage && !g.isDeleted) {
       const meta = readSkillMeta(rootDir, g.skillName);
       const version = meta?.version;
       publishChildren.push(
@@ -376,7 +378,11 @@ function renderBullets(bullets) {
 export function consolidateBullets(bullets) {
   if (!bullets || bullets.length === 0) return bullets;
 
-  const SKILL_ACTION_RE = /^(新增|更新|删除) skill「([^」]+)」(?:；(.+))?$/;
+  // skill 动作整行格式：`更新 skill「X」（配置、其他）；desc`
+  // remainder 允许（...）、；desc 等任意后缀
+  const SKILL_ACTION_RE = /^(新增|更新|删除) skill「([^」]+)」(.*)$/;
+  // 父子格式的子项：`「X」（配置、其他）；desc` / `「X」`
+  const SKILL_CHILD_RE = /^「([^」]+)」(.*)$/;
   const GENERIC_COUNT_RE = /^(新增|更新|删除|变更)\s*\d+\s*个文件$/;
   const PUBLISH_PARENT_TEXT = '发布 skill';
   const PUBLISH_CHILD_RE = /^「(.+?)」(?: (v\S+))?$/;
@@ -386,7 +392,8 @@ export function consolidateBullets(bullets) {
 
   // 1) 发布 skill 子项收集
   const publishChildren = [];
-  // 2) skill 动作去重：key = `${action}:${label}`
+  // 2) skill 动作收集：key = `${action}:${label}`，
+  //    value = { action, label, rest, restLen }，rest 为「label」后的后缀
   const skillActions = new Map();
   // 3) 变更文件收集：同一天多个 commit 合并，文件集合取并集
   const fileSet = new Set();
@@ -400,22 +407,44 @@ export function consolidateBullets(bullets) {
 
   let hasPublishParent = false;
 
-  // 遍历时跟踪"当前是否处于「变更文件」父 bullet 的子项区间"：
-  // 遇到 level 0 的「变更文件」父 bullet 后，后续连续的 level 1 子项
-  // 都作为文件路径收集，直到遇到下一个 level 0 bullet 为止。
-  let inFileListChildren = false;
+  // 遍历时跟踪"当前处于哪个父 bullet 的子项区间"：
+  // 'publish' | 'files' | '新增' | '更新' | '删除' | null
+  let currentParent = null;
+
+  const addAction = (action, label, rest) => {
+    const key = `${action}:${label}`;
+    const restLen = rest ? rest.length : 0;
+    const existing = skillActions.get(key);
+    if (!existing || restLen > existing.restLen) {
+      skillActions.set(key, { action, label, rest, restLen });
+    }
+  };
 
   for (const b of bullets) {
     const rawText = (b.text || '').trim();
     if (!rawText) continue;
 
-    // level 0 bullet：终止「变更文件」子项区间
+    // level 0 bullet：父条目判定 / 终止子项区间
     if (b.level === 0) {
-      inFileListChildren = false;
+      if (rawText === PUBLISH_PARENT_TEXT) {
+        hasPublishParent = true;
+        currentParent = 'publish';
+        continue;
+      }
+      if (rawText === FILE_PARENT_TEXT) {
+        currentParent = 'files';
+        continue;
+      }
+      const pm = rawText.match(/^(新增|更新|删除) skill$/);
+      if (pm) {
+        currentParent = pm[1];
+        continue;
+      }
+      currentParent = null;
     }
 
-    // 「变更文件」子项（level 1 且处于子项区间）
-    if (b.level === 1 && inFileListChildren) {
+    // 子项（level 1）：按 currentParent 分流
+    if (b.level === 1 && currentParent === 'files') {
       // 子项是文件路径，清洗 git quotepath 转义后收集
       const filePath = decodeGitPath(
         rawText.replace(/[；;]\s*$/, '').trim()
@@ -423,38 +452,29 @@ export function consolidateBullets(bullets) {
       if (filePath) fileSet.add(filePath);
       continue;
     }
-
-    // 发布 skill 子项（level 1 且属于发布 skill 组）
-    if (b.level === 1 && PUBLISH_CHILD_RE.test(rawText)) {
+    if (b.level === 1 && currentParent === 'publish') {
       publishChildren.push(rawText);
       continue;
     }
-
-    // 发布 skill 父条目
-    if (b.level === 0 && rawText === PUBLISH_PARENT_TEXT) {
-      hasPublishParent = true;
-      continue;
-    }
-
-    // 「变更文件」父条目（新式）：开启子项区间
-    if (b.level === 0 && rawText === FILE_PARENT_TEXT) {
-      inFileListChildren = true;
+    if (
+      b.level === 1 &&
+      (currentParent === '新增' || currentParent === '更新' || currentParent === '删除')
+    ) {
+      // 父子格式子项：还原为 action 维度收集
+      const cm = rawText.match(SKILL_CHILD_RE);
+      if (cm) {
+        addAction(currentParent, cm[1], cm[2].replace(/^[；;]\s*/, '').trim());
+      }
       continue;
     }
 
     // 清理历史脏前缀（"feat: 更新 skill「X」..." 之类）
     const text = rawText.replace(dirtyPrefixRe, '').trim();
 
-    // skill 动作：新增/更新/删除 skill「X」...
+    // skill 动作（旧式顶层单行格式）：新增/更新/删除 skill「X」...
     const m = text.match(SKILL_ACTION_RE);
     if (m) {
-      const [, action, label, desc] = m;
-      const key = `${action}:${label}`;
-      const descLen = desc ? desc.length : 0;
-      const existing = skillActions.get(key);
-      if (!existing || descLen > existing.descLen) {
-        skillActions.set(key, { bullet: { level: 0, text }, descLen });
-      }
+      addAction(m[1], m[2], (m[3] || '').replace(/^[；;]\s*/, '').trim());
       continue;
     }
 
@@ -488,10 +508,20 @@ export function consolidateBullets(bullets) {
 
   // a) 发布 skill 组（子项去重 + 排序）
   if (hasPublishParent && publishChildren.length > 0) {
+    // 当天已删除的 skill 不应出现在发布列表里（历史脏数据自我修复）
+    const deletedLabels = new Set(
+      [...skillActions.values()]
+        .filter((v) => v.action === '删除')
+        .map((v) => v.label)
+    );
+    const cleaned = publishChildren.filter((child) => {
+      const cm = child.match(PUBLISH_CHILD_RE);
+      return !(cm && deletedLabels.has(cm[1]));
+    });
     // 「name」 v1.2.3 形式归一化用于去重
     const seen = new Set();
     const uniqueChildren = [];
-    for (const child of publishChildren) {
+    for (const child of cleaned) {
       const cm = child.match(PUBLISH_CHILD_RE);
       const key = cm ? `${cm[1]}@${cm[2] || ''}` : child;
       if (!seen.has(key)) {
@@ -505,26 +535,25 @@ export function consolidateBullets(bullets) {
       const bn = b.match(PUBLISH_CHILD_RE)?.[1] || b;
       return an.localeCompare(bn);
     });
-    result.push({ level: 0, text: PUBLISH_PARENT_TEXT });
-    for (const c of uniqueChildren) {
-      result.push({ level: 1, text: c });
+    if (uniqueChildren.length > 0) {
+      result.push({ level: 0, text: PUBLISH_PARENT_TEXT });
+      for (const c of uniqueChildren) {
+        result.push({ level: 1, text: c });
+      }
     }
   }
 
-  // b) skill 动作：按 新增 → 更新 → 删除 → 名称排序
-  const ACTION_ORDER = { 新增: 0, 更新: 1, 删除: 2 };
-  const sortedActions = [...skillActions.values()]
-    .map((v) => v.bullet)
-    .sort((a, b) => {
-      const ak = a.text.match(SKILL_ACTION_RE)?.[1] || '';
-      const bk = b.text.match(SKILL_ACTION_RE)?.[1] || '';
-      const ao = ACTION_ORDER[ak] ?? 99;
-      const bo = ACTION_ORDER[bk] ?? 99;
-      if (ao !== bo) return ao - bo;
-      return a.text.localeCompare(b.text);
-    });
-  for (const b of sortedActions) {
-    result.push(b);
+  // b) skill 动作组：新增 → 更新 → 删除，各为「父 + 子」结构
+  for (const action of ['新增', '更新', '删除']) {
+    const items = [...skillActions.values()]
+      .filter((v) => v.action === action)
+      .sort((a, b) => a.label.localeCompare(b.label));
+    if (items.length === 0) continue;
+    result.push({ level: 0, text: `${action} skill` });
+    for (const it of items) {
+      const child = it.rest ? `「${it.label}」${it.rest}` : `「${it.label}」`;
+      result.push({ level: 1, text: child });
+    }
   }
 
   // c) 变更文件：父 bullet + 每个文件一个子 bullet（去重 + 排序）
