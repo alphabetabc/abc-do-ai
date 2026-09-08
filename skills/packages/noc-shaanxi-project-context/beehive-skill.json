@@ -1,0 +1,15 @@
+{
+  "contentHash": "dcac7f6db037a33c953b7e7e13f85322dbb34117799a2d51aa110d11c71ea5c3",
+  "files": [
+    "./design/",
+    "./env/",
+    "./plans/",
+    "./pm/",
+    "./scripts/"
+  ],
+  "id": "noc-shaanxi-project-context",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
