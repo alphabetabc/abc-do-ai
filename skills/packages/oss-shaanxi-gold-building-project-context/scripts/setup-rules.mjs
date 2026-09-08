@@ -29,6 +29,13 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import process from "node:process";
 
+// Windows 路径大小写不敏感（盘符 E:\ vs e:\ 会导致假冲突），比较前统一小写
+const IS_WIN = process.platform === "win32";
+function samePath(a, b) {
+  if (a == null || b == null) return false;
+  return IS_WIN ? a.toLowerCase() === b.toLowerCase() : a === b;
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = resolve(__dirname, "..");
 
@@ -216,7 +223,7 @@ function main() {
             existing = null;
           }
           const absExisting = existing ? resolve(dirname(linkPath), existing) : null;
-          if (absExisting === resolve(sourceAbs)) {
+          if (samePath(absExisting, resolve(sourceAbs))) {
             console.log(`  [=] ${fname} (already linked to same source)`);
             continue;
           }
