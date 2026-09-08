@@ -1,12 +1,20 @@
 # Changelog
 
-<!-- changelog-last-commit: 6328d7c6eb5c166476151f4413de4db8d2f2fce4 -->
+<!-- changelog-last-commit: b4444b72497bec0f55d225d5ceceeed6c8c46707 -->
 
 ## 2026-09-08
 
 - 发布 skill
+    - 「noc-shaanxi-chinese-database-adapter」；
+    - 「noc-shaanxi-management-overview-first」；
+    - 「noc-shaanxi-project-context」 v0.0.0；
+    - 「noc-shaanxi-ui-streamer-path」；
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
     - 「oss-shaanxi-gold-building-project-context」 v0.0.0；
+- 新增 skill「noc-shaanxi-project-context」；
+- 删除 skill「noc-shaanxi-chinese-database-adapter」；
+- 删除 skill「noc-shaanxi-management-overview-first」；
+- 删除 skill「noc-shaanxi-ui-streamer-path」；
 - 变更文件
     - skills/.beehive-skills-manager-db/projects/list.json；
 - 更新 skill「oss-mtc-transition-ln-project-context」（配置、其他）；
