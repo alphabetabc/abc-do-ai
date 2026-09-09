@@ -1,13 +1,15 @@
 # Changelog
 
-<!-- changelog-last-commit: 885a9bbba1e04808aba55c6e61224ce76ecf64e5 -->
+<!-- changelog-last-commit: 3dc0aa254d170e27eec0871fb1d9acacc537faaf -->
 
 ## 2026-09-09
 
 - 发布 skill
     - 「noc-shaanxi-project-context」 v0.0.0；
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
 - 更新 skill
     - 「noc-shaanxi-project-context」（配置、其他）；oss-noc-shaanxi 项目统一上下文技能，在需要对项目进行拓展、重构等演进工作时提供设计文档与背景知识索引。；
+    - 「oss-mtc-transition-ln-project-context」（配置、其他）；
 
 ## 2026-09-08
 
