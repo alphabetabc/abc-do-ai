@@ -6,8 +6,8 @@
 > 作者：MiniMax-M3
 > 日期：2026-07-16
 > 父文档：
-> - [中屏保障中心-设备经纬度重叠聚合需求分析.md](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/.trae/documents/%E4%B8%AD%E5%B1%8F%E4%BF%9D%E9%9A%9C%E4%B8%AD%E5%BF%83-%E8%AE%BE%E5%A4%87%E7%BB%8F%E7%BA%AC%E5%BA%A6%E9%87%8D%E5%8F%A0%E8%81%9A%E5%90%88%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90.md)
-> - [中屏保障中心-tab1设备经纬度重叠聚合详细方案.md](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/.trae/documents/%E4%B8%AD%E5%B1%8F%E4%BF%9D%E9%9A%9C%E4%B8%AD%E5%BF%83-tab1%E8%AE%BE%E5%A4%87%E7%BB%8F%E7%BA%AC%E5%BA%A6%E9%87%8D%E5%8F%A0%E8%81%9A%E5%90%88%E8%AF%A6%E7%BB%86%E6%96%B9%E6%A1%88.md)
+> - `.trae/documents/中屏保障中心-设备经纬度重叠聚合需求分析.md`
+> - `.trae/documents/中屏保障中心-tab1设备经纬度重叠聚合详细方案.md`
 > 适用范围：**tab2（突发保障）** 详细方案，对称 tab1 v0.4 实现。按 SKILL.md 约定不抽公共组件，算法/图层分别在 `tab-content-2/` 下独立实现。
 
 ---
@@ -53,7 +53,7 @@
 
 ### 1.1 数据层（4 个 useRequest + 区域配置）
 
-[tab-content-2/gis/index.tsx:89-159](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L89-L159)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L89-L159`：
 
 | useRequest key | API | tab2 特化点 |
 |---|---|---|
@@ -66,7 +66,7 @@
 
 ### 1.2 过滤层（2 个 useMemo，与 tab1 一致）
 
-[tab-content-2/gis/index.tsx:187-203](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L187-L203)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L187-L203`：
 
 ```ts
 const dataStationPoints = useMemo(() => {
@@ -88,7 +88,7 @@ const dataTransmissionPoints = useMemo(() => {
 
 ### 1.3 图层渲染（4 个 VectorLayer + 区域线图层）
 
-[tab-content-2/gis/index.tsx:550-703](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L550-L703)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L550-L703`：
 
 | 图层 id | source | zIndex | isGongZhanByType | isShowSamePoint | csFixedNum | onShowCircle |
 |---|---|---|---|---|---|---|
@@ -102,7 +102,7 @@ const dataTransmissionPoints = useMemo(() => {
 
 tab2 两个关键差异：
 
-1. **CircleView 替换为 `GisCustomCircleView`**（[tab-content-2/gis/index.tsx:704-712](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L704-L712)），与 tab1 v0.4 保持一致。`GisCustomCircleView` 额外提供 `radius` prop（按聚合点数量动态调整圆圈半径），比原生 `CircleView` 的固定 `overlayStyle.width` 更适合聚合场景。
+1. **CircleView 替换为 `GisCustomCircleView`**（`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L704-L712`），与 tab1 v0.4 保持一致。`GisCustomCircleView` 额外提供 `radius` prop（按聚合点数量动态调整圆圈半径），比原生 `CircleView` 的固定 `overlayStyle.width` 更适合聚合场景。
 2. **toolPupWindowId = `toolTipWindowCircle2`**（tab1 是 `toolTipWindowCircle1`），保持 tab2 原命名，避免冲突。
 
 ```tsx
@@ -122,7 +122,7 @@ import { GisCustomCircleView } from '~/web/components/ui/oss-gis/CircleView';
 />
 ```
 
-ElTooltipCircle 容器（[tab-content-2/gis/index.tsx:729-737](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L729-L737)）：
+ElTooltipCircle 容器（`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L729-L737`）：
 
 ```tsx
 <div id="toolTipWindowCircle2">
@@ -138,7 +138,7 @@ ElTooltipCircle 容器（[tab-content-2/gis/index.tsx:729-737](file:///e:/oss-fe
 
 ### 1.5 `pointClick` switch 差异（tab2 缺机房子分支）
 
-[tab-content-2/gis/index.tsx:316-348](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L316-L348)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L316-L348`：
 
 tab2 的 switch 只匹配 `case '10005'`，**没有** tab1 的 `case '1000501'...'1000505'` 子分支。这意味着：
 
@@ -243,7 +243,7 @@ const aggregatePoints = useMemo(() => {
 
 ## 4. 新增 `utils/buildAggregatedPoints.ts`
 
-> 算法与 [tab1 buildAggregatedPoints.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/utils/buildAggregatedPoints.ts) **完全相同**，仅文件路径在 `tab-content-2/` 下。
+> 算法与 tab1 的 `web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/utils/buildAggregatedPoints.ts` **完全相同**，仅文件路径在 `tab-content-2/` 下。
 
 ### 4.1 关键代码片段
 
@@ -372,7 +372,7 @@ const dataMachineryRoomPointsFiltered = useMemo(() => {
 
 ### 5.3 修改 `onShowCircle` 复原 neType
 
-[tab-content-2/gis/index.tsx:222-229](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L222-L229)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L222-L229`：
 
 ```ts
 // ⚠️ 当前实现：未复原 neType
@@ -403,7 +403,7 @@ const onShowCircle = (pointArr) => {
 
 ### 5.4 替换 `CircleView` 为 `GisCustomCircleView`
 
-[tab-content-2/gis/index.tsx:704-712](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L704-L712)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L704-L712`：
 
 ```tsx
 // ⚠️ 当前实现：原生 CircleView + 动态 overlayStyle.width
@@ -475,7 +475,7 @@ const onShowCircle = (pointArr) => {
 
 ### 5.7 修改 ElTooltipCircle 调用加 onItemClick
 
-[tab-content-2/gis/index.tsx:731-735](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L731-L735)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/gis/index.tsx#L731-L735`：
 
 ```tsx
 // ⚠️ 当前实现：无 onItemClick
@@ -500,7 +500,7 @@ const onShowCircle = (pointArr) => {
 
 > 与 tab1 实现完全一致。
 
-[tab-content-2/el-tooltip-circle/index.tsx](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/el-tooltip-circle/index.tsx)：
+`web/pages/emergency-support/modules/center/components/tab-content-2/components/center-gis/components/el-tooltip-circle/index.tsx`：
 
 ```tsx
 export default function Index(props) {

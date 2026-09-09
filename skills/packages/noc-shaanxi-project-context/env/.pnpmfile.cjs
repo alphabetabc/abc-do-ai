@@ -1,5 +1,5 @@
-const path = require('path');
-const fs = require('fs');
+// const path = require('path');
+// const fs = require('fs');
 
 const enableChineseDb = false;
 
@@ -139,7 +139,7 @@ function readPackage(pkg, context) {
     if (pkg.name === 'fedx-gis') {
         pkg.dependencies = {
             ...pkg.dependencies,
-             cesium: '1.142.0',
+            cesium: '1.142.0',
         };
         context.log(`[依赖注入]:${pkg.name}`);
     }
@@ -148,35 +148,35 @@ function readPackage(pkg, context) {
 }
 
 // 自定义获取器：将指定包重定向到 .local-deps 下的本地 tarball
-const LOCAL_DEPS_DIR = '.local-deps';
+// const LOCAL_DEPS_DIR = '.local-deps';
 
-function createLocalTarballFetcher(pkgId, tarballName) {
-    const tarballPath = path.join(LOCAL_DEPS_DIR, tarballName);
-    return {
-        canFetch: (id) => id === pkgId,
-        fetch: async (cafs, resolution, opts, fetchers) => {
-            const realTarballPath = tarballPath;
-            const logContent = `${new Date().toLocaleString()} -- [本地获取${pkgId}]:${realTarballPath}`;
-            fs.writeFileSync(path.join(LOCAL_DEPS_DIR, 'log.txt'), logContent + '\n', { flag: 'a' });
-            return fetchers.localTarball(cafs, { tarball: 'file:' + realTarballPath }, opts);
-        },
-    };
-}
+// function createLocalTarballFetcher(pkgId, tarballName) {
+//     const tarballPath = path.join(LOCAL_DEPS_DIR, tarballName);
+//     return {
+//         canFetch: (id) => id === pkgId,
+//         fetch: async (cafs, resolution, opts, fetchers) => {
+//             const realTarballPath = tarballPath;
+//             const logContent = `${new Date().toLocaleString()} -- [本地获取${pkgId}]:${realTarballPath}`;
+//             fs.writeFileSync(path.join(LOCAL_DEPS_DIR, 'log.txt'), logContent + '\n', { flag: 'a' });
+//             return fetchers.localTarball(cafs, { tarball: 'file:' + realTarballPath }, opts);
+//         },
+//     };
+// }
 
 module.exports = {
     hooks: {
         readPackage,
     },
-    fetchers: [
-        createLocalTarballFetcher('echarts@5.6.0', 'echarts-5.6.0.tgz'),
-        createLocalTarballFetcher('ace-builds@1.44.0', 'ace-builds-1.44.0.tgz'),
-        createLocalTarballFetcher('cesium@1.142.0', 'cesium-1.142.0.tgz'),
-        createLocalTarballFetcher('cesium@1.143.0', 'cesium-1.142.0.tgz'),
-        createLocalTarballFetcher('@fedx-3d-studio/r3f@0.1.20', 'r3f-0.1.20.tgz'),
-        createLocalTarballFetcher('@img/sharp-win32-x64@0.33.5', 'sharp-win32-x64-0.33.5.tgz'),
-        createLocalTarballFetcher('@cesium/engine@26.1.0', 'cesium-engine-26.1.0.tgz'),
-        createLocalTarballFetcher('@cesium/widgets@1.1.0', 'cesium-widgets-1.1.0.tgz'),
-        createLocalTarballFetcher('@parcel/transformer-js@2.9.3', 'parcel-transformer-js-2.9.3.tgz'),
-        createLocalTarballFetcher('@types/three@0.185.0', 'types-three-0.185.0.tgz'),
-    ],
+    // fetchers: [
+    //     createLocalTarballFetcher('echarts@5.6.0', 'echarts-5.6.0.tgz'),
+    //     createLocalTarballFetcher('ace-builds@1.44.0', 'ace-builds-1.44.0.tgz'),
+    //     createLocalTarballFetcher('cesium@1.142.0', 'cesium-1.142.0.tgz'),
+    //     createLocalTarballFetcher('cesium@1.143.0', 'cesium-1.142.0.tgz'),
+    //     createLocalTarballFetcher('@fedx-3d-studio/r3f@0.1.20', 'r3f-0.1.20.tgz'),
+    //     createLocalTarballFetcher('@img/sharp-win32-x64@0.33.5', 'sharp-win32-x64-0.33.5.tgz'),
+    //     createLocalTarballFetcher('@cesium/engine@26.1.0', 'cesium-engine-26.1.0.tgz'),
+    //     createLocalTarballFetcher('@cesium/widgets@1.1.0', 'cesium-widgets-1.1.0.tgz'),
+    //     createLocalTarballFetcher('@parcel/transformer-js@2.9.3', 'parcel-transformer-js-2.9.3.tgz'),
+    //     createLocalTarballFetcher('@types/three@0.185.0', 'types-three-0.185.0.tgz'),
+    // ],
 };

@@ -6,11 +6,11 @@
 
 oss-noc-shaanxi 是陕西移动 NOC（网络运营中心）大屏项目，基于 midway（Node.js 服务端）+ React 18 + fedx 大屏框架（`@fedx-bff-web/ssr-*` / `fedx-ssr`）构建的 SSR 大屏应用。
 
-- 语言：TypeScript（部分历史文件为 .jsx）
-- UI：antd 5（resolutions 固定 5.22.5）、fedx-ui、styled-components、less
-- 可视化：echarts / echarts-gl、fedx-gis、three、d3、fedx-3d-renderer
-- 服务端：midwayjs 3.x（koa、typeorm、socketio、task、http-proxy）
-- 包管理：pnpm（含 workspace，浏览器扩展子包 `remote-browser-control-ext`）
+-   语言：TypeScript（部分历史文件为 .jsx）
+-   UI：antd 5（resolutions 固定 5.22.5）、fedx-ui、styled-components、less
+-   可视化：echarts / echarts-gl、fedx-gis、three、d3、fedx-3d-renderer
+-   服务端：midwayjs 3.x（koa、typeorm、socketio、task、http-proxy）
+-   包管理：pnpm（含 workspace，浏览器扩展子包 `remote-browser-control-ext`）
 
 ## 常用命令
 
@@ -56,15 +56,16 @@ backend-api-docs/        # 后端接口文档（陕西NOC场景接口文档.md�
 
 ## 重要背景
 
-- 本仓库是**陕西移动故障中心专用分支**，仅包含 `/emergency-support` 路径能力。
-- 日常开发在 `develop` 分支，完成后 **cherry-pick** 到 `develop-cmcc-fault-center` 分支，且只 cherry-pick emergency-support 相关能力。
-- 前缀路由：部分部署使用 `/emergency-support` 前缀（见 `start:prefix` / `build:prefix` 脚本）。
+-   本仓库是**陕西移动故障中心专用分支**，仅包含 `/emergency-support` 路径能力。
+-   日常开发在 `develop` 分支，完成后 **cherry-pick** 到 `develop-cmcc-fault-center` 分支，且只 cherry-pick emergency-support 相关能力。
+-   前缀路由：部分部署使用 `/emergency-support` 前缀（见 `start:prefix` / `build:prefix` 脚本）。
 
 ## 文档
 
-- 根目录 `docs/` 是**提交到公司 git 的文档目录**，面向团队共享。
-- 本地私有工作文档（设计文档、项目上下文、任务计划等，不进 git）维护在 skill `noc-shaanxi-project-context` 中；如本地存在该 skill，涉及项目演进 / 重构工作时先读取其 `SKILL.md`，使用规则以 skill 内文档为准。
-- **隔离规则**：根目录 `docs/` 下的文档**禁止引用** `noc-shaanxi-project-context` 的任何文档（不链接、不包含其内容、不以其为依据），两个目录相互独立维护。
+-   根目录 `docs/` 是**提交到公司 git 的文档目录**，面向团队共享。
+-   本地私有工作文档（设计文档、项目上下文、任务计划等，不进 git）维护在 skill `noc-shaanxi-project-context` 中；如本地存在该 skill，涉及项目演进 / 重构工作时先读取其 `SKILL.md`，使用规则以 skill 内文档为准。
+-   **工作流**：承接开发任务时，按 skill `noc-shaanxi-project-context` 的 `workflow/workflow.md` 执行（两阶段：需求分析 → 编码实现，各设审批硬门槛）。如本地不存在该 skill，则按本文件的「防止幻觉」等原则执行。
+-   **隔离规则**：根目录 `docs/` 下的文档**禁止引用** `noc-shaanxi-project-context` 的任何文档（不链接、不包含其内容、不以其为依据），两个目录相互独立维护。
 
 ### docs/ 修改审批机制
 
@@ -79,16 +80,16 @@ backend-api-docs/        # 后端接口文档（陕西NOC场景接口文档.md�
 
 ## 防止幻觉
 
-- **先读代码再改代码**：任何修改前必须阅读相关源码，禁止凭推测或记忆中的"常见写法"直接生成代码。
-- **不编造 API / 配置 / 文件路径**：引用项目内的组件、hooks、接口、配置项时，必须确认其真实存在于代码库中；不确定时先用搜索工具验证。
-- **不编造依赖能力**：不要假设某个 npm 包提供了某功能，以实际安装版本和源码为准。
-- **不虚构后端接口**：接口路径、参数、返回结构以 `backend-api-docs/` 和 `src/` 中的 controller / service 实现为准。
-- **不确定就问，不要猜**：需求或实现方式不明确时，先向用户确认，不要自行编造业务规则、数据格式或历史背景。
-- **不虚构文档内容**：引用设计文档时必须先读取原文，禁止转述记忆中可能不存在的文档结论。
-- **改完后自查**：修改涉及文件名、路径、导出符号时，检查引用处是否全部更新，避免留下死链接和失效引用。
+-   **先读代码再改代码**：任何修改前必须阅读相关源码，禁止凭推测或记忆中的"常见写法"直接生成代码。
+-   **不编造 API / 配置 / 文件路径**：引用项目内的组件、hooks、接口、配置项时，必须确认其真实存在于代码库中；不确定时先用搜索工具验证。
+-   **不编造依赖能力**：不要假设某个 npm 包提供了某功能，以实际安装版本和源码为准。
+-   **不虚构后端接口**：接口路径、参数、返回结构以 `backend-api-docs/` 和 `src/` 中的 controller / service 实现为准。
+-   **不确定就问，不要猜**：需求或实现方式不明确时，先向用户确认，不要自行编造业务规则、数据格式或历史背景。
+-   **不虚构文档内容**：引用设计文档时必须先读取原文，禁止转述记忆中可能不存在的文档结论。
+-   **改完后自查**：修改涉及文件名、路径、导出符号时，检查引用处是否全部更新，避免留下死链接和失效引用。
 
 ## 代码风格
 
-- 遵循仓库既有 eslint / prettier 配置（`.eslintrc.js` / `.prettierrc.js`），不要自行引入新规则。
-- 组件目录约定 `index.tsx` + `index.less`，样式使用 less module 或全局 less。
-- 新增依赖需谨慎：本项目存在国产数据库适配的版本固定策略（见 `noc-shaanxi-project-context/design/modules/chinese-database-adapter/`），改动 `package.json` 依赖前先查阅该文档。
+-   遵循仓库既有 eslint / prettier 配置（`.eslintrc.js` / `.prettierrc.js`），不要自行引入新规则。
+-   组件目录约定 `index.tsx` + `index.less`，样式使用 less module 或全局 less。
+-   新增依赖需谨慎：本项目存在国产数据库适配的版本固定策略（见 `noc-shaanxi-project-context/design/modules/chinese-database-adapter/`），改动 `package.json` 依赖前先查阅该文档。

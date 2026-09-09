@@ -108,19 +108,19 @@ oss-noc-shaanxi-java/
 
 | 现在的 Node.js | 翻译成 Java | 文件 |
 |---|---|---|
-| `src/modules/noc/controller/main.ts` | `MainController.java` | [main.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/main.ts) |
-| `src/modules/noc/controller/quality.ts` | `QualityController.java` | [quality.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/quality.ts) |
-| `src/modules/noc/controller/volume.ts` | `VolumeController.java` | [volume.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/volume.ts) |
-| `src/modules/noc/controller/custom-fetch.ts` | `CustomFetchController.java` | [custom-fetch.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/custom-fetch.ts) |
-| `src/modules/noc/service/main.ts` | `MainService.java` | [main.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/service/main.ts) |
-| `src/modules/noc/service/quality.ts` | `QualityService.java` | [quality.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/service/quality.ts) |
-| `src/modules/noc/service/volume.ts` | `VolumeService.java` | [volume.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/service/volume.ts) |
-| `src/modules/noc/dto/main.ts` | `QueryResourceDTO.java` + `QueryBusinessDTO.java` | [main.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/dto/main.ts) |
-| `src/modules/noc/dto/quality.ts` | 3 个 DTO | [quality.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/dto/quality.ts) |
-| `src/modules/noc/dto/volume.ts` | 2 个 DTO | [volume.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/dto/volume.ts) |
-| `src/modules/noc/mappers/nocSqlConfig.xml` | `NocMapper.xml`（**原样**） | [nocSqlConfig.xml](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/mappers/nocSqlConfig.xml) |
-| `src/modules/noc/config.ts` | `application*.yml` | [config.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/config.ts) |
-| `src/config/config.default.ts` | `application.yml` | [config.default.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/config/config.default.ts) |
+| `src/modules/noc/controller/main.ts` | `MainController.java` | `src/modules/noc/controller/main.ts` |
+| `src/modules/noc/controller/quality.ts` | `QualityController.java` | `src/modules/noc/controller/quality.ts` |
+| `src/modules/noc/controller/volume.ts` | `VolumeController.java` | `src/modules/noc/controller/volume.ts` |
+| `src/modules/noc/controller/custom-fetch.ts` | `CustomFetchController.java` | `src/modules/noc/controller/custom-fetch.ts` |
+| `src/modules/noc/service/main.ts` | `MainService.java` | `src/modules/noc/service/main.ts` |
+| `src/modules/noc/service/quality.ts` | `QualityService.java` | `src/modules/noc/service/quality.ts` |
+| `src/modules/noc/service/volume.ts` | `VolumeService.java` | `src/modules/noc/service/volume.ts` |
+| `src/modules/noc/dto/main.ts` | `QueryResourceDTO.java` + `QueryBusinessDTO.java` | `src/modules/noc/dto/main.ts` |
+| `src/modules/noc/dto/quality.ts` | 3 个 DTO | `src/modules/noc/dto/quality.ts` |
+| `src/modules/noc/dto/volume.ts` | 2 个 DTO | `src/modules/noc/dto/volume.ts` |
+| `src/modules/noc/mappers/nocSqlConfig.xml` | `NocMapper.xml`（**原样**） | `src/modules/noc/mappers/nocSqlConfig.xml` |
+| `src/modules/noc/config.ts` | `application*.yml` | `src/modules/noc/config.ts` |
+| `src/config/config.default.ts` | `application.yml` | `src/config/config.default.ts` |
 | `public/static/mock/*` | `resources/static/mock/*` | 原样拷 |
 
 ---
@@ -145,7 +145,7 @@ public class NocApplication {
 }
 ```
 
-### 3.2 MainController.java（翻译自 [main.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/main.ts)）
+### 3.2 MainController.java（翻译自 `src/modules/noc/controller/main.ts`）
 
 ```java
 package com.phoenix.noc.controller;
@@ -327,7 +327,7 @@ public interface NocMapper {
 
 ## 4. SQL 方言翻译（核心难点）
 
-### 4.1 现状 SQL 的方言点（来自 [nocSqlConfig.xml](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/mappers/nocSqlConfig.xml)）
+### 4.1 现状 SQL 的方言点（来自 `src/modules/noc/mappers/nocSqlConfig.xml`）
 
 | # | MySQL 原文 | 出现 SQL | 行数 |
 |---|---|---|---|
@@ -875,14 +875,14 @@ server {
 ## 14. 参考资料
 
 - 现有 Node.js 实现：
-  - [controller/main.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/main.ts)
-  - [controller/quality.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/quality.ts)
-  - [controller/volume.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/controller/volume.ts)
-  - [service/main.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/service/main.ts)
-  - [mappers/nocSqlConfig.xml](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/modules/noc/mappers/nocSqlConfig.xml)
-  - [config/config.default.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/src/config/config.default.ts)
-- Skill：[`.trae/skills/noc-shaanxi-project-context/design/modules/chinese-database-adapter/overview.md`](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/.trae/skills/noc-shaanxi-project-context/design/modules/chinese-database-adapter/overview.md)
-- 现有 API 文档：[backend-api-docs/陕西NOC场景接口文档.md](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/backend-api-docs/陕西NOC场景接口文档.md)
+  - `src/modules/noc/controller/main.ts`
+  - `src/modules/noc/controller/quality.ts`
+  - `src/modules/noc/controller/volume.ts`
+  - `src/modules/noc/service/main.ts`
+  - `src/modules/noc/mappers/nocSqlConfig.xml`
+  - `src/config/config.default.ts`
+- Skill：`.trae/skills/noc-shaanxi-project-context/design/modules/chinese-database-adapter/overview.md`
+- 现有 API 文档：`backend-api-docs/陕西NOC场景接口文档.md`
 
 ---
 

@@ -5,7 +5,7 @@
 > 状态：**v0.4 · 待 Review（已引入 rawNeType 概念）**
 > 作者：MiniMax-M3
 > 日期：2026-07-14
-> 父文档：[中屏保障中心-设备经纬度重叠聚合需求分析.md](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/.trae/documents/%E4%B8%AD%E5%B1%8F%E4%BF%9D%E9%9A%9C%E4%B8%AD%E5%BF%83-%E8%AE%BE%E5%A4%87%E7%BB%8F%E7%BA%AC%E5%BA%A6%E9%87%8D%E5%8F%A0%E8%81%9A%E5%90%88%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90.md)
+> 父文档：`.trae/documents/中屏保障中心-设备经纬度重叠聚合需求分析.md`
 > 适用范围：**tab1（日常保障）** 详细方案。tab2 在 Phase 4 对称实现
 
 ---
@@ -17,6 +17,7 @@
 ### 0.1 为什么要引入 `rawNeType`
 
 聚合组的所有 children 必须把 `neType` 改成 `'aggregate'`，否则：
+
 - VectorLayer 把 `[{ neType: '201', points: [...] }, { neType: '3201', points: [...] }, ...]` 视为**多个图层**（按 neType 拆开），跨 neType 不会合并
 - 即使塞进同一个图层，OL 内部的聚合 key 计算可能因为 neType 不同而走不同分支
 
@@ -54,34 +55,34 @@
 
 ### 0.3 `rawNeType` 的使用位置
 
-| 位置 | 行为 |
-|---|---|
-| `buildAggregatedPoints.ts` 内部 | 把原 neType 复制到 `rawNeType`，覆盖 `neType='aggregate'` |
-| OL 内部 | 只看 `latitude/longitude` 做 key 合并，**不读 neType** |
-| `pointClick(item)` | 读 `item.neType` → 拿到 `'aggregate'` → 派发失败 ⚠️ |
-| `onItemClick` 回调 | **必须**复原 neType 后再传给 `pointClick` |
-| 详情接口 `getEmergencyGisPointDetailApi` / `getEmergencyGisPointMachineryRoomDetailApi` | 读 `point.neType` 决定走哪个接口 |
+| 位置                                                                                    | 行为                                                      |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `buildAggregatedPoints.ts` 内部                                                         | 把原 neType 复制到 `rawNeType`，覆盖 `neType='aggregate'` |
+| OL 内部                                                                                 | 只看 `latitude/longitude` 做 key 合并，**不读 neType**    |
+| `pointClick(item)`                                                                      | 读 `item.neType` → 拿到 `'aggregate'` → 派发失败 ⚠️       |
+| `onItemClick` 回调                                                                      | **必须**复原 neType 后再传给 `pointClick`                 |
+| 详情接口 `getEmergencyGisPointDetailApi` / `getEmergencyGisPointMachineryRoomDetailApi` | 读 `point.neType` 决定走哪个接口                          |
 
 ---
 
 ## 1. 第一步：现有聚合机制（先把现状讲清楚）
 
-> 在动手前，必须先把"现有聚合怎么做的"完整理解一遍。下面是基于实际代码（[gis/index.tsx](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx)）梳理出的链路。
+> 在动手前，必须先把"现有聚合怎么做的"完整理解一遍。下面是基于实际代码（`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx`）梳理出的链路。
 
 ### 1.1 数据层（4 个 useRequest）
 
-[gis/index.tsx:76-166](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L76-L166)：
+`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L76-L166`：
 
-| useRequest key | API 返回结构 |
-|---|---|
-| `dataStationPointsAll` | `[{ neType: '201'\|'3201'\|'8104'\|'900'\|'2011', points: [{ siteCode, longitude, latitude, isAlarm, ... }] }, ...]` |
-| `dataMachineryRoomPointsAll` | `[{ neType: '10005'\|'1000501'\|...\|'1000505', points: [...] }, ...]` |
-| `dataTransmissionPointsAll` | 传输点（**不参与本次聚合**） |
-| `dataSuppliesPointsAll` | 应急点（**不参与本次聚合**） |
+| useRequest key               | API 返回结构                                                                                                         |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `dataStationPointsAll`       | `[{ neType: '201'\|'3201'\|'8104'\|'900'\|'2011', points: [{ siteCode, longitude, latitude, isAlarm, ... }] }, ...]` |
+| `dataMachineryRoomPointsAll` | `[{ neType: '10005'\|'1000501'\|...\|'1000505', points: [...] }, ...]`                                               |
+| `dataTransmissionPointsAll`  | 传输点（**不参与本次聚合**）                                                                                         |
+| `dataSuppliesPointsAll`      | 应急点（**不参与本次聚合**）                                                                                         |
 
 ### 1.2 过滤层（2 个 useMemo）
 
-[gis/index.tsx:230-246](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L230-L246)：
+`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L230-L246`：
 
 ```ts
 const dataStationPoints = useMemo(() => {
@@ -103,14 +104,14 @@ const dataTransmissionPoints = useMemo(() => {
 
 ### 1.3 图层渲染（4 个 VectorLayer）
 
-[gis/index.tsx:683-778](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L683-L778)：
+`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L683-L778`：
 
-| 图层 id | source | zIndex | isGongZhanByType | isShowSamePoint | csFixedNum | onShowCircle |
-|---|---|---|---|---|---|---|
-| `layerSuppliesPoints` | `dataSuppliesPointsAll` | 1000 | true | false | ✓ | ✓ |
-| `layerMachineryRoomPoints` | `dataMachineryRoomPointsAll` | 1001 | true | false | ✓ | ✓ |
-| `layerTransmissionPoints` | `dataTransmissionPoints` | 1002 | true | false | ✓ | ✓ |
-| `layerStationPoints` | `dataStationPoints` | 1003 | true | false | ✓ | ✓ |
+| 图层 id                    | source                       | zIndex | isGongZhanByType | isShowSamePoint | csFixedNum | onShowCircle |
+| -------------------------- | ---------------------------- | ------ | ---------------- | --------------- | ---------- | ------------ |
+| `layerSuppliesPoints`      | `dataSuppliesPointsAll`      | 1000   | true             | false           | ✓          | ✓            |
+| `layerMachineryRoomPoints` | `dataMachineryRoomPointsAll` | 1001   | true             | false           | ✓          | ✓            |
+| `layerTransmissionPoints`  | `dataTransmissionPoints`     | 1002   | true             | false           | ✓          | ✓            |
+| `layerStationPoints`       | `dataStationPoints`          | 1003   | true             | false           | ✓          | ✓            |
 
 ### 1.4 OL 内部聚合（fedx-gis 源码层）
 
@@ -137,13 +138,14 @@ if (group.value.length === 1) {
 ```
 
 **核心事实**：
+
 - 聚合粒度 = `csFixedNum=6` → key 精度 `1e-6`° ≈ **0.11m**
 - 同一个 neType 内做聚合，**不跨 neType**
 - 跨图层（基站 + 机房）**完全不合并**
 
 ### 1.5 弹层显示（CircleView + ElTooltipCircle）
 
-**两个独立 state**（[gis/index.tsx:48-50](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L48-L50)）：
+**两个独立 state**（`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L48-L50`）：
 
 ```ts
 const [circlePoints, setCirclePoints] = useState<any>([]);
@@ -180,7 +182,7 @@ const onCircleClick = (point) => {
 };
 ```
 
-**CircleView 渲染**（[gis/index.tsx:780-788](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L780-L788)）：
+**CircleView 渲染**（`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L780-L788`）：
 
 ```tsx
 <CircleView
@@ -194,28 +196,24 @@ const onCircleClick = (point) => {
 />
 ```
 
-**ElTooltipCircle 渲染**（[gis/index.tsx:856-865](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L856-L865)）：
+**ElTooltipCircle 渲染**（`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L856-L865`）：
 
 ```tsx
 <div id="toolTipWindowCircle1">
     {circleTooltipSource && (
-        <ElTooltipCircle
-            key="EteElTooltipCirclePopup"
-            source={circleTooltipSource}
-            style={circleTooltipStyle}
-        />
+        <ElTooltipCircle key="EteElTooltipCirclePopup" source={circleTooltipSource} style={circleTooltipStyle} />
     )}
 </div>
 ```
 
 ### 1.6 现有聚合的缺口（我们要补的）
 
-| 缺口 | 影响 |
-|---|---|
-| **跨图层（基站+机房）不合并** | 同址的 245G 基站 + 机房各自打点，叠加显示 |
-| **`csFixedNum=6` 容差几乎为零** | 现实中经纬度相同但 OL 不同 key 的设备不聚合 |
-| **`onCircleClick` 只派发单个点** | 弹层有 N 个设备，点击只进第 1 个 |
-| **`ElTooltipCircle` 无点击事件** | 用户无法在弹层列表里选某一项 |
+| 缺口                             | 影响                                        |
+| -------------------------------- | ------------------------------------------- |
+| **跨图层（基站+机房）不合并**    | 同址的 245G 基站 + 机房各自打点，叠加显示   |
+| **`csFixedNum=6` 容差几乎为零**  | 现实中经纬度相同但 OL 不同 key 的设备不聚合 |
+| **`onCircleClick` 只派发单个点** | 弹层有 N 个设备，点击只进第 1 个            |
+| **`ElTooltipCircle` 无点击事件** | 用户无法在弹层列表里选某一项                |
 
 ---
 
@@ -246,14 +244,14 @@ dataStationPointsAll (基站) + dataMachineryRoomPointsAll (机房)
 
 ### 2.2 关键决策
 
-| # | 决策 | 依据 |
-|---|---|---|
-| 1 | **图标用 `aggregate/gongzhan{0/1}.png`（自动）** | 走 `onShowCircle` 复用 `CircleView`；MapContainer.view.imageUrl 模板 `${IMAGE_PATH}/emergency-support/map/{0}/{1}.png` 中 `{0}=neType`、`{1}=alarmLevel`，所以 children 的 `neType='aggregate'` + 共享 `isAlarm` 自动选 `aggregate/gongzhan{0/1}.png`。**这两张图已存在，无需新增**。 |
-| 2 | **业务层预聚合让 OL 自动命中同 key** | 不直接 push 到 `circlePoints`，让 OL 内部按 `csFixedNum` 触发 `onShowCircle` |
-| 3 | **新图层 source 结构用 `points: [{ ...device, neType: 'aggregate', rawNeType: 原 neType, longitude, latitude, siteCode, isAlarm }]`** | `rawNeType` 保留原始类型供 `pointClick` 派发 |
-| 4 | **被聚合的点从原图层移除** | 否则同址处既显示聚合圆圈又显示 N 个单点小图 |
-| 5 | **弹层列表点击派发复用 `pointClick`，但要复原 neType** | `neType` 已被覆盖为 `'aggregate'`，必须用 `rawNeType` 复原 |
-| 6 | **机房单独处理** | 机房 neType 不参与 `stationTypeCheckList` 过滤 |
+| #   | 决策                                                                                                                                  | 依据                                                                                                                                                                                                                                                                                  |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **图标用 `aggregate/gongzhan{0/1}.png`（自动）**                                                                                      | 走 `onShowCircle` 复用 `CircleView`；MapContainer.view.imageUrl 模板 `${IMAGE_PATH}/emergency-support/map/{0}/{1}.png` 中 `{0}=neType`、`{1}=alarmLevel`，所以 children 的 `neType='aggregate'` + 共享 `isAlarm` 自动选 `aggregate/gongzhan{0/1}.png`。**这两张图已存在，无需新增**。 |
+| 2   | **业务层预聚合让 OL 自动命中同 key**                                                                                                  | 不直接 push 到 `circlePoints`，让 OL 内部按 `csFixedNum` 触发 `onShowCircle`                                                                                                                                                                                                          |
+| 3   | **新图层 source 结构用 `points: [{ ...device, neType: 'aggregate', rawNeType: 原 neType, longitude, latitude, siteCode, isAlarm }]`** | `rawNeType` 保留原始类型供 `pointClick` 派发                                                                                                                                                                                                                                          |
+| 4   | **被聚合的点从原图层移除**                                                                                                            | 否则同址处既显示聚合圆圈又显示 N 个单点小图                                                                                                                                                                                                                                           |
+| 5   | **弹层列表点击派发复用 `pointClick`，但要复原 neType**                                                                                | `neType` 已被覆盖为 `'aggregate'`，必须用 `rawNeType` 复原                                                                                                                                                                                                                            |
+| 6   | **机房单独处理**                                                                                                                      | 机房 neType 不参与 `stationTypeCheckList` 过滤                                                                                                                                                                                                                                        |
 
 > 📝 **历史纠错（v0.4 review）**：早期曾考虑 `group-point.png` 自定义图标。后经调研确认：聚合图标的图片路径规则由 `MapContainer.view.imageUrl` 模板决定，OL 内部按 `{neType}/{alarmLevel}` 自动替换；`aggregate/gongzhan{0/1}.png` 已在 `public/static/images/emergency-support/map/aggregate/` 下存在，**无需新增任何图标**。
 
@@ -265,11 +263,11 @@ dataStationPointsAll (基站) + dataMachineryRoomPointsAll (机房)
 
 ## 3. 第三步：改动文件清单（纯增量）
 
-| # | 文件 | 操作 | 类型 |
-|---|---|---|---|
-| 1 | `tab-content-1/components/center-gis/utils/buildAggregatedPoints.ts` | **新增** | 业务层跨图层聚合（**带 rawNeType**） |
-| 2 | `tab-content-1/components/center-gis/components/gis/index.tsx` | **改** | import + 4 个 useMemo + 1 个 VectorLayer + 2 个原图层 source + ElTooltipCircle onItemClick + **onItemClick 复原 neType** |
-| 3 | `tab-content-1/components/center-gis/components/el-tooltip-circle/index.tsx` | **改** | 加 `onItemClick` 可选 prop |
+| #   | 文件                                                                         | 操作     | 类型                                                                                                                     |
+| --- | ---------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 1   | `tab-content-1/components/center-gis/utils/buildAggregatedPoints.ts`         | **新增** | 业务层跨图层聚合（**带 rawNeType**）                                                                                     |
+| 2   | `tab-content-1/components/center-gis/components/gis/index.tsx`               | **改**   | import + 4 个 useMemo + 1 个 VectorLayer + 2 个原图层 source + ElTooltipCircle onItemClick + **onItemClick 复原 neType** |
+| 3   | `tab-content-1/components/center-gis/components/el-tooltip-circle/index.tsx` | **改**   | 加 `onItemClick` 可选 prop                                                                                               |
 
 > ⚠️ **tab2 不在本文档范围**。Phase 4 时对称实现（按 SKILL.md 约定不抽公共）。
 
@@ -286,15 +284,15 @@ groups.push({
     latitude: anchor.latitude,
     points: group.map((p) => ({
         ...p,
-        rawNeType: p.neType,           // ← 保留原始 neType
-        neType: 'aggregate',          // ← 覆盖为聚合标识
-        longitude: anchor.longitude,   // ← 强制共享锚经度
-        latitude: anchor.latitude,     // ← 强制共享锚纬度
+        rawNeType: p.neType, // ← 保留原始 neType
+        neType: 'aggregate', // ← 覆盖为聚合标识
+        longitude: anchor.longitude, // ← 强制共享锚经度
+        latitude: anchor.latitude, // ← 强制共享锚纬度
     })),
 });
 ```
 
-完整代码见 [buildAggregatedPoints.ts](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/utils/buildAggregatedPoints.ts)。
+完整代码见 `web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/utils/buildAggregatedPoints.ts`。
 
 ---
 
@@ -302,7 +300,7 @@ groups.push({
 
 ### 5.1 现有 ElTooltipCircle 调用加 onItemClick + **复原 neType**
 
-[gis/index.tsx:898](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L898)：
+`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/gis/index.tsx#L898`：
 
 ```tsx
 // ⚠️ 当前实现（v0.3）：未复原 neType，pointClick 拿到 neType='aggregate'，派发会失败
@@ -324,13 +322,13 @@ groups.push({
 
 ### 5.2 其他改动（v0.3 已完成）
 
-| 改动 | 位置 | 行数 |
-|---|---|---|
-| 新增 import | 顶部 | +1 |
-| 新增 4 个 useMemo | dataTransmissionPoints 之后 | +55 |
-| 改 `layerMachineryRoomPoints` source | line 738 | 改 1 个 prop |
-| 改 `layerStationPoints` source | line 802 | 改 1 个 prop |
-| 新增 VectorLayer | layerStationPoints 之后 | +25 |
+| 改动                                 | 位置                        | 行数         |
+| ------------------------------------ | --------------------------- | ------------ |
+| 新增 import                          | 顶部                        | +1           |
+| 新增 4 个 useMemo                    | dataTransmissionPoints 之后 | +55          |
+| 改 `layerMachineryRoomPoints` source | line 738                    | 改 1 个 prop |
+| 改 `layerStationPoints` source       | line 802                    | 改 1 个 prop |
+| 新增 VectorLayer                     | layerStationPoints 之后     | +25          |
 
 ---
 
@@ -338,7 +336,7 @@ groups.push({
 
 仅加 `onItemClick` 可选 prop，不改其他逻辑。
 
-[el-tooltip-circle/index.tsx](file:///e:/oss-fe-git/phoenix/oss-noc-shaanxi/web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/el-tooltip-circle/index.tsx)：
+`web/pages/emergency-support/modules/center/components/tab-content-1/components/center-gis/components/el-tooltip-circle/index.tsx`：
 
 ```tsx
 <div
@@ -382,29 +380,29 @@ dataStationPointsAll + dataMachineryRoomPointsAll
 
 ## 8. 与现有逻辑的关系（明确边界）
 
-| 现有逻辑 | 我们的处理 |
-|---|---|
-| 4 个 useRequest | **零改动** |
-| 4 个现有 VectorLayer | **仅改 source**：用过滤后的版本；其他 props 不动 |
-| `onShowCircle` 回调 | **复用** |
-| `circlePoints` / `circleTooltipSource` / `circleTooltipStyle` state | **复用** |
-| `onCirclePointMove` / `onCircleClick` | **复用**（弹层列表项点击走 `onItemClick`，不走 `onCircleClick`） |
-| `pointClick` 函数 | **复用**（但调用方负责把 `rawNeType` 复原为 `neType`） |
-| `<CircleView>` 组件 | **零改动** |
-| `<ElTooltipCircle>` | 仅加 `onItemClick` 可选 prop |
-| less 样式 | **零改动** |
-| 后端 API | **零改动** |
+| 现有逻辑                                                            | 我们的处理                                                       |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 4 个 useRequest                                                     | **零改动**                                                       |
+| 4 个现有 VectorLayer                                                | **仅改 source**：用过滤后的版本；其他 props 不动                 |
+| `onShowCircle` 回调                                                 | **复用**                                                         |
+| `circlePoints` / `circleTooltipSource` / `circleTooltipStyle` state | **复用**                                                         |
+| `onCirclePointMove` / `onCircleClick`                               | **复用**（弹层列表项点击走 `onItemClick`，不走 `onCircleClick`） |
+| `pointClick` 函数                                                   | **复用**（但调用方负责把 `rawNeType` 复原为 `neType`）           |
+| `<CircleView>` 组件                                                 | **零改动**                                                       |
+| `<ElTooltipCircle>`                                                 | 仅加 `onItemClick` 可选 prop                                     |
+| less 样式                                                           | **零改动**                                                       |
+| 后端 API                                                            | **零改动**                                                       |
 
 ---
 
 ## 9. v0.4 vs v0.3 关键变更
 
-| 维度 | v0.3 | v0.4 |
-|---|---|---|
-| children 数据 | `neType='aggregate'`，无 `rawNeType` | `neType='aggregate'`，**`rawNeType` 保留原值** |
-| OL 内部聚合 | 仍然可触发 `onShowCircle` | 仍然可触发 |
-| `pointClick(item)` 派发 | 失败（item.neType='aggregate'） | 成功（onItemClick 处复原） |
-| 文档 §0 | 不存在 | 新增 `rawNeType` 概念章节 |
+| 维度                    | v0.3                                 | v0.4                                           |
+| ----------------------- | ------------------------------------ | ---------------------------------------------- |
+| children 数据           | `neType='aggregate'`，无 `rawNeType` | `neType='aggregate'`，**`rawNeType` 保留原值** |
+| OL 内部聚合             | 仍然可触发 `onShowCircle`            | 仍然可触发                                     |
+| `pointClick(item)` 派发 | 失败（item.neType='aggregate'）      | 成功（onItemClick 处复原）                     |
+| 文档 §0                 | 不存在                               | 新增 `rawNeType` 概念章节                      |
 
 ---
 

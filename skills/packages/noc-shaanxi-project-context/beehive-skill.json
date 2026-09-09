@@ -1,15 +1,17 @@
 {
-  "contentHash": "dcac7f6db037a33c953b7e7e13f85322dbb34117799a2d51aa110d11c71ea5c3",
+  "contentHash": "fa282fc556c7f2b49b0b9c22917436ec1d9d41dd7d3eb767244af73b7460ae73",
   "files": [
     "./design/",
     "./env/",
     "./plans/",
     "./pm/",
-    "./scripts/"
+    "./scripts/",
+    "./workflow/"
   ],
   "id": "noc-shaanxi-project-context",
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-09-09T03:04:28.412Z",
   "version": "0.0.0"
 }
