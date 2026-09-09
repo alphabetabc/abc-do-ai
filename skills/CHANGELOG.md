@@ -1,15 +1,29 @@
 # Changelog
 
-<!-- changelog-last-commit: 3dc0aa254d170e27eec0871fb1d9acacc537faaf -->
+<!-- changelog-last-commit: 29bea00b1031f1cc02c8e07c057e57587103cd18 -->
 
 ## 2026-09-09
 
 - 发布 skill
     - 「noc-shaanxi-project-context」 v0.0.0；
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+    - 「oss-vis-gd-es-project-context」 v0.0.0；
+- 新增 skill
+    - 「oss-vis-gd-es-project-context」；
 - 更新 skill
     - 「noc-shaanxi-project-context」（配置、其他）；oss-noc-shaanxi 项目统一上下文技能，在需要对项目进行拓展、重构等演进工作时提供设计文档与背景知识索引。；
     - 「oss-mtc-transition-ln-project-context」（配置、其他）；
+- 删除 skill
+    - 「gd-es-next-assurance-progress」；
+    - 「gd-es-next-dispatch-gis-maintenance」；
+    - 「gd-es-next-emergency-api-generator」；
+    - 「gd-es-next-header」；
+    - 「gd-es-next-interaction-fields」；
+    - 「gd-es-next-left-emergency-resources」；
+    - 「gd-es-next-right-dispatch-tasks」；
+    - 「gd-es-next-right-real-time-impact」；
+    - 「gd-es-next-ui-emap-gis」；
+    - 「gd-es-next-warn-gis-maintenance」；
 
 ## 2026-09-08
 
