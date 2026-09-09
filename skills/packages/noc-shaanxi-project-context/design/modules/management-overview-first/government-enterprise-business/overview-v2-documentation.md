@@ -2,7 +2,7 @@
 
 > **所属技能**：[noc-shaanxi-first-government-enterprise-business](./SKILL.md)（政府企业业务子技能）
 > **所属父技能**：[noc-shaanxi-management-overview-first](../../SKILL.md)
-> **本文档位置**：`.trae/skills/noc-shaanxi-project-context/design/modules/management-overview-first/government-enterprise-business/overview-v2-documentation.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/government-enterprise-business/overview-v2-documentation.md`
 
 ## 文档元信息
 

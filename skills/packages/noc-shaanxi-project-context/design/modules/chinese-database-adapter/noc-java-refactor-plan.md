@@ -881,7 +881,7 @@ server {
   - `src/modules/noc/service/main.ts`
   - `src/modules/noc/mappers/nocSqlConfig.xml`
   - `src/config/config.default.ts`
-- Skill：`.trae/skills/noc-shaanxi-project-context/design/modules/chinese-database-adapter/overview.md`
+- Skill：`noc-shaanxi-project-context/design/modules/chinese-database-adapter/overview.md`
 - 现有 API 文档：`backend-api-docs/陕西NOC场景接口文档.md`
 
 ---

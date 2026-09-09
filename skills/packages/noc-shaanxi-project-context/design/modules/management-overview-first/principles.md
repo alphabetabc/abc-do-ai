@@ -1,7 +1,7 @@
 # 设计原则与跨子模块工作流
 
 > **所属模块**：`management-overview-first`
-> **本文档位置**：`.trae/skills/noc-shaanxi-project-context/design/modules/management-overview-first/principles.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/principles.md`
 
 ## 文档元信息
 

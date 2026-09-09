@@ -1,7 +1,7 @@
 # ImageGis 组件维护与扩展
 
 > **所属技能**：[noc-shaanxi-management-overview-first](../SKILL.md)（父技能）
-> **本文档位置**：`.trae/skills/noc-shaanxi-project-context/design/modules/management-overview-first/components/image-gis.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/components/image-gis.md`
 
 ## 文档元信息
 
@@ -18,28 +18,28 @@
 
 ### 1. 图层管理
 
-- 支持多种网络类型图层（2G、4G、5G、物联网、高精度基站、光缆一干、光缆二干）
-- 基于配置动态显示/隐藏图层
-- 支持通过图例复选框交互控制
+-   支持多种网络类型图层（2G、4G、5G、物联网、高精度基站、光缆一干、光缆二干）
+-   基于配置动态显示/隐藏图层
+-   支持通过图例复选框交互控制
 
 ### 2. 流光动画
 
-- 光缆一干和二干图层支持流光动画效果
-- 使用 `useImageGisStreamerAnimate` hook 管理动画状态、zIndex 和透明度
-- 交替动画逻辑：二干先动画，完成后一干动画，循环往复
-- 动画切换时，下方图层透明度降低为原始的 0.6 倍，上方图层保持原始透明度
+-   光缆一干和二干图层支持流光动画效果
+-   使用 `useImageGisStreamerAnimate` hook 管理动画状态、zIndex 和透明度
+-   交替动画逻辑：二干先动画，完成后一干动画，循环往复
+-   动画切换时，下方图层透明度降低为原始的 0.6 倍，上方图层保持原始透明度
 
 ### 3. 图例控制
 
-- 左右两侧图例面板，视觉上分离但逻辑上属于同一 `Checkbox.Group`
-- 支持全选/单选控制，左右两侧选项可同时选中
-- 响应元数据操作（MetaHuman）
-- **重要**：两个图例面板必须包裹在同一个 `Checkbox.Group` 组件内，否则会出现互斥问题
+-   左右两侧图例面板，视觉上分离但逻辑上属于同一 `Checkbox.Group`
+-   支持全选/单选控制，左右两侧选项可同时选中
+-   响应元数据操作（MetaHuman）
+-   **重要**：两个图例面板必须包裹在同一个 `Checkbox.Group` 组件内，否则会出现互斥问题
 
 ### 4. 地图交互
 
-- 支持区域切换时的地图中心点和缩放级别调整
-- 支持 GeoJson 图层叠加
+-   支持区域切换时的地图中心点和缩放级别调整
+-   支持 GeoJson 图层叠加
 
 ## useImageGisStreamerAnimate Hook 详解
 
@@ -91,25 +91,25 @@ export interface StreamerAnimateState {
 
 #### 初始状态（两者都选中）
 
-- 二干 zIndex + 100，opacity = 1
-- 一干 opacity = 0.6
-- 启动二干动画
+-   二干 zIndex + 100，opacity = 1
+-   一干 opacity = 0.6
+-   启动二干动画
 
 #### 二干动画完成
 
-- 二干 zIndex 恢复，opacity = 0.6，停止动画
-- 一干 zIndex + 100，opacity = 1
-- 启动一干动画
+-   二干 zIndex 恢复，opacity = 0.6，停止动画
+-   一干 zIndex + 100，opacity = 1
+-   启动一干动画
 
 #### 一干动画完成
 
-- 一干 zIndex 恢复，opacity = 0.6，停止动画
-- 二干 zIndex + 100，opacity = 1
-- 启动二干动画（循环）
+-   一干 zIndex 恢复，opacity = 0.6，停止动画
+-   二干 zIndex + 100，opacity = 1
+-   启动二干动画（循环）
 
 #### 单独选中
 
-- 只有一个图层选中时，保持原始透明度和 zIndex
+-   只有一个图层选中时，保持原始透明度和 zIndex
 
 ### Hook 扩展能力
 
@@ -149,14 +149,14 @@ opacityMultiplier: 0.6;
 
 ### 修改动画逻辑
 
-- 调整 `useImageGisStreamerAnimate` hook 的参数和返回值
-- 修改 `StreamerPath` 组件的配置（线宽、颜色、长度等）
-- 自定义动画时序和透明度变化
+-   调整 `useImageGisStreamerAnimate` hook 的参数和返回值
+-   修改 `StreamerPath` 组件的配置（线宽、颜色、长度等）
+-   自定义动画时序和透明度变化
 
 ### 自定义样式
 
-- 修改 `network-coverage-center-gis-container` 类名的样式
-- 调整图层的 zIndex 和 opacity
+-   修改 `network-coverage-center-gis-container` 类名的样式
+-   调整图层的 zIndex 和 opacity
 
 ## 常见问题与解决方案
 
@@ -177,18 +177,18 @@ opacityMultiplier: 0.6;
 
 ## 使用场景
 
-- 添加新的网络类型图层
-- 修改现有图层的显示样式
-- 调整流光动画效果（速度、颜色、透明度）
-- 扩展图例功能
-- 集成新的地图交互能力
-- 自定义动画切换逻辑
+-   添加新的网络类型图层
+-   修改现有图层的显示样式
+-   调整流光动画效果（速度、颜色、透明度）
+-   扩展图例功能
+-   集成新的地图交互能力
+-   自定义动画切换逻辑
 
 ## 相关文件
 
-- [useImageGisStreamerAnimate.ts](web/pages/management-overview-first/modules/center/components/tab-content-1/components/center-gis/useImageGisStreamerAnimate.ts) - 动画状态管理 hook
-- `StreamerPath` - 流光路径组件
-- `index.less` - 组件样式文件
+-   [useImageGisStreamerAnimate.ts](web/pages/management-overview-first/modules/center/components/tab-content-1/components/center-gis/useImageGisStreamerAnimate.ts) - 动画状态管理 hook
+-   `StreamerPath` - 流光路径组件
+-   `index.less` - 组件样式文件
 
 ## 版本演进说明
 

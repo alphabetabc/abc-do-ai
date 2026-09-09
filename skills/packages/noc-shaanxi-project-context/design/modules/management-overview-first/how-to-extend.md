@@ -1,7 +1,7 @@
 # 如何扩展本技能（持续进化指南）
 
 > **所属技能**：`noc-shaanxi-management-overview-first`
-> **本文档位置**：`.trae/skills/noc-shaanxi-management-overview-first/how-to-extend.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/how-to-extend.md`
 
 ## 文档元信息
 
@@ -147,7 +147,7 @@ modules/<module-name>/
 # <组件显示名>
 
 > **所属技能**：`noc-shaanxi-management-overview-first`
-> **本文档位置**：`.trae/skills/noc-shaanxi-management-overview-first/components/<name>.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/components/<name>.md`
 
 ## 文档元信息
 
@@ -210,7 +210,7 @@ description: '...'
 # <模块显示名>
 
 > **所属技能**：`noc-shaanxi-management-overview-first`
-> **本文档位置**：`.trae/skills/noc-shaanxi-management-overview-first/modules/<name>/SKILL.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/modules/<name>/overview.md`
 
 ## 文档元信息
 

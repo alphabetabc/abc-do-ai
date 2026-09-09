@@ -33,7 +33,7 @@ web/components/ui/streamer-path/
 ### 可移植版（拷贝即用）
 
 ```
-.trae/skills/noc-shaanxi-project-context/design/modules/ui-streamer-path/portable/
+noc-shaanxi-project-context/design/modules/ui-streamer-path/portable/
 ├── StreamerPath.tsx   # 主组件（无 styled-components / 无项目 hooks 依赖）
 ├── Container.tsx      # 内联样式容器
 ├── hooks.ts           # useLatest / useMemoizedFn / useElementSize / useMemorizedObject 自带 shim

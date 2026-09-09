@@ -10,7 +10,7 @@ description: '维护和扩展政府企业业务模块，包含组件、数据展
 # 政府企业业务模块维护技能
 
 > **所属父技能**：[noc-shaanxi-management-overview-first](../../SKILL.md)
-> **本文档位置**：`.trae/skills/noc-shaanxi-management-overview-first/modules/government-enterprise-business/SKILL.md`
+> **本文档位置**：`noc-shaanxi-project-context/design/modules/management-overview-first/government-enterprise-business/overview.md`
 
 ## 文档元信息
 
@@ -95,6 +95,7 @@ description: '维护和扩展政府企业业务模块，包含组件、数据展
 
 - [overview-v2 模块详细文档](./overview-v2-documentation.md) - 当前有效首页概览，椭圆轨道动画实现
 - [Detail 模块详细文档](./detail-documentation.md) - 详情页面架构、组件详解、数据流和扩展指南（含 presets.ts 详解）
+- [Services 服务层详细文档](./services-documentation.md) - 服务层接口清单（2452/2455/2458）、转换逻辑、调用关系与扩展指南
 
 ## 关键文件速查
 
@@ -105,6 +106,7 @@ description: '维护和扩展政府企业业务模块，包含组件、数据展
 | detail/index.tsx      | `modules/government-enterprise-business/detail/index.tsx`             | 详情入口     |
 | ellipse-track.ts      | `modules/government-enterprise-business/overview-v2/ellipse-track.ts` | 椭圆动画核心 |
 | multi-part/index.ts   | `modules/government-enterprise-business/detail/multi-part/index.ts`   | 布局组件导出 |
+| services              | `web/services/management-overview-first/government-enterprise-business/`（index / overview / part） | 服务层（2452 概览 / 2455 规模 / 2458 质量），详见 `./services-documentation.md` |
 
 ## 版本演进说明
 
