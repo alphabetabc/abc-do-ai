@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: 9cdf49e6800438cbab64e588c83e30716d485557 -->
+<!-- changelog-last-commit: 885a9bbba1e04808aba55c6e61224ce76ecf64e5 -->
+
+## 2026-09-09
+
+- 发布 skill
+    - 「noc-shaanxi-project-context」 v0.0.0；
+- 更新 skill
+    - 「noc-shaanxi-project-context」（配置、其他）；oss-noc-shaanxi 项目统一上下文技能，在需要对项目进行拓展、重构等演进工作时提供设计文档与背景知识索引。；
 
 ## 2026-09-08
 
@@ -18,6 +25,7 @@
     - 「noc-shaanxi-management-overview-first」；
     - 「noc-shaanxi-ui-streamer-path」；
 - 变更文件
+    - scripts/update-changelog.mjs；
     - skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-09-04
