@@ -1,6 +1,6 @@
 # Changelog
 
-<!-- changelog-last-commit: 29bea00b1031f1cc02c8e07c057e57587103cd18 -->
+<!-- changelog-last-commit: cc52c44907af106bbd9977ff7c5d3b3e1a34b031 -->
 
 ## 2026-09-09
 
