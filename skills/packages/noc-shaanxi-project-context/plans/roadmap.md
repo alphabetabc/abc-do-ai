@@ -29,3 +29,6 @@ task-<yyyy-mm-dd>-<序号>-<任务名>.md
 | 2026-09-08 | plans/done/task-2026-09-08-002-great-tang-spec.md            | 大唐不夜城大屏 spec 五件套（docs/specs/002）     | 已完成 |
 | 2026-09-09 | plans/done/task-2026-09-09-001-spec-003-noc-second-hazard.md | NOC 第二屏隐患模块 spec 初始化（docs/specs/003） | 已完成 |
 | 2026-09-09 | plans/done/task-2026-09-09-002-spec-003-hazard-drilldown-five-docs.md | spec 003 隐患下钻五件套生成 | 已完成 |
+| 2026-09-11 | plans/task-2026-09-11-001-spec-003-hazard-drilldown-modal.md | spec 003 下钻弹窗（M1，mock 先行）；遗留已移交 2026-09-15-001 | 已移交 |
+| 2026-09-11 | plans/task-2026-09-11-002-spec-003-hazard-rectify-overall-plan.md | spec 003 整体计划安排分类（M2，mock 先行）；遗留已移交 2026-09-15-001 | 已移交 |
+| 2026-09-15 | plans/task-2026-09-15-001-spec-003-hazard-api-integration.md | spec 003 真实接口契约回填与联调（M0 落地，承接 09-11 两 task 全部遗留） | 待审批 |

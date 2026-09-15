@@ -15,6 +15,8 @@
 
 页面业务 services（如 `web/services/emergency-support/`、`web/services/flood-prevention-screen/` 等）普遍从这里导入 `request` / `loadJson` / `createConverter` / `getViewItemDataApi` 等发请求。
 
+> 上游依赖（baseCreate、getEnvironment、dataSchemeHelper、CacheLoader、useRequest）的完整梳理见 [dependencies.md](./dependencies.md)。
+
 ## 文件结构
 
 | 文件                                      | 职责                                                                                     |

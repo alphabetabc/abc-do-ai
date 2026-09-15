@@ -91,6 +91,8 @@ web/pages/management-overview-first/
 | 中屏场景监控 | 场景分类切换（SWITCH_OPERATE）+ 场景弹窗打开/关闭（OPEN/CLOSE_OPERATE_MODAL） |
 | 中屏算网部署 | 数据中心列表跳转到指定数据中心                                                |
 
+> 数字人能力的底座文档见 `noc-shaanxi-project-context/design/modules/meta-human/overview.md`；本屏的接入方式、指令预设、全部指令消费点与扩展流程详见 `noc-shaanxi-project-context/design/modules/management-overview-first/meta-human.md`。
+
 ---
 
 ## 二、数据通道（全模块共用）
