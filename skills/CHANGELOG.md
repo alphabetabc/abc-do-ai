@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: cc52c44907af106bbd9977ff7c5d3b3e1a34b031 -->
+<!-- changelog-last-commit: c69cdbf6ec5fc0b35ec75fb5b5b3686210c51baa -->
+
+## 2026-09-15
+
+- 发布 skill
+    - 「noc-shaanxi-project-context」 v0.0.0；
+- 更新 skill
+    - 「noc-shaanxi-project-context」（配置、其他）；oss-noc-shaanxi 项目统一上下文技能，在需要对项目进行拓展、重构等演进工作时提供设计文档与背景知识索引。；
 
 ## 2026-09-09
 
