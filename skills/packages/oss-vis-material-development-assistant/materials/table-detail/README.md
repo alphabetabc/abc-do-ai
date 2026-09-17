@@ -1,8 +1,8 @@
 ---
 title: table-detail 物料概览
 description: 明细表格物料的整体介绍、文件结构与核心特性
-version: 1.0.0
-last_updated: 2026-07-30
+version: 1.1.0
+last_updated: 2026-08-12
 ---
 
 # 明细表格（table-detail）
@@ -25,7 +25,8 @@ src/packages/table-detail/
 ├── schema.ts                   # 配置面板 Schema 定义（含 FormCollapse 分组）
 ├── schema/
 │   └── interactions.ts         # 交互面板 Schema（订阅 / 派发 / 动态事件 / 分页器派发）
-├── index.tsx                   # 主组件入口（基于 oss-ui ProTable）
+├── index.tsx                   # 主入口（空数据守卫包装器，0.0.8 起简化）
+├── TableDetailImp.tsx          # 实际渲染组件（ProTable + 全部 hooks / 逻辑）
 ├── index.less                  # 样式文件
 ├── dataModel.json              # 数据模型定义（7 个 indicators，无 dimensions）
 ├── hooks/
@@ -129,6 +130,13 @@ src/packages/table-detail/
 - 默认行为：未配置时使用 `initial` / `inherit`，**完全不影响原样式**
 - 覆盖范围：仅 `background-color` / `color` / `border-color`，不修改滚动条 `width: 6px` 尺寸
 - 详见 [component-logic.md § 2.2.11](./component-logic.md#2211-主题色注入-styledcontainer)
+
+### 13. 空数据守卫（新增）
+`index.tsx` 顶部加了 `_.isEmpty(dataSource)` 早返：
+- `dataSource` 为 `undefined` / `null` / `[]` 时，整个组件 `return null`，**不渲染任何 DOM**（包括 ProTable 占位、空状态文案、分页器）
+- 设计器场景：拖入后未注入数据时不会渲染空 ProTable，减少视觉噪声
+- 大屏场景：表格数据被清空时整个区域消失，避免空状态干扰观感
+- 详见 [component-logic.md § 2.0](./component-logic.md#20-空数据守卫新增-008)、[gotchas.md § 23](./gotchas.md#23-空数据时不渲染任何-dom包括空状态)
 
 ## 默认配置
 

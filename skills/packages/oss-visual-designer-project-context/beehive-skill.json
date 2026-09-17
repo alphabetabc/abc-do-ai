@@ -1,0 +1,17 @@
+{
+  "contentHash": "878bf95cd95921b005136fbf6215d29d26df2b1a01743fc87f5449eb8daf5022",
+  "files": [
+    "./design/",
+    "./env/",
+    "./plans/",
+    "./pm/",
+    "./references/",
+    "./research/",
+    "./scripts/"
+  ],
+  "id": "oss-visual-designer-project-context",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

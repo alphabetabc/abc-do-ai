@@ -1,8 +1,8 @@
 ---
 title: 物料清单索引
 description: src/packages 下所有带 oss-material.json 的有效物料清单（147 个），按分类组织，标注文档化状态
-version: 1.4.0
-last_updated: 2026-08-04
+version: 1.5.0
+last_updated: 2026-09-17
 ---
 
 # 物料清单索引
@@ -30,9 +30,9 @@ glob.sync('src/packages/**/oss-material.json')
 | 表单 / 筛选             | 4       | 2          | 1                                 |
 | 按钮 / 操作             | 5       | 0          | 3                                 |
 | 轮播 / 公告             | 6       | 0          | 3                                 |
-| 图表（ECharts）         | 8       | 2          | 4                                 |
+| 图表（ECharts）         | 8       | 3          | 4                                 |
 | 图表（oss-chart-plots） | 23      | 0          | 0                                 |
-| 地图                    | 8       | 0          | 5                                 |
+| 地图                    | 8       | 1          | 5                                 |
 | 3D / 拓扑               | 4       | 0          | 2                                 |
 | 时钟 / 动画             | 5       | 1          | 1                                 |
 | 媒体 / 播放             | 3       | 1          | 2                                 |
@@ -40,9 +40,9 @@ glob.sync('src/packages/**/oss-material.json')
 | 状态 / 标签             | 2       | 0          | 2                                 |
 | 边框 / 装饰             | 25      | 0          | 0                                 |
 | 其他                    | 7       | 1          | 1                                 |
-| **合计**                | **147** | **22**     | **37**                            |
+| **合计**                | **147** | **23**     | **37**                            |
 
-> 最后更新：2026-08-04（新增 params-trigger 物料文档）
+> 最后更新：2026-09-17（新增 echarts-map 物料文档）
 
 ## 状态说明
 
@@ -56,12 +56,13 @@ glob.sync('src/packages/**/oss-material.json')
 
 ---
 
-## ✅ 已完成 5+1 文档化的物料（21）
+## ✅ 已完成 5+1 文档化的物料（22）
 
 | 物料 | 分类 | 复杂度 | 核心特点 | 关键踩坑 |
 | --- | --- | --- | --- | --- |
 | [**free-layout-indicators-viewer**](./free-layout-indicators-viewer/README.md) | 容器 / 布局 | 高 | MonacoEditor 坐标点 + styled-components 渐变 + 个性化背景图 | 默认背景图静态资源依赖；`filterKey` 空格敏感 |
 | [**echarts-bar**](./echarts-bar/README.md) | 图表（ECharts） | 中 | 多系列横向条形图 + 4 种下钻 + 性能优化 `shouldSetOption` | ⚠️ **孤儿文件 `index.jsx`**；`data.id` 派发无效（dataModel 无 id） |
+| [**echarts-map**](./echarts-map/README.md) | 图表（ECharts） | 高 | ECharts 平面地图 + 省级 → 市级下钻 + 区域气泡（最多 4 指标）+ 级别色 + 引线 + 自管数据源 + 权限地图 | ⚠️ **`dataModel: ""` 空字符串**；`index.jsx`（入口）vs `map.jsx`（核心）易混；自管数据源不走 props.dataSource |
 | [**digital-flop**](./digital-flop/README.md) | 数字 / 指标卡 | 中 | TWEEN 动画 + 4 种下钻 + 级别渲染 + 文本渐变 | **隐式字段** `enableRemoveEndZero` / `fontSkew` / `id`（schema 未声明） |
 | [**echarts-pie**](./echarts-pie/README.md) | 图表（ECharts） | 中 | 饼图/环图/玫瑰图 + 自定义填充色 + 标签引导线 + 下钻交互 | `data.sort` 修改原数组；`textStyle` 覆盖 `rich.name` |
 | [**digital-card**](./digital-card/README.md) | 数字 / 指标卡 | 中 | 渐变背景 + 标题 + 数值 + 左边框装饰线 | `borderLeftColor` 未使用；`dataSource[0]` 无空值保护 |
@@ -149,18 +150,18 @@ glob.sync('src/packages/**/oss-material.json')
 
 ## 5. 表格（10）
 
-| 物料                 | 复杂度 | 文档      | 状态 |
-| -------------------- | ------ | --------- | ---- |
-| `drilldown-table`    | 中     | ⏳ 待补充 | —    |
-| `drilldown-table-2`  | 中     | ⏳ 待补充 | —    |
-| `expandable-table`   | 中     | ⏳ 待补充 | —    |
-| `pagination-table`   | 中     | ⏳ 待补充 | —    |
-| `table`              | 中     | ⏳ 待补充 | —    |
-| **`table-detail`** | **中** | [📄](./table-detail/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
-| `table-fixedColumns` | 中     | ⏳ 待补充 | —    |
-| `table-transpose`    | 中     | ⏳ 待补充 | —    |
-| `transfer-table`     | 中     | ⏳ 待补充 | —    |
-| `alarm-window-card`  | 中     | ⏳ 待补充 | —    |
+| 物料                 | 复杂度 | 文档                                  | 状态           |
+| -------------------- | ------ | ------------------------------------- | -------------- |
+| `drilldown-table`    | 中     | ⏳ 待补充                             | —              |
+| `drilldown-table-2`  | 中     | ⏳ 待补充                             | —              |
+| `expandable-table`   | 中     | ⏳ 待补充                             | —              |
+| `pagination-table`   | 中     | ⏳ 待补充                             | —              |
+| `table`              | 中     | ⏳ 待补充                             | —              |
+| **`table-detail`**   | **中** | [📄](./table-detail/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
+| `table-fixedColumns` | 中     | ⏳ 待补充                             | —              |
+| `table-transpose`    | 中     | ⏳ 待补充                             | —              |
+| `transfer-table`     | 中     | ⏳ 待补充                             | —              |
+| `alarm-window-card`  | 中     | ⏳ 待补充                             | —              |
 
 ## 6. 表单 / 筛选（4）
 
@@ -208,7 +209,7 @@ glob.sync('src/packages/**/oss-material.json')
 | **`echarts-bar`** | **中** | [📄](./echarts-bar/README.md) 🟦🟨🟩 | ✅ 完成（5+1） | 📄 [doc/readme.md](../../../src/packages/echarts-bar/doc/readme.md) |
 | `echarts-gauge` | 中 | ⏳ 待补充 | — | 📄 |
 | `echarts-liquid` | 中 | ⏳ 待补充 | — | 📄 |
-| `echarts-map` | 高 | ⏳ 待补充 | — | 📄 |
+| `echarts-map` | 高 | [📄](./echarts-map/README.md) 🟦🟨🟩 | ✅ 完成（5+1） | 📄 |
 | `echarts-multi-variable-area-chart` | 中 | ⏳ 待补充 | — | ❌ |
 | **`echarts-pie`** | **中** | [📄](./echarts-pie/README.md) 🟦🟨🟩 | ✅ 完成（5+1） | 📄 [doc/readme.md](../../../src/packages/echarts-pie/doc/readme.md) |
 | `ind-list-echarts-gauge` | 简单 | ⏳ 待补充 | — | ❌ |
@@ -248,16 +249,16 @@ glob.sync('src/packages/**/oss-material.json')
 
 ## 11. 地图（8）
 
-| 物料                     | 复杂度 | 文档      | 状态 |
-| ------------------------ | ------ | --------- | ---- |
-| `baidu-map`              | 中     | ⏳ 待补充 | —    |
-| `baidu-map-unicom`       | 中     | ⏳ 待补充 | —    |
-| `geo-3d-map`             | 高     | ⏳ 待补充 | —    |
-| `geo-cascader`           | 中     | ⏳ 待补充 | —    |
-| `oss-chart-classify-map` | 高     | ⏳ 待补充 | —    |
-| `oss-chart-fly-line-map` | 高     | ⏳ 待补充 | —    |
+| 物料                     | 复杂度 | 文档                                   | 状态           |
+| ------------------------ | ------ | -------------------------------------- | -------------- |
+| `baidu-map`              | 中     | ⏳ 待补充                              | —              |
+| `baidu-map-unicom`       | 中     | ⏳ 待补充                              | —              |
+| `geo-3d-map`             | 高     | ⏳ 待补充                              | —              |
+| `geo-cascader`           | 中     | ⏳ 待补充                              | —              |
+| `oss-chart-classify-map` | 高     | ⏳ 待补充                              | —              |
+| `oss-chart-fly-line-map` | 高     | ⏳ 待补充                              | —              |
 | `oss-chart-map`          | 高     | [📄](./oss-chart-map/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
-| `oss-gis`                | 高     | ⏳ 待补充 | —    |
+| `oss-gis`                | 高     | ⏳ 待补充                              | —              |
 
 ## 12. 3D / 拓扑（4）
 
@@ -355,15 +356,15 @@ glob.sync('src/packages/**/oss-material.json')
 
 ## 18. 其他（7）
 
-| 物料                     | 复杂度 | 文档      | 状态           |
-| ------------------------ | ------ | --------- | -------------- |
-| `carousel-image-list`    | 简单   | ⏳ 待补充 | —              |
-| `ind-list-echarts-gauge` | 简单   | ⏳ 待补充 | —              |
-| `pagination-display`     | 简单   | ⏳ 待补充 | —              |
+| 物料                     | 复杂度 | 文档                                    | 状态           |
+| ------------------------ | ------ | --------------------------------------- | -------------- |
+| `carousel-image-list`    | 简单   | ⏳ 待补充                               | —              |
+| `ind-list-echarts-gauge` | 简单   | ⏳ 待补充                               | —              |
+| `pagination-display`     | 简单   | ⏳ 待补充                               | —              |
 | `params-trigger`         | 简单   | [📄](./params-trigger/README.md) 🟦🟨🟩 | ✅ 完成（5+1） |
-| `popover-checkparam`     | 简单   | ⏳ 待补充 | —              |
-| `stats-indi-group`       | 中     | ⏳ 待补充 | —              |
-| `tab-list-static`        | 中     | ⏳ 待补充 | —              |
+| `popover-checkparam`     | 简单   | ⏳ 待补充                               | —              |
+| `stats-indi-group`       | 中     | ⏳ 待补充                               | —              |
+| `tab-list-static`        | 中     | ⏳ 待补充                               | —              |
 
 ---
 

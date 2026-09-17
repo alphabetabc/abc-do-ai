@@ -1,8 +1,8 @@
 ---
 title: 组件逻辑维护
 description: table-detail 组件代码（index.tsx + 子组件 + hooks）的维护要点
-version: 1.0.0
-last_updated: 2026-07-30
+version: 1.1.0
+last_updated: 2026-08-12
 ---
 
 # 组件逻辑维护
@@ -15,7 +15,8 @@ last_updated: 2026-07-30
 
 ```
 table-detail/
-├── index.tsx                   # 主组件（基于 oss-ui ProTable + ConfigProvider prefixCls="oss-ui"）
+├── index.tsx                   # 主入口（空数据守卫包装器，0.0.8 起简化）
+├── TableDetailImp.tsx          # 实际渲染组件（ProTable + 全部 hooks/逻辑）
 ├── index.less                  # 样式（根 class: .visual-base-table-detail）
 ├── schema.ts                   # 配置面板（→ schema.md）
 ├── schema/interactions.ts      # 交互面板
@@ -38,12 +39,52 @@ table-detail/
 
 ## 2. 主组件 `index.tsx`
 
-### 2.1 入口签名
+> **结构调整**：自 0.0.8 起，`index.tsx` 被简化为**空数据守卫包装器**，核心渲染逻辑已下沉到 `TableDetailImp.tsx`。`index.tsx` 只负责"dataSource 为空时直接 `return null`"，其余 props 透传给 `TableDetailImp`。
+
+### 2.0 空数据守卫（新增，0.0.8）
+
+`index.tsx` 顶部加了一段早返：
 
 ```typescript
 const TableDetail: React.FC<DesignerField & { dataConfig: any; exportAPIConfig: any }> = (props) => {
-    const { className, config, dataSource, designer, interaction } = props;
-    // ...
+    const { dataSource } = props;
+
+    // 数据为空时，不渲染
+    if (_.isEmpty(dataSource)) {
+        return null;
+    }
+
+    return <TableDetailImp {...props} />;
+};
+```
+
+**行为**：
+
+| `dataSource` | 渲染结果 |
+| --- | --- |
+| `undefined` / `null` / `[]` / `{}` | **不渲染**（`_.isEmpty` 全部返回 `true`，组件 `return null`） |
+| 有数据数组 | 透传所有 props 给 `TableDetailImp`，正常渲染 |
+
+**影响范围**：
+
+- 设计器中：当 `dataSource` 还未注入（首次渲染、刷新中）时，**不再渲染空的 ProTable 占位**，减少视觉噪声
+- 大屏运行时：表格没有数据时不显示空状态（"暂无数据" 提示也不显示）
+- 所有下游逻辑（`TableDetailImp` 内的 `useScroll` / `useCarousel` / `visibleDataSource` / 分页计算等）都依赖 `dataSource` 有值，**早返不会破坏内部 hook 顺序**（因为根本没进入子组件渲染）
+
+**设计要点**：
+
+- 用 `_.isEmpty` 而非 `!dataSource || dataSource.length === 0`：`_.isEmpty([])` / `_.isEmpty(undefined)` 一并兜底，更紧凑
+- 守卫放在最外层，避免给 `TableDetailImp` 传空数据触发内部 `_.chunk([])` 等无意义计算
+- 守卫**不影响**子组件的 prop 透传——所有 `dataConfig / exportAPIConfig / interaction / designer` 等都原样传下去
+
+### 2.1 入口签名
+
+```typescript
+// index.tsx（包装器，仅做空数据守卫）
+const TableDetail: React.FC<DesignerField & { dataConfig: any; exportAPIConfig: any }> = (props) => {
+    const { dataSource } = props;
+    if (_.isEmpty(dataSource)) return null;
+    return <TableDetailImp {...props} />;
 };
 ```
 
@@ -478,6 +519,7 @@ const visibleDataSource = useMemo(() => {
 - [ ] 新增/修改 `columnsRenderTemplate` 时同步检查 schema 字段定义、CellRenderer 模板逻辑、doc 三个入口（schema.md / doc/readme.md / gotchas）
 - [ ] 调整 `dataExtraSetting.dataFilterTypeFieldName` 时同步检查：订阅字段 `subscribeDataFilterType` schema、visibleDataSource deps、分页重算影响
 - [ ] 调整 `paginationSetting.color` / `commonSettings.scrollbar` 颜色时同步检查 StyledContainer 选择器是否仍生效、`index.less` 中是否有更高优先级样式
+- [ ] 调整 `index.tsx` 的空数据守卫时同步检查：`_.isEmpty` 的语义（`undefined / null / [] / {}` 均判空）、是否需要保留空状态占位（参见 [gotchas.md § 23](./gotchas.md)）
 
 ### 2.2.11 主题色注入 `StyledContainer`
 
@@ -746,6 +788,7 @@ scroll={undefined}  // 不传 scroll.y
 
 | 日期 | 变更 | 原因 |
 |---|---|---|
+| 2026-08-12 | 新增空数据守卫（0.0.8） | `index.tsx` 顶部加 `_.isEmpty(dataSource)` 早返，空数据时不渲染任何 DOM（包括空状态）；同时把核心渲染逻辑下沉到 `TableDetailImp.tsx` |
 | 2026-07-30 | 新增 dataFilterTypeFieldName | 数据过滤能力（`dataExtraSetting.dataFilterTypeFieldName` + `subscribeDataFilterType` 订阅联动） |
 | 2026-07-30 | 新增 commonSettings + paginationSetting.color | 主题色注入能力（`StyledContainer` 动态样式，作用于滚动条 / 分页器） |
 | 2026-07-30 | 新增 columnsRenderTemplate | 列字段模板能力（顶层配置 + CellRenderer plainText 分支集成 `template()`） |

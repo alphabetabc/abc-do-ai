@@ -1,8 +1,8 @@
 ---
 title: 踩坑记录
 description: table-detail 实际开发/维护中遇到的坑、最佳实践和性能注意点
-version: 1.0.0
-last_updated: 2026-07-30
+version: 1.1.0
+last_updated: 2026-08-12
 ---
 
 # 踩坑记录
@@ -312,7 +312,7 @@ last_updated: 2026-07-30
 **症状**：
 
 -   自动轮播状态只存在当前组件实例的 `useEffect` 内部
--   路由切换 / 页面刷新 / 设计器"隐藏→显示"后，轮播**会重置回第 1 页**
+-   路由切换 / 页面刷新 / 设计器"隐藏 → 显示"后，轮播**会重置回第 1 页**
 -   `paginationState.current` 由组件内部 state 持有，**不持久化**
 
 **影响**：
@@ -378,11 +378,11 @@ last_updated: 2026-07-30
 
 **正确做法**：
 
-| 需求 | 配置 |
-| --- | --- |
-| 不分页，全量展示 | `enable=false` |
+| 需求                           | 配置                                  |
+| ------------------------------ | ------------------------------------- |
+| 不分页，全量展示               | `enable=false`                        |
 | 分页但 UI 隐藏（自动轮播场景） | `enable=true` + `hidePagination=true` |
-| 分页且 UI 显示 | `enable=true`（默认） |
+| 分页且 UI 显示                 | `enable=true`（默认）                 |
 
 **修复**（已落地）：
 
@@ -420,25 +420,25 @@ if (columSetting.contentShowType === CellType.Capsule) {        // 走 enums 着
 
 **正确做法**：
 
-| contentShowType | 模板生效 | 替代方案 |
-| --- | --- | --- |
-| `plainText` | ✅ | — |
-| `Capsule` | ❌ | 用 `enums[].text` 配置状态文本 |
-| `Icon` | ❌ | 配 `icon` / `image` 字段 |
-| `DigitalFlop` | ❌ | 配 `levels[].text` 配置级别文字 |
-| `Checkbox` | ❌ | 不适用（控件） |
+| contentShowType | 模板生效 | 替代方案                        |
+| --------------- | -------- | ------------------------------- |
+| `plainText`     | ✅       | —                               |
+| `Capsule`       | ❌       | 用 `enums[].text` 配置状态文本  |
+| `Icon`          | ❌       | 配 `icon` / `image` 字段        |
+| `DigitalFlop`   | ❌       | 配 `levels[].text` 配置级别文字 |
+| `Checkbox`      | ❌       | 不适用（控件）                  |
 
 **为什么不扩展到其他类型**：
 
-- Capsule / DigitalFlop 渲染时 **enum.key 必须是数据原值**，模板拼接会破坏 number / enum 识别
-- Icon / Checkbox 本质是控件，不是文本展示
-- 强行扩展会破坏现有渲染逻辑，**得不偿失**
+-   Capsule / DigitalFlop 渲染时 **enum.key 必须是数据原值**，模板拼接会破坏 number / enum 识别
+-   Icon / Checkbox 本质是控件，不是文本展示
+-   强行扩展会破坏现有渲染逻辑，**得不偿失**
 
 **修复**（已落地）：
 
-- schema `template` 字段 `x-decorator-props.tooltip` 已写明"仅对 plainText 类型列生效"
-- doc/readme.md "列字段模板"段落明确"作用范围"
-- component-logic.md § 2.2.9 列出优先级表
+-   schema `template` 字段 `x-decorator-props.tooltip` 已写明"仅对 plainText 类型列生效"
+-   doc/readme.md "列字段模板"段落明确"作用范围"
+-   component-logic.md § 2.2.9 列出优先级表
 
 ---
 
@@ -467,17 +467,17 @@ if (columSetting.contentShowType === CellType.Capsule) {        // 走 enums 着
 
 **常见误用**：
 
-| 误用 | 结果 |
-| --- | --- |
-| 想用模板展示多字段拼接，但该列同时配了 `groupSet` | belongGroup 胜出，模板不生效 |
-| 想用模板配合 `enumRender` 切换文案 | enumRender 胜出，模板文本被覆盖 |
-| 想用模板做"轻量换色" | `levelRender` 只改色不换文本，可与模板共存 ✅ |
+| 误用                                              | 结果                                          |
+| ------------------------------------------------- | --------------------------------------------- |
+| 想用模板展示多字段拼接，但该列同时配了 `groupSet` | belongGroup 胜出，模板不生效                  |
+| 想用模板配合 `enumRender` 切换文案                | enumRender 胜出，模板文本被覆盖               |
+| 想用模板做"轻量换色"                              | `levelRender` 只改色不换文本，可与模板共存 ✅ |
 
 **正确做法**：
 
-- 想用模板 → **不要**给该列加 `group`
-- 想用 enumRender → 模板会被覆盖，建议直接用 `enums[].text` 而不是模板
-- 想用 levelRender（只改色）+ 模板 → **可共存** ✅
+-   想用模板 → **不要**给该列加 `group`
+-   想用 enumRender → 模板会被覆盖，建议直接用 `enums[].text` 而不是模板
+-   想用 levelRender（只改色）+ 模板 → **可共存** ✅
 
 ---
 
@@ -507,11 +507,11 @@ console.log('[dataFilterTypeFieldName]', {
 
 **正确做法**：
 
-| 检查项 | 说明 |
-| --- | --- |
-| 字段名拼写 | 与 dataSource 中真实字段名**完全一致**（区分大小写） |
-| 字段值类型 | 订阅值必须能转成与 `record[dataFilterTypeFieldName]` 相同的字符串（用 `\`${}\`` 已自动兼容） |
-| 订阅值确实有值 | `subscribeDataFilterType` 不能是 `undefined` / `null` / `''` |
+| 检查项         | 说明                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| 字段名拼写     | 与 dataSource 中真实字段名**完全一致**（区分大小写）                                         |
+| 字段值类型     | 订阅值必须能转成与 `record[dataFilterTypeFieldName]` 相同的字符串（用 `\`${}\`` 已自动兼容） |
+| 订阅值确实有值 | `subscribeDataFilterType` 不能是 `undefined` / `null` / `''`                                 |
 
 **示例**：
 
@@ -532,9 +532,9 @@ subscribeDataFilterType: '财政厅1',
 
 **修复**（已落地）：
 
-- 字段名靠用户责任（schema 不做强校验）
-- doc/readme.md「数据额外配置」段落给出明确示例
-- component-logic.md § 2.2.10 列出边界行为
+-   字段名靠用户责任（schema 不做强校验）
+-   doc/readme.md「数据额外配置」段落给出明确示例
+-   component-logic.md § 2.2.10 列出边界行为
 
 ---
 
@@ -542,8 +542,8 @@ subscribeDataFilterType: '财政厅1',
 
 **症状**：
 
-- 用户同时配了 `dataFilterTypeFieldName` 和搜索栏过滤（如 `serverCount: '36'`）
-- 不知道过滤叠加顺序，调试时容易混乱
+-   用户同时配了 `dataFilterTypeFieldName` 和搜索栏过滤（如 `serverCount: '36'`）
+-   不知道过滤叠加顺序，调试时容易混乱
 
 **叠加顺序**（从先到后）：
 
@@ -569,9 +569,9 @@ console.log('[visibleDataSource pipeline]', {
 
 **典型场景**：
 
-- `dataFilterTypeFieldName = 'policyPlatform'` + 订阅值 `'财政厅2'` → 留下 `policyPlatform='财政厅2'` 的行
-- 再在搜索栏输 `serverCount: '24'` → 在上一步基础上再过滤
-- 最终只剩同时满足两个条件的行
+-   `dataFilterTypeFieldName = 'policyPlatform'` + 订阅值 `'财政厅2'` → 留下 `policyPlatform='财政厅2'` 的行
+-   再在搜索栏输 `serverCount: '24'` → 在上一步基础上再过滤
+-   最终只剩同时满足两个条件的行
 
 ---
 
@@ -586,12 +586,12 @@ console.log('[visibleDataSource pipeline]', {
 
 之前用 `_.isEmpty(subscribeDataFilterType)` 判断"订阅值是否为空"。但 lodash 中：
 
-| 值 | `_.isEmpty()` |
-| --- | --- |
-| `undefined` / `null` / `''` | `true` |
-| `0` | `true` ❌ |
-| `false` | `true` ❌ |
-| `NaN` | `true` ❌ |
+| 值                          | `_.isEmpty()` |
+| --------------------------- | ------------- |
+| `undefined` / `null` / `''` | `true`        |
+| `0`                         | `true` ❌     |
+| `false`                     | `true` ❌     |
+| `NaN`                       | `true` ❌     |
 
 `0` 是合法的过滤目标值（如过滤 ID = 0 的记录），但 `_.isEmpty(0)` 返回 `true`，导致 `!_.isEmpty(0) === false`，跳过过滤。
 
@@ -610,9 +610,9 @@ if (dataFilterTypeFieldName && !_.isNil(subscribeDataFilterType) && subscribeDat
 
 **已修复**：
 
-- `index.tsx` 改用 `![null, '', undefined].includes(subscribeDataFilterType)`
-- doc/readme.md 标注警告
-- component-logic.md § 2.2.10 表格说明
+-   `index.tsx` 改用 `![null, '', undefined].includes(subscribeDataFilterType)`
+-   doc/readme.md 标注警告
+-   component-logic.md § 2.2.10 表格说明
 
 ---
 
@@ -646,11 +646,11 @@ $paginationSetting: {
 
 **结构解释**（参考 `cone-bar-line` 的 `$xAxisSettings`）：
 
-| 层 | 字段 | 类型 | 作用 |
-| --- | --- | --- | --- |
-| 外层 | `$color` / `$scrollbar` | `type: 'void'` | **仅作视觉分组容器**，无对应数据字段 |
-| 外层 | `'x-component': 'Card'` | 组件 | 项目自定义 Card，提供带 title 的卡片视觉 |
-| 内层 | `color` / `scrollbar` | `type: 'object'` | **真正承载数据**（5 / 2 个 ColorPicker 子字段） |
+| 层   | 字段                    | 类型             | 作用                                            |
+| ---- | ----------------------- | ---------------- | ----------------------------------------------- |
+| 外层 | `$color` / `$scrollbar` | `type: 'void'`   | **仅作视觉分组容器**，无对应数据字段            |
+| 外层 | `'x-component': 'Card'` | 组件             | 项目自定义 Card，提供带 title 的卡片视觉        |
+| 内层 | `color` / `scrollbar`   | `type: 'object'` | **真正承载数据**（5 / 2 个 ColorPicker 子字段） |
 
 **为什么用双层**：
 
@@ -675,10 +675,69 @@ $paginationSetting: {
 
 **常见误区**：
 
-- ❌ 读 `paginationSetting.$color`（错误：$color 是 void，不存值）
-- ✅ 读 `paginationSetting.color`（正确：object 承载数据）
+-   ❌ 读 `paginationSetting.$color`（错误：$color 是 void，不存值）
+-   ✅ 读 `paginationSetting.color`（正确：object 承载数据）
 
 **未来扩展**：新增"主题色配置"分组时，沿用 `Card + object` 模式（如 `$tooltipColor` → `tooltipColor`）。
+
+---
+
+## 23. 空数据时不渲染任何 DOM（包括空状态）⚠️
+
+**症状**：
+
+自 0.0.8 起，`index.tsx` 顶部加了：
+
+```typescript
+if (_.isEmpty(dataSource)) {
+    return null;
+}
+```
+
+当 `dataSource` 为 `undefined` / `null` / `[]` 时，整个组件**直接返回 `null`**，**不渲染空的 ProTable 也不显示"暂无数据"占位**。
+
+**影响**：
+
+-   设计器中：拖入物料后、dataSource 还没注入时，物料所在位置**完全空白**，没有边框、没有占位框
+-   大屏运行时：表格被服务端清空或过滤后所有数据消失时，**整个区域消失**，周围卡片布局可能塌陷
+-   用户角度：无法区分"组件坏了"和"组件正常但数据为空"两种状态
+
+**与历史版本的对比**：
+
+| 版本         | dataSource = `[]` 行为                        |
+| ------------ | --------------------------------------------- |
+| 0.0.7 及以前 | 渲染空 ProTable + "暂无数据" 占位 + 分页器 UI |
+| 0.0.8 起     | 组件 `return null`，什么都不渲染              |
+
+**为什么这样设计**：
+
+-   大屏场景下"空数据"等同"未就绪"，用户预期是"这块区域先不出现"，等数据来了再出现
+-   避免空状态文案干扰大屏整体观感
+-   减少 `useScroll` / `useCarousel` 等 hook 在空数据场景下的无效计算
+
+**什么时候需要回退**：
+
+如果业务方需要保留空态占位（比如"暂无数据，请稍候"），把守卫改成：
+
+```typescript
+// ❌ 不要直接 return null
+if (_.isEmpty(dataSource)) {
+    return <div className="visual-base-table-detail-empty">暂无数据</div>;
+}
+return <TableDetailImp {...props} />;
+```
+
+或加 schema 字段 `showEmptyState: boolean` 让用户自选。
+
+**调试方法**：
+
+```typescript
+// index.tsx 顶部
+console.log('[table-detail guard]', { dataSource, isEmpty: _.isEmpty(dataSource) });
+// → isEmpty=true 时组件不会渲染子组件
+```
+
+> 详见 [component-logic.md § 2.0](./component-logic.md#20-空数据守卫新增-008)
 
 ---
 
@@ -722,13 +781,14 @@ const showPagination = enablePagination; // 移除 total! > 1 判断
 
 ## 维护历史
 
-| 日期       | 问题     | 修复                                                 |
-| ---------- | -------- | ---------------------------------------------------- |
-| 2026-07-30 | 文档化   | 首次编写 gotchas；列出 12 条踩坑点                   |
+| 日期       | 问题     | 修复                                                           |
+| ---------- | -------- | -------------------------------------------------------------- |
+| 2026-08-12 | 新增踩坑 | § 23：空数据时不渲染任何 DOM（包括空状态）                     |
+| 2026-07-30 | 文档化   | 首次编写 gotchas；列出 12 条踩坑点                             |
 | 2026-07-30 | 新增踩坑 | § 19 / § 20：dataFilterTypeFieldName 字段名拼错 + 过滤叠加顺序 |
-| 2026-07-30 | 新增踩坑 | § 21：订阅值 0/false 被 _.isEmpty 误判跳过过滤 |
-| 2026-07-30 | 新增踩坑 | § 17 / § 18：列字段模板生效范围 + 优先级             |
-| 2026-07-30 | 新增踩坑 | § 16：enable vs hidePagination 容易混淆              |
-| 2026-07-30 | 新增踩坑 | § 15：enableTableHeader=false 多项配置静默失效       |
-| 2026-07-30 | 新增踩坑 | § 13 / § 14：自动轮播 hover 暂停范围 / 跨页面持久化 |
-| 2023-07-24 | 创建物料 | 0.0.1 (`src/packages/table-detail/doc/CHANGELOG.md`) |
+| 2026-07-30 | 新增踩坑 | § 21：订阅值 0/false 被 \_.isEmpty 误判跳过过滤                |
+| 2026-07-30 | 新增踩坑 | § 17 / § 18：列字段模板生效范围 + 优先级                       |
+| 2026-07-30 | 新增踩坑 | § 16：enable vs hidePagination 容易混淆                        |
+| 2026-07-30 | 新增踩坑 | § 15：enableTableHeader=false 多项配置静默失效                 |
+| 2026-07-30 | 新增踩坑 | § 13 / § 14：自动轮播 hover 暂停范围 / 跨页面持久化            |
+| 2023-07-24 | 创建物料 | 0.0.1 (`src/packages/table-detail/doc/CHANGELOG.md`)           |
