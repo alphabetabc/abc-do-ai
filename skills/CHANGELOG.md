@@ -1,6 +1,16 @@
 # Changelog
 
-<!-- changelog-last-commit: c69cdbf6ec5fc0b35ec75fb5b5b3686210c51baa -->
+<!-- changelog-last-commit: 9379a784e3a89bae0560f2d7bce2e29a57b3d6ae -->
+
+## 2026-09-17
+
+- 发布 skill
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+    - 「oss-visual-designer-project-context」 v0.0.0；
+- 新增 skill
+    - 「oss-visual-designer-project-context」；
+- 更新 skill
+    - 「oss-vis-material-development-assistant」（配置、其他）；
 
 ## 2026-09-15
 
