@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- changelog-last-commit: 9379a784e3a89bae0560f2d7bce2e29a57b3d6ae -->
+<!-- changelog-last-commit: 9080bf9e41e42cf191a53b37e01c3990b765251f -->
+
+## 2026-09-18
+
+- 发布 skill
+    - 「noc-shaanxi-project-context」 v0.0.0；
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+- 更新 skill
+    - 「noc-shaanxi-project-context」（配置、其他）；
+    - 「oss-mtc-transition-ln-project-context」（配置、其他）；
 
 ## 2026-09-17
 
