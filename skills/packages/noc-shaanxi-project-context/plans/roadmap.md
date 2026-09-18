@@ -32,3 +32,5 @@ task-<yyyy-mm-dd>-<序号>-<任务名>.md
 | 2026-09-11 | plans/task-2026-09-11-001-spec-003-hazard-drilldown-modal.md | spec 003 下钻弹窗（M1，mock 先行）；遗留已移交 2026-09-15-001 | 已移交 |
 | 2026-09-11 | plans/task-2026-09-11-002-spec-003-hazard-rectify-overall-plan.md | spec 003 整体计划安排分类（M2，mock 先行）；遗留已移交 2026-09-15-001 | 已移交 |
 | 2026-09-15 | plans/task-2026-09-15-001-spec-003-hazard-api-integration.md | spec 003 真实接口契约回填与联调（M0 落地，承接 09-11 两 task 全部遗留） | 待审批 |
+| 2026-09-17 | plans/done/task-2026-09-17-001-spec-003-hazard-real-sample-replace.md | spec 003 现场真实样例回填（mock 替换 + 请求逻辑反查） | 已完成 |
+| 2026-09-18 | plans/done/task-2026-09-18-001-hazard-detail-new-column.md | 隐患模块契约变更（新增列 + indicatorName 透传 + y轴整数刻度 + x轴防重叠 + 详情列配置驱动预埋） | 已完成 |

@@ -1,7 +1,7 @@
 ---
 name: 'noc-shaanxi-second-hazard-solve-data-format'
-version: '2.0'
-updated: '2026-09-15'
+version: '2.1'
+updated: '2026-09-18'
 description: 'risk-resolve（隐患解决情况）与 risk-detail（隐患下钻详情）服务端数据格式：响应结构、rows 字段与 bar3d-line 组件加工逻辑。'
 ---
 
@@ -11,8 +11,8 @@ description: 'risk-resolve（隐患解决情况）与 risk-detail（隐患下钻
 
 | 字段     | 值         |
 | -------- | ---------- |
-| 文档版本 | v2.0       |
-| 最后更新 | 2026-09-15 |
+| 文档版本 | v2.1      |
+| 最后更新 | 2026-09-18 |
 
 数据来源：`rc-echarts/bar3d-line` 组件源码（index.tsx / utils.ts，已逐行确认）、backend-api-docs/陕西-NOC-202609需求接口文档.md 接口1。
 
@@ -76,6 +76,7 @@ description: 'risk-resolve（隐患解决情况）与 risk-detail（隐患下钻
 | --- | --- | --- |
 | zoneId / zoneLevel | 区域联动 | |
 | riskStatus | 全部 / 已完成 / 未完成 | hazard-solve 点击柱块系列映射：未解决 '1' → 未完成、已解决 '2' → 已完成 |
+| indicatorName | 地市类目名 | hazard-solve 点击柱块的 rawItem.indicatorName（2026-09-18 契约新增） |
 
 ### 4.2 响应 rows 字段（均 String，每字段附带 `xxx_format` 镜像）
 
@@ -91,10 +92,11 @@ description: 'risk-resolve（隐患解决情况）与 risk-detail（隐患下钻
 | resourceName | 资源名称 |
 | solveSchedule | 解决排期 |
 | rectifyPlanClassify | 整改方案分类 |
+| hiddenDangerCount | 隐患数量（2026-09-18 新增） |
 
 ### 4.3 mock
 
-`public/static/mock/management-overview-second/risk-detail-solve.json`（独立文件，与被多接口共用的 risk-detail.json 隔离）——接口 1 真实结构，10 行数据；**不区分 riskStatus**（点击已解决/未解决显示同样数据，mock 局限）。
+`public/static/mock/management-overview-second/risk-detail-solve.json`（独立文件，与被多接口共用的 risk-detail.json 隔离）——接口 1 真实结构；**不区分 riskStatus**（点击已解决/未解决显示同样数据，mock 局限）；2026-09-18 已补 hiddenDangerCount / hiddenDangerCount_format 双写字段。
 
 ---
 
@@ -105,3 +107,4 @@ description: 'risk-resolve（隐患解决情况）与 risk-detail（隐患下钻
 | v1.0 | 初始版本：从 hazard-solve / hazard-rectify README 的数据格式章节抽出，独立成文 |
 | v1.1 | 从 hazard-data-format.md §二 迁入本模块目录，独立成文 |
 | v2.0 | 新增 §四 risk-detail 契约（请求参数 / 10 字段表 / 独立 mock）；点击空值保护问题已随下钻接入修复 |
+| v2.1 | task-2026-09-18-001：接口1 入参新增 indicatorName；rows 字段表新增 hiddenDangerCount（11 字段）；mock 补 hiddenDangerCount 双写字段 |

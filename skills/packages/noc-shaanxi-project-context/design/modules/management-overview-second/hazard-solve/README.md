@@ -1,7 +1,7 @@
 ---
 name: 'noc-shaanxi-second-hazard-solve'
-version: '2.0'
-updated: '2026-09-15'
+version: '2.1'
+updated: '2026-09-18'
 description: '隐患解决情况模块（hazard-solve）：堆叠柱 + 折线组合图，展示各地市已解决/未解决隐患数量与解决及时率；点击柱块弹窗展示隐患详情（risk-detail）。'
 ---
 
@@ -11,8 +11,8 @@ description: '隐患解决情况模块（hazard-solve）：堆叠柱 + 折线组
 
 | 字段     | 值         |
 | -------- | ---------- |
-| 文档版本 | v2.0       |
-| 最后更新 | 2026-09-15 |
+| 文档版本 | v2.1      |
+| 最后更新 | 2026-09-18 |
 
 ## 一、基本信息
 
@@ -48,7 +48,8 @@ hazard-solve/
 2. `getHazardSolveDataApi(currentZone)` POST 视图服务 `view/getViewItemData`（`baseUrlType: 'sceneViewService'`），`viewPageArgs: { zoneId, zoneLevel }`。
 3. 返回 `data.viewItemData.rows` **不做任何转换**，直接作为 `dataSource` 传入 `Bar3dLineChart`；出错时返回 `[]`。
 4. rows 中每行的 `indicatorGroup` 字段对应 presets.ts 中 `seriesSettings` 的 `id`，由公共组件 `createSeries`（`rc-echarts/bar3d-line/utils.ts`）匹配后组装 series。
-5. **下钻链路（2026-09-15 接入，契约见 backend-api-docs/陕西-NOC-202609需求接口文档.md 接口1）**：点击柱块 → `onHandleBarClick` 取 `params.data.__rawData` → 仅柱系列（indicatorGroup '1' 未解决 / '2' 已解决）触发，打开 `HazardSolveDetailModal` → 弹窗内 `getHazardSolveDetailDataApi({ zoneId, zoneLevel, riskStatus })` 拉取 10 列详情 → antd Table 滚动展示（无分页）。
+5. **下钻链路（2026-09-15 接入，契约见 backend-api-docs/陕西-NOC-202609需求接口文档.md 接口1）**：点击柱块 → `onHandleBarClick` 取 `params.data.__rawData` → 仅柱系列（indicatorGroup '1' 未解决 / '2' 已解决）触发，打开 `HazardSolveDetailModal` → 弹窗内 `getHazardSolveDetailDataApi({ zoneId, zoneLevel, riskStatus, indicatorName })` 拉取 11 列详情 → antd Table 滚动展示（无分页）。
+6. **x 轴标签折行（2026-09-18 接入）**：`useEnvironment()` 读取 `shaanxiCustomSettings.screen2.左屏-隐患解决.xAxisLabelFormatter`（映射：原类目名 → 折行文案，如 `"无线接入网": "无线\n接入网"`），通过 `optionBuilder`（Bar3dLineChart 组件提供的 option 二次组装扩展点）注入 `xAxis.axisLabel.formatter`；未命中映射的类目原样展示。实验配置在 `public/environment-local.json`（`start:local-env` 加载），最终落点 `public/environment.json` + 现场服务器。
 
 > 服务端响应结构、rows 字段表与 `createSeries` 加工逻辑详见 [data-format.md](./data-format.md)；图表组件的用法与实现原理详见 `design/frontend-ui/rc-bar3d-line/overview.md`。
 
@@ -77,8 +78,10 @@ hazard-solve/
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | zoneId / zoneLevel | 区域联动（props.zoneSelect）                                                                                                        |
 | riskStatus         | 点击柱块系列：未解决 indicatorGroup '1' → `未完成`、已解决 '2' → `已完成`；未传兜底 `未完成`（onHandleBarClick 已限定仅这两组触发） |
+| indicatorName      | 点击柱块的类目名（rawItem.indicatorName，x 轴地市名，2026-09-18 契约新增）                                                          |
 
--   **表格 10 列**（真实 dataIndex，契约字段）：序号 + hiddenDangerSerialNo（隐患流水号）/ hiddenDangerType（隐患类型）/ hiddenDangerSubType（隐患细分分类）/ hiddenDangerName（隐患名称）/ major（专业）/ hiddenDangerLevel（隐患级别）/ handleDept（隐患处理单位）/ resourceName（资源名称）/ solveSchedule（解决排期）/ rectifyPlanClassify（整改方案分类）。列定义内联在 `useMemo` 中。
+-   **表格 11 列**（真实 dataIndex，契约字段）：序号 + hiddenDangerSerialNo（隐患流水号）/ hiddenDangerType（隐患类型）/ hiddenDangerSubType（隐患细分分类）/ hiddenDangerName（隐患名称）/ major（专业）/ hiddenDangerLevel（隐患级别）/ handleDept（隐患处理单位）/ resourceName（资源名称）/ solveSchedule（解决排期）/ rectifyPlanClassify（整改方案分类）/ hiddenDangerCount（隐患数量，2026-09-18 新增）。
+-   **列配置驱动（2026-09-18 预埋）**：columns 经公共工具 `mergeDetailColumns`（`modules/components/detail-columns.ts`）组装，读取 `shaanxiCustomSettings.screen2.左屏-隐患解决.detailColumns` 配置（`[{ dataIndex, label?, width? }]`）——配置存在时顺序/表头/宽度以配置为准，未列出的列隐藏，render 等内置逻辑按 dataIndex 从代码列合入；配置缺失或空（`isEmpty`）整体回退代码默认列；序号列不受配置控制始终最前；配置了代码里没有的 dataIndex 直接丢弃。当前未下发配置，逻辑为预埋。
 -   **接口层**：`getHazardSolveDetailDataApi`（share/index.ts）——viewItemId `risk-detail`、viewPageId `noc-module-oriented-left-page`；requestId 占位（`@ts-expect-error`，待登记）；**localMockUrl 指向独立 mock `risk-detail-solve.json`（长期保留，不随联调移除；原 risk-detail.json 被多接口共用勿动）**。
 -   **mock 局限**：mock 返回不分 riskStatus，点击已解决/未解决柱块显示同样数据。
 -   弹窗组件 props 透传 `afterOpenChange`（当前模块无轮播未消费，能力预留）。
@@ -97,3 +100,4 @@ hazard-solve/
 | v1.0 | 初始版本：基于源码梳理建立模块文档                                                                                                                                                  |
 | v1.1 | 新增 §三.1 服务端数据格式（基于 bar3d-line 源码确认）；修正 series 匹配字段为 indicatorGroup；确认 markLine 数值来源；发现点击无空值保护问题                                        |
 | v2.0 | 下钻弹窗接入 risk-detail 契约：新增 detail-modal 组件（§五）、下钻链路（§三.5）、riskStatus 参数组装、10 列真实 dataIndex、独立 mock risk-detail-solve.json；修复点击无空值保护问题 |
+| v2.1 | task-2026-09-18-001：详情表格新增 hiddenDangerCount 列（11 列）、接口1 入参透传 indicatorName；x 轴 xAxisLabelFormatter 折行映射（optionBuilder 注入）；detailColumns 列配置驱动预埋（mergeDetailColumns） |

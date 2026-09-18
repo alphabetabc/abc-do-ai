@@ -1,7 +1,8 @@
 {
-  "contentHash": "5d7f684504d2fc0b1ca45c99696e43a4f8fe099a48aaed0bfcf2022efb784094",
+  "contentHash": "6279e23070fcbe22ec828c24ad14c197a01146d1245e267b3eec8aeb45550ade",
   "files": [
     "./design/",
+    "./design-next/",
     "./env/",
     "./plans/",
     "./pm/",
@@ -12,6 +13,6 @@
   "targets": [
     "trae"
   ],
-  "updatedAt": "2026-09-09T09:29:41.435Z",
+  "updatedAt": "2026-09-18T10:53:44.223Z",
   "version": "0.0.0"
 }

@@ -1,7 +1,7 @@
 ---
 name: 'noc-shaanxi-second-hazard-rectify-data-format'
-version: '2.0'
-updated: '2026-09-15'
+version: '2.1'
+updated: '2026-09-18'
 description: 'risk-resolve-plan / risk-whole-plan / risk-plan-detail（隐患整改计划三视图）服务端数据格式：响应结构、rows 字段与数据形态要点。'
 ---
 
@@ -11,8 +11,8 @@ description: 'risk-resolve-plan / risk-whole-plan / risk-plan-detail（隐患整
 
 | 字段     | 值         |
 | -------- | ---------- |
-| 文档版本 | v2.0       |
-| 最后更新 | 2026-09-15 |
+| 文档版本 | v2.1      |
+| 最后更新 | 2026-09-18 |
 
 数据来源：header 元信息、mock 文件、backend-api-docs/陕西-NOC-202609需求接口文档.md 接口2/3。
 
@@ -95,11 +95,11 @@ description: 'risk-resolve-plan / risk-whole-plan / risk-plan-detail（隐患整
 
 ### 4.2 响应 rows 字段
 
-与 risk-detail 完全一致的 10 字段（hiddenDangerSerialNo / hiddenDangerType / hiddenDangerSubType / hiddenDangerName / major / hiddenDangerLevel / handleDept / resourceName / solveSchedule / rectifyPlanClassify），详见 hazard-solve/data-format.md §4.2。
+与 risk-detail 完全一致的 11 字段（hiddenDangerSerialNo / hiddenDangerType / hiddenDangerSubType / hiddenDangerName / major / hiddenDangerLevel / handleDept / resourceName / solveSchedule / rectifyPlanClassify / hiddenDangerCount（隐患数量，2026-09-18 新增）），详见 hazard-solve/data-format.md §4.2。
 
 ### 4.3 mock
 
-`public/static/mock/management-overview-second/risk-detail-rectify.json`（独立文件，共用文件 risk-detail.json 勿动）——接口3 真实结构，10 行数据；不区分点击维度（mock 局限）。
+`public/static/mock/management-overview-second/risk-detail-rectify.json`（独立文件，共用文件 risk-detail.json 勿动）——接口3 真实结构；不区分点击维度（mock 局限）；2026-09-18 已补 hiddenDangerCount / hiddenDangerCount_format 双写字段。
 
 ---
 
@@ -119,3 +119,4 @@ description: 'risk-resolve-plan / risk-whole-plan / risk-plan-detail（隐患整
 | v1.0 | 初始版本：从 hazard-solve / hazard-rectify README 的数据格式章节抽出，独立成文 |
 | v1.1 | 从 hazard-data-format.md §三 迁入本模块目录，独立成文 |
 | v2.0 | 新增 §三 risk-whole-plan（四字段、indicatorName=时间）、§四 risk-plan-detail 契约（五参数组装表、独立 mock）；moduleId '6' 占位方案废弃记录 |
+| v2.1 | task-2026-09-18-001：risk-plan-detail rows 字段同步新增 hiddenDangerCount（11 字段）；mock 补 hiddenDangerCount 双写字段 |
