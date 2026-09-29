@@ -1,0 +1,6 @@
+{
+  "id": "grill-me-standalone",
+  "version": "1.0.0",
+  "targets": ["trae"],
+  "files": []
+}

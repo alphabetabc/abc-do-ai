@@ -141,13 +141,13 @@ frontend/src/
 | 等级            | 范围                                                                   | 修改方式                                                    |
 | --------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
 | **L1 自由**     | `.trae/skills/oss-mtc-transition-ln-project-context/**`（个人/草稿区） | 当前会话可直接编辑                                          |
-| **L2 计划授权** | 仓库根 `AGENTS.md`（含 `env/AGENTS.md` 硬链接镜像）                    | 必须走 `plans/roadmap-2026-08-11-big-screen.md` §6 提案审批 |
+| **L2 计划授权** | 仓库根 `AGENTS.md`（含 `env/AGENTS.md` 硬链接镜像）                    | 必须走 `plans/roadmap-2026-08-11-big-screen.md` §4 提案审批 |
 | **L3 严控**     | `docs/**/*.md`、`README.md`、`docs/specs/_template/**`                 | 必须走同上提案审批，且需 PM / 架构师会签                    |
 
 - **L2 中 `AGENTS.md` 是规则的权威载体**：跨会话、跨阶段的硬规则必须沉淀至此，`.trae/skills/.../plans/` 仅作工作底稿。
 - **L3 中 `\_template/**` 仅在 PM + 架构双签时可改\*\*；任何 spec 引用模板都假设模板稳定。
 - **状态机**：`[ ] 提案` → `[ ] 审批中` → `[x] 执行并落行`。
-- 任何 L2 / L3 改动前必须把变更条目放进对应 `plans/roadmap-*.md` §6 并勾选；勾选未走完视为违规。
+- 任何 L2 / L3 改动前必须把变更条目放进对应 `plans/roadmap-*.md` §4 并勾选；勾选未走完视为违规。
 
 ### 10.1 task 文件生命周期
 
@@ -169,6 +169,7 @@ frontend/src/
 | 2026-08-11 | 新增 §10.1 task 文件生命周期（完成 task 移至 `plans/done/`）                           | R-AGENTS-TASK-DONE          |
 | 2026-08-11 | §8 禁止行为新增 4 条反幻觉规则（不得编造路径/端点/表字段/章节编号/数据/操作状态）      | R-AGENTS-ANTI-HALLUCINATION |
 | 2026-08-12 | §1 新增会话启动条目：AI Agent 须先加载 skill `oss-mtc-transition-ln-project-context`   | R-AGENTS-SKILL-AUTOLOAD     |
+| 2026-09-20 | §10 两处 roadmap 章节引用「§6 提案审批」修正为「§4 提案审批」（实际提案表位置）；roadmap §5 变更记录已于同日按用户拍板删除 | R-AGENTS-GATE-SECTION-REF   |
 | 2026-08-13 | §2.1 路由权威源引用改为 `design/003-big-screen-routes.md`（原引用 project-meta.md §1） | R-AGENTS-ROUTE-REF          |
 | 2026-08-17 | §5.5 图表方案改为已定选型（ECharts 6.1.0 + echarts-for-react 3.0.6，D1 已拍板）        | R-AGENTS-D1-CHART           |
 | 2026-09-01 | §8 禁止行为新增 1 条：docs/ 文档禁止引用 `.trae/skills/.../plans/` 私有 task 编号（如 task-068）；提案名 R-XXX 可引用。task-068 触发                  | R-AGENTS-DOCS-NO-TASK-REF   |

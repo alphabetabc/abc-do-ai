@@ -50,6 +50,7 @@ oss-mtc-transition-ln-project-context/
 > - `references/`：通用、稳定、长期维护的参考手册。
 >     - `001-docs名词解释与维护使用指南.md` — 答"docs 是什么"
 >     - `002-基于skill与docs的协作开发workflow.md` — 答"AI + 用户怎么协作"
+>     - `003-pm-first-workflow.md` — 答"动手前先回答什么问题"（PM 优先：一切任务从 PM 需求原文溯源，勿想当然对数/定性）
 > - Agent 加载 skill 后**先读 references/** 建立上下文，再进入具体任务。
 > - `design/`：大屏特化架构母文档、决策日志与组件契约（含早期形态的草稿/候选，重构版见 `design/001-big-screen-dev-guide.md`）。
 > - `env/` / `plans/` / `pm/`：摘要 / 待办 / 原始输入，不重复 references/ 内容。

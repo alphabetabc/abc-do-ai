@@ -1,5 +1,5 @@
 {
-  "contentHash": "6279e23070fcbe22ec828c24ad14c197a01146d1245e267b3eec8aeb45550ade",
+  "contentHash": "ced36fdf61736be8f33dcc253d1c1e668cc1434d92f0ac14f901dc25c337a821",
   "files": [
     "./design/",
     "./design-next/",
@@ -13,6 +13,6 @@
   "targets": [
     "trae"
   ],
-  "updatedAt": "2026-09-18T10:53:44.223Z",
+  "updatedAt": "2026-09-29T00:52:01.190Z",
   "version": "0.0.0"
 }
