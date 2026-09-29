@@ -1,6 +1,17 @@
 # Changelog
 
-<!-- changelog-last-commit: 9080bf9e41e42cf191a53b37e01c3990b765251f -->
+<!-- changelog-last-commit: 723ac58d14311b2d2fd5e31b6d3078641664f9b5 -->
+
+## 2026-09-29
+
+- 发布 skill
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+- 新增 skill
+    - 「grill-me-standalone」；
+- 更新 skill
+    - 「oss-mtc-transition-ln-project-context」（文档、配置、其他）；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-09-18
 
