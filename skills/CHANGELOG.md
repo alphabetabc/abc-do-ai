@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- changelog-last-commit: 723ac58d14311b2d2fd5e31b6d3078641664f9b5 -->
+<!-- changelog-last-commit: 77049141ae64ef4233fb48de8be039174fba1bac -->
+
+## 2026-10-08
+
+- 发布 skill
+    - 「fedx-fullstack-midway-react」 v0.0.0；
+    - 「oss-vis-gd-project-context」 v0.0.0；
+- 新增 skill
+    - 「fedx-fullstack-midway-react」；
+    - 「oss-vis-gd-project-context」；
 
 ## 2026-09-29
 
