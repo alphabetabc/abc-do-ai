@@ -1,0 +1,11 @@
+overrides:
+  "antd": "5.26.7"
+
+allowBuilds:
+  '@midwayjs/cli': false
+  core-js: false
+  core-js-pure: false
+  ejs: false
+  esbuild: false
+  msgpackr-extract: false
+  react-intl-universal: false

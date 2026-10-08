@@ -1,0 +1,13 @@
+{
+  "contentHash": "fe25c7a35399e51afd694f1be3493f8dfdd46a229a2ea3e435826ee877724b17",
+  "files": [
+    "./examples/",
+    "./guides/",
+    "./references/"
+  ],
+  "id": "fedx-fullstack-midway-react",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}

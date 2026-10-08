@@ -1,0 +1,3590 @@
+{
+  "scannedAt": "2026-07-29T06:15:47.331Z",
+  "docsRoot": "docs",
+  "fileCount": 51,
+  "linkCount": 654,
+  "violations": [],
+  "deadLinks": [
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./specs/fault-report/brownfield-module-guide.md",
+      "target": "docs\\specs\\fault-report\\brownfield-module-guide.md"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../specs/emergency-support-dashboard/",
+      "target": "docs\\specs\\emergency-support-dashboard"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "target": "docs\\design\\realtime-protocol\\socket-events.md"
+    },
+    {
+      "from": "design/data-models.md",
+      "href": "../specs/emergency-support-dashboard/emergency-resources/data-model-extensions.md",
+      "target": "docs\\specs\\emergency-support-dashboard\\emergency-resources\\data-model-extensions.md"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "target": "docs\\design\\realtime-protocol\\socket-events.md"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./iframe-pages/iframe-registry.md",
+      "target": "docs\\design\\iframe-pages\\iframe-registry.md"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../specs/five-major-center/cmd-dispatcher-center/pm-inputs/assets/iframe-ticket-mechanism.md",
+      "target": "docs\\specs\\five-major-center\\cmd-dispatcher-center\\pm-inputs\\assets\\iframe-ticket-mechanism.md"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../../../public/environment.json",
+      "target": "..\\public\\environment.json"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../../../public/static/doc/指挥调度中心跳转.md",
+      "target": "..\\public\\static\\doc\\指挥调度中心跳转.md"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../specs/five-major-center/cmd-dispatcher-center/pm-inputs/assets/iframe-ticket-mechanism.md",
+      "target": "docs\\specs\\five-major-center\\cmd-dispatcher-center\\pm-inputs\\assets\\iframe-ticket-mechanism.md"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "./iframe-registry.md",
+      "target": "docs\\design\\iframe-pages\\iframe-registry.md"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../specs/five-major-center/cmd-dispatcher-center/",
+      "target": "docs\\specs\\five-major-center\\cmd-dispatcher-center"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../../../src/configuration.ts",
+      "target": "..\\src\\configuration.ts"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../../../package.json",
+      "target": "..\\package.json"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../../../src/socket/Socket.ts",
+      "target": "..\\src\\socket\\Socket.ts"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "./socket-events.md",
+      "target": "docs\\design\\realtime-protocol\\socket-events.md"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/emergency-support-dashboard/",
+      "target": "docs\\specs\\emergency-support-dashboard"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "target": "docs\\design\\realtime-protocol\\socket-events.md"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/emergency-support-dashboard/",
+      "target": "docs\\specs\\emergency-support-dashboard"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/info-management-bureau/",
+      "target": "docs\\specs\\info-management-bureau"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/gis-entry/",
+      "target": "docs\\specs\\gis-entry"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "target": "docs\\design\\realtime-protocol\\socket-events.md"
+    },
+    {
+      "from": "skills/frontend/README.md",
+      "href": "../../specs/fault-report/acceptance-tests.md",
+      "target": "docs\\specs\\fault-report\\acceptance-tests.md"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "./common/README.md",
+      "target": "docs\\skills\\common\\README.md"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../research/2026-07-29-004-modules-spec-strategy.md",
+      "target": "docs\\research\\2026-07-29-004-modules-spec-strategy.md"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./emergency-support-dashboard/spec.md",
+      "target": "docs\\specs\\emergency-support-dashboard\\spec.md"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./info-management-bureau/spec.md",
+      "target": "docs\\specs\\info-management-bureau\\spec.md"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./gis-entry/spec.md",
+      "target": "docs\\specs\\gis-entry\\spec.md"
+    },
+    {
+      "from": "specs/spec-split-guide.md",
+      "href": "./fault-report/capability-map.md",
+      "target": "docs\\specs\\fault-report\\capability-map.md"
+    },
+    {
+      "from": "specs/spec-split-guide.md",
+      "href": "./as-is-architecture.md",
+      "target": "docs\\specs\\as-is-architecture.md"
+    },
+    {
+      "from": "specs/_template/pm-inputs/assets/README.md",
+      "href": "./assets/list-page.png",
+      "target": "docs\\specs\\_template\\pm-inputs\\assets\\assets\\list-page.png"
+    },
+    {
+      "from": "specs/_template/pm-inputs/code-inventory.md",
+      "href": "../research/2026-07-29-003-docs-mvp-structure.md",
+      "target": "docs\\specs\\_template\\research\\2026-07-29-003-docs-mvp-structure.md"
+    },
+    {
+      "from": "specs/_template/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md",
+      "target": "docs\\specs\\_template\\as-is-architecture.md"
+    },
+    {
+      "from": "workflows/as-is-to-be-guide.md",
+      "href": "../specs/fault-report/capability-map.md",
+      "target": "docs\\specs\\fault-report\\capability-map.md"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../specs/fault-report/",
+      "target": "docs\\specs\\fault-report"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../specs/fault-report/brownfield-module-guide.md",
+      "target": "docs\\specs\\fault-report\\brownfield-module-guide.md"
+    }
+  ],
+  "stats": {
+    "outBy": {
+      "ai-prompts-guide.md": 8,
+      "design/api-contracts.md": 28,
+      "design/architecture.md": 48,
+      "design/data-models.md": 4,
+      "design/decisions/adr-template.md": 0,
+      "design/decisions/README.md": 2,
+      "design/framework-communication.md": 25,
+      "design/glossary.md": 6,
+      "design/iframe-pages/README.md": 7,
+      "design/README.md": 13,
+      "design/realtime-protocol/README.md": 7,
+      "design/system-overview.md": 36,
+      "design/tech-stack.md": 33,
+      "index.md": 29,
+      "operations/deployment.md": 5,
+      "operations/README.md": 2,
+      "operations/troubleshooting.md": 5,
+      "research/README.md": 3,
+      "skills/ai-tools/claude-cursor/prompts.md": 1,
+      "skills/ai-tools/claude-cursor/README.md": 3,
+      "skills/common/git-workflow.md": 0,
+      "skills/frontend/react/coding.md": 0,
+      "skills/frontend/react/testing.md": 0,
+      "skills/frontend/README.md": 2,
+      "skills/README.md": 7,
+      "specs/five-major-center/acceptance-tests.md": 24,
+      "specs/five-major-center/as-is-architecture.md": 44,
+      "specs/five-major-center/assets/README.md": 0,
+      "specs/five-major-center/data-model-extensions.md": 19,
+      "specs/five-major-center/plan.md": 28,
+      "specs/five-major-center/pm-inputs/code-inventory.md": 89,
+      "specs/five-major-center/pm-inputs/pm-requirements-input.md": 20,
+      "specs/five-major-center/spec.md": 43,
+      "specs/five-major-center/tasks.md": 40,
+      "specs/index.md": 14,
+      "specs/spec-split-guide.md": 4,
+      "specs/_template/acceptance-tests.md": 1,
+      "specs/_template/data-model-extensions.md": 2,
+      "specs/_template/plan.md": 5,
+      "specs/_template/pm-inputs/assets/README.md": 1,
+      "specs/_template/pm-inputs/code-inventory.md": 1,
+      "specs/_template/pm-inputs/pm-requirements-input.md": 5,
+      "specs/_template/spec.md": 7,
+      "specs/_template/tasks.md": 3,
+      "standards/coding-standards.md": 6,
+      "standards/README.md": 2,
+      "standards/security-standards.md": 0,
+      "workflows/as-is-to-be-guide.md": 5,
+      "workflows/brownfield-module-refactor.md": 12,
+      "workflows/README.md": 4,
+      "workflows/tdd-process.md": 1
+    },
+    "inBy": {
+      "ai-prompts-guide.md": 4,
+      "design/api-contracts.md": 17,
+      "design/architecture.md": 13,
+      "design/data-models.md": 12,
+      "design/decisions/adr-template.md": 1,
+      "design/decisions/README.md": 2,
+      "design/framework-communication.md": 2,
+      "design/glossary.md": 1,
+      "design/iframe-pages/README.md": 3,
+      "design/README.md": 2,
+      "design/realtime-protocol/README.md": 3,
+      "design/system-overview.md": 17,
+      "design/tech-stack.md": 20,
+      "index.md": 0,
+      "operations/deployment.md": 5,
+      "operations/README.md": 0,
+      "operations/troubleshooting.md": 1,
+      "research/README.md": 1,
+      "skills/ai-tools/claude-cursor/prompts.md": 4,
+      "skills/ai-tools/claude-cursor/README.md": 2,
+      "skills/common/git-workflow.md": 0,
+      "skills/frontend/react/coding.md": 1,
+      "skills/frontend/react/testing.md": 0,
+      "skills/frontend/README.md": 1,
+      "skills/README.md": 3,
+      "specs/five-major-center/acceptance-tests.md": 12,
+      "specs/five-major-center/as-is-architecture.md": 66,
+      "specs/five-major-center/assets/README.md": 2,
+      "specs/five-major-center/data-model-extensions.md": 10,
+      "specs/five-major-center/plan.md": 13,
+      "specs/five-major-center/pm-inputs/code-inventory.md": 17,
+      "specs/five-major-center/pm-inputs/pm-requirements-input.md": 10,
+      "specs/five-major-center/spec.md": 20,
+      "specs/five-major-center/tasks.md": 4,
+      "specs/index.md": 7,
+      "specs/spec-split-guide.md": 9,
+      "specs/_template/acceptance-tests.md": 3,
+      "specs/_template/data-model-extensions.md": 2,
+      "specs/_template/plan.md": 1,
+      "specs/_template/pm-inputs/assets/README.md": 1,
+      "specs/_template/pm-inputs/code-inventory.md": 1,
+      "specs/_template/pm-inputs/pm-requirements-input.md": 0,
+      "specs/_template/spec.md": 2,
+      "specs/_template/tasks.md": 0,
+      "standards/coding-standards.md": 1,
+      "standards/README.md": 0,
+      "standards/security-standards.md": 1,
+      "workflows/as-is-to-be-guide.md": 12,
+      "workflows/brownfield-module-refactor.md": 10,
+      "workflows/README.md": 0,
+      "workflows/tdd-process.md": 6,
+      "specs/fault-report/brownfield-module-guide.md": 2,
+      "../docs-api-backend/右屏网络情况接口.md": 1,
+      "../docs-api-backend/frontend/增补接口-2026年4月8日.md": 1,
+      "design/realtime-protocol/socket-events.md": 5,
+      "../AGENTS.md": 3,
+      "specs/emergency-support-dashboard/emergency-resources/data-model-extensions.md": 1,
+      "design/iframe-pages/iframe-registry.md": 2,
+      "../public/static/doc/指挥调度中心跳转.md": 1,
+      "specs/five-major-center/cmd-dispatcher-center/pm-inputs/assets/iframe-ticket-mechanism.md": 2,
+      "../../public/static/doc/指挥调度中心跳转.md": 1,
+      "specs/fault-report/acceptance-tests.md": 1,
+      "skills/common/README.md": 1,
+      "research/2026-07-29-004-modules-spec-strategy.md": 1,
+      "specs/emergency-support-dashboard/spec.md": 1,
+      "specs/info-management-bureau/spec.md": 1,
+      "specs/gis-entry/spec.md": 1,
+      "specs/fault-report/capability-map.md": 2,
+      "specs/as-is-architecture.md": 1,
+      "specs/_template/research/2026-07-29-003-docs-mvp-structure.md": 1,
+      "specs/_template/as-is-architecture.md": 1,
+      "../README.md": 1
+    }
+  },
+  "links": [
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./skills/ai-tools/claude-cursor/prompts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./skills/ai-tools/claude-cursor/prompts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "ai-prompts-guide.md",
+      "href": "./specs/fault-report/brownfield-module-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/interface/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/interface/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/service/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/mock/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/service/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/mock/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../docs-api-backend/右屏网络情况接口.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../docs-api-backend/frontend/增补接口-2026年4月8日.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../docs-api-backend/摄像头/camera-list.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/mock/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../src/mock/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/cmd-dispatcher-center/emergency-resource-point.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/comprehensive-display-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/five-major-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/info-management-bureau/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/information-hub-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../public/static/mock/screen-list.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../specs/emergency-support-dashboard/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../specs/five-major-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/api-contracts.md",
+      "href": "../../docs-api-backend/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../config.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/service/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/service/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/service/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/interface/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/mock/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../public/static/mock/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/socket/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/socket/Socket.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/modules/common/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/modules/common/controller/static-file.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../public/static/mock/screen-list.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../pm2.config.js",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../operations/deployment.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../../AGENTS.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "#24-静态资源层koa-static-cache",
+      "kind": "unknown"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "#63-兼容性推断",
+      "kind": "unknown"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "#7-安全",
+      "kind": "unknown"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "#22-ui-组件库",
+      "kind": "unknown"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./realtime-protocol/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "./iframe-pages/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/architecture.md",
+      "href": "../operations/deployment.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/data-models.md",
+      "href": "../specs/emergency-support-dashboard/emergency-resources/data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/data-models.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/data-models.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/data-models.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/decisions/README.md",
+      "href": "./adr-template.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/decisions/README.md",
+      "href": "../README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/interface/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/interface/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./iframe-pages/iframe-registry.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../public/static/doc/指挥调度中心跳转.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../specs/five-major-center/cmd-dispatcher-center/pm-inputs/assets/iframe-ticket-mechanism.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/mock/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/mock/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/framework-communication.md",
+      "href": "../specs/index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/glossary.md",
+      "href": "../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/glossary.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/glossary.md",
+      "href": "../../public/static/mock/screen-list.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/glossary.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/glossary.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/glossary.md",
+      "href": "../../docs-api-backend/metahuman/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../../../public/static/doc/指挥调度中心跳转.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../specs/five-major-center/cmd-dispatcher-center/pm-inputs/assets/iframe-ticket-mechanism.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "./iframe-registry.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../framework-communication.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/iframe-pages/README.md",
+      "href": "../../specs/five-major-center/cmd-dispatcher-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./framework-communication.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./glossary.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./realtime-protocol/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./iframe-pages/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "./decisions/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "../specs/index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "../skills/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/README.md",
+      "href": "../research/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../../../src/socket/Socket.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "./socket-events.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/realtime-protocol/README.md",
+      "href": "../../specs/index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/emergency-support-dashboard/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../config.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../web/pages/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/static/mock/screen-list.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/service/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/mock/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/service/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/mock/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/interface/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/interface/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../src/socket/Socket.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./tech-stack.md#4-gis地理信息系统",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/emergency-support-dashboard/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/five-major-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/info-management-bureau/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/system-overview.md",
+      "href": "../specs/gis-entry/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../config.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../web/pages/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../web/components/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../web/hooks/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../web/environment/",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../public/static/mock/screen-list.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/interface/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/interface/detail.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../src/socket/Socket.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./realtime-protocol/socket-events.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../../pm2.config.js",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../operations/deployment.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./realtime-protocol/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "./iframe-pages/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../skills/frontend/react/coding.md",
+      "kind": "relative"
+    },
+    {
+      "from": "design/tech-stack.md",
+      "href": "../operations/deployment.md",
+      "kind": "relative"
+    },
+    {
+      "from": "index.md",
+      "href": "design/tech-stack.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "specs/index.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "specs/emergency-support-dashboard/spec.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "skills/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "workflows/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "standards/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "research/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "operations/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/realtime-protocol/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/iframe-pages/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "../AGENTS.md",
+      "kind": "relative"
+    },
+    {
+      "from": "index.md",
+      "href": "skills/ai-tools/claude-cursor/prompts.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "ai-prompts-guide.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "workflows/as-is-to-be-guide.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "specs/spec-split-guide.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/system-overview.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/tech-stack.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/architecture.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/data-models.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/api-contracts.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "design/glossary.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "specs/index.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "workflows/as-is-to-be-guide.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "workflows/brownfield-module-refactor.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "ai-prompts-guide.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "skills/README.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "workflows/tdd-process.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "index.md",
+      "href": "research/2026-07-29-004-modules-spec-strategy.md",
+      "kind": "unknown"
+    },
+    {
+      "from": "operations/deployment.md",
+      "href": "../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/deployment.md",
+      "href": "../../config.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/deployment.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/deployment.md",
+      "href": "../../pm2.config.js",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/deployment.md",
+      "href": "../../config.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/README.md",
+      "href": "./deployment.md",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/README.md",
+      "href": "./troubleshooting.md",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/troubleshooting.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/troubleshooting.md",
+      "href": "../../src/controller/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/troubleshooting.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/troubleshooting.md",
+      "href": "../../src/socket/Socket.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "operations/troubleshooting.md",
+      "href": "../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "research/README.md",
+      "href": "../design/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "research/README.md",
+      "href": "../design/decisions/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "research/README.md",
+      "href": "../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/ai-tools/claude-cursor/prompts.md",
+      "href": "../../../ai-prompts-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/ai-tools/claude-cursor/README.md",
+      "href": "../../../ai-prompts-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/ai-tools/claude-cursor/README.md",
+      "href": "./prompts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/ai-tools/claude-cursor/README.md",
+      "href": "../../../../AGENTS.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/frontend/README.md",
+      "href": "../../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/frontend/README.md",
+      "href": "../../specs/fault-report/acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "../design/",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "../specs/",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "./ai-tools/claude-cursor/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "./common/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "./frontend/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "skills/README.md",
+      "href": "./ai-tools/claude-cursor/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../workflows/tdd-process.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/pages/five-major-center/render.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/pages/five-major-center/cmd-dispatcher-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/environment/five-major-center/cmd-dispatcher-center.ts#L21",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/pages/five-major-center/router.tsx#L17-L44",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./spec.md#81-as-is--to-be-差异每行引用-as-is-x",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/pages/five-major-center/render.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./as-is-architecture.md#321-cmd-dispatcher-center7-widgets",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./as-is-architecture.md#322-comprehensive-display-center11-widgets",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./as-is-architecture.md#323-information-hub-center8-widgets",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../public/environment.json#L1421-L1432",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/pages/five-major-center/context/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/pages/five-major-center/render$subpath.tsx#L14-L19",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./as-is-architecture.md#10-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../../web/environment/five-major-center/cmd-dispatcher-center.ts#L21-L27",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/acceptance-tests.md",
+      "href": "../../workflows/tdd-process.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/router.tsx#L15",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/router.tsx#L17-L44",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/cmd-dispatcher-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/comprehensive-display-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/information-hub-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/environment/five-major-center/cmd-dispatcher-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/environment/five-major-center/comprehensive-display-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/environment/five-major-center/information-hub-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../public/environment.json#L1421-L1432",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/iframe-page/index.tsx#L15",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "#10-开放问题",
+      "kind": "unknown"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../src/controller/api.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/components/initializer/initApp.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/common/environment.ts#L7",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/context/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/share/box/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/cmd-dispatcher-center/modules/fields.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/render$subpath.tsx#L14-L15",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/router.tsx#L40-L43",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../public/environment.json#L1421-L1432",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../public/environment.json#L1423-L1431",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/information-hub-center/modules/index.ts#L4",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/environment/five-major-center/information-hub-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/environment/five-major-center/cmd-dispatcher-center.ts#L24-L27",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../../web/pages/five-major-center/router.tsx#L93-L112",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./tasks.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/as-is-architecture.md",
+      "href": "../../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//web/environment/five-major-center/cmd-dispatcher-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//web/environment/five-major-center/comprehensive-display-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//web/environment/five-major-center/information-hub-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//web/environment/five-major-center/cmd-dispatcher-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//web/environment/five-major-center/comprehensive-display-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//web/environment/five-major-center/information-hub-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./plan.md#34-r4--环境配置-typescript-类型化仅类型",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../..//public/environment.json#L1421-L1432",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./spec.md#6-边界情况与错误处理",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./plan.md#33-r3--iframe-url-配置补全--可配置化--鉴权行为变化",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./as-is-architecture.md#10-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./spec.md#9-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/data-model-extensions.md",
+      "href": "../../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md#8-技术债务基于代码客观观察",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./spec.md#81-as-is--to-be-差异每行引用-as-is-x",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "../../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./spec.md#81-as-is--to-be-差异每行引用-as-is-x",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md#td-7",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md#o-9",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md#o-10",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md#o-6",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "./tasks.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "../../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/plan.md",
+      "href": "../../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/environment/five-major-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../bootstrap.js",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../config.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../src/configuration.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#43-bff-端点",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/render$subpath.tsx#L12",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/router.tsx#L17-L44",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/render.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/cmd-dispatcher-center/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/comprehensive-display-center/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/information-hub-center/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/render$subpath.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/render.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#32-3-个自渲染子中心的-widget-列表事实",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/large-screen/LargeScreenEnv.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/large-screen/WidgetsRender.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/large-screen/meta-human/meta-human-helper-zone",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/ui/iframe-loader",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/initializer/initMapConfig.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/share/box/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/ui/emap-gis",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/comprehensive-display-center/modules/center/map-view",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/information-hub-center/modules/center/map-view",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/environment/five-major-center/cmd-dispatcher-center.ts#L24-L27",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/router.tsx#L93-L112",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/metalHumanPresets.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/context/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/share/box/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#6-状态管理",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/cmd-dispatcher-center/modules/fields.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/comprehensive-display-center/modules/fields.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/information-hub-center/modules/fields.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/cmd-dispatcher-center/modules/screen.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/comprehensive-display-center/modules/screen.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/information-hub-center/modules/screen.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/components/ui/emap-gis/MapView.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../public/static/EMap",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../package.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/cmd-dispatcher-center/modules/center/map-view/map-geo/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/comprehensive-display-center/modules/center/map-view/map-geo-bak",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/cmd-dispatcher-center/modules/section-right/network-impact-situation/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/information-hub-center/modules/index.ts#L4",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/router.tsx#L17-L44",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#31-5-条路由事实",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/cmd-dispatcher-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#321-cmd-dispatcher-center7-widgets",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/comprehensive-display-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#322-comprehensive-display-center11-widgets",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/information-hub-center/modules/index.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#323-information-hub-center8-widgets",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#33-iframe-page",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../public/environment.json#L1421-L1432",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#42-environmentjson-中的配置路径前缀",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../../web/pages/five-major-center/render$subpath.tsx#L14-L15",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#7-性能基线",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md#82-实现风格",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "./pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../tasks.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/code-inventory.md",
+      "href": "../../../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "./code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "./code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../../../..//web/pages/five-major-center/router.tsx#L17-L44",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#31-5-条路由事实",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#32-3-个自渲染子中心的-widget-列表事实",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#4-数据源",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#10-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#td-1",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#td-2",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md#td-3",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../assets/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "./code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../../../..//web/pages/five-major-center/router.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/pm-inputs/pm-requirements-input.md",
+      "href": "../../../..//public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#1-模块职责",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/render$subpath.tsx#L19",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/render$subpath.tsx#L19",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#32-3-个自渲染子中心的-widget-列表事实",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/components/large-screen/LargeScreenEnv.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/context/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/share/box/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/components/initializer/initMapConfig.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/environment/five-major-center/cmd-dispatcher-center.ts#L21-L27",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/router.tsx#L69",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../../web/pages/five-major-center/render$subpath.tsx#L14-L15",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-6",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-4",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-5",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-7",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-3",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-1",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-2",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-8",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#td-9",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "../../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md#10-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./tasks.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/spec.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./assets/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#32-3-个自渲染子中心的-widget-列表事实",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/code-inventory.md#h4-widget-注册screents",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#8-技术债务基于代码客观观察",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/code-inventory.md#k-已知遗留--备份文件",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "../../../web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "../../../public/environment.json",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#10-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./spec.md#6-边界情况与错误处理",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./data-model-extensions.md#2-字段增量若有",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "../../..//web/environment/five-major-center/cmd-dispatcher-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "../../..//web/environment/five-major-center/comprehensive-display-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "../../..//web/environment/five-major-center/information-hub-center.ts",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/code-inventory.md#i-样式--主题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./data-model-extensions.md#2-字段增量若有",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "../../..//web/pages/five-major-center/iframe-page/index.tsx",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./acceptance-tests.md#补充验收checklist",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#10-开放问题",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/pm-requirements-input.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-1",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-2",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-3",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-4",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-5",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-6",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md#o-10",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./pm-inputs/code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/five-major-center/tasks.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./_template/",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./_template/spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../research/2026-07-29-004-modules-spec-strategy.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./emergency-support-dashboard/spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./five-major-center/spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./info-management-bureau/spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "./gis-entry/spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/index.md",
+      "href": "../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/spec-split-guide.md",
+      "href": "../workflows/as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/spec-split-guide.md",
+      "href": "./fault-report/capability-map.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/spec-split-guide.md",
+      "href": "./index.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/spec-split-guide.md",
+      "href": "./as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/acceptance-tests.md",
+      "href": "../../workflows/tdd-process.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/data-model-extensions.md",
+      "href": "../../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/data-model-extensions.md",
+      "href": "../../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/plan.md",
+      "href": "../../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/plan.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/plan.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/plan.md",
+      "href": "./acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/plan.md",
+      "href": "../../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/assets/README.md",
+      "href": "./assets/list-page.png",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/code-inventory.md",
+      "href": "../research/2026-07-29-003-docs-mvp-structure.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/pm-requirements-input.md",
+      "href": "../spec.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/pm-requirements-input.md",
+      "href": "../acceptance-tests.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/pm-requirements-input.md",
+      "href": "./code-inventory.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/pm-requirements-input.md",
+      "href": "../as-is-architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/pm-inputs/pm-requirements-input.md",
+      "href": "./assets/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "../../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "../../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "../../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "../../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "../../design/system-overview.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "./data-model-extensions.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/spec.md",
+      "href": "../../design/architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/tasks.md",
+      "href": "./plan.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/tasks.md",
+      "href": "../../workflows/tdd-process.md",
+      "kind": "relative"
+    },
+    {
+      "from": "specs/_template/tasks.md",
+      "href": "../../design/",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/coding-standards.md",
+      "href": "../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/coding-standards.md",
+      "href": "../skills/README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/coding-standards.md",
+      "href": "../design/data-models.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/coding-standards.md",
+      "href": "../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/coding-standards.md",
+      "href": "../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/coding-standards.md",
+      "href": "../workflows/brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/README.md",
+      "href": "./coding-standards.md",
+      "kind": "relative"
+    },
+    {
+      "from": "standards/README.md",
+      "href": "./security-standards.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/as-is-to-be-guide.md",
+      "href": "./brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/as-is-to-be-guide.md",
+      "href": "../specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/as-is-to-be-guide.md",
+      "href": "../specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/as-is-to-be-guide.md",
+      "href": "../specs/fault-report/capability-map.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/as-is-to-be-guide.md",
+      "href": "../specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "./as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../specs/fault-report/",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../specs/fault-report/brownfield-module-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../ai-prompts-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../skills/ai-tools/claude-cursor/prompts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../../README.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../design/tech-stack.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../design/architecture.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../design/api-contracts.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "./tdd-process.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/brownfield-module-refactor.md",
+      "href": "../specs/spec-split-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/README.md",
+      "href": "../ai-prompts-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/README.md",
+      "href": "./as-is-to-be-guide.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/README.md",
+      "href": "./brownfield-module-refactor.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/README.md",
+      "href": "./tdd-process.md",
+      "kind": "relative"
+    },
+    {
+      "from": "workflows/tdd-process.md",
+      "href": "../skills/README.md",
+      "kind": "relative"
+    }
+  ]
+}

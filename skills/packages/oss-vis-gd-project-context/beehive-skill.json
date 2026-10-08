@@ -1,0 +1,15 @@
+{
+  "contentHash": "ddcdc432b986654b5fdbb3c3cf4f6bf40e60806bb939ac83c01305c33173ff16",
+  "files": [
+    "./design/",
+    "./references/",
+    "./env/",
+    "./plans/",
+    "./scripts/"
+  ],
+  "id": "oss-vis-gd-project-context",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
