@@ -18,3 +18,8 @@
 - `modules/<业务模块>/` — `web/pages/` 下业务模块的实现文档（业务层）；模块内子主题按 `NNN-<slug>/` 建子目录（如 `modules/five-major-center/001-map-geo/`）。模块入口为 `<模块>/000-overview/README.md`（如 `modules/five-major-center/000-overview/`）。
 - 判据：文档描述的对象在 `web/pages/` 下、属于具体业务模块 → 归本目录。
 - 按 03-task-workflow §4.1：模块演进时写入；一次性小改动只写任务卡，不建目录。
+
+## backend/ 规则
+
+- `backend/<NNN-slug>/` — `src/modules/` 下服务端 BFF 模块的接口文档（服务层），按模块建目录、按 controller 分文件（如 `backend/common/static-file.md`）。
+- 判据：文档描述的对象在 `src/modules/` 下（Midway controller/service）→ 归本目录。
