@@ -18,7 +18,7 @@
 | `PersonalBusiness.tsx` | `PersonalBusiness` | 个人业务：总用户数、5G、4G、物联网、其它               | `getPersonalBusinessApi`                | `chbn-business-personal`   |
 | `FamilyBusiness.tsx`   | `FamilyBusiness`   | 家庭业务：家宽、IPTV、爱家TV、固话                     | `getFamilyBusinessApi`                  | `chbn-business-home`       |
 | `GEBusiness.tsx`       | `GEBusiness`       | 政企业务：专线客户、5G专网项目、物联网客户、车联网客户 | `getGEBusinessApi`                      | `chbn-business-government` |
-| `RoamingTop5.tsx`      | `RoamingTop5`      | 国际漫入 TOP5（按用户数统计）                          | 待开发（004-00 二-1），当前组件内假数据 | —                          |
+| `RoamingTop5.tsx`      | `RoamingTop5`      | 国际漫入 TOP5（按用户数统计）                          | `getIntlRoamTop5Api`（已接，2026-10-12） | `intl-roam-top5`           |
 
 接口信息见同目录 `data-model.md`。
 
@@ -39,24 +39,26 @@
     - label：28px / weight 500 / letter-spacing 2px / `rgba(255,255,255,1)`
     - 色点：20×20 圆形
     - value：32px DIN / `rgba(113,152,211,1)` / weight 500
-    - unit：20px Source Han Sans CN / `rgba(255,255,255,1)`
+    - unit：28px Source Han Sans CN / `rgba(255,255,255,1)`（2026-10-13 现场优化统一 28px）
+- 饼图 tooltip（2026-10-13 现场优化）：背景 `rgba(0,0,0,0.7)`，边框 `rgba(0,153,255,0.5)`，文字白 32px
 
 ### FamilyBusiness / GEBusiness（标题块 + 值条带）
 
 - item：50% 宽 × 92.67px，flex，align-items center，column-gap 20px
 - 标题块：121.07×90.67px，背景 `business-ind-icon.png`，28px Bold `rgba(238,247,254,1)` / weight 700 / letter-spacing 0，flex 居中
 - 值条带（40% 宽）：36px DIN Medium / `rgba(255,255,255,0.8)` / weight 500 / letter-spacing 1.62px，底部 skewX(-35deg) 蓝条 `rgba(5,93,200,1)` opacity 0.64
-- unit：12px Source Han Sans CN `rgba(255,255,255,1)`
+- unit：28px Source Han Sans CN `rgba(255,255,255,1)`（2026-10-13 现场优化统一 28px）
 
-### RoamingTop5（三档行条带）
+### RoamingTop5（三档行条带；2026-10-13 现场优化）
 
+- 面板标题：国际漫入TOP5
 - 列头「用户数」：28px Source Han Sans CN / weight 500 / letter-spacing 0 / 右对齐
 - 行：65px 高，margin-block 10px，padding 0 10px 0 25px
 - 三档背景：`roaming-top5-bg-1/2/3.svg`（top-0/1/2 分别对应 1/2，其余 3）
-- label：28px Source Han Sans CN / weight 500，width 110px ellipsis
+- label：28px Source Han Sans CN / weight 500，不固定宽度（原 110px ellipsis 方案废弃），margin-right 10px
 - 进度条：100% 宽 × 4px，底色 `rgba(107,107,107,1)`，填充 `rgba(5,93,200,1)`
 - value：36px DIN / `rgba(113,152,211,1)` / weight 500，千分位（`toLocaleString('en-US')`）
-- unit：20px Source Han Sans CN `rgba(255,255,255,1)`（当前注释暂不显示）
+- unit：24px / 白色 / margin-left 5px / margin-top 5px（2026-10-14 新增，取接口 `unit` 字段，如 "个"）
 
 ## 素材
 

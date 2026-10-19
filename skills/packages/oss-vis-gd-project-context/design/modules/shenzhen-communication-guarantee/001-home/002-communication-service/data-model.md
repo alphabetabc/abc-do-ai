@@ -292,7 +292,10 @@ type GEBusinessTop4Result = Array<{
 
 `public/static/mock/shenzhen-communication-guarantee/chbn-business-government.json`
 
-## 未定义接口：国际漫入 TOP5
+## 已定稿接口：国际漫入 TOP5（008-00，2026-10-12 落码）
 
-- 信管局无此接口，属 004-00 二-1 新增接口需求（已服务端确认，待开发）；接口形态（viewItemId / 参数 / 返回形状）待服务端定义后再落码，`web/services/shenzhen-communication-guarantee/home/section-left.ts` 当前只覆盖上述 3 个接口
-- 历史设想形状 `[{ name, num }]`（前端算 percent）仅供参考，最终以服务端定义为准
+- viewPageId `open-close-ceremonies-view` / viewItemId `intl-roam-top5`；无请求参数（viewPageArgs `{}`）
+- 契约：docs-api-backend/shenzhen-communication-guarantee/api-doc.md 六；rows `[{ countryName, userNbr, unit }]`（2026-10-14 新增 `unit` 字段，如 "个"；`TIntlRoamTop5Row.unit` 可选）
+- 落码：`getIntlRoamTop5Api`（`web/services/shenzhen-communication-guarantee/home/section-left.ts`，含 `TIntlRoamTop5Row` 类型）
+- mock：`public/static/mock/shenzhen-communication-guarantee/intl-roam-top5.json`
+- 组件：`RoamingTop5.tsx` 已删组件内假数据接接口；15 分钟轮询；进度条按 TOP1 值归一化（接口无 percent 字段）

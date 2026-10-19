@@ -21,7 +21,7 @@
 
 - `index.tsx`：树形静态常量 `MOCK_DATA`，类型 `{ key, name, metrics: [{value, label}], children? }` + `MetricRow` 渲染器
 - 每行：名称 + metrics（值上 label 下的上下结构，值 DIN 字体）；小区子行缩进 + CSS 连接线（|----）
-- 分组背景：有 children 的组（2G/4G/5G）套 `images/ind-bg-group.svg`，无 children 的单行（通感站、重保专线）套 `images/ind-bg-single.svg`
+- 分组背景：有 children 的组（2G/4G/5G）套 `images/ind-bg-group.svg`；无 children 的单行按 item.key 套各自图标背景：通感站 `images/ind-bg-single-tonggan.svg`、重保专线 `images/ind-bg-single-zhongbao.svg`（类名 `business-group--tonggan` / `business-group--zhongbao`，2026-10-13 拆分）
 - 类名 `area-business--root` 语义化
 
 ## 接口预留

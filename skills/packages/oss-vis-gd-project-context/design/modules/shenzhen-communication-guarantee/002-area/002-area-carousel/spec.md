@@ -25,8 +25,9 @@
 
 ## 交互
 
-- 自动轮巡，间隔同首屏配置（environment `shenzhen-communication-guarantee.homeConfig.areaCarousel.interval` 分钟，默认 15）；hover 暂停、离开恢复
+- 自动轮巡，间隔同首屏配置（environment `shenzhen-communication-guarantee.areaConfig.areaCarousel.interval` **秒**，默认 60，2026-10-14 由分钟改为秒）；hover 暂停、离开恢复
 - 无类型联动（全量）
+- **显隐**：订阅容器上下文 `useContainerContext().visible`，不可见时组件返回 null 不渲染（2026-10-14 轮播优化）
 - 点击卡片：`setActiveArea` 更新当前区域上下文（跨屏上下文见 `sub-pages/components/view-context.tsx`）
 - 从首屏打点/轮巡切屏进入时，`defaultActiveItemId=activeArea?.id` 初始定位到该区域
 

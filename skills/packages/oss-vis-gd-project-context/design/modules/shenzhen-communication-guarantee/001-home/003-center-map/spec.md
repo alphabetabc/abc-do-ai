@@ -11,13 +11,14 @@
 - `index.tsx` / `map.ts` / `index.less` / `ActiveOverlayItem.tsx`，物理复制自信管局 `home/modules/center-map`
 - 底图：EChartsMap（`~/web/components/ui/rc-echarts/map`，echarts geo），adcode `440300`（深圳）；geojson 位于 `public/static/map/geojson/`
 - `map.ts`：`geoBuilder`（geo 数组 + 区县名白字 label）+ `mapPointTypes` 字典（打点类型 1-5：会场/参访区/酒店/交通枢纽/其它）；打点为 image:// symbol（`icon-map-<类型>.svg`，90×90，staticAssets.imageRoot 取路径），silent: true
-- `ActiveOverlayItem.tsx`：TOOLTIP 浮层（OverlayItem + mutableLngLat，contentStyle bottom 165）；图片复用共享 `AreaThumbImage` 三级降级
+- `ActiveOverlayItem.tsx`：TOOLTIP 浮层（OverlayItem + mutableLngLat，contentStyle bottom 165）；图片复用共享 `AreaThumbImage` 三级降级，外层按 `item.name` 作 key 强制重挂载（2026-10-14 修复：切换区域后浮层图片不更新）
 - 数据：`getHomeAreaPointApi`（见同目录 data-model.md），组件内 15 分钟轮询；数据为空时不渲染 EChartsMap
 - widget 注册 `subscribe.activeArea`（轮巡每帧 `dispatch` 广播）与 `subscribe.areaTypeFilter`（top-type-filter 点击 `dispatch` 广播）
 
 ## 布局
 
-- NoStylePanel 1615×1200 + map-bg.png 容器；widgets 注册 left 1200 / top 400
+- NoStylePanel 1615×1200 + map-bg.png 容器；widgets 注册 left 763 / top 343，zIndex 12（2026-10-13 现场调整）
+- 2026-10-13 现场优化：`.react-echarts` 加全尺寸 `::after` 蒙层（空 content 遮挡），用于抑制 echarts 容器的鼠标事件
 - 用户手调：geo left 135 / right 24 / top 350 / bottom 350，区县名 label 30px + stroke；map-bg 居中 background-size 2960×1226
 - TOOLTIP 浮层（用户 2026-10-10 定稿）：556 宽、padding 20、8px 圆角 + 4px 边框 `rgba(27,72,129,0.72)`、backdrop-blur 20；标题白字 40px/700；图 516×330 居中 + 0.75px 蓝描边，图片 `object-fit: contain` 原比例适配（信管局 ActiveOverlayItemBg SVG 光效未采用，纯 CSS 背景）
 

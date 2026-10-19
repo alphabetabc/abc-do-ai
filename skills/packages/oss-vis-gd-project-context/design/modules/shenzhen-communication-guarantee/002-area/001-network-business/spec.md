@@ -1,10 +1,12 @@
 # 001-network-business · 4G/5G 业务（spec）
 
+> 2026-10-12 按实际代码回填。
+
 ## 职责
 
-区域屏左右对称两块（左 4G、右 5G），**一套组件两份配置**（`networkType: '4g' | '5g'`）：
+区域屏左右对称两块（左 4G、右 5G），**一套组件两份配置**（`networkType: '4G' | '5G'`，大写；`NetworkBusiness.tsx` 基础组件 + `with-4g.tsx` / `with-5g.tsx` 薄包装）：
 
-- 顶端统计指标：基站总数/退服数/退服率；小区总数/退服数/退服率
+- 每个 tile（基站 / 小区）展示 3 项：总数、退服数（红色 `level: '1'`）、退服率（%）
 
 ## 布局（设计稿）
 
@@ -14,15 +16,18 @@
 
 ## 组件构成
 
-| 组件                           | 用途                   |
-| ------------------------------ | ---------------------- |
-| 指标卡（scale-item-card 样式） | 基站/小区 总数、退服数 |
-| `scale-progress-card.tsx`      | 退服率进度卡           |
+| 文件 | 用途 |
+| --- | --- |
+| `modules/network-business/NetworkBusiness.tsx` | 基础组件（props: `networkType`） |
+| `modules/network-business/with-4g.tsx` / `with-5g.tsx` | 固定 networkType 的包装组件 |
+| Panel 内两个 Section（基站 / 小区） | 统计指标展示 |
 
-## 交互
+## 交互与区域联动
 
-- 静态展示；进入屏时若携带 `activeArea`（地图打点进入），统计与趋势以该区域为维度拉取；否则默认维度（待确认）
+- 通过 `useCurrentArea()` + `resolveAreaAdcode()` 取区域 adcode 作为 `area` 参数，`refreshDeps: [area]`、`ready: isDefined(area)`
+- **15 分钟轮询**（`pollingInterval: TIME_RANGE.MINUTE * 15`）
+- 从首屏打点进入区域屏时以该区域为维度拉取；无 activeArea 时兜底 `{ name: '深圳' }`（AreaProvider 默认值）
 
 ## 边界
 
-- 退服率分母为 0：展示 `--`
+- 接口出错 / 行缺失：展示全 0 兜底（EMPTY_STATION / EMPTY_COMMUNITY，退服率 `'0%'`）

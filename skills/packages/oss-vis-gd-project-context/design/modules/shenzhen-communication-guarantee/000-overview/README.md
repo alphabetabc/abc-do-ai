@@ -68,15 +68,17 @@
 | --- | --- | --- |
 | `getWeatherDataApi`（components/index.ts） | 信管局 `ceremonies-weather` | 天气卡 |
 | `getTopIndicatorsApi`（home/center.ts） | 信管局 `competition-homepage-statistics` | 顶部 5 类型统计 |
-| `getHomeAreaPointApi`（home/center.ts） | 信管局 `competition-homepage-point` | 地图打点 / 两屏轮巡数据源 |
+| `getHomeAreaPointApi`（home/center.ts） | 信管局 `competition-homepage-point` | 地图打点 / tooltip（008-00：轮巡已切走） |
 | `getEmergencyResourceApi`（home/center.ts） | 信管局 home `getHomeBottomIndicatorsApi` 范式（`competition-homepage-resources`） | 应急资源 / 前置资源（两屏共用，方案待定见下） |
 | `getPersonalBusinessApi` / `getFamilyBusinessApi` / `getGEBusinessTop4Api`（home/section-left.ts） | 信管局 `chbn-business-*` | 通信服务 |
+| `getIntlRoamTop5Api`（home/section-left.ts） | 新增接口 `intl-roam-top5`（api-doc.md 六） | 国际漫入 TOP5（008-00 落码 2026-10-12） |
+| `getMapAreaLayerApi`（home/center.ts） | 新增接口 `map-area-layer`（api-doc.md 七） | 区域轮巡数据源（两屏同源，008-00 落码 2026-10-12）；`areaType`/`area` 参数预留，默认全量 |
 
 ### 未定义（挂 004-00，代码中只留注释）
 
 | 需求 | 004-00 条目 | 状态 |
 | --- | --- | --- |
-| 国际漫入 TOP5 | 二-1 | 已服务端确认，待开发 |
+| ~~国际漫入 TOP5~~ | 二-1 | **已落码**（008-00，`intl-roam-top5`），移入上方已定义表 |
 | 首屏重保区域业务汇总（基站/小区/通感站/专线） | 二-2 | 已服务端沟通，待开发 |
 | 区域屏左右模块（无线规模 + 趋势指标） | 二-3 | 已服务端沟通，待开发 |
 | 区域屏保障资源是否改用 game-match `ceremonies-guarantee-resources` | 二-4 | 待定 |
@@ -95,6 +97,7 @@
 | [004-screen-switch/](./004-screen-switch/spec.md) | 共享组件文档：两屏切换器 |
 | [005-view-context/](./005-view-context/spec.md) | 共享组件文档：跨屏视图上下文 |
 | [006-area-carousel/](./006-area-carousel/spec.md) | 共享组件文档：区域轮巡（spec + data-model） |
+| [environment-config.md](./environment-config.md) | 环境配置清单（8 个 key：homeConfig 6 + areaConfig 1 + viewManager 1） |
 
 ## 维护准则
 

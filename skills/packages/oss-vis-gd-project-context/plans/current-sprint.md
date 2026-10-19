@@ -5,11 +5,21 @@
 ## 进行中
 
 | 任务                                                                                                                                                                                                       | Status | 类型 |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---- |
-| [task-2026-10-09-004-00-scguarantee-backend-api-confirm](./task-2026-10-09-004-00-scguarantee-backend-api-confirm.md)（深圳保障屏后端接口确认：viewPageArgs 新增参数 + 新增接口需求 + 数据字段 + 落码位置约定，待服务端答复） | 进行中 | 其它 |
-| [task-2026-10-09-004-04-scguarantee-area-widgets-migrate](./task-2026-10-09-004-04-scguarantee-area-widgets-migrate.md)（深圳保障屏区域屏组件迁移：4G/5G 指标与趋势、前置资源） | 待审批 | 编码 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---- |
+| [task-2026-10-12-008-00-scguarantee-intl-roam-area-layer-api](./done/2026-10/task-2026-10-12-008-00-scguarantee-intl-roam-area-layer-api.md)（深圳保障屏新接口接数联调：intl-roam-top5 漫入TOP5 + map-area-layer 区域轮巡两屏同源，已完成） | 已完成 | 编码 |
+| [task-2026-10-09-004-00-scguarantee-backend-api-confirm](./done/2026-10/task-2026-10-09-004-00-scguarantee-backend-api-confirm.md)（深圳保障屏后端接口确认：清单全条目闭环，落码由 006-00/007-00/008-00 承接验收通过，已归档） | 已完成 | 其它 |
 
 ## 最近完成
+
+- 2026-10-16：`task-2026-10-16-002-scguarantee-home-polish`（首屏四处优化：左上角 logo 透明热区回首页 + 个人业务其他→2G用户数 + 漫入TOP5 titleUnit/pollingInterval 可配置 + 左侧面板模糊修复（backdrop-filter 移至 ::before 使文字脱离合成层），用户验证通过）→ `done/2026-10/`
+
+- 2026-10-16：`task-2026-10-16-001-scguarantee-intl-roam-top5-placeholder`（漫入TOP5 初始化占位：新增环境配置 key shenzhen-communication-guarantee-view-intl-roam-top5（仅 defaultRows），data ?? 占位、接口返回即覆盖，已登记 environment-config.md；事后补卡）→ `done/2026-10/`
+
+- 2026-10-12：`task-2026-10-12-007-00-scguarantee-area-context-sync`（区域选中态跨屏同步：ViewContext.activeArea 唯一事实源，区域屏 auto+click 回写、首屏 defaultActiveItemId 恢复，回屏轮巡高亮/地图浮层/widget field 三者对齐，A1–A3 用户验证通过；调试 console.log 用户知情保留待上线前清理）→ `done/2026-10/`
+
+- 2026-10-12：`task-2026-10-09-004-04-scguarantee-area-widgets-migrate`（深圳保障屏区域屏组件迁移：4G/5G 指标与趋势、前置资源；验证通过 A1–A2，资源顺序按用户裁决修正，遗留 console.log 待上线前清理）→ `done/2026-10/`
+
+- 2026-10-12：`task-2026-10-12-006-00-scguarantee-area-business-api`（首屏重保区域业务接数：key-guarantee-area-business 接口落码 + viewItemDataTemplate 树形模板（env 可覆盖）+ 出数回填深拷贝隔离 + useRequest 直接渲染模板 + 父/子行样式修复）→ `done/2026-10/`
 
 - 2026-10-10：`task-2026-10-09-005-shenzhen-communication-guarantee-new-widgets`（深圳保障屏新建组件：区域轮巡双屏 + 地图 TOOLTIP 联动 + 类型过滤三联动；LOG 勘误为 logo 挂图留联调）→ `done/2026-10/`
 
