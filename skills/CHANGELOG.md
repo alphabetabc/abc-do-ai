@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: 50d8f639d956e5a1edad3d41f5c2be8e913f66aa -->
+<!-- changelog-last-commit: 42ff482fde406b65f9904a43aa8b18bd7093ba31 -->
+
+## 2026-10-19
+
+- 发布 skill
+    - 「oss-vis-gd-project-context」 v0.0.0；
+- 更新 skill
+    - 「oss-vis-gd-project-context」（配置、其他）；项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
 
 ## 2026-10-10
 
