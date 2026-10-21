@@ -1,6 +1,30 @@
 # Changelog
 
-<!-- changelog-last-commit: 42ff482fde406b65f9904a43aa8b18bd7093ba31 -->
+<!-- changelog-last-commit: 1eed5ad40dd2702ba7889dd195b5f02e47d16b61 -->
+
+## 2026-10-22
+
+- 发布 skill
+    - 「oss-vis-gd-project-context」 v0.0.0；
+- 更新 skill
+    - 「oss-vis-gd-project-context」（配置、其他）；项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
+- 变更文件
+    - fedx-agents/leader/ai-coding/ai-coding-training/cheatsheet.md；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/assets/styles.css；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/cheatsheet.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/index.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/legacy-project.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/mindset.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/html/new-project.html；
+    - fedx-agents/leader/ai-coding/ai-coding-training/legacy-project.md；
+    - fedx-agents/leader/ai-coding/ai-coding-training/mindset.md；
+    - fedx-agents/leader/ai-coding/ai-coding-training/new-project.md；
+    - fedx-agents/leader/leader-evaluation.md；
+    - fedx-agents/leader/leader-meeting-transcript-2026-07-17.md；
+    - fedx-agents/leader/leader-meeting-transcript-2026-07-29.md；
+    - fedx-agents/leader/leader.knowledge.md；
+    - fedx-agents/leader/leader.skill.md；
+    - fedx-agents/leader/workplace-strategist.prompt.md；
 
 ## 2026-10-19
 
