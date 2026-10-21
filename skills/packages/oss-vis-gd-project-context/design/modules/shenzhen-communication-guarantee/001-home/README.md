@@ -13,6 +13,7 @@
 | [003-center-map/](./003-center-map/spec.md) | 深圳地图 + 类型打点 + TOOLTIP 联动 + 类型图层过滤（005 已实施） |
 | [004-area-business/](./004-area-business/spec.md) | 重保区域业务汇总（自写静态 UI；接口属 004-00 二-2 待开发） |
 | [005-emergency-resource/](./005-emergency-resource/spec.md) | 4 类应急资源统计（无面板标题，NoStylePanel） |
+| [006-safety-monitor/](./006-safety-monitor/spec.md) | 安全监测：2 指标纯静态（2026-10-21 新增，环境配置 staticData 直读，无 service） |
 | [007-area-carousel/](./007-area-carousel/spec.md) | 区域轮巡（图片+名称，受类型联动；待 005） |
 
 另有 `modules/home-background/`（首屏专属装饰背景层，单图 + visible 控制，z-index -2）不单独建子目录。

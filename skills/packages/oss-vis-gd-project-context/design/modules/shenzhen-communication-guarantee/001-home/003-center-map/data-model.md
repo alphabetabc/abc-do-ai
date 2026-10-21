@@ -89,6 +89,10 @@ type HomeAreaPoint = Array<
 
 `public/static/mock/shenzhen-communication-guarantee/home-area-point.json`
 
+## 组件层环境配置（2026-10-21，003 卡）
+
+本接口不读 env，但消费方 `center-map/index.tsx` 读取 `shenzhen-communication-guarantee.homeConfig.centerMap`（`importantAreaIds` 重保白名单 + `importantAreaIndicatorLines` tip 外移/引导线），详见同目录 spec.md 与 `000-overview/environment-config.md`。
+
 ## 待确认
 
 - 004-00 一-1 事项 1：数据过滤方式（前端传参由后端过滤，还是拉全量自滤；当前按拉全量实现）

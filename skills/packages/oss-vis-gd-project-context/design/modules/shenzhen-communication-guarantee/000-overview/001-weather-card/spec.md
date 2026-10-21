@@ -1,6 +1,6 @@
 # weather-card · 天气卡（共享组件）
 
-> 源码：`web/pages/shenzhen-communication-guarantee/sub-pages/components/weather-card/`。固定深圳地市，挂载于 `sub-pages/index.tsx` 头部，两屏共用，不参与 widget 体系（非 registerWidget）。
+> 源码：`web/pages/shenzhen-communication-guarantee/sub-pages/components/weather-card/`。固定深圳地市，**2026-10-22 起已从顶部移除挂载**（2026-10-20 反拉终端第 7 点「去掉天气」，task-2026-10-20-004）：`sub-pages/index.tsx` 不再引用 WeatherCard，头部中位槽位由 [zero-excellent](../007-zero-excellent/spec.md) 接替。组件目录、样式与 `getWeatherDataApi` 接口链路保留未删（可回退），下述文档描述组件本体行为。
 
 ## 组件构成
 

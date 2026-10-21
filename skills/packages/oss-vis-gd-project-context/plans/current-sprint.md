@@ -4,48 +4,32 @@
 
 ## 进行中
 
-| 任务                                                                                                                                                                                                       | Status | 类型 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---- |
-| [task-2026-10-12-008-00-scguarantee-intl-roam-area-layer-api](./done/2026-10/task-2026-10-12-008-00-scguarantee-intl-roam-area-layer-api.md)（深圳保障屏新接口接数联调：intl-roam-top5 漫入TOP5 + map-area-layer 区域轮巡两屏同源，已完成） | 已完成 | 编码 |
-| [task-2026-10-09-004-00-scguarantee-backend-api-confirm](./done/2026-10/task-2026-10-09-004-00-scguarantee-backend-api-confirm.md)（深圳保障屏后端接口确认：清单全条目闭环，落码由 006-00/007-00/008-00 承接验收通过，已归档） | 已完成 | 其它 |
+| 任务 | Status | 类型 |
+| ---- | ------ | ---- |
+| （空） |        |      |
 
 ## 最近完成
 
-- 2026-10-16：`task-2026-10-16-002-scguarantee-home-polish`（首屏四处优化：左上角 logo 透明热区回首页 + 个人业务其他→2G用户数 + 漫入TOP5 titleUnit/pollingInterval 可配置 + 左侧面板模糊修复（backdrop-filter 移至 ::before 使文字脱离合成层），用户验证通过）→ `done/2026-10/`
+- 2026-10-22：`task-2026-10-20-002-scguarantee-intl-roam-requirement`（反拉终端 4+6·通信服务：intl-roam-top5 升级新结构（userCnt 总数+环比/topN TOP10/flowChart/港澳台）+ RoamingTop5 重构（头部总数+双列榜单+港澳台双轴锥形图）+ 15min 轮询；家庭简化 2 项（有线宽带/IPTV）、政企简化 2 项（物联网连接数/双线到达规模，「专线客户数」label 待后端确认）；含 002-communication-service spec/data-model 同步，用户验收通过）→ `done/2026-10/`
 
-- 2026-10-16：`task-2026-10-16-001-scguarantee-intl-roam-top5-placeholder`（漫入TOP5 初始化占位：新增环境配置 key shenzhen-communication-guarantee-view-intl-roam-top5（仅 defaultRows），data ?? 占位、接口返回即覆盖，已登记 environment-config.md；事后补卡）→ `done/2026-10/`
+- 2026-10-22：`task-2026-10-20-004-scguarantee-top-apec-slogan`（反拉终端 7·中顶部保障目标：zero-excellent 组件（APEC LOGO + 四零/双优双轮播卡 3s 各自轮巡、「零」「优」highlight 突出）、天气卡移除挂载（组件保留可回退）、标题改「深圳APEC会议通信保障」，提交 9a9a3bb；含 007-zero-excellent spec 新增 + 001-weather-card/000-overview README 同步，用户验收通过）→ `done/2026-10/`
 
-- 2026-10-12：`task-2026-10-12-007-00-scguarantee-area-context-sync`（区域选中态跨屏同步：ViewContext.activeArea 唯一事实源，区域屏 auto+click 回写、首屏 defaultActiveItemId 恢复，回屏轮巡高亮/地图浮层/widget field 三者对齐，A1–A3 用户验证通过；调试 console.log 用户知情保留待上线前清理）→ `done/2026-10/`
+- 2026-10-21：`task-2026-10-21-002-scguarantee-area-business-rework`（F2 网络规模再次调整·样式层：Card1 左右结构/斜杠双值/绿渐变、Card2 重排、新背景素材+表头装饰 ind-label、重保专线行按需求删除；数据链路未动，spec 已同步）
 
-- 2026-10-12：`task-2026-10-09-004-04-scguarantee-area-widgets-migrate`（深圳保障屏区域屏组件迁移：4G/5G 指标与趋势、前置资源；验证通过 A1–A2，资源顺序按用户裁决修正，遗留 console.log 待上线前清理）→ `done/2026-10/`
+- 2026-10-21：`task-2026-10-20-003-scguarantee-map-requirement` + `task-2026-10-21-004-scguarantee-map-visual`（反拉终端 5·地图整包：003 交互骨架——重保 intId 白名单（纯 env `homeConfig.centerMap`）+ 地图两层 series + 类型过滤联动/轮播启停/下钻/返回重置；004 视觉——亮版背景素材、重保专属图标+常显黄色 tip+外移引导线、区县画入底图、tip 重做；含 003-center-map / 001-top-type-filter / 007-area-carousel / 006-area-carousel spec 同步，提交 90bab6a，用户验收通过）→ `done/2026-10/`
 
-- 2026-10-12：`task-2026-10-12-006-00-scguarantee-area-business-api`（首屏重保区域业务接数：key-guarantee-area-business 接口落码 + viewItemDataTemplate 树形模板（env 可覆盖）+ 出数回填深拷贝隔离 + useRequest 直接渲染模板 + 父/子行样式修复）→ `done/2026-10/`
+- 2026-10-21：`task-2026-10-21-003-scguarantee-safety-monitor-module`（首屏新增安全监测模块：网络规模下方 744×391，两指标左右布局（上值下 label + ind-bg 背景 + \n 换行），useEnvironment 直读 staticData 无 service，含 006-safety-monitor spec 落地，用户验收通过）→ `done/2026-10/`
 
-- 2026-10-10：`task-2026-10-09-005-shenzhen-communication-guarantee-new-widgets`（深圳保障屏新建组件：区域轮巡双屏 + 地图 TOOLTIP 联动 + 类型过滤三联动；LOG 勘误为 logo 挂图留联调）→ `done/2026-10/`
+- 2026-10-21：`task-2026-10-21-001-scguarantee-area-carousel-style`（区域轮播卡片背景切图替换：普通/激活两态 100% 拉伸 + padding/缩略图对位微调，含 006-area-carousel spec 同步，用户验收通过）→ `done/2026-10/`
 
-- 2026-10-10：`task-2026-10-09-004-03-scguarantee-home-widgets-migrate`（深圳保障屏首屏组件迁移：6 块定稿——通信服务/地图静态+打点图标/重保区域业务自写静态 UI/应急资源/类型统计卡静态展示/首屏背景层；TOOLTIP/联动留 005）→ `done/2026-10/`
+- 2026-10-21：`task-2026-10-20-001-scguarantee-scene-network-scale-static`（反拉终端 1+2：场景 5 类改名+静态直出 + 网络规模全网/重保双列重构 + 面板描边渐变，含 2026-10-21 新设计稿与描边颜色修订，用户验收通过）→ `done/2026-10/`
 
-- 2026-10-09：`task-2026-10-09-004-02-scguarantee-panel-style`（深圳保障屏模块框样式：SVG 渐变边框保留、rx/圆角/blur20/标题 48px + 用户手调 line-height 1.2 + 底部 logo l1699/t2019）→ `done/2026-10/`
+- 2026-10-16：`task-2026-10-16-002-scguarantee-home-polish`（首屏四处优化：左上角 logo 透明热区回首页 + 个人业务其他→2G用户数 + 漫入TOP5 titleUnit/pollingInterval 可配置 + 左侧面板模糊修复，用户验证通过）→ `done/2026-10/`
 
-- 2026-10-09：`task-2026-10-09-004-01-scguarantee-services-migrate`（深圳保障屏接口层迁移：7 个复用接口落地（statistics/point/resources/chbn×3/weather）+ 零自造纪律（新增接口只留占位注释，需求挂 004-00）+ 7 个 mock + 天气卡接数 + chbn→communication-service 改名）→ `done/2026-10/`
+- 2026-10-16：`task-2026-10-16-001-scguarantee-intl-roam-top5-placeholder`（漫入TOP5 初始化占位：环境配置 key + data ?? 占位、接口返回即覆盖，事后补卡）→ `done/2026-10/`
 
-- 2026-10-09：`task-2026-10-09-003-shenzhen-communication-guarantee-skeleton`（深圳保障屏骨架：3840×2160 屏壳 + 两屏手动切换 + 区块占位，并按设计稿坐标精调各模块布局、删除重大保障 LOG、新增 4G/5G 指标趋势拆分、enableViewSync 调试参数）→ `done/2026-10/`
+- 2026-10-12：`task-2026-10-12-008-00-scguarantee-intl-roam-area-layer-api`（深圳保障屏新接口接数联调：intl-roam-top5 漫入TOP5 + map-area-layer 区域轮巡两屏同源）→ `done/2026-10/`
 
-- 2026-10-09：`task-2026-10-09-002-shenzhen-communication-guarantee-docs`（深圳重要通信保障文档：pm-input 整理 + as-is 绿地资产盘点 + To-Be 五件套，接口待定项全部记开放问题）→ `done/2026-10/`
+- 2026-10-12：`task-2026-10-12-007-00-scguarantee-area-context-sync`（区域选中态跨屏同步：ViewContext.activeArea 唯一事实源，轮巡高亮/地图浮层/widget field 三者对齐）→ `done/2026-10/`
 
-- 2026-10-09：`task-2026-10-09-001-init-shenzhen-communication-guarantee`（深圳重要通信保障模块骨架初始化：_template 五件套 + pm-inputs，index.md 登记，新增幂等脚本 init-spec-module.js）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-008-info-management-bureau-doc`（信管局模块文档：000-overview + 001-view-state + 三视图 × widget 子目录，共 21 个 spec/data-model 子文档）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-007-five-major-center-overview`（README 升级为 000-overview/ 入口；追加 iframe-page 子文档与 004-iframe-loader 组件文档）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-006-detail-map-geo-doc`（map-geo 细化为按中心 × 主题 9 份子文档 + diff；修正 useRefCache / getCacheValue 失真）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-005-detail-rc-echarts-map-doc`（EChartsMap 细化为 README + props / builders / overlay，删组件间对比句）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-004-detail-react-echarts-doc`（ReactECharts 按源码细化为 README 薄层 + props / update-behavior / style-presets / examples 四子文档）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-003-detail-emap-gis-doc`（emap-gis 按源码重写并拆分多文件；沉淀「组件层文档纪律」）→ `done/2026-10/`
-
-- 2026-10-08：`task-2026-10-08-002-design-restructure-map-geo`（design/ 组件层/业务层分层重构，map-geo 归 five-major-center）→ `done/2026-10/`
-- 2026-10-08：`task-2026-10-08-001-migrate-trae-documents`（`.trae/documents` 整体迁入 skill，源目录已删除）→ `done/2026-10/`
+> 更早归档（2026-10-12 以前）见 `done/` 各任务卡。

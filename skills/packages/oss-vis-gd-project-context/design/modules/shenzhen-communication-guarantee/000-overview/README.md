@@ -26,10 +26,11 @@
 | --- | --- | --- |
 | `container/` | 面板容器（PanelLeft / PanelRight / Panel / NoStylePanel）+ ContainerContext | [./002-container/spec.md](./002-container/spec.md) |
 | `background/` | 全局背景 | [./003-background/spec.md](./003-background/spec.md) |
-| `weather-card/` | 天气卡，固定深圳地市（数据：`services/.../components/index.ts` `getWeatherDataApi`） | [./001-weather-card/spec.md](./001-weather-card/spec.md) |
+| `weather-card/` | 天气卡，固定深圳地市（**2026-10-22 已移除挂载**，组件保留可回退；数据：`services/.../components/index.ts` `getWeatherDataApi`） | [./001-weather-card/spec.md](./001-weather-card/spec.md) |
 | `screen-switch/` | 两屏手动切换按钮（互斥菜单） | [./004-screen-switch/spec.md](./004-screen-switch/spec.md) |
 | `view-context/` | 跨屏上下文（activeArea / switchViewByArea / switchView） | [./005-view-context/spec.md](./005-view-context/spec.md) |
 | `area-carousel/` | 区域轮巡（AreaCarousel + AreaThumbImage + useAreaCarouselData），两屏壳接线见 001-home/007 与 002-area/002 | [./006-area-carousel/spec.md](./006-area-carousel/spec.md) |
+| `zero-excellent/` | 四零双优保障目标（APEC LOGO + 双轮播卡，2026-10-22 上线，接替天气卡头部中位槽位） | [./007-zero-excellent/spec.md](./007-zero-excellent/spec.md) |
 
 ## 4. 各视图的 widget 体系
 
@@ -97,6 +98,7 @@
 | [004-screen-switch/](./004-screen-switch/spec.md) | 共享组件文档：两屏切换器 |
 | [005-view-context/](./005-view-context/spec.md) | 共享组件文档：跨屏视图上下文 |
 | [006-area-carousel/](./006-area-carousel/spec.md) | 共享组件文档：区域轮巡（spec + data-model） |
+| [007-zero-excellent/](./007-zero-excellent/spec.md) | 共享组件文档：四零双优保障目标 |
 | [environment-config.md](./environment-config.md) | 环境配置清单（8 个 key：homeConfig 6 + areaConfig 1 + viewManager 1） |
 
 ## 维护准则

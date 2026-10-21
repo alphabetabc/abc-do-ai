@@ -6,7 +6,7 @@
 
 - `panel.tsx`：`Panel` / `PanelLeft` / `PanelRight` / `NoStylePanel`
 - `context.tsx`：`ContainerContext`（`visible`）+ `Provider` + `useContainerContext`
-- `panel-bg-svg.tsx`：面板 SVG 背景
+- `panel-bg-svg.tsx`：面板 SVG 背景（径向渐变填充 + 4px 渐变描边；2026-10-21 按新设计稿：描边 linearGradient 右上→左下，rgb(40,168,255) 1 → rgb(40,168,255) 0 @0.446 → #1E76F0 0.46，渐变 id 按实例唯一后缀隔离）
 - `panel.less`：面板样式
 - 出口 `index.tsx`：导出 `ContainerProvider`、`PanelLeft`、`PanelRight`、`Panel`、`NoStylePanel`
 

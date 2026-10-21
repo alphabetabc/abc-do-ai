@@ -29,8 +29,9 @@
 - 自动轮巡：定时切换（间隔 environment `shenzhen-communication-guarantee.homeConfig.areaCarousel.interval` **秒**，默认 60，2026-10-14 由分钟改为秒）；hover 暂停、离开恢复
 - 自动轮巡到点 `dispatch(activeArea)` 广播当前区域，供 center-map TOOLTIP
 - **联动**：订阅 `areaTypeFilter`，非 null 时仅轮巡该类型区域（按 `areaType` 过滤）；取消选中恢复全部
+- **轮播启停（003 卡 F6，2026-10-21）**：`autoplay={!!areaTypeFilter}`——未选中类型（初始态）不自动轮播，仅响应手动点击；且初始态 auto 广播被壳层拦截（`!areaTypeFilter && info.type !== 'click'` 不透传 dispatch），避免未点击即出现地图 tip；轮播列表本身不参与重保白名单
 - **显隐**：订阅容器上下文 `useContainerContext().visible`，不可见时组件返回 null 不渲染（2026-10-14 轮播优化）
-- 点击切屏：`switchViewByArea` 逻辑当前注释停用（2026-10-13 现场调整，点击卡片不切屏），切屏入口仅剩 center-map TOOLTIP 浮层
+- 点击切屏：`switchViewByArea` 逻辑当前注释停用（2026-10-13 现场调整，点击卡片不切屏）；切屏入口为 center-map 的 TOOLTIP 浮层与重保点位点击（003 卡 F6）
 
 ## 边界
 

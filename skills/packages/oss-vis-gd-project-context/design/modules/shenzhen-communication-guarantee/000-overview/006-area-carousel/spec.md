@@ -15,15 +15,16 @@
 | data | 区域数组（打点数据行） |
 | interval? | 自动轮巡间隔（分钟），默认 15；仅 1 个区域不轮巡 |
 | maxSliderCount? | 单屏最多卡片数（两屏壳均传 3） |
-| size? | `large`（首屏，卡片 586.5×159）/ `default`（区域屏，500×159）；图均 180×135 |
+| size? | `large`（首屏，卡片 450×159，图 156×110）/ `default`（区域屏，500×159，图 180×110） |
 | defaultActiveItemId? | 初始激活项 id（找不到回落 0） |
+| autoplay? | 是否自动轮播，默认 `true`（2026-10-21，003 卡 F6）；`false` 时不启动定时器且 hover 恢复也不启动，仅手动点击切换 |
 | onChange? | `(activeItem, { type: 'auto' \| 'click' })` 激活项变化回调 |
 
 ## 行为
 
 - antd Carousel（dots=false、超屏出箭头、infinite=false）+ `useIntervalTimer` 定时轮巡
 - hover 暂停 / 离开恢复；`calculateGoToSlideIndex` 滑窗跟随激活卡
-- 激活卡高亮（青色边框 + 内外发光）；`defaultActiveItemId` 或 data 变化时重置定位
+- 激活卡高亮：切换为激活态背景切图 `area-bg-active.png`（2026-10-21 替换原青色边框+发光方案）；`defaultActiveItemId` 或 data 变化时重置定位
 - 图片 `object-fit: contain`（原比例适配，不裁切）
 
 ## AreaThumbImage
@@ -33,7 +34,9 @@
 
 ## 卡片视觉
 
-flex 左右结构（图左、名称右、垂直居中）；仅名称（无类型标签）`rgba(206,223,255,1)` / Source Han Sans CN / 36px / 500，超长省略（title 提示全名）。
+- 背景：切图直出（2026-10-21，task-2026-10-21-001）——普通态 `images/area-bg.png`、激活态 `images/area-bg-active.png`，均 `background-size: 100% 100%` 拉伸；不再使用 CSS 渐变/backdrop-filter/border/box-shadow
+- flex 左右结构（图左、名称右、垂直居中）；仅名称（无类型标签）`rgba(206,223,255,1)` / Source Han Sans CN / 36px / 500，超长省略（title 提示全名）
+- 两规格均 `padding-left: 20px`（切图内边距对位）；首屏 large 缩略图 156×110、区域屏 default 180×110
 
 ## 使用方
 

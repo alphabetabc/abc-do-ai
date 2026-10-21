@@ -18,11 +18,12 @@ const { viewPageArgs, viewItemDataTemplate = [/* 前端默认模板 */] } =
 
 - `viewPageArgs`：透传给 `getViewItemDataApi` 的视图页参数。
 - `viewItemDataTemplate`：前端兜底模板。环境配置未下发 / 接口报错或返回空时，直接渲染该模板（value 为默认值）；接口正常时按 `type` 匹配行、按 `valueField` / `labelField` / `unitField` 回填。
+- `enableStaticData` + `staticData`（2026-10-20 新增，反拉终端静态直出）：`enableStaticData === true` 时 service 层跳过 `getViewItemDataApi` 请求，直接返回 `staticData`（结构与 viewItemDataTemplate 渲染结构一致，value 为最终值；未下发 staticData 时回退源码默认模板）；为 false / 未配置时保持接口请求 + 模板回填逻辑。
 - `?? {}` 兜底：环境配置不存在时不报错，全部走默认值。
 
 ## 2. 配置清单
 
-共 9 个 key（11 处调用，`viewManager.enableViewAnimation` 被 Panel / NoStylePanel 两处消费）。key 前缀 `shenzhen-communication-guarantee.`，二级节点三个：`homeConfig.`（首屏）7 处（5 处接口模板 + 1 处轮巡间隔 + 1 处组件层兜底行）、`areaConfig.`（区域屏）2 处（1 处接口模板 + 1 处轮巡间隔）、`viewManager.`（视图动效开关）1 处。
+共 11 个 key（13 处调用，`viewManager.enableViewAnimation` 被 Panel / NoStylePanel 两处消费）。key 前缀 `shenzhen-communication-guarantee.`，二级节点三个：`homeConfig.`（首屏）9 处（4 处接口模板 + 2 处静态直出 + 1 处轮巡间隔 + 1 处组件层兜底行 + 1 处地图重保区域配置）、`areaConfig.`（区域屏）2 处（1 处接口模板 + 1 处轮巡间隔）、`viewManager.`（视图动效开关）1 处。
 
 > 下述 JSON 即环境配置的真实结构（`getEnvironment('shenzhen-communication-guarantee')` 取到的节点），各 key 内以 `// 注释` 标注消费位置（file + function）。配置下发侧可按此结构覆盖；未下发的 key 走源码内默认模板。
 
@@ -39,6 +40,41 @@ const { viewPageArgs, viewItemDataTemplate = [/* 前端默认模板 */] } =
             // 首屏区域轮巡间隔（秒），取值直接作为 interval，非模板结构（2026-10-14 由分钟改为秒）
             "areaCarousel": {
                 "interval": 60,
+            },
+            // web/pages/shenzhen-communication-guarantee/sub-pages/home/modules/center-map/index.tsx · Component（2026-10-21，003 卡）
+            // 地图重保区域配置（纯配置、无源码默认值）：
+            // - importantAreaIds：重保白名单（打点 intId / 区域轮巡 areaId 同套），固定展示、不受顶部类型过滤；未配置时全量显示（不做重保划分）
+            // - importantAreaIndicatorLines：重保 tip 外移 + 引导线，key 为 intId；longitude/latitude 为 tip 终点，waypoints 为横平竖直折线转折点；未配置的点位 tip 停在点位上方
+            "centerMap": {
+                "importantAreaIds": ["100", "1460194794", "1134568079", "-798315596"],
+                "importantAreaIndicatorLines": {
+                    "1134568079": { "name": "JT_BA_001", "longitude": 113.932191, "latitude": 22.85924, "waypoints": [[113.814962, 22.794752], [113.931967, 22.794752]] },
+                    "1460194794": { "name": "HC_QH_001", "longitude": 114.094116, "latitude": 22.386877, "waypoints": [[113.899024, 22.366877], [114.094116, 22.366877]] },
+                    "-798315596": { "name": "CC1", "longitude": 114.260171, "latitude": 22.415711, "waypoints": [[114.05131, 22.51821], [114.193048, 22.51821], [114.193048, 22.3821], [114.260171, 22.3821]] },
+                    "100": { "name": "HC_FT_001", "longitude": 114.251882, "latitude": 22.886788, "waypoints": [[114.023816, 22.853162], [114.251882, 22.853162]] },
+                },
+            },
+            // web/services/shenzhen-communication-guarantee/home/center.ts · getTopIndicatorsApi
+            // viewItemId: competition-homepage-statistics
+            // 2026-10-20 反拉终端：enableStaticData=true 时静态直出（无接口请求）；type 为过滤名（沿用原字典联动 areaTypeFilter），title 为展示名
+            // 默认数值为 PM 2026-10-20 需求原文：重要场地 8、指挥部 1、保障酒店 85、参访区 25、交通枢纽 10（顺序照抄）
+            "shenzhen-communication-guarantee-view-competition-homepage-statistics": {
+                "enableStaticData": true,
+                "staticData": [
+                    { "type": "会场", "title": "重要场地", "num": 8 },
+                    { "type": "其它", "title": "指挥部", "num": 1 },
+                    { "type": "酒店", "title": "保障酒店", "num": 85 },
+                    { "type": "参访区", "title": "参访区", "num": 25 },
+                    { "type": "交通枢纽", "title": "交通枢纽", "num": 10 },
+                ],
+                "viewPageArgs": {},
+                "viewItemDataTemplate": [
+                    { "type": "会场", "title": "重要场地", "num": 8 },
+                    { "type": "其它", "title": "指挥部", "num": 1 },
+                    { "type": "酒店", "title": "保障酒店", "num": 85 },
+                    { "type": "参访区", "title": "参访区", "num": 25 },
+                    { "type": "交通枢纽", "title": "交通枢纽", "num": 10 },
+                ],
             },
             // web/services/shenzhen-communication-guarantee/home/center.ts · getEmergencyResourceApi
             // viewItemId: competition-homepage-resources
@@ -228,85 +264,60 @@ const { viewPageArgs, viewItemDataTemplate = [/* 前端默认模板 */] } =
                 ],
             },
             // web/services/shenzhen-communication-guarantee/home/section-right.ts · getKeyGuaranteeAreaBusinessApi
-            // viewItemId: key-guarantee-area-business（重保区域业务分组，children 为 { label, valueField: num/retireNum }）
+            // viewItemId: key-guarantee-area-business（网络规模）
+            // 2026-10-20 反拉终端：enableStaticData=true 时静态直出（无接口请求）；删小区行与退服率，基站为全网/重保区域双列
+            // 默认数值为 PM 2026-10-20 需求原文：2G 3627/21、4G 47200/293、5G 49500/288、5G-A 低空站点 198（单值）、重保专线暂 2
+            // staticData 为接口 rows 同构数据（{ type, num, retireNum }），type 字典：2G基站/4G基站/5G基站/5G-A低空站点/重保专线
             "shenzhen-communication-guarantee-view-key-guarantee-area-business": {
+                "enableStaticData": true,
+                "staticData": [
+                    { "type": "2G基站", "num": 3627, "retireNum": 21 },
+                    { "type": "4G基站", "num": 47200, "retireNum": 293 },
+                    { "type": "5G基站", "num": 49500, "retireNum": 288 },
+                    { "type": "5G-A低空站点", "num": 198 },
+                    { "type": "重保专线", "num": 2 },
+                ],
                 "viewPageArgs": {},
+                // viewType 区分呈现组件：card1-基站行（bg-基站，全网/重保双列）、card2-单值行（bg 按 key 区分：5ga-5G-A 低空 / zhongbao-重保专线）
                 "viewItemDataTemplate": [
                     {
                         "key": "2g",
-                        "group": "2g",
+                        "title": "2G基站",
+                        "viewType": "card1",
                         "children": [
-                            {
-                                "title": "2G基站",
-                                "children": [
-                                    { "label": "基站数", "valueField": "num" },
-                                    { "label": "退服数", "valueField": "retireNum" },
-                                ],
-                            },
-                            {
-                                "title": "2G小区",
-                                "children": [
-                                    { "label": "总数", "valueField": "num" },
-                                    { "label": "退服数", "valueField": "retireNum" },
-                                ],
-                            },
+                            { "label": "全网", "valueField": "num", "value": 3627 },
+                            { "label": "重保区域", "valueField": "retireNum", "value": 21 },
                         ],
                     },
                     {
                         "key": "4g",
-                        "group": "4g",
+                        "title": "4G基站",
+                        "viewType": "card1",
                         "children": [
-                            {
-                                "title": "4G基站",
-                                "children": [
-                                    { "label": "基站数", "valueField": "num" },
-                                    { "label": "退服数", "valueField": "retireNum" },
-                                ],
-                            },
-                            {
-                                "title": "4G小区",
-                                "children": [
-                                    { "label": "总数", "valueField": "num" },
-                                    { "label": "退服数", "valueField": "retireNum" },
-                                ],
-                            },
+                            { "label": "全网", "valueField": "num", "value": 47200 },
+                            { "label": "重保区域", "valueField": "retireNum", "value": 293 },
                         ],
                     },
                     {
                         "key": "5g",
-                        "group": "5g",
+                        "title": "5G基站",
+                        "viewType": "card1",
                         "children": [
-                            {
-                                "title": "5G基站",
-                                "children": [
-                                    { "label": "基站数", "valueField": "num" },
-                                    { "label": "退服数", "valueField": "retireNum" },
-                                ],
-                            },
-                            {
-                                "title": "5G小区",
-                                "children": [
-                                    { "label": "总数", "valueField": "num" },
-                                    { "label": "退服数", "valueField": "retireNum" },
-                                ],
-                            },
+                            { "label": "全网", "valueField": "num", "value": 49500 },
+                            { "label": "重保区域", "valueField": "retireNum", "value": 288 },
                         ],
                     },
                     {
-                        "key": "通感站",
-                        "title": "通感站",
-                        "children": [
-                            { "label": "基站数", "valueField": "num" },
-                            { "label": "退服数", "valueField": "retireNum" },
-                        ],
+                        "key": "5ga",
+                        "title": "5G-A低空站点",
+                        "viewType": "card2",
+                        "children": [{ "label": "站点数", "valueField": "num", "value": 198 }],
                     },
                     {
-                        "key": "重保专线",
+                        "key": "zhongbao",
                         "title": "重保专线",
-                        "children": [
-                            { "label": "专线数", "valueField": "num" },
-                            { "label": "中断数", "valueField": "retireNum" },
-                        ],
+                        "viewType": "card2",
+                        "children": [{ "label": "专线数", "valueField": "num", "value": 2 }],
                     },
                 ],
             },
