@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: 1eed5ad40dd2702ba7889dd195b5f02e47d16b61 -->
+<!-- changelog-last-commit: bc21b6b5288fe05723268d4203dd062c08280c52 -->
+
+## 2026-10-23
+
+- 发布 skill
+    - 「large-screen-llm-wiki」 v0.0.0；
+- 新增 skill
+    - 「large-screen-llm-wiki」大屏自然语言生成（NL→DSL）知识库与工作区。当需要查阅/设计大屏 DSL Schema、自然语言到 Schema 的...；
 
 ## 2026-10-22
 
