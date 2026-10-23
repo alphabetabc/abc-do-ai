@@ -1,12 +1,14 @@
 {
-  "contentHash": "4257cbc362734dbbb224f9df1230c1e4e5fcfebff901e8cc9dac4b61fbbebe21",
+  "contentHash": "e42848d101dd01ac4ad37273c7befd3ce7a800f6f8e9aac0dedaaf2346549187",
   "files": [
     "./wiki/",
+    "./tasks/",
     "./draft-plan.md"
   ],
   "id": "large-screen-llm-wiki",
   "targets": [
     "trae"
   ],
+  "updatedAt": "2026-10-23T11:59:28.144Z",
   "version": "0.0.0"
 }
