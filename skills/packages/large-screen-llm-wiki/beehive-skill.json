@@ -1,0 +1,12 @@
+{
+  "contentHash": "4257cbc362734dbbb224f9df1230c1e4e5fcfebff901e8cc9dac4b61fbbebe21",
+  "files": [
+    "./wiki/",
+    "./draft-plan.md"
+  ],
+  "id": "large-screen-llm-wiki",
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
+}
