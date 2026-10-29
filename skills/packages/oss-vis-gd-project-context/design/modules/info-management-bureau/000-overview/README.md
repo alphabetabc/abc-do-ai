@@ -64,6 +64,7 @@
 - **模块级配置**：`share/presets.ts`（视图类型枚举、defaultViewSettings、静态资源路径 staticAssets：stadiumImage / imageRoot / stadiumThumbnail）
 - **环境配置**（`public/environment.json`，`info-management-bureau.*`）：`viewManager.settings` / `viewManager.manual` / `viewManager.manualView` / `viewManager.enableViewAnimation` / `viewManager.enableOpenDayIsFirstDay` / `viewSwitchInterval` / `openAndCloseConfig.area`
 - **静态图片**：`web/pages/info-management-bureau/images/` 与 `staticAssets` 指向的场馆图目录（`<IMAGE_PATH>/info-management-bureau/stadium-images[-thumb]`）
+- **fallback 静态兜底**：完整清单与文件名规则见 [002-fallback-data/spec.md](./002-fallback-data/spec.md)（唯一真相源；`public/static/fallback/info-management-bureau/readme*.md` 为派生运维交付件）
 
 ## 6. 子文档索引
 
@@ -73,6 +74,7 @@
 | [001-home/README.md](../001-home/README.md)             | 首页视图（6 widget 子文档）              |
 | [002-game-match/README.md](../002-game-match/README.md) | 比赛日视图（8 widget 子文档）            |
 | [003-open-and-close/README.md](../003-open-and-close/README.md) | 开/闭幕式视图（7 widget 子文档） |
+| [002-fallback-data/spec.md](./002-fallback-data/spec.md) | fallback 静态兜底：链路、文件名规则、接口接入清单 |
 
 ## 维护准则
 

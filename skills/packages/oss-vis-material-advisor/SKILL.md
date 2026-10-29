@@ -69,8 +69,8 @@ description: '物料能力画像与评级顾问。扫描 src/packages 下物料�
 | 算搭建成本         | [references/cost-estimation.md](./references/cost-estimation.md)                       |
 | 看完整示范         | [examples/sales-dashboard.md](./examples/sales-dashboard.md)（销售大盘组合方案）        |
 | 查 PM 常见问题     | [FAQ.md](./FAQ.md)（选物料/组合/成本 16 个问题）                                       |
-| 查已完成画像       | `profiles/` 目录 + `profiles/README.md`（20 个画像索引，含 9 个表格 + 1 个告警）            |
-| 查物料维护清单     | [`materials-catalog.md`](./materials-catalog.md)（全 154 个物料 + 画像/文档/评级状态） |
+| 查已完成画像       | `profiles/` 目录 + `profiles/README.md`（132 个画像索引，按分类组织）                  |
+| 查物料维护清单     | [`materials-catalog.md`](./materials-catalog.md)（全 155 个物料 + 画像/文档/评级状态） |
 | 接手 / 续做        | [`ROADMAP.md`](./ROADMAP.md)（已完成项 + 下一步 + 智能体恢复指南）|
 
 ## 物料能力画像 JSON Schema
@@ -187,14 +187,17 @@ description: '物料能力画像与评级顾问。扫描 src/packages 下物料�
 
 - **第一批（11 个物料）**：8 个已完成 5+1 文档物料（交叉验证流程） + 3 个高频（echarts-map / table / top-rank）
 - **第二批（9 个表格）**：drilldown-table / drilldown-table-2 / expandable-table / pagination-table / table-detail / table-fixedColumns / table-transpose / transfer-table / alarm-window-card
+- **第三~十批（111 个）**：列表/排行、ECharts、oss-chart-plots、数字卡、容器/布局、地图、3D/拓扑、时钟/动画、媒体/播放、进度/加载、状态/标签、表单/筛选、按钮/操作、轮播/公告、其他、装饰汇总（详见 [ROADMAP.md](./ROADMAP.md)）
+- **补录（1 个）**：params-trigger（参数触发器，纯逻辑物料）
 
-**当前进度**：20/154（13.0%）| 🟢 独立优秀 10 个 | 🟡 组合可用 10 个
+**当前进度**：132/155（85.2%）| 🟢 独立优秀 25 个 | 🟡 组合可用 107 个
+
+**剩余物料**：23 个纯样式边框/装饰，已通过 `decoration-family.json` 合并覆盖，无需单独画像
 
 **下一批次（建议）**：
 
-- 列表/排行（13 个：carousel-list / carousel-notice / carousel-param / equip-list / hot-app-top5 / monitor-topn-list / progress-list / top-rank-shaanxi / topn-rank / topn-rank-one / tree-list / vertical-list）
-- 图表 ECharts 剩余（9 个：circular-column / cone-bar / cone-bar-line / cone-single-bar / dual-axes-chart / echarts-gauge / echarts-liquid / echarts-multi-variable-area-chart / ind-list-echarts-gauge）
-- oss-chart-plots 系列（23 个，**建议抽取通用 schema 模板**到 `profiles/_templates/oss-chart-plot.json`）
+- 画像侧已收口，转向任务 C/D：补场景示范（设备监控 / 应急指挥 / 运营驾驶舱）+ 选型决策树（见 [ROADMAP.md](./ROADMAP.md) 选项 A / C / D）
+- oss-chart-plots 系列（23 个）已完成，如后续需要可抽取通用 schema 模板到 `profiles/_templates/oss-chart-plot.json`
 
 **批次约束**：
 

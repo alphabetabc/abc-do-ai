@@ -68,9 +68,10 @@ function walkDoc(p) {
     for (const e of fs.readdirSync(p, { withFileTypes: true })) {
         const full = path.join(p, e.name);
         if (e.isDirectory()) walkDoc(full);
-        else if (e.name === 'readme.md' && full.includes('doc')) {
+        else if (/^readme\.md$/i.test(e.name) && full.includes('doc'))
+            {
             const rel = full.replace(/\\/g, '/');
-            const m = rel.match(/^src\/packages\/(.+?)\/doc\/readme\.md$/);
+            const m = rel.match(/^src\/packages\/(.+?)\/doc\/readme\.md$/i);
             if (m) docs.push(m[1]);
         }
     }
@@ -111,7 +112,7 @@ const categories = [
     { name: '进度 / 加载', items: ['circular-progress', 'circular-progress-group', 'normal-process', 'pagination-display', 'progress-list-bar'] },
     { name: '状态 / 标签', items: ['stats-indi', 'stats-indi-grid', 'stats-indi-group', 'status-display'] },
     { name: '边框 / 装饰', items: ['decoration/border1', 'decoration/border2', 'decoration/border3', 'decoration/border4', 'decoration/border5', 'decoration/border6', 'decoration/border7', 'decoration/border8', 'decoration/border9', 'decoration/border10', 'decoration/border11', 'decoration/border12', 'decoration/decoration1', 'decoration/decoration2', 'decoration/decoration3', 'decoration/decoration4', 'decoration/decoration5', 'decoration/decoration6', 'decoration/decoration7', 'decoration/decoration8', 'decoration/decoration9', 'decoration/decoration10', 'decoration/decoration11', 'decoration/decoration12', 'decoration/hexagon', 'decoration/flash-point', 'decoration/common-container'] },
-    { name: '其他', items: ['render-stage-loader', 'zone-setting', 'area-business-vol', 'echarts-line-dual-x', 'echarts-3d-pie', 'top-n'] }
+    { name: '其他', items: ['render-stage-loader', 'zone-setting', 'area-business-vol', 'echarts-line-dual-x', 'echarts-3d-pie', 'top-n', 'params-trigger'] }
 ];
 
 // 6. 统计
@@ -123,12 +124,12 @@ const labelCount = { '🟢 独立优秀': 0, '🟡 组合可用': 0, '🔴 组�
 for (const p of Object.values(profileData)) if (labelCount[p.label] !== undefined) labelCount[p.label]++;
 
 // 7. 输出
-const today = '2026-06-16';
+const today = new Date().toISOString().slice(0, 10);
 let md = '';
 md += '---\n';
 md += 'title: 物料维护清单（advisor 视角）\n';
 md += `description: advisor 对全部 ${total} 个有效物料的画像/文档化状态总览，按 18 个分类组织\n`;
-md += 'version: 0.1\n';
+md += 'version: 0.8\n';
 md += `last_updated: ${today}\n`;
 md += '---\n\n';
 md += `# 物料维护清单（advisor 视角）\n\n`;
@@ -219,5 +220,11 @@ if (extra.length) {
 }
 console.log('  ✓ 分类清单去重、覆盖校验通过（', seen.size, '=', total, '）');
 
-fs.writeFileSync('.trae/skills/oss-vis-material-advisor/materials-catalog.md', md);
-console.log('✓ materials-catalog.md written,', total, 'materials,', profiled, 'profiled');
+// 默认只校验；需要重新生成时显式传 --write（避免覆盖手工维护的排版/说明段落）
+if (process.argv.includes('--write')) {
+    fs.writeFileSync('.trae/skills/oss-vis-material-advisor/materials-catalog.md', md);
+    console.log('✓ materials-catalog.md written,', total, 'materials,', profiled, 'profiled');
+} else {
+    console.log('✓ 校验通过（仅校验，不写入）：', total, 'materials,', profiled, 'profiled');
+    console.log('  如需重新生成清单，请执行: node .trae/skills/oss-vis-material-advisor/scripts/gen-catalog.js --write');
+}

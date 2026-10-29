@@ -58,6 +58,7 @@
 ## 5. 数据与配置组织
 
 - 接口层：`web/services/shenzhen-communication-guarantee/`，统一走 `getViewItemDataApi`（baseUrlType `sceneViewService`，viewPageId 复用信管局 `open-close-ceremonies-view`），空数据兜底链：默认值 → fallback url（getStaticApi）→ localMockUrl（`public/static/mock/shenzhen-communication-guarantee/`）。新增参数/新增 viewItemId 待服务端确认，见 `plans/task-2026-10-09-004-00-scguarantee-backend-api-confirm.md`
+- **fallback 静态兜底**（2026-10-29，模块 15 接口全接入）：链路、文件名规则、占位文件约定与运维对照表见 [./008-fallback-data/spec.md](./008-fallback-data/spec.md)
 - 模块级配置：`share/presets.ts`（视图枚举、AreaType 字典、资源顺序、staticAssets）
 - 静态图片：`web/pages/shenzhen-communication-guarantee/images/`
 
@@ -99,6 +100,7 @@
 | [005-view-context/](./005-view-context/spec.md) | 共享组件文档：跨屏视图上下文 |
 | [006-area-carousel/](./006-area-carousel/spec.md) | 共享组件文档：区域轮巡（spec + data-model） |
 | [007-zero-excellent/](./007-zero-excellent/spec.md) | 共享组件文档：四零双优保障目标 |
+| [008-fallback-data/](./008-fallback-data/spec.md) | 接口空数据静态兜底能力（spec + data-model：兜底链路 / 文件名规则 / 占位约定 / 运维对照表） |
 | [environment-config.md](./environment-config.md) | 环境配置清单（8 个 key：homeConfig 6 + areaConfig 1 + viewManager 1） |
 
 ## 维护准则

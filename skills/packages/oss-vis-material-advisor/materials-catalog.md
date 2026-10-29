@@ -1,13 +1,13 @@
 ---
 title: 物料维护清单（advisor 视角）
-description: advisor 对全部 154 个有效物料的画像/文档化状态总览，按 18 个分类组织
+description: advisor 对全部 155 个有效物料的画像/文档化状态总览，按 18 个分类组织
 version: 0.8
-last_updated: 2026-06-22
+last_updated: 2026-10-29
 ---
 
 # 物料维护清单（advisor 视角）
 
-本清单覆盖 `src/packages/**/oss-material.json` 命中的全部 **154 个物料**，按 18 个分类组织，标注每个物料的：
+本清单覆盖 `src/packages/**/oss-material.json` 命中的全部 **155 个物料**，按 18 个分类组织，标注每个物料的：
 
 -   复杂度（来自画像，缺失则为 `-`）
 -   画像状态（✅ 已画像 / ⏳ 待画像）
@@ -34,12 +34,12 @@ last_updated: 2026-06-22
 
 | 指标        | 数值         |
 | ----------- | ------------ |
-| 物料总数    | 154          |
-| 已画像      | 131（85.1%） |
-| 待画像      | 23（14.9%）  |
-| 自带 doc    | 75（48.7%）  |
-| 🟢 独立优秀 | 19           |
-| 🟡 组合可用 | 112          |
+| 物料总数    | 155          |
+| 已画像      | 132（85.2%） |
+| 待画像      | 23（14.8%）  |
+| 自带 doc    | 124（80.0%） |
+| 🟢 独立优秀 | 25           |
+| 🟡 组合可用 | 107          |
 | 🔴 组合复杂 | 0            |
 | ⚫ 不建议   | 0            |
 
@@ -56,8 +56,8 @@ last_updated: 2026-06-22
 | `free-layout-ind-progress`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
 | `free-layout-indicator-group`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 15 min          |
 | `free-layout-indicators-viewer` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 25 min          |
-| `nine-grid`                     | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
-| `scene-over-view-hlj`           | 高     | ✅   | —        | 🟡 组合可用 | 3.2  | 25 min          |
+| `nine-grid`                     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
+| `scene-over-view-hlj`           | 高     | ✅   | 📄       | 🟡 组合可用 | 3.2  | 25 min          |
 | `telescoping-board`             | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
 
 > 已画像 8/8 ✅ 全部完成
@@ -66,11 +66,11 @@ last_updated: 2026-06-22
 
 | 物料                 | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | -------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `label-text`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.2  | 3 min           |
-| `message-distribute` | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 10 min          |
+| `label-text`         | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.2  | 3 min           |
+| `message-distribute` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 10 min          |
 | `normal-label`       | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 2 min           |
 | `textarea-label`     | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.3  | 5 min           |
-| `description-table`  | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 8 min           |
+| `description-table`  | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 8 min           |
 
 > 已画像 5/5 ✅ 全部完成
 
@@ -79,12 +79,12 @@ last_updated: 2026-06-22
 | 物料                     | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
 | `bidirectional-progress` | 中     | ✅   | 📄       | 🟢 独立优秀 | 4    | 10 min          |
-| `business-quality`       | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 8 min           |
-| `business-scale`         | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 6 min           |
-| `digital-card`           | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
+| `business-quality`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 8 min           |
+| `business-scale`         | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 6 min           |
+| `digital-card`           | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
 | `digital-flop`           | 中     | ✅   | 📄       | 🟢 独立优秀 | 4    | 8 min           |
-| `indicator-display`      | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 5 min           |
-| `number-level-indicate`  | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 6 min           |
+| `indicator-display`      | 中     | ✅   | 📄       | 🟢 独立优秀 | 4    | 5 min           |
+| `number-level-indicate`  | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 6 min           |
 
 > 已画像 7/7 ✅ 全部完成
 
@@ -92,19 +92,19 @@ last_updated: 2026-06-22
 
 | 物料                | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `carousel-list`     | 中     | ✅   | —        | 🟡 组合可用 | 3.7  | 12 min          |
+| `carousel-list`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.7  | 12 min          |
 | `carousel-notice`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.8  | 8 min           |
 | `carousel-param`    | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 10 min          |
-| `equip-list`        | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
+| `equip-list`        | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
 | `hot-app-top5`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.9  | 10 min          |
-| `monitor-topn-list` | 中     | ✅   | —        | 🟡 组合可用 | 3.7  | 12 min          |
-| `progress-list`     | 中高   | ✅   | —        | 🟡 组合可用 | 3.7  | 10 min          |
-| `top-rank`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.4  | 10 min          |
-| `top-rank-shaanxi`  | 中     | ✅   | —        | 🟡 组合可用 | 3.4  | 10 min          |
+| `monitor-topn-list` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.7  | 12 min          |
+| `progress-list`     | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.7  | 10 min          |
+| `top-rank`          | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 10 min          |
+| `top-rank-shaanxi`  | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 10 min          |
 | `topn-rank`         | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
 | `topn-rank-one`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.7  | 10 min          |
-| `tree-list`         | 中高   | ✅   | —        | 🟢 独立优秀 | 4.0  | 15 min          |
-| `vertical-list`     | 简单   | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
+| `tree-list`         | 中高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 15 min          |
+| `vertical-list`     | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
 
 > 已画像 13/13 ✅ 全部完成
 
@@ -131,10 +131,10 @@ last_updated: 2026-06-22
 
 | 物料                 | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | -------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `popover-check`      | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
-| `popover-checkparam` | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 10 min          |
+| `popover-check`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
+| `popover-checkparam` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 10 min          |
 | `query-form-group`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 15 min          |
-| `range-picker`       | 简单   | ✅   | —        | 🟡 组合可用 | 3.4  | 5 min           |
+| `range-picker`       | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
 
 > 已画像 4/4 ✅ 全部完成
 
@@ -142,7 +142,7 @@ last_updated: 2026-06-22
 
 | 物料                    | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ----------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `custom-request-button` | 中     | ✅   | —        | 🟢 独立优秀 | 4.0  | 8 min           |
+| `custom-request-button` | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 8 min           |
 | `export-btn`            | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.2  | 6 min           |
 | `ghost-btn`             | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 3 min           |
 | `iframe`                | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
@@ -154,11 +154,11 @@ last_updated: 2026-06-22
 
 | 物料                  | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | --------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `carousel-image-list` | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
-| `tab-list`            | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
+| `carousel-image-list` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
+| `tab-list`            | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
 | `tab-list-2`          | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 12 min          |
 | `tab-list-arc`        | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.4  | 15 min          |
-| `tab-list-static`     | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
+| `tab-list-static`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
 
 > 已画像 5/5 ✅ 全部完成
 
@@ -170,13 +170,13 @@ last_updated: 2026-06-22
 | `cone-bar`                          | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 6 min           |
 | `cone-bar-line`                     | 高     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 8 min           |
 | `cone-single-bar`                   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 5 min           |
-| `dual-axes-chart`                   | 高     | ✅   | —        | 🟡 组合可用 | 3.5  | 20 min          |
+| `dual-axes-chart`                   | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 20 min          |
 | `echarts-bar`                       | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.2  | 6 min           |
 | `echarts-gauge`                     | 极高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 30 min          |
 | `echarts-liquid`                    | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 5 min           |
-| `echarts-map`                       | 高     | ✅   | —        | 🟡 组合可用 | 3.7  | 51 min          |
+| `echarts-map`                       | 高     | ✅   | 📄       | 🟡 组合可用 | 3.7  | 51 min          |
 | `echarts-multi-variable-area-chart` | 极高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 15 min          |
-| `echarts-pie`                       | 中     | ✅   | —        | 🟢 独立优秀 | 4.3  | 7 min           |
+| `echarts-pie`                       | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.3  | 7 min           |
 | `ind-list-echarts-gauge`            | 极高   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 20 min          |
 
 > 已画像 12/12 ✅ 全部完成
@@ -189,7 +189,7 @@ last_updated: 2026-06-22
 | `oss-chart-plots/plots/bar`              | 中     | ✅   | —        | 🟡 组合可用 | 3.7  | 5 min           |
 | `oss-chart-plots/plots/base-area`        | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 7 min           |
 | `oss-chart-plots/plots/base-scatter`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 8 min           |
-| `oss-chart-plots/plots/column`           | 中     | ✅   | —        | 🟢 独立优秀 | 4.0  | 5 min           |
+| `oss-chart-plots/plots/column`           | 中     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 5 min           |
 | `oss-chart-plots/plots/double-gauge`     | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
 | `oss-chart-plots/plots/dual-axes`        | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
 | `oss-chart-plots/plots/dual-column-line` | 高     | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 15 min          |
@@ -215,8 +215,8 @@ last_updated: 2026-06-22
 
 | 物料                     | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `baidu-map`              | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 30 min          |
-| `baidu-map-unicom`       | 中     | ✅   | —        | 🟡 组合可用 | 3.2  | 30 min          |
+| `baidu-map`              | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 30 min          |
+| `baidu-map-unicom`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.2  | 30 min          |
 | `geo-3d-map`             | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 120 min         |
 | `geo-cascader`           | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 15 min          |
 | `oss-chart-classify-map` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 90 min          |
@@ -230,8 +230,8 @@ last_updated: 2026-06-22
 
 | 物料                       | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | -------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `model-3d/smart-warehouse` | 高     | ✅   | —        | 🟡 组合可用 | 3.4  | 60 min          |
-| `twaver-topo`              | 中高   | ✅   | —        | 🟡 组合可用 | 3.7  | 30 min          |
+| `model-3d/smart-warehouse` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 60 min          |
+| `twaver-topo`              | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.7  | 30 min          |
 | `virtual-3d-column`        | 高     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 20 min          |
 | `virtual-3d-column-normal` | 高     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 20 min          |
 
@@ -242,7 +242,7 @@ last_updated: 2026-06-22
 | 物料               | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
 | `levitated-sphere` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 25 min          |
-| `normal-clock`     | 简单   | ✅   | —        | 🟢 独立优秀 | 4.0  | 5 min           |
+| `normal-clock`     | 简单   | ✅   | 📄       | 🟢 独立优秀 | 4.0  | 5 min           |
 | `path-animation`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.0  | 15 min          |
 | `svg-render`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.0  | 20 min          |
 | `warning-board`    | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 15 min          |
@@ -253,9 +253,9 @@ last_updated: 2026-06-22
 
 | 物料              | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ----------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `single-image`    | 简单   | ✅   | —        | 🟡 组合可用 | 3.5  | 2 min           |
-| `video-playback`  | 中     | ✅   | —        | 🟡 组合可用 | 3.0  | 8 min           |
-| `weather-display` | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 10 min          |
+| `single-image`    | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.5  | 2 min           |
+| `video-playback`  | 中     | ✅   | 📄       | 🟡 组合可用 | 3.0  | 8 min           |
+| `weather-display` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 10 min          |
 
 > 已画像 3/3 ✅ 全部完成
 
@@ -263,10 +263,10 @@ last_updated: 2026-06-22
 
 | 物料                      | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `circular-progress`       | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 8 min           |
-| `circular-progress-group` | 中     | ✅   | —        | 🟡 组合可用 | 3.6  | 12 min          |
-| `normal-process`          | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 10 min          |
-| `pagination-display`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.3  | 8 min           |
+| `circular-progress`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 8 min           |
+| `circular-progress-group` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.6  | 12 min          |
+| `normal-process`          | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 10 min          |
+| `pagination-display`      | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.3  | 8 min           |
 | `progress-list-bar`       | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
 
 > 已画像 5/5 ✅ 全部完成
@@ -275,9 +275,9 @@ last_updated: 2026-06-22
 
 | 物料               | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | ------------------ | ------ | ---- | -------- | ----------- | ---- | --------------- |
-| `stats-indi`       | 简单   | ✅   | —        | 🟡 组合可用 | 3.5  | 5 min           |
+| `stats-indi`       | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.5  | 5 min           |
 | `stats-indi-grid`  | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 10 min          |
-| `stats-indi-group` | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 12 min          |
+| `stats-indi-group` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 12 min          |
 | `status-display`   | 中     | ✅   | 📄       | 🟡 组合可用 | 3.4  | 8 min           |
 
 > 已画像 4/4 ✅ 全部完成
@@ -297,7 +297,7 @@ last_updated: 2026-06-22
 | `decoration/border7`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
 | `decoration/border8`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
 | `decoration/border9`          | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
-| `decoration/border10`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
+| `decoration/border10`         | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
 | `decoration/border11`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
 | `decoration/border12`         | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
 | `decoration/decoration1`      | 简单   | ✅   | —        | 🟡 组合可用 | 3.0  | 2 min           | 合并入 decoration-family |
@@ -318,22 +318,23 @@ last_updated: 2026-06-22
 
 > 已画像 27/27 ✅ 全部完成（24 个合并为 decoration-family + 3 个独立画像）
 
-### 其他（6）
+### 其他（7）
 
 | 物料                  | 复杂度 | 画像 | 自带 doc | 评级        | 分数 | 搭建（minimal） |
 | --------------------- | ------ | ---- | -------- | ----------- | ---- | --------------- |
 | `render-stage-loader` | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.3  | 5 min           |
-| `zone-setting`        | 中     | ✅   | —        | 🟡 组合可用 | 3.3  | 15 min          |
-| `area-business-vol`   | 中高   | ✅   | —        | 🟡 组合可用 | 3.2  | 20 min          |
+| `zone-setting`        | 中     | ✅   | 📄       | 🟡 组合可用 | 3.3  | 15 min          |
+| `area-business-vol`   | 中高   | ✅   | 📄       | 🟡 组合可用 | 3.2  | 20 min          |
 | `echarts-line-dual-x` | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
-| `echarts-3d-pie`      | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 15 min          |
-| `top-n`               | 中     | ✅   | —        | 🟡 组合可用 | 3.5  | 10 min          |
+| `echarts-3d-pie`      | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 15 min          |
+| `top-n`               | 中     | ✅   | 📄       | 🟡 组合可用 | 3.5  | 10 min          |
+| `params-trigger`      | 简单   | ✅   | 📄       | 🟡 组合可用 | 3.7  | 5 min           |
 
-> 已画像 6/6 ✅ 全部完成
+> 已画像 7/7 ✅ 全部完成
 
 ## 推进建议
 
-当前覆盖率 **85.1%**（131/154），后续批次建议：
+当前覆盖率 **85.2%**（132/155），后续批次建议：
 
 1. **第一批**（已做，11 个）：8 个有 5+1 文档物料 + 3 个高频（echarts-map/table/top-rank）
 2. **第二批**（已完成，9 个）：表格全部完成（drilldown-table / drilldown-table-2 / expandable-table / pagination-table / table-detail / table-fixedColumns / table-transpose / transfer-table / alarm-window-card；table 在第一批）
@@ -345,7 +346,7 @@ last_updated: 2026-06-22
 8. **第八批**（已完成，17 个）：状态/标签（4）+ 表单/筛选（4）+ 按钮/操作（5）+ 文本/标签/标题（4）= 17 个
 9. **第九批**（已完成，5 个）：轮播/公告
 10. **第十批**（已完成，7 个）：其他（3）+ 装饰汇总（4 = decoration-family 合并 24 + hexagon + flash-point + common-container）= 7 个
-11. **累计**：10 批画像，共 **131 个画像 / 154 物料，覆盖率 85.1%**
+11. **累计**：10 批画像 + 1 个补录画像（params-trigger），共 **132 个画像 / 155 物料，覆盖率 85.2%**
 12. **剩余 23 个**：border1-12 + decoration1-11 全部为纯样式边框/装饰，已通过 `decoration-family.json` 合并覆盖，无需单独画像
 
 ## 与 development-assistant 清单的关系

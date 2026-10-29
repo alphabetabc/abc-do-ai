@@ -51,5 +51,6 @@ app.js / bootstrap.js  Midway 服务入口
 ## 关键决策
 
 - 请求 URL 由 `baseUrlType` 经 `web/common/environment` 的服务发现配置解析（direct / discover 两种模式）；非生产环境可用 `localMockUrl` 切换到本地静态 mock。
+- **服务地址选择（公用能力）**：`baseUrlType` 是 `public/environment.json` 中的服务 key，链路为：业务 service 定义常量（如 `const baseUrlType = 'sceneViewService'`）→ `web/services/request/getViewItemData.ts` 的 `getViewItemDataApi`（未传时默认 `sceneViewService`）→ `web/services/request/instance.ts` 的 `getRequestUrl` 按 `mode` 取 `direct`（直连地址）或 `discover`（服务发现地址）拼 baseUrl。在用服务：`sceneViewService`（视图服务 `view/getViewItemData`，大屏数据主通道）、`cameraService`（摄像头）、`verifyService`（token 校验，结构不同）。新模块取数一律走 `getViewItemDataApi`，禁止绕过 `web/services/request/` 裸 fetch（见 001-vision 硬约束）。
 - mock 数据放 `public/static/mock/<module>/`，接口失败时可走 `web/services/info-management-bureau/loadFallbackData.ts` 类降级。
 - 地图底图与行政边界数据全部内置于 `public/map/`（省市区 geojson + 镇级 townJson），不依赖运行时外部地图服务拉取边界。

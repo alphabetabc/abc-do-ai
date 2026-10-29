@@ -1,8 +1,8 @@
 ---
 title: 物料清单索引
-description: src/packages 下所有带 oss-material.json 的有效物料清单（147 个），按分类组织，标注文档化状态
-version: 1.5.0
-last_updated: 2026-09-17
+description: src/packages 下所有带 oss-material.json 的有效物料清单（155 个），按分类组织，标注文档化状态
+version: 2.0.0
+last_updated: 2026-10-29
 ---
 
 # 物料清单索引
@@ -20,29 +20,38 @@ glob.sync('src/packages/**/oss-material.json')
 
 ## 总览
 
-| 分类                    | 数量    | 5+1 文档化 | 自带 doc（`packages/{name}/doc`） |
-| ----------------------- | ------- | ---------- | --------------------------------- |
-| 容器 / 布局             | 8       | 2          | 1                                 |
-| 文本 / 标签 / 标题      | 5       | 3          | 2                                 |
-| 数字 / 指标卡           | 7       | 2          | 1                                 |
-| 列表 / 排行             | 11      | 2          | 5                                 |
-| 表格                    | 10      | 1          | 4                                 |
-| 表单 / 筛选             | 4       | 2          | 1                                 |
-| 按钮 / 操作             | 5       | 0          | 3                                 |
-| 轮播 / 公告             | 6       | 0          | 3                                 |
-| 图表（ECharts）         | 8       | 3          | 4                                 |
-| 图表（oss-chart-plots） | 23      | 0          | 0                                 |
-| 地图                    | 8       | 1          | 5                                 |
-| 3D / 拓扑               | 4       | 0          | 2                                 |
-| 时钟 / 动画             | 5       | 1          | 1                                 |
-| 媒体 / 播放             | 3       | 1          | 2                                 |
-| 进度 / 加载             | 6       | 4          | 2                                 |
-| 状态 / 标签             | 2       | 0          | 2                                 |
-| 边框 / 装饰             | 25      | 0          | 0                                 |
-| 其他                    | 7       | 1          | 1                                 |
-| **合计**                | **147** | **23**     | **37**                            |
+> 物料总数 = **155**（每个物料在下面 18 个分类中**只出现一次**，无重复、无遗漏）。
+> 「自带 doc」指 `src/packages/{name}/doc/readme.md` 存在（物料仓真实文件统计）。
 
-> 最后更新：2026-09-17（新增 echarts-map 物料文档）
+| 分类                    | 数量 | 5+1 文档化 | 自带 doc（`packages/{name}/doc`） |
+| ----------------------- | ---- | ---------- | --------------------------------- |
+| 容器 / 布局             | 9    | 2          | 9                                 |
+| 文本 / 标签 / 标题      | 3    | 3          | 3                                 |
+| 数字 / 指标卡           | 8    | 2          | 8                                 |
+| 列表 / 排行             | 11   | 1          | 11                                |
+| 表格                    | 10   | 1          | 10                                |
+| 表单 / 筛选             | 5    | 1          | 5                                 |
+| 按钮 / 操作             | 5    | 1          | 5                                 |
+| 轮播 / 公告             | 8    | 1          | 8                                 |
+| 图表（ECharts）         | 13   | 3          | 13                                |
+| 图表（oss-chart-plots） | 23   | 0          | 10                                |
+| 地图                    | 8    | 1          | 8                                 |
+| 3D / 拓扑               | 5    | 0          | 5                                 |
+| 时钟 / 动画             | 5    | 1          | 5                                 |
+| 媒体 / 播放             | 3    | 1          | 3                                 |
+| 进度 / 加载             | 7    | 4          | 7                                 |
+| 状态 / 标签             | 4    | 0          | 4                                 |
+| 边框 / 装饰             | 26   | 0          | 8                                 |
+| 其他                    | 2    | 1          | 2                                 |
+| **合计**                | **155** | **23** | **124**                        |
+
+> 最后更新：2026-10-29（按 `oss-material.json` 实际扫描结果重建清单，修正数量与缺漏）
+
+### 分类归属说明
+
+- 每个物料**只归一类**，避免旧版「同一物料出现在多个分类」导致的计数虚高。
+- 分类依据是物料的**功能形态**（而非 `oss-material.json.groupId`，后者是设计器内部的数值分组 id，与本清单分类不是一一对应关系）。
+- `decoration/common-container`（通用模块容器）归入「容器 / 布局」；其余 26 个 `decoration/*` 归入「边框 / 装饰」。
 
 ## 状态说明
 
@@ -56,7 +65,9 @@ glob.sync('src/packages/**/oss-material.json')
 
 ---
 
-## ✅ 已完成 5+1 文档化的物料（22）
+## ✅ 已完成 5+1 文档化的物料（23）
+
+> 判定标准：`materials/{name}/` 下 **README / schema / component-logic / data-model / common-tasks / gotchas** 六份齐全。
 
 | 物料 | 分类 | 复杂度 | 核心特点 | 关键踩坑 |
 | --- | --- | --- | --- | --- |
@@ -72,17 +83,26 @@ glob.sync('src/packages/**/oss-material.json')
 | [**label-text**](./label-text/README.md) | 文本 / 标签 / 标题 | 高 | 文本渐变/阴影/描边/倒影 + 前缀图标 + 气泡提示 + 下钻交互（Modal/Drawer/Window） | `dataConfig` 默认数据是对象但组件兼容数组；`iconType` 字段未使用；渐变文本需 CSS 裁剪 |
 | [**progress-list-bar**](./progress-list-bar/README.md) | 列表 / 排行 | 中 | 水平进度条列表 + 渐变色 + 进度点动画 + styled-components transient props | transient props `$` 前缀避免 DOM 透传；`keyframes` 动画性能优化 |
 | [**textarea-label**](./textarea-label/README.md) | 文本 / 标签 / 标题 | 简单 | Input.TextArea + 文本样式 + 自适应高度 + 边框开关 | `disableTextAlign: true`；仅读 `dataSource[0]`；无 index.less |
-| [**description-table**](./description-table/README.md) | 表格 | 中 | Descriptions 描述列表 + 动态列配置 + 单元格点击下钻 + 动态事件优先级 | 数据兼容对象/数组；`showColon` 仅 `bordered=false` 生效；派发 `${dataIndex}_id` |
+| [**carousel-list**](./carousel-list/README.md) | 轮播 / 公告 | 中 | 轮播列表 + 自动播放 + 指示点 + 悬浮暂停 | 见 `carousel-list/gotchas.md` |
+| [**export-btn**](./export-btn/README.md) | 按钮 / 操作 | 简单 | 导出按钮 + `customDataSourceApi` blob 导出 + 交互参数接收 | 自定义接口参数走 `interactionProps.customDataSourceApiParams` |
+| [**oss-chart-map**](./oss-chart-map/README.md) | 地图 | 高 | 图表地图 + 区域着色 + 级别配置 | 见 `oss-chart-map/gotchas.md` |
 | [**pagination-display**](./pagination-display/README.md) | 进度 / 加载 | 简单 | Pagination 分页 + total 双来源 + 页码/条数派发 | total 来源优先级 `extraResponse > dataSource`；`showSizeChanger/showQuickJumper` 固定 false |
-| [**message-distribute**](./message-distribute/README.md) | 表单 / 筛选 | 中 | Transfer 号码选择 + Form 表单 + API 请求发送短信 + MonacoEditor 配置接口 | dataModel indicators 原为空已修复；dayjs 生成 callIndex |
 | [**single-image**](./single-image/README.md) | 媒体 / 播放 | 中 | 位图/矢量图双模式 + 点击下钻 + 参数派发 + 可见范围控制 | `_.replace` 仅替换首次；`effect='page'` 已废弃；矢量图浏览器兼容性 |
 | [**normal-clock**](./normal-clock/README.md) | 时钟 / 动画 | 简单 | dayjs 定时器 + 13 种时间格式 + 整点传参派发 | 无 dataModel.json（纯时间组件）；setInterval 每秒更新；兼容旧版本 switch case |
 | [**circular-progress**](./circular-progress/README.md) | 进度 / 加载 | 简单 | D3.js 圆环 + 渐变 / 起点标识 / 4 起点方向 + 中心 DigitalFlop + 翻牌器复用 | ⚠️ **数组模式字段名不一致**（dataModel `percent/title` vs 代码 `value/name`）；`digitalFlopResolve` 直接修改 config；`Label.fontColor` 隐式未用 |
 | [**popover-check**](./popover-check/README.md) | 表单 / 筛选 | 中 | 单/多选下拉 + TooltipBorder SVG 装饰边框 + 点击外部关闭 + 派发 select/selectLabel | ⚠️ **隐式字段 `defaultCheckedValue`**（代码读，schema 未声明）；`document.click` 全局监听；`containerStyle.borderWidth` 写死 2px |
 | [**top-rank**](./top-rank/README.md) | 列表 / 排行 | 中 | TOP 排名 + 前 3 名独立配色（ArrayCollapse）+ 序号圆形 + 4 种字体样式面板 | ⚠️ **doc/README.md 与代码多处不一致**（声称点击派发 / TOP 数量 / 动画均未实现）；`value` 字段类型与实际值不一致；`id` 字段未使用 |
 | [**params-trigger**](./params-trigger/README.md) | 其他 / 交互工具 | 简单 | 纯逻辑物料：参数转换映射 + 10 个语义化订阅槽位 + 派发字段名前缀（`paramsTrigger_`）+ 设计器占位 / 运行时 null | ⚠️ **matchedKeys 对比必须加前缀**；`constants.ts` 必须独立成文件以保 tree-shaking；subscribe 槽位框架不支持运行时动态注册 |
+| [**table-detail**](./table-detail/README.md) | 表格 | 中 | 明细表格 + 动态列 + 下钻 + 分页 + 自动轮播 | ⚠️ 12 条踩坑点（见 `table-detail/gotchas.md`），其中「组件本身不触发 API 请求」是设计上的被动消费模式，不属于 bug |
 
-> 二十二个物料都基于 **`develop` 分支当前代码**生成，与 `release` 分支的兼容代码已剥离。
+### 🚧 文档部分完成（2）
+
+| 物料 | 分类 | 已有 | 缺失 |
+| --- | --- | --- | --- |
+| `message-distribute` | 表单 / 筛选 | `README.md` | schema / component-logic / data-model / common-tasks / gotchas |
+| `tab-list` | 轮播 / 公告 | `README.md` / `schema.md` / `component-logic.md` / `data-model.md` | common-tasks / gotchas |
+
+> 二十三个物料都基于 **`develop` 分支当前代码**生成，与 `release` 分支的兼容代码已剥离。
 >
 > ⚠️ 本批新增的 3 个物料（circular-progress、popover-check、top-rank）在文档化过程中**未修复源码问题**，仅在 gotchas.md 中记录，后续 PR 处理。
 >

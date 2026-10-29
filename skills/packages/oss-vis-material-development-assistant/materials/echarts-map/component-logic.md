@@ -176,17 +176,24 @@ useEffect(() => {
 
 > ⚠️ **当前 `refreshTime` 默认 100 秒**，注意防止旧请求未结束又被覆盖（已有 cancel 机制）。
 
-#### 3.3.3 地图底图加载 `mapPath`（useMemo）
+#### 3.3.3 地图底图加载（currentMapConfig useMemo + mapPath useMemo + 副作用 useEffect）
+
+> 📌 2026-10 重构：原 `mapPath` useMemo 中混杂了大量 setState / dispatch 副作用（违反 useMemo 纯函数约定），现已拆为三段。
+
+**第 1 段：`currentMapConfig`（纯查找，useMemo）**
+
+```jsx
+const currentMapConfig = useMemo(() => {
+    const mapCfg = _.find(mapConfig, { name: mapInfo.currentName }) || _.find(mapConfig, { alias: mapInfo.currentName });
+    return mapCfg;
+}, [mapInfo.currentName]);
+```
+
+**第 2 段：`mapPath`（仅返回加载 Promise，useMemo）**
 
 ```jsx
 const mapPath = useMemo(() => {
-    const mapCfg = _.find(mapConfig, { name: mapInfo.currentName }) || _.find(mapConfig, { alias: mapInfo.currentName });
-
-    // 显示返回按钮的逻辑：非按权限加载，或省级以下用户
-    if (!config.geo.permission || (config.geo.permission && Number(zoneLevel) < 3)) {
-        setShowBack(mapCfg?.level !== 'province');
-    }
-
+    const mapCfg = currentMapConfig;
     if (mapCfg) {
         let loaderGetter = () =>
             cache.cached(`MAP_CONFIG_SYMBOL_${mapCfg.adcode}`, () => loadJSON(`${constants.STATIC_PATH}/map/${mapCfg.level}/${mapCfg.adcode}.json`));
@@ -195,31 +202,45 @@ const mapPath = useMemo(() => {
         if (latestConfig.current.enableDrilldownBottomZone && mapInfo.currentLevel === 'city' && mapInfo.drilldown === true) {
             loaderGetter = () => getBottomRegionGeoJson(latestConfig.current.preMapName, mapCfg);
         }
-
-        // 计算父级地图名（用于返回）
-        let parentMapName = '';
-        if (mapCfg.level !== 'province') {
-            const parentMapCfg = _.find(mapConfig, { adcode: mapCfg.parent });
-            parentMapName = parentMapCfg?.name;
-        } else {
-            parentMapName = mapCfg.name;
-        }
-
-        setMapInfo({ parentName: parentMapName, currentId: mapCfg.id, currentLevel: mapCfg.level });
-        dispatchParams(mapCfg);
-        setInnerApiParams({ regionId: mapCfg.id, regionName: mapCfg.name });
         return loaderGetter();
     }
     return null;
-}, [mapInfo.currentName]);
+}, [currentMapConfig]);
+```
+
+**第 3 段：副作用 useEffect（`[currentMapConfig]`）**
+
+```jsx
+useEffect(() => {
+    const mapCfg = currentMapConfig;
+    // 显示返回按钮的逻辑：非按权限加载，或省级以下用户
+    if (!config.geo.permission || (config.geo.permission && Number(zoneLevel) < 3)) {
+        setShowBack(mapCfg?.level !== 'province');
+    }
+
+    // 计算父级地图名（用于返回）
+    let parentMapName = '';
+    if (mapCfg.level !== 'province') {
+        const parentMapCfg = _.find(mapConfig, { adcode: mapCfg.parent });
+        parentMapName = parentMapCfg?.name;
+    } else {
+        parentMapName = mapCfg.name;
+    }
+
+    setMapInfo({ parentName: parentMapName, currentId: mapCfg.id, currentLevel: mapCfg.level });
+    dispatchParams(mapCfg);
+    setInnerApiParams({ regionId: mapCfg.id, regionName: mapCfg.name });
+}, [currentMapConfig]);
 ```
 
 **关键点**：
 
--   `mapInfo.currentName` 变化即重算（点地图、参数订阅、返回上一层 都会触发）。
+-   `mapInfo.currentName` 变化 → `currentMapConfig` 重算 → `mapPath` 与副作用 effect 依次触发（点地图、参数订阅、返回上一层 都会走到）。
 -   区县下钻（`enableDrilldownBottomZone = true`）的底图**不是新文件**，而是从父级 geoJson 中 `filter` 出对应 adcode 的 features。
--   `dispatchParams` 每次切换地图都会派发（详见 § 3.3.5）。
+-   `dispatchParams` 每次切换地图都会派发（详见 § 3.3.5），现在发生在 effect 期而非 render 期。
 -   `setInnerApiParams` 触发 `getDataSource` 自动按新 regionId/regionName 重新拉数据。
+-   ⚠️ `mapPath` memo 内仍读取 `mapInfo.currentLevel` / `mapInfo.drilldown`（刻意不在依赖里）——区县下钻判断依赖**上一轮 render 的 state**，这是原有时序语义，重构时保留；不要"修复"这个看似缺失的依赖。
+-   ⚠️ 副作用 effect 内 `mapCfg.level` 等访问**当前没有空值保护**（`setShowBack` 用了 `?.`，其余没有）——`currentName` 在 mapConfig 中查不到时会抛错，待修复（见 gotchas.md § 10）。
 
 #### 3.3.4 渲染指标 `useEffect([mapPath, dataSource, config.geo, ...])`
 
@@ -277,7 +298,7 @@ const dispatchParams = function (item) {
 };
 ```
 
-> **派发时机**：每次 `mapPath` 重算时（即 `currentName` 变化时），都会把当前区域的 `id/name/level` 派发出去，不依赖点击。首次派发发生在 `Map` 挂载的 render 期，若下游组件首请求早于消费派发参数，会出现首屏请求缺参（详见 [gotchas.md § 18](./gotchas.md)）。
+> **派发时机**：每次 `currentMapConfig` 变化时（即 `currentName` 变化时），都会把当前区域的 `id/name/level` 派发出去，不依赖点击。2026-10 重构后首次派发发生在挂载后的 effect 期（原先在 render 期），若下游组件首请求早于消费派发参数，仍会出现首屏请求缺参（详见 [gotchas.md § 18](./gotchas.md)）。
 
 -   `ZoneLevelEnum` 把字符串 `level`（`'province'/'city'/'district'`）映射为数字（2/3/4）。`item.level` 来自 map-config.json，值异常时映射结果为 undefined、经 `?? null` 派出 `null`（详见 [gotchas.md § 16](./gotchas.md)）。
 -   三个字段是一条 `dispatch` 一起发出的：**`onClickId` 能到达请求，证明整组派发已执行**（zoneLevel 不会单独漏发）。
@@ -320,7 +341,7 @@ const onGoBackClick = () => {
 };
 ```
 
-把 `currentName` 改回 `parentName`，会触发 `mapPath` useMemo 重算，重新加载父级 geoJson。
+把 `currentName` 改回 `parentName`，会触发 `currentMapConfig` useMemo 重算，重新加载父级 geoJson。
 
 #### 3.3.8 参数订阅 `useEffect([regionNameInteraction, regionNameInDrillDown, receivedPropsParams])`
 
@@ -713,7 +734,7 @@ export enum ZoneLevelEnum {
 
 | 场景 | 注意事项 |
 | --- | --- |
-| 切换地图（点地图 / 返回 / 参数订阅） | `mapPath` useMemo 仅依赖 `currentName`，`getDataSource` 通过 `preRequestParamsRef` 短路相同参数 |
+| 切换地图（点地图 / 返回 / 参数订阅） | `currentMapConfig`/`mapPath` useMemo 仅随 `currentName` 变化重算，`getDataSource` 通过 `preRequestParamsRef` 短路相同参数。副作用（setMapInfo/派发/setInnerApiParams）已移至 effect，比旧 render-phase setState 晚一拍，中间可能出现一次「新地图 + 旧 currentId」的中间渲染，会自动收敛 |
 | 频繁更新 config | `ReactECharts` 的 `replaceMerge: ['series', 'geo']` 避免全量重渲染，保留交互/选中态 |
 | 大量指标点（>1000） | `formatter` 是函数，每次 setOption 都会重生成；**避免在大数据下关闭 `enableLevelControl` / `showValueNumber`**（rich text 复杂度指数级增长） |
 | 定时刷新 | `preApiCancelTokenRef.current()` 在卸载/重启时主动 cancel 旧请求，防止竞态 |
@@ -772,3 +793,4 @@ if (!geoCoord) {
 | 日期       | 变更                            | 原因     |
 | ---------- | ------------------------------- | -------- |
 | 2026-09-17 | 文档化（基于 develop 分支代码） | 首次梳理 |
+| 2026-10-19 | 同步 mapPath 重构（拆为 currentMapConfig / mapPath / 副作用 useEffect 三段） | useMemo 副作用外移，见 § 3.3.3 |

@@ -2,7 +2,7 @@
 title: 路线图与继续指南
 description: advisor skill 已完成的工作 + 接下来可做的事情 + 切换智能体/任务时的恢复指南
 version: 0.8
-last_updated: 2026-06-22
+last_updated: 2026-10-29
 audience: 任何接手的智能体 / 后续任务
 ---
 
@@ -17,8 +17,8 @@ audience: 任何接手的智能体 / 后续任务
 | 1 | 建立 skill 框架 | [SKILL.md](./SKILL.md)（主文档） |
 | 2 | 写 4 份规则 | `references/{profile-generation,rating-rules,composition-rules,cost-estimation}.md` |
 | 3 | 生成首批 11 个画像 | `profiles/{echarts-bar,echarts-pie,echarts-map,digital-flop,digital-card,bidirectional-progress,normal-label,free-layout-indicators-viewer,dock-menu,table,top-rank}.json` |
-| 4 | 写画像索引 | `profiles/README.md`（131 个画像总览 + 跨画像发现） |
-| 5 | 写物料维护清单 | `materials-catalog.md`（154 个物料，按 18 分类组织） |
+| 4 | 写画像索引 | `profiles/README.md`（132 个画像总览 + 跨画像发现） |
+| 5 | 写物料维护清单 | `materials-catalog.md`（155 个物料，按 18 分类组织） |
 | 6 | 写 catalog 自动生成脚本 | `scripts/gen-catalog.js`（含分类去重 + 覆盖校验） |
 | 7 | 跑通组合方案示范 | `examples/sales-dashboard.md`（销售大盘场景，3 个方案卡片） |
 | 8 | 写 PM 常见问题 | `FAQ.md`（选物料/组合/成本 16 个问题） |
@@ -33,16 +33,17 @@ audience: 任何接手的智能体 / 后续任务
 | 17 | 生成第九批 5 个画像 | 轮播/公告（5：carousel-image-list / tab-list / tab-list-2 / tab-list-arc / tab-list-static） |
 | 18 | 生成第十批 7 个画像 | 其他（3：area-business-vol / zone-setting / top-n）+ 装饰汇总（4：decoration-family 合并 24 + hexagon + flash-point + common-container）= 7 个 |
 | 19 | 修复 echarts-3d-pie JSON 解析错误 | 替换 `_note` 中的中文全角双引号 → 中文方头括号 |
+| 20 | 补录 params-trigger 画像 + 修复文档口径 | `profiles/params-trigger.json`（参数触发器，B 3.7）；顺手修正 SKILL/catalog/README 的 154→155、131→132 计数；`gen-catalog.js` 改为默认只校验、`--write` 才重写 |
 
 ## 当前画像覆盖率
 
 | 维度        | 数据             |
 | ----------- | ---------------- |
-| 物料总数    | **154**          |
-| 已画像      | 131（85.1%）     |
-| 待画像      | 23（14.9%）      |
-| 🟢 独立优秀 | 19               |
-| 🟡 组合可用 | 112              |
+| 物料总数    | **155**          |
+| 已画像      | 132（85.2%）     |
+| 待画像      | 23（14.8%）      |
+| 🟢 独立优秀 | 25               |
+| 🟡 组合可用 | 107              |
 | 🔴 组合复杂 | 0                |
 | ⚫ 不建议   | 0                |
 
@@ -359,7 +360,7 @@ audience: 任何接手的智能体 / 后续任务
 
 ### 选项 B：第七-十批画像（继续扩大覆盖）✅ 已完成
 
-**目标**：把覆盖率从 53.2% 提升到 85.1%
+**目标**：把覆盖率从 53.2% 提升到 85.2%
 
 **已完成**：
 
@@ -375,7 +376,7 @@ audience: 任何接手的智能体 / 后续任务
 -   ✅ 第九批 5 个（轮播/公告）
 -   ✅ 第十批 7 个（其他 + 装饰汇总，24 个边框/装饰合并为 decoration-family）
 
-**实际产出**：49 个新画像 JSON（131 总画像 / 154 物料 = 85.1%）
+**实际产出**：50 个新画像 JSON（132 总画像 / 155 物料 = 85.2%，其中 params-trigger 为补录）
 
 **剩余 23 个**：border1-12 + decoration1-11 = 23 个纯样式边框/装饰，已通过 decoration-family.json 合并覆盖，无需单独画像。
 
@@ -413,8 +414,8 @@ audience: 任何接手的智能体 / 后续任务
 
 1. **本文件** `ROADMAP.md` — 了解"做到哪了"和"接下来做什么"
 2. **`SKILL.md`** — 了解 advisor 是什么、4 个任务（A/B/C/D）做什么
-3. **`materials-catalog.md`** — 了解 154 个物料的当前状态（画像覆盖 + 评级）
-4. **`profiles/README.md`** — 了解 131 个已画像的详情（第一批 11 + 第二批 9 + 第三批 12 + 第四批 9 + 第五批 23 + 第六批 18 + 第七批 20 + 第八批 17 + 第九批 5 + 第十批 7）
+3. **`materials-catalog.md`** — 了解 155 个物料的当前状态（画像覆盖 + 评级）
+4. **`profiles/README.md`** — 了解 132 个已画像的详情（第一批 11 + 第二批 9 + 第三批 12 + 第四批 9 + 第五批 23 + 第六批 18 + 第七批 20 + 第八批 17 + 第九批 5 + 第十批 7 + 补录 1）
 5. **`FAQ.md`** — 看 PM 视角的常见问题
 6. **`examples/sales-dashboard.md`** — 看完整的组合方案示范
 7. **按需读 references/** — 做具体任务时再读对应规则文档

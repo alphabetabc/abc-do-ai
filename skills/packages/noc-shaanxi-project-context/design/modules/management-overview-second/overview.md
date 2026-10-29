@@ -185,6 +185,7 @@ web/pages/management-overview-second/
 | ------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------- |
 | hazard-solve（隐患解决情况）   | [hazard-solve/README.md](./hazard-solve/README.md)     | 已解决/未解决堆叠柱 + 解决及时率折线 + 全省及时率 markLine |
 | hazard-rectify（隐患整改计划） | [hazard-rectify/README.md](./hazard-rectify/README.md) | 本月/近三个月两页 Carousel，计划与已完成双折线面积图       |
+| cutover-manager（割接管理）   | [cutover-manager/README.md](./cutover-manager/README.md) | 右屏：双 tab 饼图（总数/影响业务）+ 两页柱线 Carousel      |
 
 > 其余子模块按需新增 `design/modules/management-overview-second/<module>/README.md`，并登记到本表。
 

@@ -249,11 +249,11 @@ const geoJson = props.geoHelper.turf.transformRotate(res, config.geo?.rotateAngl
 **原因**：
 
 ```jsx
-// map.jsx mapPath useMemo
+// map.jsx currentMapConfig 副作用 useEffect（2026-10 重构后位置，原先在 mapPath useMemo 内）
 dispatchParams(mapCfg);
 ```
 
-`mapPath` 在 `currentName` 变化时重算，每次都 `dispatchParams`——包括：
+`currentMapConfig` 在 `currentName` 变化时重算，副作用 effect 每次都 `dispatchParams`——包括：
 
 -   点地图下钻（主动切）
 -   返回上一层（主动切）
@@ -262,6 +262,7 @@ dispatchParams(mapCfg);
 **风险**：
 
 -   外部组件可能误以为收到了"点击事件"，实际只是"地图层级变化"
+-   ⚠️ 2026-10 重构后副作用 effect 内 `mapCfg.level`、`_.find(mapConfig, { adcode: mapCfg.parent })` **没有空值保护**——`currentName` 在 mapConfig 中查不到时（如订阅参数传入不存在的区域名），effect 内直接抛 `Cannot read properties of undefined`。修复：effect 开头加 `if (!mapCfg) return;`
 
 **修复**：
 
@@ -407,7 +408,7 @@ if (actionsParams.length > 0 && interaction?.dispatch) {
 
 **症状**：页面刚打开时，下游组件的第一波请求里没有 `regionId/regionName/zoneLevel`，之后切图再请求就正常了。
 
-**原因**：首次派发发生在 `Map` 挂载的 render 期（`mapPath` useMemo 首次执行时）。如果下游组件挂载后立即发起首请求，而派发的参数消费链路晚一拍，**第一次请求自然缺参数**——这是页面级时序问题，不是数据问题。
+**原因**：首次派发发生在 `Map` 挂载后的 effect 期（2026-10 重构前在 `mapPath` useMemo 的 render 期，重构后晚一拍）。如果下游组件挂载后立即发起首请求，而派发的参数消费链路晚一拍，**第一次请求自然缺参数**——这是页面级时序问题，不是数据问题。
 
 **判别**：丢失只出现在首屏第一次请求、切图后正常 → 竞态；一直丢 → 查下游对该参数的消费逻辑（null 过滤等）。
 
@@ -426,7 +427,7 @@ currentName: config.geo.permission ? permissionZoneName : config.geo.mapsettings
 
 -   `permissionZoneName`（`designer.permissions.zoneName`）不受 `index.jsx` 的 `Promise.all` 门控管——若权限接口比 Map 挂载慢，初始值为 `undefined`
 -   权限名（如"广州市分公司"）与字典名（"广州市"）不一致时，`_.find` 按 name/alias 双查也撞不上
--   `mapPath` useMemo 依赖只有 `[mapInfo.currentName]`，初始失败后没有任何 useEffect 会重置 `currentName`，**死锁**
+-   `mapPath` useMemo 依赖只有 `[currentMapConfig]`（由 `currentName` 派生），初始失败后没有任何 useEffect 会重置 `currentName`，**死锁**
 
 **注意**：mapConfig 本身不会晚到——`DataStatus` 是**互斥渲染**（LOADING 时 children 不在 React 树中），Map 挂载时 mapConfig 必已就绪。晚到的只有 permissions。
 
@@ -508,3 +509,4 @@ if (!geoCoord) {
 | ---------- | ------------------------------- | ------------------------------------------------------------------ |
 | 2026-09-17 | 文档化（基于 develop 分支代码） | 首次梳理                                                           |
 | 2026-09-17 | 补充派发链路风险点（§16~§19）   | 梳理派发值生成、fieldName 空值、首屏竞态、currentName 初始化无补偿 |
+| 2026-10-19 | 同步 mapPath 重构                 | 副作用移入 effect（§10 更新派发时机与 mapCfg 空值风险、§18 更新首屏竞态时序、§19 更新依赖描述） |

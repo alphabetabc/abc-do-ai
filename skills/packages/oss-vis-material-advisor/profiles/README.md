@@ -1,8 +1,8 @@
 ---
 title: 物料画像索引
-description: oss-vis-material-advisor 已生成的 131 个物料画像索引（含第七-十批 3D/拓扑 + 时钟/动画 + 媒体/播放 + 进度/加载 + 表单/筛选 + 按钮/操作 + 状态/标签 + 其他 + 装饰汇总），按分类组织
+description: oss-vis-material-advisor 已生成的 132 个物料画像索引（含第七-十批 3D/拓扑 + 时钟/动画 + 媒体/播放 + 进度/加载 + 表单/筛选 + 按钮/操作 + 状态/标签 + 其他 + 装饰汇总 + params-trigger 补录），按分类组织
 version: 0.8
-last_updated: 2026-06-22
+last_updated: 2026-10-29
 ---
 
 # 物料画像索引
@@ -15,7 +15,7 @@ last_updated: 2026-06-22
 -   **6 维评分 + 评级 + 标签**
 -   搭建成本（3 档：minimal/typical/full）
 
-## 总览（131 个画像 / 154 物料，覆盖率 85.1%）
+## 总览（132 个画像 / 155 物料，覆盖率 85.2%）
 
 > 完整画像清单见本目录 `*.json` 文件。下方表格展示首批至第六批关键画像；第七-十批新增物料详见对应章节。
 
@@ -87,7 +87,7 @@ last_updated: 2026-06-22
 | [oss-chart-plots-word-cloud](./oss-chart-plots-word-cloud.json) | 图表/oss-chart-plots | B | 3.4 | 🟡 组合可用 | 5 min | ❌ | 词云图，自定义图片 mask |
 | [business-quality](./business-quality.json) | 数字/指标卡 | B | 3.4 | 🟡 组合可用 | 8 min | ❌ | 玉珏图数字卡 + 8 字段指标 |
 | [business-scale](./business-scale.json) | 数字/指标卡 | B | 3.5 | 🟡 组合可用 | 6 min | ❌ | 业务规模卡 + 标签/数值双区 |
-| [indicator-display](./indicator-display.json) | 数字/指标卡 | B | 3.5 | 🟡 组合可用 | 5 min | ❌ | 纯指标展示卡 |
+| [indicator-display](./indicator-display.json) | 数字/指标卡 | A | 4.0 | 🟢 独立优秀 | 5 min | ❌ | 纯指标展示卡 |
 | [number-level-indicate](./number-level-indicate.json) | 数字/指标卡 | B | 3.4 | 🟡 组合可用 | 6 min | ❌ | 数值级别指示器 + threshold |
 | [ellipse-layout-indicator](./ellipse-layout-indicator.json) | 容器/布局 | B | 3.3 | 🟡 组合可用 | 15 min | ❌ | 椭圆布局指标组 |
 | [free-layout-ind-progress](./free-layout-ind-progress.json) | 容器/布局 | B | 3.5 | 🟡 组合可用 | 12 min | ❌ | 自由布局指标进度 |
@@ -137,6 +137,7 @@ last_updated: 2026-06-22
 | [export-btn](./export-btn.json) | 按钮/操作 | B | 3.2 | 🟡 组合可用 | 15 min | ❌ | 导出按钮 |
 | [custom-request-button](./custom-request-button.json) | 按钮/操作 | A | 4.0 | 🟢 独立优秀 | 10 min | ❌ | API 请求按钮 + 订阅 |
 | [message-distribute](./message-distribute.json) | 按钮/操作 | B | 3.4 | 🟡 组合可用 | 20 min | ❌ | 短信派发 |
+| [params-trigger](./params-trigger.json) | 控件/逻辑 | B | 3.7 | 🟡 组合可用 | 5 min | ❌ | 参数触发器（订阅→映射→派发，无渲染） |
 | [status-display](./status-display.json) | 状态/标签 | B | 3.4 | 🟡 组合可用 | 15 min | ❌ | 条件映射状态显示 |
 | [zone-setting](./zone-setting.json) | 状态/标签 | B | 3.3 | 🟡 组合可用 | 20 min | ❌ | 应急资源区域 |
 | [warning-board](./warning-board.json) | 数字/指标卡 | B | 3.6 | 🟡 组合可用 | 20 min | ❌ | 告警牌（分指标配置） |
@@ -153,7 +154,7 @@ last_updated: 2026-06-22
 | [flash-point](./flash-point.json) | 装饰/边框 | B | 3.0 | 🟡 组合可用 | 3 min | ❌ | 闪点装饰 |
 | [decoration-family](./decoration-family.json) | 装饰/边框 | B | 3.0 | 🟡 组合可用 | 3 min | ❌ | decoration1-12 + border1-12（24 个汇总） |
 
-> 评级分布：**🟢 独立优秀 19 个**（14.5%）、**🟡 组合可用 112 个**（85.5%）、**🔴 组合复杂 0 个**、**⚫ 不建议 0 个**
+> 评级分布：**🟢 独立优秀 25 个**（18.9%）、**🟡 组合可用 107 个**（81.1%）、**🔴 组合复杂 0 个**、**⚫ 不建议 0 个**
 
 ## 按分类组织
 
@@ -189,7 +190,7 @@ last_updated: 2026-06-22
 -   🟡 [digital-card](./digital-card.json) — 数字卡
 -   🟡 [business-quality](./business-quality.json) — 玉珏图数字卡
 -   🟡 [business-scale](./business-scale.json) — 业务规模卡
--   🟡 [indicator-display](./indicator-display.json) — 指标展示卡
+-   🟢 [indicator-display](./indicator-display.json) — 指标展示卡
 -   🟡 [number-level-indicate](./number-level-indicate.json) — 数值级别指示
 
 ### 进度/加载（1）
@@ -576,7 +577,7 @@ last_updated: 2026-06-22
 | --- | --------------------- | ----------- | ---- | ----- | -------------------------- | ---------------------- |
 | 1   | business-quality      | 🟡 组合可用 | 3.4  | 8 min | 玉珏图 + 8 字段指标        | 玉珏图视觉需大屏       |
 | 2   | business-scale        | 🟡 组合可用 | 3.5  | 6 min | 业务规模卡 + 标签/数值双区 | 复用 digital-card 思路 |
-| 3   | indicator-display     | 🟡 组合可用 | 3.5  | 5 min | 纯指标展示卡               | 与 digital-card 重复   |
+| 3   | indicator-display     | 🟢 独立优秀 | 4.0  | 5 min | 纯指标展示卡               | 与 digital-card 重复   |
 | 4   | number-level-indicate | 🟡 组合可用 | 3.4  | 6 min | 数值级别指示 + threshold   | 阈值映射多色           |
 
 ### 6 个容器/布局画像汇总
@@ -943,7 +944,7 @@ last_updated: 2026-06-22
 -   **第八批画像（已完成）**：状态/标签（4）+ 表单/筛选（4）+ 按钮/操作（5）+ 文本/标签/标题（4）= 17 个
 -   **第九批画像（已完成）**：轮播/公告（5 个）
 -   **第十批画像（已完成）**：其他（3）+ 装饰汇总（4 = decoration-family 合并 24 + hexagon + flash-point + common-container）= 7 个
--   **累计**：10 批画像，共 **131 个画像**（覆盖率 85.1%，剩余 23 个边框/装饰纯样式未画像）
+-   **累计**：10 批画像 + 1 个补录（params-trigger），共 **132 个画像**（覆盖率 85.2%，剩余 23 个边框/装饰纯样式未画像）
 -   **跑通 composition-rules.md**：用"销售大盘"场景试算组合方案（✅ 已完成于 `examples/sales-dashboard.md`）
 -   **跑通更多场景示范**：设备监控、应急指挥、运营驾驶舱、机房管理、业务 TopN 大盘
 -   **回写 5+1 文档**：把 `_validation_notes` 中的发现回写到 `oss-vis-material-development-assistant/materials/{name}/gotchas.md`

@@ -10,6 +10,10 @@
 
 ## 最近完成
 
+- 2026-10-29：`task-2026-10-29-001-scguarantee-fallback-data`（深圳保障屏 fallback 兜底能力：区域页 5 接口接 viewItemDataFallbackApi + 运维文件名映射 api-item-map.md（15 接口）+ `_` 前缀占位 json；map-area-layer 经确认不拼参，事后补卡）→ `done/2026-10/`
+
+- 2026-10-28：`task-2026-10-28-001-scguarantee-baseservice-split`（深圳保障屏数据源拆分：新增 shenzhenMeetingViewService 服务（两份 environment 配置同步，direct 暂同旧地址）+ 模块 7 个 service baseUrlType 替换；002-architecture.md 回填「服务地址选择」公用能力，事后补卡）→ `done/2026-10/`
+
 - 2026-10-22：`task-2026-10-20-002-scguarantee-intl-roam-requirement`（反拉终端 4+6·通信服务：intl-roam-top5 升级新结构（userCnt 总数+环比/topN TOP10/flowChart/港澳台）+ RoamingTop5 重构（头部总数+双列榜单+港澳台双轴锥形图）+ 15min 轮询；家庭简化 2 项（有线宽带/IPTV）、政企简化 2 项（物联网连接数/双线到达规模，「专线客户数」label 待后端确认）；含 002-communication-service spec/data-model 同步，用户验收通过）→ `done/2026-10/`
 
 - 2026-10-22：`task-2026-10-20-004-scguarantee-top-apec-slogan`（反拉终端 7·中顶部保障目标：zero-excellent 组件（APEC LOGO + 四零/双优双轮播卡 3s 各自轮巡、「零」「优」highlight 突出）、天气卡移除挂载（组件保留可回退）、标题改「深圳APEC会议通信保障」，提交 9a9a3bb；含 007-zero-excellent spec 新增 + 001-weather-card/000-overview README 同步，用户验收通过）→ `done/2026-10/`

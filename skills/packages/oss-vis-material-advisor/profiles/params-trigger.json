@@ -1,0 +1,150 @@
+{
+  "name": "params-trigger",
+  "title": "参数触发器",
+  "category": "控件/逻辑",
+  "version": "develop",
+  "scanned_at": "2026-10-29",
+  "scanner": "oss-vis-material-advisor v0.8",
+  "data_source": {
+    "main": "./index.tsx",
+    "schema": "./schema.ts",
+    "dataModel": "./dataModel.json"
+  },
+  "basic": {
+    "main_file": "index.tsx",
+    "schema_file": "schema.ts",
+    "data_model_file": "dataModel.json",
+    "has_doc_readme": true,
+    "has_5plus1_docs": false,
+    "complexity": "简单",
+    "deprecated_files": [],
+    "note": "纯逻辑物料：不渲染 DOM（运行时 return null），只做「订阅参数 → 映射 → 派发」，无数据源依赖"
+  },
+  "capabilities": {
+    "data_formats": [
+      {
+        "format": "无数据源（纯交互驱动）",
+        "example": "不需要 data，仅依赖 interactionProps 中的订阅值",
+        "match_pattern": "无",
+        "supports_multi_series": false,
+        "fields": []
+      }
+    ],
+    "interactions": [
+      {
+        "type": "subscribe_mapping",
+        "trigger": "subscribe_value_change",
+        "config_field": "config.mappingList[]（sourceKey / input / output）",
+        "description": "订阅值命中 input 时，把 output 派发出去；比较方式为 String(value) === String(input) 的宽松等值匹配"
+      },
+      {
+        "type": "dispatch",
+        "trigger": "mapping_hit",
+        "config_field": "config.dispatchPrefix",
+        "description": "派发字段名为 ${dispatchPrefix}${sourceKey}，前缀留空回退默认 paramsTrigger_"
+      },
+      {
+        "type": "subscribe_slots",
+        "trigger": "config",
+        "config_field": "interaction.subscribe",
+        "description": "预声明 10 个订阅槽位：type / category / status / mode / tag / value / code / level / id / group"
+      }
+    ],
+    "visual_configs": {
+      "layout": "继承 BASE_LAYOUT：title / width / height / left / top / isLock / isHidden（物料不可见，仅设计器显示占位标签）",
+      "mappingRules": {
+        "dispatchPrefix": { "type": "string", "description": "派发字段名前缀，留空回退 paramsTrigger_" },
+        "mappingList": {
+          "sourceKey": { "type": "string", "options": ["type", "category", "status", "mode", "tag", "value", "code", "level", "id", "group"], "description": "订阅键，必须与订阅管理中的槽位一致" },
+          "input": { "type": "string", "description": "输入值（按字符串宽松比较）" },
+          "output": { "type": "string", "description": "命中后派发的输出值" }
+        }
+      }
+    },
+    "default_values": {
+      "config.mappingList": [],
+      "config.dispatchPrefix": "",
+      "config.width": 300,
+      "config.height": 300,
+      "config.isHidden": false
+    }
+  },
+  "business_scenarios": [
+    "枚举编码转业务值（如 status: 'online' → '在线'）",
+    "全局参数分类切换（如 type: '1' → 'station' / '2' → 'physic'）",
+    "一个下拉/标签驱动多个下游物料的联动参数",
+    "隔离命名空间，避免与其他物料同名派发冲突",
+    "大屏中作为「隐形参数转换器」串联上下游物料"
+  ],
+  "composability": {
+    "compatible_with": [
+      { "material": "query-form-group / popover-check / range-picker", "cost": "零", "reason": "表单类物料派发的参数可直接接入本物料的订阅槽位" },
+      { "material": "table-detail / table / echarts-*", "cost": "低", "reason": "下游订阅 :${dispatchPrefix}${sourceKey} 即可消费输出值，无需改数据格式" },
+      { "material": "custom-request-button", "cost": "低", "reason": "可作为请求参数的前置转换层" }
+    ],
+    "incompatible_with": [],
+    "note": "本身不产出视觉内容，价值完全体现在组合链路中；没有组合对象时单独使用无意义"
+  },
+  "rating": {
+    "label": "🟡 组合可用",
+    "grade": "B",
+    "score": 3.7,
+    "weighted_total": 3.7,
+    "breakdown": {
+      "business_description": 4.0,
+      "scenario_coverage": 3.5,
+      "config_completeness": 3.5,
+      "data_contract_clarity": 2.5,
+      "doc_completeness": 3.5,
+      "composability": 5.0
+    },
+    "reasoning": [
+      "1. 业务描述力 4.0：物料名「参数触发器」+ 派发前缀/订阅键/输入值/输出值都是业务可读术语；doc 用「type=1 → station」的真实业务链路说明，理解成本低。",
+      "2. 场景覆盖度 3.5：覆盖编码转义、分类切换、多下游联动、命名空间隔离等变体，但单槽位仅首条命中、无区间/正则/多值映射，复杂转换场景不够。",
+      "3. 配置完备度 3.5：mappingList 可增删 + dispatchPrefix 可配置 + 订阅槽位与 sourceKey 枚举共享常量，配置项精简；但订阅槽位固定 10 个，扩展需改代码。",
+      "4. 数据契约清晰度 2.5：dataModel.json 的 header.dimensions/indicators 为空，未描述映射输入输出语义；实际契约靠 doc 口述 + SUBSCRIBE_KEYS 常量。",
+      "5. 文档完整度 3.5：有 doc/readme.md（配置项/槽位用法/特殊说明齐全）+ CHANGELOG.md，但缺 5+1 全套文档。",
+      "6. 可组合性 5.0：完全不依赖数据格式，只通过订阅/派发接线，与任意可订阅物料零成本组合，是大屏参数链路的通用胶水。"
+    ],
+    "scored_at": "2026-10-29"
+  },
+  "build_cost": {
+    "config_items_to_set": 3,
+    "data_fields_to_provide": 0,
+    "needs_custom_dev": false,
+    "custom_dev_minutes": 0,
+    "estimated_minutes": 5,
+    "breakdown": {
+      "config_minutes": 5,
+      "data_minutes": 0,
+      "custom_minutes": 0
+    },
+    "config_required": ["config.mappingList（至少 1 条 sourceKey/input/output）", "interaction.subscribe 接线（至少 1 个槽位）", "config.dispatchPrefix（可选，留空用默认）"],
+    "data_required": ["无数据字段"],
+    "scenarios": {
+      "minimal": { "config_items": 3, "data_fields": 0, "minutes": 5, "description": "1 个槽位 + 1 条映射 + 默认前缀" },
+      "typical": { "config_items": 8, "data_fields": 0, "minutes": 10, "description": "1 个槽位 + 3-5 条映射 + 自定义前缀 + 下游接线" },
+      "full": { "config_items": 15, "data_fields": 0, "minutes": 20, "description": "3 个槽位 + 10+ 条映射 + 前缀隔离 + 多下游订阅" }
+    },
+    "assumptions": [
+      "上游物料已能派发参数",
+      "下游物料支持订阅带前缀的参数",
+      "无需扩展订阅槽位（不需要改代码）"
+    ]
+  },
+  "_validation_notes": [
+    "dataModel.json 的 header.dimensions/indicators 为空，映射输入输出语义未在数据契约中体现",
+    "订阅槽位固定为 10 个（constants.ts SUBSCRIBE_KEYS），订阅未列出的参数只能借用已有槽位，扩展需改代码",
+    "同一 sourceKey 多条映射时仅首条命中生效，配置顺序会影响结果",
+    "未命中映射时只 console.warn 不派发，下游不会收到兜底值，容易误判为「物料失效」",
+    "派发去重依赖 JSON.stringify 签名，若输出值含不可序列化内容（如对象）会失效",
+    "schema.ts 第 30 行残留 console.log('log----------------------', sourceKeyEnum) 调试日志",
+    "运行时通过 useEffect 注入 <head> 样式（pointer-events: none），物料本身不渲染 DOM；设计器模式为占位标签",
+    "5+1 文档建议补：README（概述+接线链路）+ data-model.md（映射语义）+ gotchas.md（首条命中/未命中不派发/去重签名）"
+  ],
+  "_meta": {
+    "skill": "oss-vis-material-advisor",
+    "skill_version": "0.8",
+    "next_step": "无需单独画像的剩余物料：23 个 border/decoration 已由 decoration-family 覆盖"
+  }
+}
