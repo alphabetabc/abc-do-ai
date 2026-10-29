@@ -1,6 +1,22 @@
 # Changelog
 
-<!-- changelog-last-commit: 96e94761923fedc8066ed36525ffc950d3ca412c -->
+<!-- changelog-last-commit: 9addf62b88ee53d21c487d85cf12d8f7e1d12d67 -->
+
+## 2026-10-29
+
+- 发布 skill
+    - 「large-screen-llm-wiki」 v0.0.0；
+    - 「noc-shaanxi-project-context」 v0.0.0；
+    - 「oss-mtc-transition-ln-project-context」 v0.0.0；
+    - 「oss-vis-gd-project-context」 v0.0.0；
+    - 「oss-vis-material-advisor」 v0.0.0；
+    - 「oss-vis-material-development-assistant」 v0.0.0；
+- 更新 skill
+    - 「noc-shaanxi-project-context」（配置、其他）；
+    - 「oss-mtc-transition-ln-project-context」（配置、其他）；
+    - 「oss-vis-gd-project-context」（配置、其他）；
+    - 「oss-vis-material-advisor」（文档、配置、其他）；
+    - 「oss-vis-material-development-assistant」（文档、配置、其他）；
 
 ## 2026-10-23
 
