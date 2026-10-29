@@ -5,12 +5,13 @@
 ## 2026-10-29
 
 - 发布 skill
-    - 「large-screen-llm-wiki」 v0.0.0；
     - 「noc-shaanxi-project-context」 v0.0.0；
     - 「oss-mtc-transition-ln-project-context」 v0.0.0；
     - 「oss-vis-gd-project-context」 v0.0.0；
     - 「oss-vis-material-advisor」 v0.0.0；
     - 「oss-vis-material-development-assistant」 v0.0.0；
+- 撤回发布 skill
+    - 「large-screen-llm-wiki」 v0.0.0；
 - 更新 skill
     - 「noc-shaanxi-project-context」（配置、其他）；
     - 「oss-mtc-transition-ln-project-context」（配置、其他）；

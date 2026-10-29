@@ -17,6 +17,7 @@ import {
   isStorageFile,
   isCoreFile,
   getSkillAction,
+  removedStorageVersions,
 } from './skill-classifier.mjs';
 
 const execFileAsync = promisify(execFile);
@@ -207,11 +208,13 @@ export function buildBulletsFromCommit(commit, rootDir) {
   }
 
   // 用 skill-classifier 的 getSkillAction 统一判定动作。
-  // 关键：同一个 skill 可能同时 isUpdate + hasStorage（更新并发布），
+  // 关键：同一个 skill 可能同时 isUpdate + isPublished（更新并发布），
   // 这种情况要生成两条 bullet：一条「更新 skill」+ 一条「发布 skill」子项。
-  // getSkillAction 只返回单个动作（按优先级），所以这里单独判定 hasStorage
+  // getSkillAction 只返回单个动作（按优先级），所以这里单独判定 isPublished
   // 来识别「发布」维度，其余动作走 getSkillAction。
+  // 只删除 storage .tgz（isUnpublished）单独记「撤回发布 skill」，不算发布。
   const publishChildren = [];
+  const unpublishChildren = [];
   const actionBullets = [];
 
   for (const g of skillGroups) {
@@ -225,10 +228,9 @@ export function buildBulletsFromCommit(commit, rootDir) {
         : '';
     const descPart = desc ? `；${desc}` : '';
 
-    // 1) 发布维度：hasStorage 为 true 时，加入「发布 skill」子项
-    //    注意：删除 skill 时其 storage .tgz 也是 D 状态（hasStorage=true），
-    //    必须排除 isDeleted，否则已删除的 skill 会被误记入「发布 skill」
-    if (g.hasStorage && !g.isDeleted) {
+    // 1) 发布维度：isPublished 为 true（storage 产物 A/M）时，加入「发布 skill」子项
+    //    仅删除 .tgz 不是发布。整包删除时 storage 也可能是 D，必须排除 isDeleted。
+    if (g.isPublished && !g.isDeleted) {
       const meta = readSkillMeta(rootDir, g.skillName);
       const version = meta?.version;
       publishChildren.push(
@@ -236,8 +238,15 @@ export function buildBulletsFromCommit(commit, rootDir) {
       );
     }
 
+    if (g.isUnpublished) {
+      const versions = removedStorageVersions(g);
+      const versionText =
+        versions.length > 0 ? ` ${versions.map((v) => `v${v}`).join('、')}` : '';
+      unpublishChildren.push(`「${label}」${versionText}`);
+    }
+
     // 2) 非发布维度：根据 getSkillAction 决定「新增/更新/删除」
-    //    注意 getSkillAction 对「更新+发布」返回 '更新'（因为 isUpdate 优先于 hasStorage），
+    //    注意 getSkillAction 对「更新+发布」返回 '更新'（因为 isUpdate 优先于 isPublished），
     //    对「纯发布」（只动了 storage）返回 '发布'——这种情况已经在上面处理了，跳过。
     const action = getSkillAction(g);
     if (action === '发布') continue; // 纯发布，只走 publishChildren
@@ -275,6 +284,13 @@ export function buildBulletsFromCommit(commit, rootDir) {
   if (publishChildren.length > 0) {
     bullets.push({ level: 0, text: '发布 skill' });
     for (const child of publishChildren) {
+      bullets.push({ level: 1, text: child });
+    }
+  }
+
+  if (unpublishChildren.length > 0) {
+    bullets.push({ level: 0, text: '撤回发布 skill' });
+    for (const child of unpublishChildren) {
       bullets.push({ level: 1, text: child });
     }
   }
@@ -373,7 +389,7 @@ function renderBullets(bullets) {
  *   2. 同 action + 同 skill 名称的条目 → 只保留最详细的那条（带 description 的优先）
  *   3. 低价值的 "新增/更新/变更 N 个文件" 条目 → 仅在没有其他有意义 bullets 时保留
  *   4. "变更文件" 条目（旧式 `变更文件: a、b、c` 或新式父+子列表）→ 合并为一个父+子列表
- *   5. 按固定顺序输出：发布 skill → 新增 → 更新 → 删除 → 变更文件 → 其他
+ *   5. 按固定顺序输出：发布 skill → 撤回发布 skill → 新增 → 更新 → 删除 → 变更文件 → 其他
  */
 export function consolidateBullets(bullets) {
   if (!bullets || bullets.length === 0) return bullets;
@@ -385,13 +401,15 @@ export function consolidateBullets(bullets) {
   const SKILL_CHILD_RE = /^「([^」]+)」(.*)$/;
   const GENERIC_COUNT_RE = /^(新增|更新|删除|变更)\s*\d+\s*个文件$/;
   const PUBLISH_PARENT_TEXT = '发布 skill';
+  const UNPUBLISH_PARENT_TEXT = '撤回发布 skill';
   const PUBLISH_CHILD_RE = /^「(.+?)」(?: (v\S+))?$/;
   const FILE_PARENT_TEXT = '变更文件';
   // 兼容旧式 `变更文件: a、b、c` 单行格式
   const FILE_LIST_RE = /^变更文件:\s*(.+)$/;
 
-  // 1) 发布 skill 子项收集
+  // 1) 发布 / 撤回发布 skill 子项收集
   const publishChildren = [];
+  const unpublishChildren = [];
   // 2) skill 动作收集：key = `${action}:${label}`，
   //    value = { action, label, rest, restLen }，rest 为「label」后的后缀
   const skillActions = new Map();
@@ -406,9 +424,10 @@ export function consolidateBullets(bullets) {
     /^(feat|fix|docs|chore|build|ci|style|refactor|perf|test|revert)\s*[:：]\s*/i;
 
   let hasPublishParent = false;
+  let hasUnpublishParent = false;
 
   // 遍历时跟踪"当前处于哪个父 bullet 的子项区间"：
-  // 'publish' | 'files' | '新增' | '更新' | '删除' | null
+  // 'publish' | 'unpublish' | 'files' | '新增' | '更新' | '删除' | null
   let currentParent = null;
 
   const addAction = (action, label, rest) => {
@@ -429,6 +448,11 @@ export function consolidateBullets(bullets) {
       if (rawText === PUBLISH_PARENT_TEXT) {
         hasPublishParent = true;
         currentParent = 'publish';
+        continue;
+      }
+      if (rawText === UNPUBLISH_PARENT_TEXT) {
+        hasUnpublishParent = true;
+        currentParent = 'unpublish';
         continue;
       }
       if (rawText === FILE_PARENT_TEXT) {
@@ -454,6 +478,10 @@ export function consolidateBullets(bullets) {
     }
     if (b.level === 1 && currentParent === 'publish') {
       publishChildren.push(rawText);
+      continue;
+    }
+    if (b.level === 1 && currentParent === 'unpublish') {
+      unpublishChildren.push(rawText);
       continue;
     }
     if (
@@ -537,6 +565,37 @@ export function consolidateBullets(bullets) {
     });
     if (uniqueChildren.length > 0) {
       result.push({ level: 0, text: PUBLISH_PARENT_TEXT });
+      for (const c of uniqueChildren) {
+        result.push({ level: 1, text: c });
+      }
+    }
+  }
+
+  // a2) 撤回发布 skill（只删 storage、源码保留）
+  if (hasUnpublishParent && unpublishChildren.length > 0) {
+    const deletedLabels = new Set(
+      [...skillActions.values()]
+        .filter((v) => v.action === '删除')
+        .map((v) => v.label)
+    );
+    const seen = new Set();
+    const uniqueChildren = [];
+    for (const child of unpublishChildren) {
+      const cm = child.match(PUBLISH_CHILD_RE);
+      if (cm && deletedLabels.has(cm[1])) continue;
+      const key = cm ? `${cm[1]}@${cm[2] || ''}` : child;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueChildren.push(child);
+      }
+    }
+    uniqueChildren.sort((a, b) => {
+      const an = a.match(PUBLISH_CHILD_RE)?.[1] || a;
+      const bn = b.match(PUBLISH_CHILD_RE)?.[1] || b;
+      return an.localeCompare(bn);
+    });
+    if (uniqueChildren.length > 0) {
+      result.push({ level: 0, text: UNPUBLISH_PARENT_TEXT });
       for (const c of uniqueChildren) {
         result.push({ level: 1, text: c });
       }

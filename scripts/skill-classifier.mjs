@@ -103,11 +103,13 @@ export function getSkillLabel(rootDir, skillName) {
  *   - files          该 skill 下的所有文件变更
  *   - hasMeta        beehive-skill.json 有变更
  *   - hasDoc         SKILL.md 有变更
- *   - hasStorage     storage 打包产物有变更
+ *   - hasStorage     storage 打包产物有变更（含删除）
+ *   - isPublished    storage 产物是新增或修改（A/M）；仅删除 .tgz 不算发布
+ *   - isUnpublished  只删除了 storage .tgz，源码仍在（撤回发布）
  *   - isNew          核心文件（SKILL.md / beehive-skill.json）是 A 状态
  *   - isUpdate       核心文件是 M 状态（且不是新增）
  *   - isDeleted      packages 下文件全是 D 状态
- *   - storageStatus  storage 文件的 status（A/M/D）
+ *   - storageStatus  发布相关的 storage status；仅删除时为 D
  *
  * @param {Array<{status: string, file: string}>} files
  * @returns {{ skillGroups: SkillGroup[], nonSkillFiles: Array<{status, file}> }}
@@ -130,6 +132,8 @@ export function classifyFiles(files) {
         hasMeta: false,
         hasDoc: false,
         hasStorage: false,
+        isPublished: false,
+        isUnpublished: false,
         isNew: false,
         isUpdate: false,
         isDeleted: false,
@@ -146,7 +150,14 @@ export function classifyFiles(files) {
 
     if (isStorageFile(f.file)) {
       g.hasStorage = true;
-      g.storageStatus = f.status;
+      // 发布 = 打包产物新增或修改。只删掉 .tgz、源码仍留在 packages 时不是发布。
+      // 换版本常见「旧包 D + 新包 A」，只要存在 A/M 就仍算发布，不能被后面的 D 盖掉。
+      if (f.status === 'A' || f.status === 'M') {
+        g.isPublished = true;
+        g.storageStatus = f.status;
+      } else if (!g.isPublished) {
+        g.storageStatus = f.status;
+      }
       continue; // storage 文件不参与新增/更新/删除判定
     }
 
@@ -175,6 +186,11 @@ export function classifyFiles(files) {
     } else {
       g.isDeleted = false;
     }
+    // 只删掉打包产物、源码还在：撤回发布。旧包 D + 新包 A 仍是发布，不算撤回。
+    const removedStorage = g.files.some(
+      (f) => isStorageFile(f.file) && f.status === 'D'
+    );
+    g.isUnpublished = removedStorage && !g.isPublished && !g.isDeleted;
   }
 
   return { skillGroups: [...groups.values()], nonSkillFiles };
@@ -185,19 +201,37 @@ export function classifyFiles(files) {
 /**
  * 判定单个 skill group 的动作类型
  * @returns {'新增'|'更新'|'删除'|'发布'|null}
- *   - 如果只有 storage 变更（packages 没动）→ '发布'
+ *   - 如果 storage 产物是新增或修改（packages 没动）→ '发布'
  *   - 如果核心文件是新增 → '新增'
  *   - 如果 packages 下全删 → '删除'
  *   - 如果核心文件是修改 → '更新'
+ *   - 仅删除 storage .tgz（撤回发布、只留源码）→ null
+ *     调用方用 isUnpublished 单独记一条「撤回发布」，不和「发布」混用
  *   - 否则 null（无法判定）
  *
- * 注意：同一个 commit 里「更新 + 发布」会通过 hasStorage + isUpdate
+ * 注意：同一个 commit 里「更新 + 发布」会通过 isPublished + isUpdate
  * 两个标志同时为 true 来表达，调用方需要分别生成两条 bullet。
+ * 「更新 + 撤回发布」同理，用 isUnpublished 额外记一条。
  */
 export function getSkillAction(group) {
   if (group.isDeleted) return '删除';
   if (group.isNew) return '新增';
   if (group.isUpdate) return '更新';
-  if (group.hasStorage) return '发布';
+  if (group.isPublished) return '发布';
   return null;
+}
+
+/**
+ * 被删除的 storage 包版本，来自 `name@version.tgz`。
+ * 源码里的 beehive-skill.json 可能还在，不能用它代表已撤回的发布版本。
+ * @returns {string[]} 如 ['0.0.0']
+ */
+export function removedStorageVersions(group) {
+  const versions = [];
+  for (const f of group.files || []) {
+    if (!isStorageFile(f.file) || f.status !== 'D') continue;
+    const matched = f.file.match(/@([^/@]+)\.tgz$/);
+    if (matched) versions.push(matched[1]);
+  }
+  return versions;
 }

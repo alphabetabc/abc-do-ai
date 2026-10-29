@@ -38,6 +38,7 @@ import {
   classifyFiles as groupFilesBySkill,
   isStorageFile,
   getSkillAction,
+  removedStorageVersions,
 } from './skill-classifier.mjs';
 
 export const CHANGELOG_FILE = 'skills/CHANGELOG.md';
@@ -256,10 +257,10 @@ export function inferScope(diff) {
  * 核心场景：
  *   - 新增 skill：核心文件（SKILL.md / beehive-skill.json）是 A 状态
  *   - 更新 skill：核心文件是 M 状态
- *   - 发布 skill：storage 打包产物有变更
+ *   - 发布 skill：storage 打包产物新增或修改（仅删除 .tgz 不算发布）
  *   - 删除 skill：packages 下文件全是 D 状态
  *
- * 同一个 commit 里「更新 + 发布」会同时满足 isUpdate + hasStorage，
+ * 同一个 commit 里「更新 + 发布」会同时满足 isUpdate + isPublished，
  * 生成两条 message：「更新 skill「X」」+「发布 skill「X」 v...」
  */
 export function ruleBasedGenerate(diff) {
@@ -334,12 +335,13 @@ export function ruleBasedGenerate(diff) {
   // ── 场景 3：含更新 / 发布的 skill 变更（含「更新 + 发布」组合）──
   // 覆盖：纯更新、纯发布、更新+发布
   // 关键：getSkillAction 对「更新+发布」只返回 '更新'，所以需要单独检查
-  // group.hasStorage 来生成「发布」message。
+  // group.isPublished 来生成「发布」message。仅删除 .tgz 时 isPublished 为 false。
   const changeGroups = skillGroups.filter(
     (g) =>
       getSkillAction(g) === '更新' ||
       getSkillAction(g) === '发布' ||
-      getSkillAction(g) === '新增'
+      getSkillAction(g) === '新增' ||
+      g.isUnpublished
   );
   if (changeGroups.length > 0 && hasOnlySkillChanges) {
     const hasUpdate = changeGroups.some((g) => getSkillAction(g) === '更新');
@@ -368,10 +370,16 @@ export function ruleBasedGenerate(diff) {
         messages.push(`更新 skill「${label}」${descPart}`);
       }
 
-      // 2) 发布维度的 message：hasStorage 为 true 时追加「发布 skill「X」 v...」
+      // 2) 发布维度的 message：isPublished 为 true 时追加「发布 skill「X」 v...」
       //    （「更新+发布」会同时输出「更新」+「发布」两条 message）
-      if (group.hasStorage) {
+      if (group.isPublished) {
         messages.push(`发布 skill「${label}」${version}`);
+      }
+      if (group.isUnpublished) {
+        const removed = removedStorageVersions(group);
+        const removedVersion =
+          removed.length > 0 ? ` ${removed.map((v) => `v${v}`).join('、')}` : '';
+        messages.push(`撤回发布 skill「${label}」${removedVersion}`);
       }
     }
     return { type, message: messages.join('；') };
@@ -381,12 +389,15 @@ export function ruleBasedGenerate(diff) {
   // 注意：这里必须用 groupsWithAction（{ group, action } 包装），
   // 不能直接用 changeGroups —— changeGroups 是裸 skill group，
   // 解构 { group, action } 会拿到 undefined，访问 group.skillName 会炸。
-  // 另外：hasStorage 的发布维度和场景 3 一样要单独追加一条「发布 skill「X」 v...」，
+  // 另外：isPublished 的发布维度和场景 3 一样要单独追加一条「发布 skill「X」 v...」，
   // 否则带发布的更新会被吞掉发布信息。
   if (hasSkillChanges && nonSkillFiles.length > 0) {
     const changeGroupsWithAction = groupsWithAction.filter(
-      ({ action }) =>
-        action === '更新' || action === '发布' || action === '新增'
+      ({ action, group }) =>
+        action === '更新' ||
+        action === '发布' ||
+        action === '新增' ||
+        group.isUnpublished
     );
     type = 'feat';
     for (const { group, action } of changeGroupsWithAction.slice(0, 2)) {
@@ -399,12 +410,18 @@ export function ruleBasedGenerate(diff) {
       } else if (action === '删除') {
         messages.push(`删除 skill「${label}」`);
       }
-      // 2) 发布维度的 message（hasStorage 为 true 时追加，
+      // 2) 发布维度的 message（isPublished 为 true 时追加，
       //    「更新+发布」会同时输出「更新」+「发布」两条 message，和场景 3 一致）
-      if (group.hasStorage) {
+      if (group.isPublished) {
         const meta = readMeta(group.skillName);
         const version = meta?.version ? ` v${meta.version}` : '';
         messages.push(`发布 skill「${label}」${version}`);
+      }
+      if (group.isUnpublished) {
+        const removed = removedStorageVersions(group);
+        const removedVersion =
+          removed.length > 0 ? ` ${removed.map((v) => `v${v}`).join('、')}` : '';
+        messages.push(`撤回发布 skill「${label}」${removedVersion}`);
       }
     }
     if (changeGroupsWithAction.length > 2) {
@@ -712,10 +729,12 @@ export function printDiffSummary(diff) {
       let action;
       if (g.isDeleted) {
         action = '\x1b[31m删除\x1b[0m';
-      } else if (g.hasStorage) {
+      } else if (g.isPublished) {
         action = '\x1b[35m发布\x1b[0m';
       } else if (g.isNew) {
         action = '\x1b[32m新增\x1b[0m';
+      } else if (g.files.every((f) => isStorageFile(f.file))) {
+        action = '\x1b[35m撤回发布\x1b[0m';
       } else {
         action = '\x1b[33m更新\x1b[0m';
       }
@@ -730,7 +749,7 @@ export function printDiffSummary(diff) {
       ).length;
       if (otherCount > 0) details.push(`其他 ${otherCount} 个文件`);
       const detailStr =
-        details.length > 0 && !g.hasStorage
+        details.length > 0 && !g.isPublished
           ? ` \x1b[90m(${details.join('、')})\x1b[0m`
           : '';
       println(`  ${action} skill「\x1b[1m${label}\x1b[0m」${ver}${detailStr}`);
@@ -886,10 +905,12 @@ async function main() {
       let action;
       if (g.isDeleted) {
         action = '\x1b[31m删除\x1b[0m';
-      } else if (g.hasStorage) {
+      } else if (g.isPublished) {
         action = '\x1b[35m发布\x1b[0m';
       } else if (g.isNew) {
         action = '\x1b[32m新增\x1b[0m';
+      } else if (g.files.every((f) => isStorageFile(f.file))) {
+        action = '\x1b[35m撤回发布\x1b[0m';
       } else {
         action = '\x1b[33m更新\x1b[0m';
       }
@@ -905,7 +926,7 @@ async function main() {
       ).length;
       if (otherCount > 0) details.push(`其他 ${otherCount} 个文件`);
       const detailStr =
-        details.length > 0 && !g.hasStorage
+        details.length > 0 && !g.isPublished
           ? ` \x1b[90m(${details.join('、')})\x1b[0m`
           : '';
       println(`  ${action} skill「\x1b[1m${label}\x1b[0m」${ver}${detailStr}`);
