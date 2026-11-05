@@ -1,6 +1,18 @@
 # Changelog
 
-<!-- changelog-last-commit: 9addf62b88ee53d21c487d85cf12d8f7e1d12d67 -->
+<!-- changelog-last-commit: b96dbb0ce10534e33ec83a9c2ead69b2d6f4d8c1 -->
+
+## 2026-11-05
+
+- 发布 skill
+    - 「oss-hwms-monitor-project-context」 v0.0.0；
+    - 「oss-shaanxi-gold-building-project-context」 v0.0.0；
+- 新增 skill
+    - 「oss-hwms-monitor-project-context」；
+- 更新 skill
+    - 「oss-shaanxi-gold-building-project-context」（配置、其他）；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-10-29
 
@@ -18,6 +30,10 @@
     - 「oss-vis-gd-project-context」（配置、其他）；
     - 「oss-vis-material-advisor」（文档、配置、其他）；
     - 「oss-vis-material-development-assistant」（文档、配置、其他）；
+- 变更文件
+    - scripts/commit.mjs；
+    - scripts/skill-classifier.mjs；
+    - scripts/update-changelog.mjs；
 
 ## 2026-10-23
 
