@@ -1,0 +1,17 @@
+{
+  "contentHash": "4945b9c49bcecc48e979c44dbefbc28aa117f5fb611f43de2f50be8502335de0",
+  "files": [
+    "./design/",
+    "./env/",
+    "./plans/",
+    "./pm/",
+    "./references/",
+    "./scripts/"
+  ],
+  "id": "oss-hwms-monitor-project-context",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-11-05T06:59:33.109Z",
+  "version": "0.0.0"
+}

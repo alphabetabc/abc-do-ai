@@ -11,3 +11,5 @@ earth 组件基于 Cesium（远程 UMD 包 `gis3d-lib.umd.js` 动态加载，不
 | `business-layer.md` | business/（EarthInitializer/EarthStageLoader/api 数据工厂/TwinTypeEnumEarth）、business-gold-building/（金牌楼宇查看器：chunk 渲染/hover/高亮/飞行）、editor/（编辑器 UI 面板），含二次开发指南与选型指引 | 搭建业务地球页面、扩展金牌楼宇场景、定制编辑器时 |
 
 两份文档均包含：组件树与数据流、完整 Props/签名、源码行号锚点、开发纪律与约定、已知问题清单（bug 表格）。文档目标是**自足的开发指导**——正常开发无需回读源码。
+
+金楼可视化**页面**（`web/pages/gold-building/`，含金牌楼宇弹窗与要客业务）的文档见 `design/frontend/gold-building-page/`。
