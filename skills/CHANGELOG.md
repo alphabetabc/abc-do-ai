@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- changelog-last-commit: b96dbb0ce10534e33ec83a9c2ead69b2d6f4d8c1 -->
+<!-- changelog-last-commit: 3ee4cef6aefd1fe204c0ee771dc2fb06d1f1551d -->
+
+## 2026-11-06
+
+- 发布 skill
+    - 「fedx-vis-ai-view-project-context」 v0.0.0；
+- 新增 skill
+    - 「fedx-vis-ai-view-project-context」项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-11-05
 
