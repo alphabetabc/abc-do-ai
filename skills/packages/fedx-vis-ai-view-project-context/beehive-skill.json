@@ -1,0 +1,19 @@
+{
+  "contentHash": "4cf3cb430b4deb22007bed33940f3fa437011b3337f08ac1edb85614f3dc0ab6",
+  "files": [
+    "./design/",
+    "./design-next/",
+    "./env/",
+    "./plans/",
+    "./pm/",
+    "./scripts/",
+    "./references/",
+    "./research/"
+  ],
+  "id": "fedx-vis-ai-view-project-context",
+  "targets": [
+    "trae"
+  ],
+  "updatedAt": "2026-11-06T10:00:39.995Z",
+  "version": "0.0.0"
+}
