@@ -79,7 +79,7 @@
 
 - [x] A1：survey 入库覆盖 big-screen 全部子目录，db project 维度区分两源项目（源1 40 行 + 源2 46 行，2026-11-06 步骤 1 执行记录）
 - [x] A2：定档建议表可独立判定（每项含 tier + 理由 + 相似度证据），经用户审定冻结（46 行终态落库，queued 29 / shelved 17）
-- [ ] A3：B/C 档子卡全部建立并入 current-sprint 索引；A/D 档 db 终态 + reason 落库
+- [x] A3：B/C 档子卡全部建立并入 current-sprint 索引（4 张批次卡 040–043，覆盖 24 行 queued；#68/#69/#70 用户拍板 D 档搁置，2026-11-09）；A/D 档 db 终态 + reason 落库（步骤 2 已冻结 + 2026-11-09 增补）
 - [ ] A4：本卡转 epic 锚点，范围边界（不做清单）与 001 一致
 
 ---
@@ -134,15 +134,29 @@
 
 | 批次 | 子卡 / 对象 | 状态 |
 | --- | --- | --- |
-| 第 1 批 · 基建 | [task-036 interaction-store](./task-2026-11-06-036-interaction-store-distill.md)（zustand 届时用户安装） | 已立卡，待审批 |
-| 第 1 批 · 基建 | [task-037 scaler-container](./task-2026-11-06-037-scaler-container-distill.md) | 已立卡，待审批 |
-| 排队 · 基建剩余 | background / header / fullscreen-button（新建）；data-status / time-display（增强 ui-* 既有物料） | 待立卡 |
-| 排队 · 图表基建 | hor-bar-chart / ver-bar-chart / pie-chart / radar-chart（echarts 直线段）/ info-card / ec-map | 待立卡 |
-| 排队 · C 合并 | petition 侧 8 件（overview-indicator / channel-stat / identity-type / petition-demands / petition-map-overview / petition-region-bar / petition-trend / region-map） | 待立卡 |
-| 排队 · 业务 | data-overview / petition-comparison 6 件 / retiree-total-card | 待立卡 |
-| 不立卡（db 已终态） | A 档下沉 4 件组合卡片（基建+图表就绪后随对应子卡作 examples 消化）；D 档 5 件（use-polling + personnel 4 占位）；beijing-petition 8 件（shelved 指向） | — |
+| 第 1 批 · 基建 | [task-036 interaction-store](./done/2026-11/task-2026-11-06-036-interaction-store-distill.md)（zustand 已安装 v5.1.0） | ✅ 完成并归档（2026-11-09 蒸馏 + 验收 + db #77 distilled） |
+| 第 1 批 · 基建 | [task-037 scaler-container](./done/2026-11/task-2026-11-06-037-scaler-container-distill.md) | ✅ 完成并归档（2026-11-09 蒸馏 + 验收 + db #83 distilled） |
+| 第 2 批 · 基建剩余 | [task-040 批次卡](./task-2026-11-09-040-ui-data-status-time-display-enhance.md)：增强 ui-data-status / ui-time-display（2 件）；background（#68）/ fullscreen-button（#69）/ header（#70）用户拍板 D 档搁置 | ✅ 已完成 → done/2026-11/（2026-11-09 硬门槛②通过；db #71/#84 落 distilled） |
+| 第 2 批 · 图表基建 | [task-041 批次卡](./done/2026-11/task-2026-11-09-041-chart-basics-batch.md)：hor-bar / ver-bar / pie / radar（echarts 直线段）/ ec-map 并入 echarts-map + info-card 并入 ui-widget-shell（6 件） | ✅ 完成并归档（2026-11-10 硬门槛②通过；db #72/#75/#76/#78/#79/#86 落 distilled） |
+| 第 2 批 · C 合并 | [task-042 批次卡](./task-2026-11-09-042-petition-c-merge-batch.md)：overview-indicator / channel-stat / map-overview（3 件）；identity-type / demands / region-bar / trend / region-map 2026-11-10 用户拍板 shelved（薄壳，缩量做精品）；beijing 侧 #54/#55/#58 仍指向 3 物料，#56/#57/#59/#60/#61 改指既有 echarts 物料 | 📋 已立卡，待审批（2026-11-10 缩量改卡） |
+| 第 2 批 · 业务 | [task-043 批次卡](./task-2026-11-09-043-business-screens-batch.md)：personnel-data-overview / 比对 map / channel / retiree-total-card（4 件）；appeal / identity / rank / trend 2026-11-10 用户拍板 shelved（薄壳模板化，缩量做精品） | 📋 已立卡，待审批（2026-11-10 缩量改卡） |
+| 不立卡（db 已终态） | A 档下沉 4 件组合卡片（基建+图表就绪后随对应子卡作 examples 消化）；D 档 8 件（use-polling + personnel 4 占位 + background / fullscreen-button / header，#68/#69/#70 2026-11-09 用户拍板搁置）；beijing-petition 8 件（shelved 指向） | — |
 
 > 立卡策略：各批次开工前逐张立卡（沿用逐项模式），本表为唯一排队索引。
+
+### 第 2 批子卡立项记录（2026-11-09）
+
+- 建卡 4 张批次卡（040–043），覆盖 db 全部 `queued` 行（2 + 6 + 8 + 8 = 24 件）；background（#68）/ fullscreen-button（#69）/ header（#70）经用户 2026-11-09 拍板 D 档搁置（reason 落库：主背景纯图片无逻辑 / 全屏能力已有 scaler-container 覆盖 / header 与源项目强耦合）。每卡含逐模块清单表（模块 / db id / 源路径 / 产物路径 / 关键处理）与「本批通用约定」块。
+- 用户三项拍板（写入每张卡的通用约定）：
+  1. **产物分组三路分流**：基础 UI → `components/ui/ui-*`；echarts 图表 → `components/rc-echarts/echarts-*`；大屏业务 → `business/*`
+  2. **允许 Props 化**：为可配置性新增 Props（配色 / 尺寸 / 位置 / 数据形态），**偏离 distill-workflow 不变式「不新增 Props」**，属用户批准的例外，新增项须逐条记入 spec.md
+  3. **图片走站内占位图**：源站贴图一律不搬运，占位图统一落 `docs/materials/_assets/` 共享目录
+- 实施中发现并已在卡内记录的关键依赖差异：
+  - `@ant-design/icons`（041）、`@ant-design/plots`（048）、`dayjs`（044）物料站均未安装 → 分别走内联 SVG / echarts radar 直线段重写 / Intl 零依赖实现
+  - `axios` + `ahooks` + `use-polling` 请求层（050 等）按「物料站零请求层定位」剥离，数据 mock 化
+  - `react-router-dom`（042）→ 导航状态 Props 化
+  - 041 与 042 分属不同物料 → 组合关系走 examples / slot 注入，不跨物料 import
+- 058（petition/region-map）仅 11 行 re-export，卡内建议**不单独出物料**，作为 056 的别名用法；若实现期确认有独立语义需回用户确认。
 
 ---
 

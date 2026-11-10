@@ -28,4 +28,4 @@ moduleTypes / vendors / eqpObjectClass（字典）、save / info / update / dele
 
 ## 关联设计
 
-- `AnalysisRuleUrl` 服务归属（cloud-diagnose）调整见 `../environment-config/overview.md` 已知配置事实；变更任务见 plans/task-2026-11-05-001-api-url-routing.md
+- `AnalysisRuleUrl` 服务归属（cloud-diagnose）调整见 `../environment-config/overview.md` 已知配置事实；变更任务见 plans/done/2026-11/task-2026-11-05-001-api-url-routing.md

@@ -7,9 +7,9 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-06-036-interaction-store-distill` |
-| Status | 待审批 |
+| Status | 已完成（待验收） |
 | 类型 | feature |
-| 影响范围 | `docs/materials/components/ui/interaction-store/`（或定稿分组位）、本 epic 卡索引 |
+| 影响范围 | `docs/materials/components/interaction-store/`、本 epic 卡索引 |
 | 验收标准 | 四件套齐全 + pnpm build 通过 + dev:preview 渲染/console 无 error |
 
 ## 目标
@@ -34,5 +34,16 @@
 
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
-| ① 需求审批 | 待审批 |  |  |
+| ① 需求审批 | 已批准 | 2026-11-09 | 用户（执行指令 + 产物路径拍板：平铺 `components/` 下） |
 | ② 实现验收 | 待验收 |  |  |
+
+## 实现记录（2026-11-09）
+
+- zustand 5.1.0 安装（用户手动执行；此前沙箱内 pnpm store 写权限失败已记录）。
+- 四件套产出 `docs/materials/components/interaction-store/`：
+  - `code/index.ts`：源码逻辑等价迁移（defineFields / createInteractionStore / useSubscribe+useShallow / useDispatch），仅做缩进 4→2 空格对齐仓库规范、剥离 eslint-disable 注释；`as any` 断言保留（tsc strict 必需）
+  - `examples/basic-usage.tsx`（派发/订阅闭环 + getField 双键查找演示）、`examples/cross-module.tsx`（A 派发 → B 订阅，hooks 依赖注入式解耦，模拟大屏 section）
+  - spec.md / data-model.md 按模板齐全；category 定稿 `layout`（词表内）
+- 验证：`pnpm build`（tsc -b + vite）通过；dev:preview 浏览器验证 PASS（两 example 渲染、点击联动生效、console 无 error）。
+- db 回填：`module_survey` #77 `queued → distilled`（matched_material=interaction-store，reason 落库）；源 2 终态分布 distilled 2 / queued 27 / shelved 17。
+- 归档：待硬门槛②用户验收后移 done/2026-11/。

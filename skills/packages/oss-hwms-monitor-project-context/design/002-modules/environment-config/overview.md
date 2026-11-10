@@ -63,24 +63,30 @@
 | `topoOptionShow` | 拓扑下拉机顶盒显隐 | topo |
 | `topoCodeGd` | 拓扑参数广东特殊处理开关 | topo |
 
-## 已知配置事实（2026-11-05，对照 k8s 线上值）
+## 已知配置事实（2026-11-10 更新，对照 k8s 线上值）
 
-线上配置键齐全，但部分 `direct` 值与目标服务不符：
+线上（陕西家客，来源 `pm/2026-11-05/家客前端配置.json`）与开发默认配置是**两种部署拓扑**：
+
+- 开发（`public/environment.json`）：`serviceDiscovery` 为绝对地址，各服务 direct 直连 IP
+- 线上：`serviceDiscovery = "/serviceDiscovery/cloud.view.server-gcss"`（相对值，同源反代），**疑缺 `situationConfigUrl` 键**（截图与 JSON 均无，待现场复核完整 ConfigMap）
 
 | 键 | 线上 direct 值 | 目标服务 | 事实 |
 | --- | --- | --- | --- |
-| `situationConfigUrl` | `https://10.206.144.252:9011/serviceDiscovery/cloud.view.server-gcss` | cloud.view.manager | 值绕回 server-gcss，未指向目标服务 |
-| `configUrl` | `http://10.206.144.137:8888/cloud.view.manager` | cloud.view.manager | 已指向目标服务（网关路径待确认） |
+| `situationConfigUrl` | （键缺失） | cloud.view.manager | **缺键导致解构抛错**，需求 #1 不通的根因之一；必须现场补键 |
+| `configUrl` | `http://10.206.144.137:8888/cloud.view.manager` | cloud.view.manager | 已指向目标服务 |
 | `AnalysisRuleUrl` | `http://10.206.158.227:11557` | cloud-diagnose | 是否即该服务待确认 |
 
-另：线上镜像 `1.0.0-20240320084444.A2` 实测 4 类接口仍走 server-gcss，与旧镜像调用点未带 `baseUrlType` 一致（当前仓库代码已带）。相关变更任务见 plans/task-2026-11-05-001-api-url-routing.md。
+> 勘误（2026-11-10）：本表 2026-11-05 版曾把 `situationUrl` 的 9011 网关值（`https://10.206.144.252:9011/serviceDiscovery/cloud.view.server-gcss`）误记在 `situationConfigUrl` 名下，已修正。
+
+另：`serviceDiscovery` 相对值 + 旧转换器 `new URL()` 曾是线上 4 类接口 reject 的代码侧根因，**2026-11-10 已改代码修复**（转换器去掉 `new URL()`，见 `./url-composition.md`）；相关任务归档于 plans/done/2026-11/task-2026-11-05-001-api-url-routing.md。
 
 ## 维护规则
 
 - 新增 URL 三元组键：须同步仓库 `public/environment.json` 与 k8s 线上配置，双写 direct / discover，否则环境漂移
-- 新增调用点：请求必须携带 `baseUrlType` 指向既有键；未携带会被拼到 `serviceDiscovery`（历史坑，见上位文档 §3）
+- 新增调用点：请求必须携带 `baseUrlType` 指向既有键；**且该键必须存在于运行时配置中**（缺键会在转换器解构时抛错 reject）；未携带会被拼到 `serviceDiscovery`（历史坑，见上位文档 §3）
 - `describe1` 字段为键用途注释，随键维护
 
 ## 变更记录
 
 - 2026-11-05：初版，自 001-overview §3.1/§3.2 拆出并补全键清单
+- 2026-11-10：勘误 + 现状更新——①修正 `situationConfigUrl`/`situationUrl` 值误记；②已知配置事实改为"开发直连 / 线上同源反代"双拓扑对照，标注线上疑缺 `situationConfigUrl` 键；③记录 `new URL()` 缺陷已修复（2026-11-10 代码变更），指向 `./url-composition.md`

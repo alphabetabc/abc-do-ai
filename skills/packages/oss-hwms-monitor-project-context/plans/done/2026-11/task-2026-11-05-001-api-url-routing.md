@@ -1,16 +1,16 @@
 # 任务卡 · 接口地址路由调整（serviceDiscovery 与具体服务分离）
 
-> Status：**已定稿——方案 A（仅改配置，不改代码、不发版）**，待现场确认 §7 剩余项后执行
-> 需求来源：`../pm/2026-11-05/需求.md` + `../pm/2026-11-05/家客前端配置.json`
-> 机制背景：`../design/001-overview/001-overview.md` §3；`../design/002-modules/environment-config/overview.md`、`url-composition.md`
+> Status：**已完成（仓库侧）**——2026-11-10 改选方案 B 并已改代码；发版 / 现场配置 / 验收转后续流程（见 §6）
+> 需求来源：`../../../pm/2026-11-05/需求.md` + `../../../pm/2026-11-05/家客前端配置.json`
+> 机制背景：`../../../design/001-overview/001-overview.md` §3；`../../../design/002-modules/environment-config/overview.md`、`url-composition.md`
 
 ## 0. 结论先行
 
 - 方向成立：4 类接口需按具体服务取地址，不再经过 `cloud.view.server-gcss`。
 - **原「直接部署现有代码 + 把 `serviceDiscovery` 改成相对值」的方案无效**：当前转换器用 `new URL()` 解析，相对基地址必抛 `TypeError`（见 §2.1），带 `baseUrlType` 的请求会全部 reject，direct 模式也受影响。
 - 因此执行前必须选一条路（§6）：
-  - **方案 A（已选定）**：`serviceDiscovery` 用绝对网关地址，配置侧完成，**不改代码、不发版**；需现场确认浏览器可达 / CORS / https 页面混合内容。
-  - 方案 B（备选，已搁置）：改 `src/common/api/index.js` 兼容相对地址。仅当现场无法提供浏览器可达的绝对网关地址（如 https 页面 + 纯同源部署）时启用，需用户批准解除「不做清单」。
+  - ~~方案 A（2026-11-05 曾定稿）~~：`serviceDiscovery` 用绝对网关地址，仅改配置。**2026-11-10 复盘两份配置对照后放弃**——开发环境（`public/environment.json`）是"绝对地址直连"拓扑、陕西现场（k8s）是"同源相对反代"拓扑，方案 A 会把现场全部未带键调用从同源改成跨域，隐含推翻现场流量模型，且依赖网关绝对地址浏览器可达。
+  - **方案 B（2026-11-10 最终选定，已实施）**：改 `src/common/api/index.js` 去掉 `new URL()` 依赖，兼容相对 `serviceDiscovery`；实现为简化版（原 url 直接拼接，不做 pathname/search 拆分），见 §5-B。
 - **2026-11-05 已核实（§4）**：线上镜像即本仓代码（sourcemap 反解逐字一致），线上故障为配置问题而非代码缺陷，故**无需发版代码**。
 - ~~线上镜像判断仍属推断~~（已被 §4 build 包反解取代：镜像即本仓代码）。
 
@@ -121,31 +121,44 @@
 - 未带 `baseUrlType` 的调用会随 `serviceDiscovery` 变成绝对基地址，需单独回归。
 - `<网关host>` 待现场确认；若页面为 https 而目标为 http，此方案大概率被混合内容拦截。
 
-### 方案 B：配置 + 代码兼容相对地址（推荐用于同源部署）
+### 方案 B：代码简化 + 兼容相对地址（**最终实施版**，2026-11-10）
 
-1. 改 `src/common/api/index.js` L75-L78：不再依赖 `new URL()` 解析相对基地址，改为直接拆原相对 `url` 的 path/search（示例）：
+1. **实际实现**（比原设想的 pathname/search 拆分更简）：`src/common/api/index.js` requestTransforms 中删除"拼 `serviceDiscovery` 前缀 → `new URL()` 拆 pathname/search"整段，改为原 `url` 直接拼接：
 
 ```js
-const raw = url.split('#')[0];
-const q = raw.indexOf('?');
-const pathname = q === -1 ? raw : raw.slice(0, q);
-const search = q === -1 ? '' : raw.slice(q);
+const {
+    [baseUrlType]: { mode = "", direct: realurl = "", discover = "" },
+    serviceDiscovery,
+} = env;
+if (mode === "direct") {
+    res.url = `${realurl}${url}`;
+} else if (mode === "discover") {
+    res.url = `${serviceDiscovery}/${discover}${url}`;
+}
 ```
 
-2. `serviceDiscovery` 保持相对 `"/serviceDiscovery"`（与现有同源代理拓扑一致）。
-3. 4 个目标键优先用 `mode: "discover"`（`discover` 写 `cloud.view.manager` / `cloud-diagnose`），拼出同源 `/serviceDiscovery/<服务名>/...`，避免跨域与混合内容；若现场要求按截图走 `direct`，再切 mode。
-4. 需补回归：所有带 `baseUrlType` 的既有接口 + `monitorSetUrl`。
+   依据：旧逻辑中"拼前缀再剥掉"在正常输入下净效果即原 url 原样返回，`new URL()` 只带来"必须绝对地址"的隐含契约，无实际收益。删除后：
+   - 相对 `serviceDiscovery`（同源反代拓扑）从 TypeError 变为可用；
+   - direct 模式拼接 `realurl + url`（url 需以 `/` 开头，全仓 services 均如此）；
+   - `mode` 非直连/发现时不再兜底走 discover，原样放行（现有配置所有键均显式带 mode，无影响）。
 
-> ~~方案 A/B 都要「发版」~~ → 已修正：方案 A **无需发版**（§4 已核实镜像即本仓代码，只改 ConfigMap）。
+2. `serviceDiscovery` 现场保持相对 `"/serviceDiscovery"`（同源代理拓扑不变）。
+3. 4 个目标键优先 `mode: "discover"`（`discover` 写 `cloud.view.manager` / `cloud-diagnose`），拼出同源 `/serviceDiscovery/<服务名>/...`；若现场要求 direct，再切 mode。
+4. 回归：所有带 `baseUrlType` 的既有接口 + `monitorSetUrl`。
 
-## 6. 下一步（按序）
+**已知残留（代码救不了，转配置侧）**：`env[baseUrlType]` 键缺失（现场 ConfigMap 疑缺 `situationConfigUrl`）仍会解构抛错 reject——必须现场补键。
 
-1. ~~用户决策方案 A / B~~（已定：**方案 A，不改代码**，2026-11-05）。
-2. 现场确认 §7 的外部输入（尤其 1、2、3 条）。
-3. 按方案 A 改 k8s ConfigMap（`serviceDiscovery` 绝对地址 + 三个目标键 direct），**现有镜像 `1.0.0-20240320084444.A2` 不动**。
-4. 验证（见 §9）：F12 复查 4 类接口地址；控制台无 `Invalid URL`、无混合内容报错；回归 `monitorSetUrl`、未带键调用、VIP 导入下载、指标配置新增、拓扑。
-5. 仓库 `public/environment.json` 开发配置对齐（另行处理，不阻塞线上）。
-6. 文档回填：修正 `../design/002-modules/environment-config/overview.md` L66-L76（把 `situationUrl` 的 9011 值误记为 `situationConfigUrl`）。
+> 发版：方案 B 需在 `develop-shaanxi` 上打新 tag 构建镜像，替换现场 `1.0.0-20240320084444.A2`。
+
+## 6. 下一步（按序；1-3 已完成，4-7 转现场/后续流程）
+
+1. ~~用户决策方案 A / B~~（2026-11-05 曾定 A；**2026-11-10 改定 B**，见 §0）。
+2. ~~代码修改~~（已完成 2026-11-10：`src/common/api/index.js` requestTransforms 按 §5-B 简化，注释残留已清理）。
+3. ~~任务卡与 design 文档回填~~（2026-11-10 完成：本卡 + environment-config 两篇；任务卡归档至 `plans/done/2026-11/`）。
+4. 发版：`develop-shaanxi` 打新 tag，构建镜像替换现场 `1.0.0-20240320084444.A2`（发版前本地 `yarn build` 验证构建通过）。
+5. 现场配置：ConfigMap **补 `situationConfigUrl` 键**（代码救不了缺键，需求 #1 的关键）+ 核对 `configUrl` / `AnalysisRuleUrl` 指向（建议 discover 模式，见 §5-B）。
+6. 现场验收（§9）：F12 复查 4 类接口地址；控制台无 `Invalid URL`、无混合内容报错；回归 `monitorSetUrl`、未带键调用、VIP 导入下载、指标配置新增、拓扑。
+7. 仓库 `public/environment.json` 开发配置对齐（另行处理，不阻塞线上）。
 
 ## 7. 待确认（外部输入）
 
@@ -159,12 +172,13 @@ const search = q === -1 ? '' : raw.slice(q);
 
 ## 8. 不做清单
 
-- 不改 `src/common/api/index.js` 的 URL 重写机制（**若选方案 B 则本项解除，需用户批准**）。
+- ~~不改 `src/common/api/index.js` 的 URL 重写机制~~（**2026-11-10 解除**：方案 B 获用户批准并已实施，见 §5-B）。
 - 不新增环境配置键；不合并 `situationConfigUrl` / `configUrl`。
 - 不改 `config/`、`scripts/`；不升级依赖。
 - 本轮不改 `topoXmlProxyUrl` / `situationUrl` / `broadbandUrl` / `filterUrl`。
+- 不处理 fullUrl 分支（全仓 fullUrl 仅用于静态资源，不走本转换器；`http://` 协议判断随 `new URL()` 一并删除后该分支不复存在）。
 
-## 9. 验收标准
+## 9. 验收标准（发版 + 现场配置落地后执行，转现场流程）
 
 - [ ] 业务概览 `dictionary-config/selectedList` 请求指向 cloud.view.manager
 - [ ] 宽带/电视 `indicator-config/*` 请求指向 cloud.view.manager
@@ -179,3 +193,4 @@ const search = q === -1 ? '' : raw.slice(q);
 - 2026-11-05：补充影响范围核实、fullUrl 排查、git 时间线考古；发现"镜像日期晚于配置机制进仓库"的矛盾，结论从"发版+改配置"降级为"待判定"，阻塞项重排
 - 2026-11-05：review 修订——①新增"相对 `serviceDiscovery` 触发 `new URL` 抛错"硬阻塞与方案 A/B；②修正计数（AnalysisRuleUrl 27→23、situationConfigUrl 4→8）；③移除 `filterUrl` 回归点，改列 `monitorSetUrl` + 未带 `baseUrlType` 调用；④补镜像判断的现场验证法、混合内容/CORS 风险、完整 ConfigMap 复核；⑤标注 design 文档 mislabel
 - 2026-11-05：**方案定稿 A（不改代码）**——通过现场 build 包（`.local-source/oss-hwms-monitor-1.0.0-20240320084444/build`）sourcemap `sourcesContent` 反解：镜像 `common/api/index.js` 与本仓逐字一致、`baseUrlType`/`situationConfigUrl` 均在 chunk 中；原 §4「镜像不含调用点」「双斜杠矛盾」两条推断均推翻（后者系未带键 proxy 调用所致）。线上为配置问题，改 ConfigMap 即可，镜像与代码均不动；§7-7 关闭
+- 2026-11-10：**方案 A → B 改选并实施**——对照 `public/environment.json`（开发：绝对地址直连拓扑）与 `家客前端配置.json`（现场：同源相对反代拓扑），方案 A 会把现场未带键调用整体改跨域且依赖网关绝对地址可达，放弃。用户判断 `new URL()` 为代码 bug（相对 `serviceDiscovery` 必抛 TypeError + 缺键抛错 + http 判断缺陷），选定方案 B 简化版：删除 `new URL()` 与前缀拼接整段，改为 `direct/discover + 原 url` 直接拼接（`src/common/api/index.js` requestTransforms）。代码已改并清理注释残留；发版、现场 ConfigMap 补键、验收转 §6-4~6。design 回填：environment-config `overview.md`（mislabel 修正）+ `url-composition.md`（算法更新）；本卡归档 `plans/done/2026-11/`

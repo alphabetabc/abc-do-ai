@@ -6,7 +6,7 @@
 
 | 任务 | Status | 类型 |
 | ---- | ------ | ---- |
-| （空） |        |      |
+| [task-2026-11-10-001-network-scale-contract-change](./task-2026-11-10-001-network-scale-contract-change.md)（网络规模切新接口 homepage-right-network：模板/回填逻辑/mock/调用方） | 待审批 | 编码 |
 
 ## 最近完成
 

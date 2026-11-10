@@ -28,4 +28,4 @@
 
 ## 关联设计
 
-- indicator-config / dictionary-config 的服务归属（cloud.view.manager）调整见 `../environment-config/overview.md` 已知配置事实；变更任务见 plans/task-2026-11-05-001-api-url-routing.md
+- indicator-config / dictionary-config 的服务归属（cloud.view.manager）调整见 `../environment-config/overview.md` 已知配置事实；变更任务见 plans/done/2026-11/task-2026-11-05-001-api-url-routing.md

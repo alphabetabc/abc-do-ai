@@ -1,5 +1,5 @@
 # current-sprint.md · 当前计划索引
 
-- [task-2026-11-05-001-api-url-routing.md](./task-2026-11-05-001-api-url-routing.md) · 接口地址路由调整（待审批）
+- [done/2026-11/task-2026-11-05-001-api-url-routing.md](./done/2026-11/task-2026-11-05-001-api-url-routing.md) · 接口地址路由调整（仓库侧已完成 2026-11-10，发版/现场配置/验收转后续流程，见任务卡 §6）
 
 <!-- 仅放标题 + 链接；无活跃项时可保持本占位 -->

@@ -26,4 +26,4 @@ situation-map / echarts-map（地图，图例位置由 environment.json `legendP
 
 ## 已知问题 / 关联设计
 
-- 右上角 dictionary-config 在线上绕回 server-gcss，见 `../environment-config/overview.md` 已知配置事实；变更任务见 plans/task-2026-11-05-001-api-url-routing.md
+- 右上角 dictionary-config 在线上绕回 server-gcss，见 `../environment-config/overview.md` 已知配置事实；变更任务见 plans/done/2026-11/task-2026-11-05-001-api-url-routing.md
