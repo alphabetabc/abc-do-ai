@@ -1,6 +1,17 @@
 # Changelog
 
-<!-- changelog-last-commit: 3ee4cef6aefd1fe204c0ee771dc2fb06d1f1551d -->
+<!-- changelog-last-commit: cd0e0b801763e6be5b4ac8b31969a7b0042b789c -->
+
+## 2026-11-10
+
+- 发布 skill
+    - 「fedx-vis-ai-view-project-context」 v0.0.0；
+    - 「oss-hwms-monitor-project-context」 v0.0.0；
+    - 「oss-vis-gd-project-context」 v0.0.0；
+- 更新 skill
+    - 「fedx-vis-ai-view-project-context」（配置、其他）；
+    - 「oss-hwms-monitor-project-context」（配置、其他）；
+    - 「oss-vis-gd-project-context」（配置、其他）；
 
 ## 2026-11-06
 
