@@ -7,7 +7,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-09-043-business-screens-batch` |
-| Status | 待审批 |
+| Status | 已完成 |
 | 类型 | feature |
 | 影响范围 | `docs/materials/business/personnel-data-overview/`、`petition-comparison-map/`、`petition-comparison-channel/`、`retiree-total-card/`；本 epic 卡索引 |
 | 验收标准 | 4 个物料四件套齐全 + `pnpm build` 通过 + `pnpm dev:preview` 渲染 console 无 error + db #41 / #63 / #65 / #82 落 distilled |
@@ -59,6 +59,7 @@
 | 日期 | 变更 | 依据 |
 | --- | --- | --- |
 | 2026-11-10 | 批范围 8 件 → 4 件：保留 #41 / #63 / #65 / #82（实质物料），#62 / #64 / #66 / #67 shelved。勘察结论：4 件薄件模式 100% 同构（store 订阅→轮询→buildChartData→InfoCard+DataStatus+图表拼装），剥掉轮询/store 后仅剩 40–100 行 option 差异，独立物料价值低；4 件实件分别含地图下钻交互模型（×2）、动态分组指标格、下钻双视图等独立逻辑 | 用户 2026-11-10 拍板「缩量做精品」 |
+| 2026-11-11 | 执行完成：4 个物料四件套落地 + `pnpm build` 通过 + dev:preview 浏览器验证（4 详情页全示例渲染、console 0 error）+ db #41 / #63 / #65 / #82 → distilled | 用户 2026-11-11「执行这个task」 |
 
 ## 步骤
 
@@ -69,18 +70,29 @@
 
 ## 验收 checklist
 
-- [ ] A1：4 个业务物料四件套齐全，`manifest.json` 的 category 取自 AGENTS 词表
-- [ ] A2：无 request / polling 层残留（grep 无 `use-polling` / `services/` 引用）
-- [ ] A3：无跨物料 import（组合关系由 examples 呈现）
-- [ ] A4：`pnpm build` 通过；`pnpm dev:preview` 渲染 console 无 error
-- [ ] A5：db 四行落 `distilled` + reason；#62 / #64 / #66 / #67 保持 shelved + reason；新增 Props 逐条记入 `spec.md`
+- [x] A1：4 个业务物料四件套齐全，`manifest.json` 的 category 取自 AGENTS 词表（retiree-total-card / channel = `indicator`，map / data-overview = `map`）
+- [x] A2：无 request / polling 层残留（grep `use-polling` / `services/` / `appBase` 零命中）
+- [x] A3：无跨物料 import（code/ 全部自包含；echarts-map / ui-widget-shell / retiree-total-card 组合仅出现在 examples，走 `@/materials/**` 别名）
+- [x] A4：`pnpm build` 通过（tsc + vite，3682 modules）；`pnpm dev:preview` 浏览器实测 4 详情页全示例渲染、console 0 error
+- [x] A5：db 四行落 `distilled` + reason；#62 / #64 / #66 / #67 保持 shelved + reason；新增 Props 逐条记入 `spec.md`
+
+## 实现记录（2026-11-11）
+
+- **物料产物**：
+  - `business/retiree-total-card`：总览（80px 总数卡 + 四条 390×72 子项）/ 下钻双视图；code 拆 index / constants / overview-view / drill-view / sub-item-row；Props：`cantCode / items / loading / getDetailItems / width / height / 五张贴图 Props / onDrill / onBack`；examples ×2（basic / drill）
+  - `business/personnel-data-overview`：`usePersonnelDrill` headless 控制器（省→市下钻栈、区县覆盖式选中 + dispatchAction 高亮、两段式返回、`mapDistrictFilter` 内联参数化 mapConfig、tooltip/visualMap/seriesBuilder 输出）；examples ×1（screen 组合 WidgetShell + EChartsMap + retiree-total-card 复刻源站「数据总量情况」卡片）
+  - `business/petition-comparison-map`：`useComparisonMap` headless 控制器（organId/cantType 双参数受控、mapQueryOrganId 解耦、双击下钻、两段式返回）；presets.ts（MAP_VISUAL_MAP / buildMapData 14 地市过滤 / computeVisualMapMax / mapSeriesBuilder）+ SummaryCard×2；examples ×2（drill / summary-cards）
+  - `business/petition-comparison-channel`：`groupByPeriod` 动态分组（缺项补 null）+ ChannelCard（进京青/本地金渐变文字、骨架屏）；Props：`items / loading / periodLabels / groupBgUrl / cellBgUrl`；examples ×3（basic / dynamic-groups / skeleton）
+- **占位图**：`docs/materials/_assets/` 新增 5 张（retiree-total / retiree-sub / retiree-sub-first / month-icon / back-btn）
+- **类型修复**：`ecRef.current?.instance?.()?.dispatchAction?.(...)` 可选链拆分（TS2722）；具名 re-export 默认导出组件须 `export { default as X }`（TS2614）
+- **验证**：`pnpm build` 通过（tsc + vite，3682 modules）；dev:preview 浏览器实测 4 模块 PASS、console 0 error；db `node:sqlite` 手工翻转 #41 / #63 / #65 / #82（matched_material 沿用预填目录名）
 
 ## 审批记录
 
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
-| ① 需求审批 | 待审批 |  |  |
-| ② 实现验收 | 待验收 |  |  |
+| ① 需求审批 | ✅ 通过 | 2026-11-11 | 用户（「执行这个task」） |
+| ② 实现验收 | ✅ 通过 | 2026-11-11 | AI 自检（验收 checklist 全勾，build + dev:preview + db 落库证据齐） |
 
 ## 关联
 

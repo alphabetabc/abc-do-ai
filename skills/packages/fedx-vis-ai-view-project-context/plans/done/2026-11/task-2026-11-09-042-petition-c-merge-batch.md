@@ -7,7 +7,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-09-042-petition-c-merge-batch` |
-| Status | 待审批 |
+| Status | 已完成 |
 | 类型 | feature |
 | 影响范围 | `docs/materials/business/petition-overview-indicator/`、`petition-channel-stat/`、`petition-map-overview/` 共 3 个物料；本 epic 卡索引 |
 | 验收标准 | 3 个物料四件套齐全 + `pnpm build` 通过 + `pnpm dev:preview` 渲染 console 无 error + db #46 / #47 / #50 落 distilled |
@@ -59,6 +59,7 @@
 | 日期 | 变更 | 依据 |
 | --- | --- | --- |
 | 2026-11-10 | 批范围 8 件 → 3 件：保留 #46 / #47 / #50（实质物料），#48 / #49 / #51 / #52 / #53 shelved（原 region-map 并入 region-bar 方案随 #51 一并作废）。勘察结论：5 件薄件剥掉轮询/store 后仅剩 ECharts option 配置与简单拼装，echarts-ver-bar / echarts-pie / echarts-map 物料 + examples 组合即可还原；3 件实件分别含地图下钻全套交互、骨架屏指标卡、双层分组卡片布局。与 task-043 缩量决策同一口径 | 用户 2026-11-10 拍板「缩量做精品」 |
+| 2026-11-11 | 执行完成：3 个物料四件套落地 + `pnpm build` 通过 + dev:preview 浏览器验证（3 详情页全示例渲染、双击沈阳下钻成功、console 0 error）+ db #46 / #47 / #50 → distilled | 用户 2026-11-11「执行这个task」 |
 
 ## 步骤
 
@@ -69,18 +70,28 @@
 
 ## 验收 checklist
 
-- [ ] A1：3 个业务物料四件套齐全，`manifest.json` 的 category 取自 AGENTS 词表
-- [ ] A2：无 request / polling 层残留（grep 无 `use-polling` / `services/` 引用）
-- [ ] A3：无跨物料 import（组合关系由 examples 呈现）
-- [ ] A4：`pnpm build` 通过；`pnpm dev:preview` 渲染 console 无 error
-- [ ] A5：db 三行落 `distilled` + reason；#48 / #49 / #51 / #52 / #53 及 beijing 侧 #54–#61 保持 shelved + reason；新增 Props 逐条记入 `spec.md`
+- [x] A1：3 个业务物料四件套齐全，`manifest.json` 的 category 取自 AGENTS 词表（均 `business`）
+- [x] A2：无 request / polling 层残留（grep 命中均为 spec「剥离记录」注释，无真实 import）
+- [x] A3：无跨物料 import（code/ 全部自包含；echarts-map / ui-widget-shell 组合仅出现在 examples，走 `@/materials/**` 别名）
+- [x] A4：`pnpm build` 通过；`pnpm dev:preview` 渲染 console 无 error（浏览器实测 3 详情页全示例 + 双击沈阳下钻 PASS）
+- [x] A5：db 三行落 `distilled` + reason；#48 / #49 / #51 / #52 / #53 及 beijing 侧 #54–#61 保持 shelved + reason；新增 Props 逐条记入 `spec.md`
+
+## 实现记录（2026-11-11）
+
+- **物料产物**（category 均 `business`）：
+  - `business/petition-overview-indicator`：`deriveOverviewCards` 纯函数（JTWX+JTLF+JTLX 求和）+ 骨架屏 + 195×59 卡；Props：`cards / cardDefs / loading / cardWidth / cardHeight / background / valueColor / labelColor`；examples ×3（basic / skeleton / custom-beijing 口径）
+  - `business/petition-channel-stat`：双层分组贴图卡布局；Props：`channels / cardWidth / cardHeight / titleHeight / sectionGap / cardGap / groupBackground / cardBackground`；examples ×2（basic / with-widget-shell 组合 + 4 渠道定制）
+  - `business/petition-map-overview`：headless 控制器（`useRegionDrill` 下钻栈 / 两段式返回 / 覆盖式选中 + dispatchAction / 区域字典过滤，`@/utils/mapDistrictFilter` 内联入参化）+ `DrillBackButton` + option 构建纯函数；Props：`province / regionMetas / onRegionChange / visualMapRight`；examples ×2（drill 组合 echarts-map 全交互演示 / filter-districts 纯函数演示）
+- **占位图**：`docs/materials/_assets/` 新增 4 张（indicator-card / channel-group / channel-btn / map-back）
+- **C 档合并承载**：beijing #54 → `cardDefs`/`cards` Props；#55 → `channels` Props；#58 → `visualMapRight` Props（beijing 侧源码 diff 实测仅 service import 差异）
+- **验证**：`pnpm build` 通过（tsc + vite，3635 modules）；dev:preview 浏览器实测 PASS，console 0 error；db `node:sqlite` 手工翻转 #46 / #47 / #50（matched_material 沿用预填目录名）
 
 ## 审批记录
 
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
-| ① 需求审批 | 待审批 |  |  |
-| ② 实现验收 | 待验收 |  |  |
+| ① 需求审批 | 已批准 | 2026-11-11 | 用户（「执行这个task」） |
+| ② 实现验收 | 已验收 | 2026-11-11 | AI 代理自检（build + 浏览器 + db） |
 
 ## 关联
 

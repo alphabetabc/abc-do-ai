@@ -9,7 +9,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-06-035-big-screen-ln-distill` |
-| Status | 进行中（已批准，步骤 1 执行中） |
+| Status | 已完成（2026-11-11 收口：全部批次卡归档，db 终态 distilled 17 / shelved 29 / queued 0） |
 | 类型 | docs |
 | 影响范围 | research/materials.db（新源项目入库）、后续 `docs/materials/components/**` 或 `docs/materials/business/**`（按定档）、本文件、current-sprint.md |
 | Roadmap | 阶段 2~4（对第 2 源项目重跑；阶段 4 需在定档后才能确认范围） |
@@ -80,7 +80,7 @@
 - [x] A1：survey 入库覆盖 big-screen 全部子目录，db project 维度区分两源项目（源1 40 行 + 源2 46 行，2026-11-06 步骤 1 执行记录）
 - [x] A2：定档建议表可独立判定（每项含 tier + 理由 + 相似度证据），经用户审定冻结（46 行终态落库，queued 29 / shelved 17）
 - [x] A3：B/C 档子卡全部建立并入 current-sprint 索引（4 张批次卡 040–043，覆盖 24 行 queued；#68/#69/#70 用户拍板 D 档搁置，2026-11-09）；A/D 档 db 终态 + reason 落库（步骤 2 已冻结 + 2026-11-09 增补）
-- [ ] A4：本卡转 epic 锚点，范围边界（不做清单）与 001 一致
+- [x] A4：本卡转 epic 锚点，范围边界（不做清单）与 001 一致（2026-11-11 随 043 收口勾选；A 档下沉 4 件组合卡片经用户确认由 042/043 期间同类组合示例覆盖模式，不逐一还原）
 
 ---
 
@@ -90,7 +90,7 @@
 | --- | --- | --- | --- |
 | ① 需求审批 | 已批准 | 2026-11-06 | 用户（Q1–Q5 对齐 + epic 不关闭约定） |
 | ①' 定档冻结（步骤 2 内） | 已批准 | 2026-11-06 | 用户（基建合并策略 / radar echarts 直线段 / ④ 组精读结论，三项逐项拍板） |
-| ② 实现验收 | 待验收 |  |  |
+| ② 实现验收 | ✅ 通过 | 2026-11-11 | 用户（043 收口时确认 epic 关闭；db 终态核对：distilled 17 / shelved 29 / queued 0） |
 
 ---
 
@@ -138,8 +138,8 @@
 | 第 1 批 · 基建 | [task-037 scaler-container](./done/2026-11/task-2026-11-06-037-scaler-container-distill.md) | ✅ 完成并归档（2026-11-09 蒸馏 + 验收 + db #83 distilled） |
 | 第 2 批 · 基建剩余 | [task-040 批次卡](./task-2026-11-09-040-ui-data-status-time-display-enhance.md)：增强 ui-data-status / ui-time-display（2 件）；background（#68）/ fullscreen-button（#69）/ header（#70）用户拍板 D 档搁置 | ✅ 已完成 → done/2026-11/（2026-11-09 硬门槛②通过；db #71/#84 落 distilled） |
 | 第 2 批 · 图表基建 | [task-041 批次卡](./done/2026-11/task-2026-11-09-041-chart-basics-batch.md)：hor-bar / ver-bar / pie / radar（echarts 直线段）/ ec-map 并入 echarts-map + info-card 并入 ui-widget-shell（6 件） | ✅ 完成并归档（2026-11-10 硬门槛②通过；db #72/#75/#76/#78/#79/#86 落 distilled） |
-| 第 2 批 · C 合并 | [task-042 批次卡](./task-2026-11-09-042-petition-c-merge-batch.md)：overview-indicator / channel-stat / map-overview（3 件）；identity-type / demands / region-bar / trend / region-map 2026-11-10 用户拍板 shelved（薄壳，缩量做精品）；beijing 侧 #54/#55/#58 仍指向 3 物料，#56/#57/#59/#60/#61 改指既有 echarts 物料 | 📋 已立卡，待审批（2026-11-10 缩量改卡） |
-| 第 2 批 · 业务 | [task-043 批次卡](./task-2026-11-09-043-business-screens-batch.md)：personnel-data-overview / 比对 map / channel / retiree-total-card（4 件）；appeal / identity / rank / trend 2026-11-10 用户拍板 shelved（薄壳模板化，缩量做精品） | 📋 已立卡，待审批（2026-11-10 缩量改卡） |
+| 第 2 批 · C 合并 | [task-042 批次卡](./done/2026-11/task-2026-11-09-042-petition-c-merge-batch.md)：overview-indicator / channel-stat / map-overview（3 件）；identity-type / demands / region-bar / trend / region-map 2026-11-10 用户拍板 shelved（薄壳，缩量做精品）；beijing 侧 #54/#55/#58 仍指向 3 物料，#56/#57/#59/#60/#61 改指既有 echarts 物料 | ✅ 完成并归档（2026-11-11 蒸馏 + 验收 + db #46/#47/#50 落 distilled；beijing #54–#61 保持 shelved 指向） |
+| 第 2 批 · 业务 | [task-043 批次卡](./done/2026-11/task-2026-11-09-043-business-screens-batch.md)：personnel-data-overview / 比对 map / channel / retiree-total-card（4 件）；appeal / identity / rank / trend 2026-11-10 用户拍板 shelved（薄壳模板化，缩量做精品） | ✅ 完成并归档（2026-11-11 硬门槛②通过；db #41/#63/#65/#82 落 distilled） |
 | 不立卡（db 已终态） | A 档下沉 4 件组合卡片（基建+图表就绪后随对应子卡作 examples 消化）；D 档 8 件（use-polling + personnel 4 占位 + background / fullscreen-button / header，#68/#69/#70 2026-11-09 用户拍板搁置）；beijing-petition 8 件（shelved 指向） | — |
 
 > 立卡策略：各批次开工前逐张立卡（沿用逐项模式），本表为唯一排队索引。
@@ -157,6 +157,11 @@
   - `react-router-dom`（042）→ 导航状态 Props 化
   - 041 与 042 分属不同物料 → 组合关系走 examples / slot 注入，不跨物料 import
 - 058（petition/region-map）仅 11 行 re-export，卡内建议**不单独出物料**，作为 056 的别名用法；若实现期确认有独立语义需回用户确认。
+
+### 2026-11-11 收口（epic 关闭）
+
+- 043 归档后 queued 清零（46 行终态 distilled 17 / shelved 29），用户确认关闭 epic。此前「全程不关闭」约定（2026-11-06）随终态达成而失效。
+- A 档下沉 4 件（employment / entitled-object / regional-population / retiree-pie-card）核对：未逐一建组合示例，同类「壳 + 图表 + 卡片」组合模式已由 042/043 期间 examples（petition-channel-stat/with-widget-shell、personnel-data-overview/screen 等）覆盖，经用户确认不逐一还原。
 
 ---
 

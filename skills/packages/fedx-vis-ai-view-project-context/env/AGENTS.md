@@ -6,13 +6,20 @@
 
 ## 目录边界
 
-- 可观察：`src/`、`docs/`、`scripts/`、`index.html`、根配置文件（package.json / tsconfig.json / vite.config.ts / .editorconfig）
+- 可观察：`src/`、`docs/`、`scripts/`、`apps/`、`index.html`、根配置文件（package.json / tsconfig.json / vite.config.ts / .editorconfig）
 - 不可观察：`node_modules/`、`dist/`、`.agents/`、`.screenshots/`、`.local-docs/`、`.trae-html-share-packages/`
 
 ## 质量门槛
 
 - 类型检查 + 构建：`pnpm build`（内含 `tsc -b`）
 - 本地运行验证：`pnpm dev:preview`
+- 渲染器包构建（IIFE + d.ts）：`pnpm build:renderer`
+- 渲染器包隔离检查（禁 import 骨架代码）：`pnpm check:renderer-isolation`
+- 物料契约检查（manifest runtime.type ↔ playground registry）：`pnpm check:material-registry`
+- 骨架镜像校验（docs/skeleton 与 apps/playground 共有工程壳逐字节一致，防止只改一边）：`pnpm check:skeleton-mirror`——骨架运行时正确性由 playground 验证 + 同构保证，skeleton 不单独装依赖验证（改两侧共有文件时须同步改，跑本校验兜底）
+- playground（研发验证回路，apps/playground，骨架的镜像：核心工程壳与 docs/skeleton 同构，仅多演示物料 + schema + mock）：`pnpm install` 后 `pnpm build` / `pnpm dev`；`pnpm check:materials` / `pnpm check:discipline` 在 playground 目录内执行
+- 渲染器产物同步：根 `pnpm build:renderer` 构建后自动同步 packages/screen-renderer/dist 到 skeleton + playground 两处 vendors；两 app 的 `pnpm dev` 启动时 vite 插件也会拉最新产物（改 renderer 后无需手动拷贝）
+- 收料导入（宿主项目产料 zip → 物料站，逆向提炼管道）：`pnpm import:material <material-xxx.zip> --group components/ui|components/rc-echarts|business`；自动跑 build / check:material-registry / playground build 三门槛，失败默认回滚；schemaable 物料须先在 playground registry 注册演示组件；外部 AI 产物必须人工 review 合入（不合入不合版）
 
 ## 工作流文档路径基准（勿写入 docs/workflows/）
 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVP-SOP · 四输入还原大屏（仅 Skill 环境）</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #101a2c; --panel2: #16233a;
+    --line: #24344f; --txt: #d8e4f5; --dim: #8ba3c7;
+    --acc: #35d0ff; --ok: #4cd7a1; --warn: #ffd666; --bad: #e06a6a;
+    mono: ; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--txt); font: 14px/1.75 "PingFang SC", "Microsoft YaHei", sans-serif; padding: 40px 24px; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 26px; margin-bottom: 6px; color: #fff; }
+  .sub { color: var(--dim); margin-bottom: 32px; }
+  h2 { font-size: 19px; margin: 36px 0 14px; padding-left: 12px; border-left: 4px solid var(--acc); color: #fff; }
+  h3 { font-size: 15px; margin: 18px 0 8px; color: var(--acc); }
+  p { margin: 8px 0; color: var(--txt); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px 24px; margin: 14px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th, td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--panel2); color: #fff; white-space: nowrap; }
+  code { font-family: Consolas, monospace; background: var(--panel2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; color: var(--acc); }
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; gap: 16px; }
+  .rail { display: flex; flex-direction: column; align-items: center; flex: 0 0 34px; }
+  .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--panel2); border: 2px solid var(--acc); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex: 0 0 34px; }
+  .vline { width: 2px; flex: 1; background: var(--line); min-height: 18px; }
+  .step-body { padding-bottom: 26px; flex: 1; }
+  .step-body .t { font-weight: 700; color: #fff; font-size: 15px; margin-bottom: 4px; }
+  .tag { display: inline-block; font-size: 11px; border-radius: 20px; padding: 1px 10px; margin-right: 6px; vertical-align: 1px; }
+  .tag.b { background: rgba(53,208,255,.15); color: var(--acc); border: 1px solid rgba(53,208,255,.4); }
+  .tag.g { background: rgba(76,215,161,.12); color: var(--ok); border: 1px solid rgba(76,215,161,.4); }
+  .tag.y { background: rgba(255,214,102,.12); color: var(--warn); border: 1px solid rgba(255,214,102,.4); }
+  .tag.r { background: rgba(224,106,106,.12); color: var(--bad); border: 1px solid rgba(224,106,106,.4); }
+  ul { margin: 6px 0 6px 20px; }
+  li { margin: 3px 0; }
+  .verdict { background: linear-gradient(135deg, rgba(76,215,161,.08), rgba(53,208,255,.06)); border: 1px solid rgba(76,215,161,.35); }
+  .lane { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .lane .card { margin: 0; }
+  .foot { color: var(--dim); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>MVP-SOP · 四输入还原大屏</h1>
+<div class="sub">前提：环境中只有 <code>large-screen-builder</code> skill（骨架 skeleton + 工作流 workflows + 物料库 specs + 模块索引 module-index）——没有物料站源仓库、没有平台。</div>
+
+<h2>0 · 输入与环境</h2>
+<div class="card">
+<table>
+  <tr><th>输入</th><th>是什么</th><th>在流程中的作用</th></tr>
+  <tr><td><b>PM inputs</b></td><td>需求描述：主题、指标口径、数据来源、联动期望</td><td>决定「放什么」——区块清单、数据契约、interactions 联动设计</td></tr>
+  <tr><td><b>大屏设计稿</b></td><td>整屏视觉稿（截图 / 设计文件导出）</td><td>决定「放哪里」——canvas 尺寸、sections 布局（x/y/w/h）、视觉风格映射</td></tr>
+  <tr><td><b>设计素材</b></td><td>图标、图片、装饰元素等资产文件</td><td>决定「长什么样」——物料的图片类 props / 背景资源；新物料可参考</td></tr>
+  <tr><td><b>模块 spec</b></td><td>具体模块的规格说明（Props 表 / 交互行为）</td><td>决定「怎么配」——匹配或新写物料时的 props 填写依据</td></tr>
+</table>
+<p style="color:var(--dim)">环境侧唯一资产 = skill 自带：<code>skeleton/</code>（工程骨架）、<code>workflows/</code>（schema-mode / big-screen-assembly / material-extract）、<code>specs/&lt;模块&gt;/</code>（spec + data-model + code + examples）、<code>module-index.md</code>（分类索引）。</p>
+</div>
+
+<h2>1 · 结论先行</h2>
+<div class="card verdict">
+<p><b style="color:var(--ok)">能还原，且这是 skill 的设计目标场景。</b> 但能力边界由「物料匹配度」决定，分三档：</p>
+<ul>
+  <li><span class="tag g">全匹配</span> 每个区块都能在 specs 里找到对应 type → 直接产 schema 出屏，<b>零新代码</b></li>
+  <li><span class="tag y">部分匹配</span> 多数区块匹配、少数缺料 → 匹配区走 schema，缺料区<b>参照模块 spec 现写组件</b>（skill 的建组件能力），注册后同样进 schema</li>
+  <li><span class="tag r">系统性缺口</span> 整类能力缺失（如全新交互形态）→ 现写 + <b>material-extract 提料回流</b>（zip → import:material → 升级 skill），本次先占位交付</li>
+</ul>
+</div>
+
+<h2>2 · SOP 主流程</h2>
+<div class="card flow">
+
+  <div class="step"><div class="rail"><div class="dot">1</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">初始化工程 <span class="tag b">workflows/schema-mode.md</span></div>
+    <p>复制 skill 的 <code>skeleton/</code> 为宿主项目 → <code>pnpm install</code>。得到干净工程壳：路由 + SchemaScreen + 空 registry + renderer IIFE 产物。</p></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">2</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">读图与拆屏（PM inputs × 设计稿）</div>
+    <p>从设计稿提取 canvas（尺寸/缩放/背景）+ 区块栅格（每块的 x/y/w/h、标题、视觉风格）；从 PM inputs 提取每块的<b>数据语义</b>（指标、维度、单位）与<b>联动关系</b>。产出一张「区块清单」：id / 位置 / 语义 / 联动。</p></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">3</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">物料匹配 <span class="tag b">module-index.md + specs/</span></div>
+    <p>逐区块查 module-index（按 category 缩小范围）→ 命中候选后读其 <code>spec.md</code> 对照<b>模块 spec 输入</b>与设计稿视觉，验证三点：props 表达能力够不够、data-model 契约对不对、events/subscribe 支不支持期望联动。</p>
+    <p>匹配结果三类：<span class="tag g">直接可用</span> / <span class="tag y">近似可用</span>（props 定制可收敛视觉差异）/ <span class="tag r">缺料</span>。</p></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">4</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">接入匹配物料 <span class="tag b">schema-mode.md 步骤 3~4</span></div>
+    <p>每命中一个 type：从 <code>specs/&lt;模块&gt;/code/</code> 拷组件进宿主 <code>src/components/materials/&lt;type&gt;/</code>（依赖与静态资源一并拷）→ 在 <code>src/components/materials/registry.tsx</code> 注册一行。设计素材中属于该物料的图片，按 spec 的资源路径约定落位。</p></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">5</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">缺料扩展（两条分支，见 §3）</div></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">6</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">产出 Schema <span class="tag b">big-screen-assembly.md</span></div>
+    <p>按区块清单逐条写 schema：canvas ← 设计稿尺寸；sections ← 每块的 type/layout/props（props 填法对照 spec Props 表与模块 spec 输入）/frame；data ← PM inputs 的数据契约（inline mock 或 url 指向宿主接口）；interactions ← 联动关系（events 派发 ↔ subscribe 订阅）。</p>
+    <p>「加屏 = 建 <code>src/screens/&lt;name&gt;/</code> 声明 schemaUrl + App 挂 Route」，放 schema 文件即出屏。</p></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">7</div><div class="vline"></div></div>
+    <div class="step-body"><div class="t">验证与收敛</div>
+    <p>浏览器跑屏：区块渲染 / 数据绑定 / 联动闭环 / console 零 error。视觉对照设计稿微调 layout 与 props（只动 schema，不动物料代码——改物料会漂移 propsContract）。</p></div>
+  </div>
+
+  <div class="step"><div class="rail"><div class="dot">8</div></div>
+    <div class="step-body"><div class="t">提料回流（可选但推荐）<span class="tag b">material-extract.md</span></div>
+    <p>本次现写的新组件若具备复用价值 → <code>scripts/export-material.mjs</code> 打包 zip → 下载回物料站 → <code>pnpm import:material</code>（三门槛 + 人工 review）→ <code>export:skill</code> 发新版。skill 越用越厚，下次同类需求直接全匹配。</p></div>
+  </div>
+
+</div>
+
+<h2>3 · 缺料时的两条扩展分支</h2>
+<div class="lane">
+  <div class="card">
+    <h3 style="margin-top:0">分支 A · 工程内现写 <span class="tag y">本次交付优先</span></h3>
+    <p>参照<b>模块 spec</b> 与设计稿视觉，在宿主 <code>src/components/materials/&lt;新type&gt;/</code> 现写组件（React + 仓库技术栈，遵守 spec 声明的 Props / 事件契约）→ registry 注册 → 进 schema。设计素材在此消费（图标、贴图）。</p>
+    <p style="color:var(--dim)">适用：临时性、项目特有的区块；或时间紧先出屏。</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">分支 B · 标准件沉淀 <span class="tag g">长期复用</span></h3>
+    <p>按 <code>material-extract.md</code> 规范把现写组件提炼为四件套（manifest 含 runtime 块 / spec / data-model / code / examples 自包含 mock）→ 打包回流物料站 → 发布新版 skill。物料的 propsContract / dataContract 即后续 AI 使用它的契约。</p>
+    <p style="color:var(--dim)">适用：通用性强的区块（如新的图表形态、业务卡片）。</p>
+  </div>
+</div>
+
+<h2>4 · 边界与纪律（不可逾越）</h2>
+<div class="card">
+<ul>
+  <li><b>schema 里不现写 tsx</b>——组件只能来自 specs/ 拷贝或宿主 materials/ 现写后注册，schema 只做装配描述</li>
+  <li><b>不改骨架副本里的物料实现</b>——视觉差异用 props 收敛；确实不够表达 → 走分支 B 改物料站原件再回流</li>
+  <li><b>物料间零耦合</b>——模块之间禁止相互 import；联动只通过 interactions（events/subscribe）</li>
+  <li><b>数据请求归宿主</b>——物料不发起请求，schema data 契约（url/inline）由宿主环境满足</li>
+</ul>
+</div>
+
+<h2>5 · 一图总览</h2>
+<div class="card">
+<pre style="font-family:Consolas,monospace;font-size:12.5px;line-height:1.6;color:var(--dim);overflow-x:auto">
+PM inputs ─┐                                    ┌─ 全匹配 ──► 拷 code/ + registry 注册 ─┐
+设计稿   ─┼─► 拆屏/匹配 ─► module-index + specs ─┤ 近似可用 ─► props 定制后接入 ─────────┤
+模块spec ─┘        ▲                            └─ 缺料 ──► 现写组件(A) / 提料回流(B) ──┤
+设计素材 ──────────┘（新物料消费素材）                                              ▼
+                                                                    schema.json（canvas/sections/data/interactions）
+                                                                              │
+                                                     skeleton + SchemaScreen ◄─┘
+                                                                              ▼
+                                                                     大屏出屏 ─► 验证 ─► (回流 skill)
+</pre>
+</div>
+
+<div class="foot">fedx-vis-ai-view · design/mvp/mvp-sop.html · 2026-11-13 · 依据 schema-runtime.md（Schema 路径 B）与 workflows/{schema-mode, big-screen-assembly, material-extract} 梳理</div>
+
+</div>
+</body>
+</html>
