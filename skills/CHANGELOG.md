@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: 013e785f0f52e75c11738b9b19847e65dc13d49a -->
+<!-- changelog-last-commit: 401d4b754a8e8aa1a2b5528fe4d5473f12b6de68 -->
+
+## 2026-11-17
+
+- 发布 skill
+    - 「fedx-vis-ai-view-project-context」 v0.0.0；
+- 更新 skill
+    - 「fedx-vis-ai-view-project-context」（配置、其他）；项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
 
 ## 2026-11-13
 
