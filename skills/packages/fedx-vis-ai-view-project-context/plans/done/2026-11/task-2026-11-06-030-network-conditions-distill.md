@@ -9,7 +9,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-06-030-network-conditions-distill` |
-| Status | 进行中（已实现，待验收②） |
+| Status | 已完成 |
 | 类型 | docs |
 | 影响范围 | `docs/materials/components/business/network-conditions/`（新增四件套）、台账「二」备注列回填 |
 | Roadmap | 阶段 3（业务模块蒸馏） |

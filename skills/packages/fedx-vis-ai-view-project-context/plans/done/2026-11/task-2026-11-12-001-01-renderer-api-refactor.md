@@ -5,7 +5,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-12-001-01-renderer-api-refactor` |
-| Status | 进行中（待验收②） |
+| Status | 已完成 |
 | 类型 | 编码 |
 | 影响范围 | `packages/screen-renderer/src/`（index.tsx / renderer.tsx / types.ts / 新增拆分文件）、`docs/skeleton/src/renderer-boot.ts`、`packages/screen-renderer/iife-test/index.html`、`packages/screen-renderer/playground/` |
 | Roadmap | MVP · 里程碑 1（渲染链路） · 001 的修正任务 |
@@ -116,7 +116,7 @@
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
 | ① 需求审批 | 已批准（用户指令「执行」） | 2026-11-12 | 用户 |
-| ② 实现验收 | 待验收 | — | — |
+| ② 实现验收 | 已验收 | 2026-11-16 | 用户（归档时已实际验收，卡面回填） |
 
 ---
 

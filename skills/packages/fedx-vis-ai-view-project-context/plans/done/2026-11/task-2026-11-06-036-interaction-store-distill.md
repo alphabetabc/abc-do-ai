@@ -7,7 +7,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-06-036-interaction-store-distill` |
-| Status | 已完成（待验收） |
+| Status | 已完成 |
 | 类型 | feature |
 | 影响范围 | `docs/materials/components/interaction-store/`、本 epic 卡索引 |
 | 验收标准 | 四件套齐全 + pnpm build 通过 + dev:preview 渲染/console 无 error |
@@ -35,7 +35,7 @@
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
 | ① 需求审批 | 已批准 | 2026-11-09 | 用户（执行指令 + 产物路径拍板：平铺 `components/` 下） |
-| ② 实现验收 | 待验收 |  |  |
+| ② 实现验收 | 已验收 | 2026-11-16 | 用户（归档时已实际验收，卡面回填） |
 
 ## 实现记录（2026-11-09）
 

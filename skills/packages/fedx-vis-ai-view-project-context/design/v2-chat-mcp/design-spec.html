@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v2 · UI 设计规范 · 浅色专业风</title>
+<style>
+  :root {
+    /* ── Design Tokens（正式值）── */
+    --c-bg: #f5f7fa;          /* 页面底 */
+    --c-surface: #ffffff;      /* 卡片/面板 */
+    --c-surface2: #fafbfd;     /* 次级面板 */
+    --c-line: #e3e8ef;         /* 描边 */
+    --c-line-strong: #d0d8e3;
+    --c-txt: #1f2d3d;          /* 主文字 */
+    --c-txt-2: #5e718a;        /* 次文字 */
+    --c-txt-3: #97a5b8;        /* 弱文字 */
+    --c-primary: #2b6de8;      /* 主色 */
+    --c-primary-h: #1f5cd0;    /* hover */
+    --c-primary-bg: #eef4ff;   /* 主色浅底 */
+    --c-ok: #18a05d; --c-ok-bg: #e8f7ef;
+    --c-warn: #d97706; --c-warn-bg: #fdf3e4;
+    --c-danger: #d93652; --c-danger-bg: #fdeef1;
+    --r-sm: 4px; --r-md: 6px; --r-lg: 10px; --r-pill: 999px;
+    --shadow-1: 0 1px 3px rgba(31,45,61,.07);
+    --shadow-2: 0 4px 12px rgba(31,45,61,.1);
+    --f-sans: "PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+    --f-mono: "SFMono-Regular",Consolas,monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--c-bg); color: var(--c-txt); font: 14px/1.75 var(--f-sans); padding: 40px 28px; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .sub { color: var(--c-txt-2); font-size: 13px; margin-bottom: 32px; }
+  .sec { margin: 40px 0 14px; font-size: 17px; font-weight: 700; }
+  .sec small { color: var(--c-txt-3); font-weight: 400; margin-left: 8px; }
+  .panel { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
+
+  /* 色板 */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 12px; }
+  .sw { border: 1px solid var(--c-line); border-radius: var(--r-md); overflow: hidden; }
+  .sw .c { height: 52px; }
+  .sw .l { padding: 6px 10px; font-size: 11px; color: var(--c-txt-2); }
+  .sw .l b { display: block; color: var(--c-txt); font-size: 12px; }
+
+  /* 字号 */
+  .type-row { display: flex; align-items: baseline; gap: 18px; padding: 10px 0; border-bottom: 1px dashed var(--c-line); }
+  .type-row:last-child { border: none; }
+  .type-row .demo { flex: 1; }
+  .type-row .meta { font: 11px var(--f-mono); color: var(--c-txt-3); white-space: nowrap; }
+
+  /* 按钮 */
+  .btn { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--f-sans); border-radius: var(--r-md); padding: 8px 18px; cursor: pointer; border: 1px solid transparent; margin: 0 8px 10px 0; }
+  .btn-p { background: var(--c-primary); color: #fff; }
+  .btn-p:hover { background: var(--c-primary-h); }
+  .btn-o { background: #fff; color: var(--c-primary); border-color: var(--c-primary); }
+  .btn-o:hover { background: var(--c-primary-bg); }
+  .btn-g { background: #fff; color: var(--c-txt-2); border-color: var(--c-line-strong); }
+  .btn-g:hover { color: var(--c-txt); border-color: var(--c-txt-3); }
+  .btn-d { background: #fff; color: var(--c-danger); border-color: var(--c-danger); }
+  .btn-d:hover { background: var(--c-danger-bg); }
+  .btn-sm { padding: 4px 12px; font-size: 12px; }
+
+  /* 标签 */
+  .tag { display: inline-block; font-size: 12px; border-radius: var(--r-pill); padding: 1px 10px; margin: 0 6px 6px 0; }
+  .tag-p { background: var(--c-primary-bg); color: var(--c-primary); }
+  .tag-ok { background: var(--c-ok-bg); color: var(--c-ok); }
+  .tag-w { background: var(--c-warn-bg); color: var(--c-warn); }
+
+  /* 输入 */
+  .inp { border: 1px solid var(--c-line-strong); border-radius: var(--r-md); padding: 8px 12px; font: 13px var(--f-sans); width: 260px; margin: 0 12px 10px 0; }
+  .inp:focus { outline: none; border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(43,109,232,.12); }
+
+  /* 卡片 */
+  .demo-card { width: 220px; background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg); padding: 14px; box-shadow: var(--shadow-1); display: inline-block; margin: 0 14px 14px 0; vertical-align: top; }
+  .demo-card:hover { box-shadow: var(--shadow-2); }
+  .demo-card .th { height: 76px; background: #0b1220; border-radius: var(--r-md); margin-bottom: 10px; }
+
+  /* 间距 */
+  .sp-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; font: 11px var(--f-mono); color: var(--c-txt-2); }
+  .sp-row i { background: rgba(43,109,232,.2); border: 1px dashed var(--c-primary); display: block; height: 14px; }
+
+  .note { background: var(--c-primary-bg); border-left: 3px solid var(--c-primary); border-radius: 0 var(--r-md) var(--r-md) 0; padding: 10px 14px; font-size: 13px; color: var(--c-txt-2); margin: 18px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--c-line); }
+  th { color: var(--c-txt-2); font-weight: 600; background: var(--c-surface2); }
+  code { font: 12px var(--f-mono); background: var(--c-surface2); border: 1px solid var(--c-line); border-radius: var(--r-sm); padding: 1px 6px; color: var(--c-primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>v2 · UI 设计规范</h1>
+<div class="sub">浅色专业风 · 零代码产品叙事 · 适用于 platform-apps/builder 全部页面（场景列表 / 工作区 / 素材管理）</div>
+
+<div class="sec">1. 设计语言 <small>为什么这样定</small></div>
+<div class="panel">
+  <table>
+    <tr><th>维度</th><th>取值</th><th>理由</th></tr>
+    <tr><td>基调</td><td>浅色后台 · 白卡片 + 浅灰底</td><td>贴合 Coze/低代码平台心智，「业务用户可用」而非「工程师工具」</td></tr>
+    <tr><td>主色</td><td><code>#2b6de8</code>（科技蓝）</td><td>可信、操作引导明确；避开大屏深色，形成「工作台浅 / 画布深」的分区对比</td></tr>
+    <tr><td>画布区</td><td>保留深色（<code>#0b1220</code>）</td><td>大屏渲染区天然深色，浅色工作台包裹深色画布 = 舞台聚光效果，演示爆点被突出</td></tr>
+    <tr><td>圆角/描边</td><td>小圆角（4-10px）+ 细描边</td><td>克制、专业，不讨好式的圆滚滚</td></tr>
+  </table>
+</div>
+
+<div class="sec">2. 色板 <small>Design Tokens</small></div>
+<div class="panel">
+  <div class="swatches">
+    <div class="sw"><div class="c" style="background:#f5f7fa;border-bottom:1px solid #e3e8ef"></div><div class="l"><b>bg</b>#f5f7fa 页面底</div></div>
+    <div class="sw"><div class="c" style="background:#ffffff;border-bottom:1px solid #e3e8ef"></div><div class="l"><b>surface</b>#ffffff 卡片</div></div>
+    <div class="sw"><div class="c" style="background:#fafbfd"></div><div class="l"><b>surface2</b>#fafbfd 次级面板</div></div>
+    <div class="sw"><div class="c" style="background:#2b6de8"></div><div class="l"><b>primary</b>#2b6de8 主色</div></div>
+    <div class="sw"><div class="c" style="background:#eef4ff"></div><div class="l"><b>primary-bg</b>#eef4ff 主色浅底</div></div>
+    <div class="sw"><div class="c" style="background:#18a05d"></div><div class="l"><b>ok</b>#18a05d 成功</div></div>
+    <div class="sw"><div class="c" style="background:#d97706"></div><div class="l"><b>warn</b>#d97706 提醒</div></div>
+    <div class="sw"><div class="c" style="background:#d93652"></div><div class="l"><b>danger</b>#d93652 危险</div></div>
+    <div class="sw"><div class="c" style="background:#0b1220"></div><div class="l"><b>canvas</b>#0b1220 大屏画布</div></div>
+  </div>
+  <div class="note">文字三级：<code>#1f2d3d</code>（主）→ <code>#5e718a</code>（次）→ <code>#97a5b8</code>（弱/占位）。描边两级：<code>#e3e8ef</code>（常规件）/ <code>#d0d8e3</code>（输入框）。</div>
+</div>
+
+<div class="sec">3. 字号阶梯</div>
+<div class="panel">
+  <div class="type-row"><span class="demo" style="font-size:22px;font-weight:700">页面标题 22px / Bold</span><span class="meta">h1 · 场景列表页头</span></div>
+  <div class="type-row"><span class="demo" style="font-size:16px;font-weight:700">区块标题 16px / Bold</span><span class="meta">卡片标题、面板头</span></div>
+  <div class="type-row"><span class="demo">正文 14px / Regular</span><span class="meta">默认 body</span></div>
+  <div class="type-row"><span class="demo" style="font-size:13px;color:#5e718a">辅助文字 13px</span><span class="meta">聊天气泡、说明</span></div>
+  <div class="type-row"><span class="demo" style="font-size:12px;color:#97a5b8">元信息 12px</span><span class="meta">时间、组件数、MCP 轨迹</span></div>
+</div>
+
+<div class="sec">4. 按钮 <small>四型 × 三档</small></div>
+<div class="panel">
+  <div>
+    <button class="btn btn-p">主操作</button>
+    <button class="btn btn-o">次操作</button>
+    <button class="btn btn-g">普通</button>
+    <button class="btn btn-d">危险</button>
+  </div>
+  <div>
+    <button class="btn btn-p btn-sm">新建场景</button>
+    <button class="btn btn-o btn-sm">导入素材</button>
+    <button class="btn btn-g btn-sm">收起 ‹</button>
+  </div>
+  <div class="note">规则：每屏最多一个主操作（新建场景 / 发送）；点选引导项用次操作样式（描边蓝）；收起/展开用普通小按钮。</div>
+</div>
+
+<div class="sec">5. 标签 · 输入</div>
+<div class="panel">
+  <div style="margin-bottom:14px">
+    <span class="tag tag-p">Hermes</span><span class="tag tag-ok">已连接 MCP</span><span class="tag tag-ok">● 实时刷新</span><span class="tag tag-w">P2 预留</span>
+  </div>
+  <input class="inp" placeholder="描述你想调整的内容……">
+  <input class="inp" value="聚焦后的态" style="border-color:var(--c-primary);box-shadow:0 0 0 3px rgba(43,109,232,.12)">
+</div>
+
+<div class="sec">6. 卡片 <small>场景卡 / 素材卡</small></div>
+<div class="panel">
+  <div class="demo-card">
+    <div class="th"></div>
+    <b style="font-size:13px">设备监控</b>
+    <div style="font-size:12px;color:var(--c-txt-3)">昨天 14:22 · 7 个组件</div>
+  </div>
+  <div class="demo-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;color:var(--c-primary);font-weight:700;min-height:135px">＋ 新建场景</div>
+  <div class="note">卡片默认 shadow-1，hover 升 shadow-2 并轻微上移（translateY(-1px)）；「新建」卡用虚线描边表达可添加。</div>
+</div>
+
+<div class="sec">7. 间距体系 <small>4 的倍数</small></div>
+<div class="panel">
+  <div class="sp-row"><i style="width:8px"></i>8 · 组件内紧凑间距</div>
+  <div class="sp-row"><i style="width:12px"></i>12 · 列表项间距</div>
+  <div class="sp-row"><i style="width:16px"></i>16 · 卡片内边距</div>
+  <div class="sp-row"><i style="width:24px"></i>24 · 面板内边距 / 区块间距</div>
+  <div class="sp-row"><i style="width:40px"></i>40 · 页面外边距</div>
+</div>
+
+<div class="sec">8. 工作区专属规则 <small>浅 × 深同屏</small></div>
+<div class="panel">
+  <table>
+    <tr><th>区域</th><th>规则</th></tr>
+    <tr><td>左侧聊天面板</td><td>中性底 surface2 底；Hermes iframe 嵌入区带 1px 描边圆角框；收起后变 44px 窄条（仅保留 « » 按钮）</td></tr>
+    <tr><td>用户气泡</td><td>primary 蓝底白字（右上）；助手气泡白底描边（左上）—— 与微信类心智一致</td></tr>
+    <tr><td>MCP 轨迹</td><td>12px mono 弱色，左侧 2px 蓝色竖线；不参与视觉竞争</td></tr>
+    <tr><td>引导点选项</td><td>描边蓝 pill，选中态 primary-bg + 加深文字</td></tr>
+    <tr><td>右侧呈现区</td><td>深色 #0b1220 + 内衬 8px 深色边；画布内组件物料自带样式（物料站产物，不归本规范管）</td></tr>
+    <tr><td>呈现区视图切换</td><td><b>默认画布视图</b>；顶栏「大屏 / 文档」切换至<b>文档视图（文件管理器布局，只读）</b>：左侧为<b>场景实际项目</b>的完整目录树（src/components/materials 物料与 registry、src/screens、public/schemas、public/vendors、public/assets、package.json 等，项目是什么就展示什么），右侧选中文件内容预览（代码/JSON 语法高亮；图片内联预览；MCP 写入的文件或变更节点黄色标注）。无任何编辑入口；切换为瞬时 tab，不丢画布状态</td></tr>
+  </table>
+</div>
+
+<div class="sec">9. Hermes iframe 主题适配 <small>实测结论 2026-11-17</small></div>
+<div class="panel">
+  <table>
+    <tr><th>事实</th><th>说明</th></tr>
+    <tr><td>Hermes 跟随系统颜色</td><td>实测 <code>html.dark</code> + <code>prefers-color-scheme</code> 响应；另有用户级主题定制（<code>hermes_theme_customization_v1</code>：字号/文字色/强调色）</td></tr>
+    <tr><td>平台应用</td><td><b>固定浅色</b>，不跟随系统——零代码产品心智统一</td></tr>
+    <tr><td>一致性要求</td><td>演示/交付环境系统设为浅色模式（或浏览器 DevTools 强制 prefers-color-scheme: light），iframe 即呈浅色，与外壳同域</td></tr>
+    <tr><td>深色兜底</td><td>系统为深色时 iframe 允许呈深色，<b>不视为缺陷</b>；聊天面板容器用中性底 <code>#eef0f4</code> + 圆角描边，两种系统色下均可衬</td></tr>
+  </table>
+  <div class="note">结论：不需要为 iframe 做三段式深色域。唯一硬要求是演示机系统颜色 = 浅色，写进演示 SOP 的环境检查项。</div>
+</div>
+
+<div class="foot" style="color:var(--c-txt-3);font-size:12px;margin-top:32px;border-top:1px solid var(--c-line);padding-top:12px">
+  fedx-vis-ai-view · design/v2-chat-mcp/design-spec.html · 配套高保真原型见 prototype.html · 2026-11-17
+</div>
+
+</div>
+</body>
+</html>

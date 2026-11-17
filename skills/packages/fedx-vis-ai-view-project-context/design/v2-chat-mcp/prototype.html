@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v2 原型 · 对话搭建平台（platform-apps/builder）</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #101a2c; --panel2: #16233a;
+    --line: #24344f; --txt: #d8e4f5; --dim: #8ba3c7;
+    --acc: #35d0ff; --ok: #4cd7a1; --warn: #ffd666;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--txt); font: 14px/1.75 "PingFang SC", "Microsoft YaHei", sans-serif; padding: 40px 24px; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 6px; color: #fff; }
+  .sub { color: var(--dim); margin-bottom: 32px; font-size: 13px; }
+  .sec-title { color: #fff; font-size: 17px; margin: 36px 0 4px; }
+  .sec-desc { color: var(--dim); font-size: 13px; margin-bottom: 14px; }
+  .pill { font-size: 11px; font-weight: 400; border-radius: 20px; padding: 1px 10px; background: rgba(76,215,161,.12); color: var(--ok); border: 1px solid rgba(76,215,161,.4); }
+
+  /* ── 页面 1：场景列表 ── */
+  .scenes { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 24px; }
+  .scenes-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .scenes-h b { color: #fff; font-size: 16px; }
+  .newscene { background: var(--acc); color: #06202e; border: none; border-radius: 6px; padding: 7px 18px; font-weight: 700; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .scard { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 16px; position: relative; }
+  .scard .name { color: #fff; font-weight: 700; }
+  .scard .meta { color: var(--dim); font-size: 12px; margin-top: 4px; }
+  .scard .thumb { height: 84px; margin-bottom: 10px; border-radius: 6px; background: #0a1524; border: 1px solid var(--line); position: relative; overflow: hidden; }
+  .scard .thumb i { position: absolute; background: rgba(53,208,255,.35); border: 1px solid var(--acc); border-radius: 2px; display: block; }
+  .scard.empty-card { border-style: dashed; color: var(--dim); text-align: center; }
+
+  /* ── 页面 2：工作区 ── */
+  .layout { display: grid; grid-template-columns: 340px 1fr; gap: 14px; min-height: 620px; transition: grid-template-columns .25s ease; }
+  .layout.collapsed { grid-template-columns: 44px 1fr; }
+  .collapse-btn { background: var(--panel2); border: 1px solid var(--line); color: var(--acc); border-radius: 6px; cursor: pointer; font-size: 15px; line-height: 1; padding: 4px 8px; }
+  .chat.collapsed-w .msgs, .chat.collapsed-w .inputbar, .chat.collapsed-w .chat-body { display: none; }
+  .chat.collapsed-w { align-items: center; }
+  .chat.collapsed-w .chat-h { flex-direction: column; gap: 8px; padding: 10px 6px; }
+  .chat.collapsed-w .chat-h .back { display: none; }
+  .chat, .screen { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; }
+  .chat-h, .screen-h { padding: 10px 14px; border-bottom: 1px solid var(--line); font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .msgs { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 430px; }
+  .bub { max-width: 92%; padding: 8px 12px; border-radius: 10px; font-size: 13px; }
+  .u { align-self: flex-end; background: rgba(53,208,255,.15); border: 1px solid rgba(53,208,255,.4); color: #eaf6ff; }
+  .a { align-self: flex-start; background: var(--panel2); border: 1px solid var(--line); }
+  .opts { align-self: flex-start; max-width: 92%; display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 2px; }
+  .opt { font-size: 13px; background: var(--panel2); border: 1px solid var(--acc); color: var(--acc); border-radius: 16px; padding: 4px 14px; }
+  .opt.chosen { background: rgba(53,208,255,.25); color: #fff; }
+  .tool { font: 12px/1.6 Consolas, monospace; color: var(--dim); border-left: 2px solid var(--acc); padding: 4px 0 4px 10px; margin: 2px 0 2px 8px; align-self: flex-start; max-width: 92%; }
+  .tool b { color: var(--acc); font-weight: 400; }
+  .inputbar { border-top: 1px solid var(--line); padding: 10px; display: flex; gap: 8px; }
+  .inputbar input { flex: 1; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; color: var(--txt); padding: 8px 10px; font-size: 13px; }
+  .inputbar button { background: var(--acc); color: #06202e; border: none; border-radius: 6px; padding: 0 16px; font-weight: 700; }
+  .back { font-size: 12px; color: var(--dim); }
+  .live { font-size: 11px; font-weight: 400; color: var(--ok); }
+  .stage { flex: 1; position: relative; background: #0a1524; min-height: 470px; }
+  .cell { position: absolute; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font-size: 12px; color: var(--dim); }
+  .cell .num { color: var(--acc); font: 700 18px/1.2 Consolas, monospace; margin-top: 2px; }
+  .cell .bar { height: 4px; border-radius: 2px; background: var(--line); margin-top: 6px; }
+  .cell .bar.fill { background: var(--acc); width: 68%; }
+  .cell .bar2 { height: 5px; width: 60%; background: rgba(53,208,255,.25); margin-top: 5px; border-radius: 2px; }
+  .cell .bar2.fill2 { width: 85%; background: var(--acc); }
+  .cell.hl { border-color: var(--warn); }
+  .cell.hl .flop { color: var(--warn); }
+  .foot { color: var(--dim); font-size: 12px; margin-top: 28px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .p2tag { font-size: 11px; font-weight: 400; border-radius: 20px; padding: 1px 10px; background: rgba(255,214,102,.1); color: var(--warn); border: 1px solid rgba(255,214,102,.4); }
+  .tool.db { border-left-color: var(--warn); }
+  .tool.db b { color: var(--warn); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>v2 原型 · 对话搭建平台</h1>
+<div class="sub">产品 = platform-apps/builder · 依据 chat-mcp.md §1 产品定义 / §2 演示脚本 ·「版本历史」为 P1 预留</div>
+
+<!-- ═══ 页面 1：场景列表页 ═══ -->
+<div class="sec-title">页面 1 · 场景列表</div>
+<div class="sec-desc">产品入口：已有场景直接进入（恢复上次大屏），新建场景进入工作区从引导开始——对应「能保存、能再进来继续改」。</div>
+<div class="scenes">
+  <div class="scenes-h">
+    <b>我的场景</b>
+    <button class="newscene">＋ 新建场景</button>
+  </div>
+  <div class="cards">
+    <div class="scard">
+      <div class="thumb"><i style="left:4%;top:8%;width:92%;height:16%"></i><i style="left:4%;top:30%;width:22%;height:62%"></i><i style="left:30%;top:30%;width:44%;height:62%"></i><i style="right:4%;top:30%;width:22%;height:62%"></i></div>
+      <div class="name">设备监控</div>
+      <div class="meta">3 天前修改 · 7 个区块</div>
+    </div>
+    <div class="scard empty-card">
+      <div style="padding:36px 0">＋ 新建场景<br><span style="font-size:12px">聊几句话，得到一块大屏</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 页面 2：工作区（引导完成后 + 一句话迭代后） ═══ -->
+<div class="sec-title">页面 2 · 工作区（新建场景 · 引导完成后的状态）</div>
+<div class="sec-desc">左 Hermes 聊天窗 · 右大屏呈现（SSE 热刷新）。对话展示引导链路：布局点选 → 组件点选 → assemble_screen 出屏 → 一句话换翻牌器；灰色条为智能体的 MCP 调用轨迹。聊天窗支持收起（点头部 ‹› 按钮），全屏看大屏。</div>
+<div class="layout" id="wk-layout">
+  <div class="chat" id="wk-chat">
+    <div class="chat-h">
+      <span class="back">‹ 场景列表</span>
+      <span style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:13px">未命名场景</span>
+        <span class="pill">Hermes iframe</span>
+      </span>
+      <button class="collapse-btn" title="收起/展开聊天窗" onclick="toggleChat()">«</button>
+    </div>
+    <div class="msgs">
+      <div class="bub a">你好，我是大屏搭建助手。先选一个整体布局吧：</div>
+      <div class="opts">
+        <span class="opt chosen">三段式</span>
+        <span class="opt">左右分栏</span>
+        <span class="opt">上下结构</span>
+      </div>
+      <div class="bub u">三段式</div>
+      <div class="tool"><b>list_materials</b>(category: layout)</div>
+      <div class="bub a">好，三段式布局。左边放什么？</div>
+      <div class="opts">
+        <span class="opt chosen">指标卡</span>
+        <span class="opt">排行榜</span>
+        <span class="opt">图表</span>
+      </div>
+      <div class="bub u">指标卡</div>
+      <div class="tool"><b>list_materials</b>(category: indicator)</div>
+      <div class="tool"><b>get_material_detail</b>(indicator-view)</div>
+      <div class="bub a">中间和右边放什么？</div>
+      <div class="opts">
+        <span class="opt chosen">地图 + 告警列表</span>
+        <span class="opt">视频 + 表格</span>
+      </div>
+      <div class="bub u">地图 + 告警列表</div>
+      <div class="tool"><b>get_material_detail</b>(emap-gis, detail-table)</div>
+      <div class="tool"><b>assemble_screen</b>(schema: 7 sections)</div>
+      <div class="bub a">大屏已生成，右侧实时预览。需要调整随时告诉我。</div>
+      <div class="bub u">把「告警数」指标卡换成翻牌器</div>
+      <div class="tool"><b>get_current_screen</b>()</div>
+      <div class="tool"><b>upsert_component</b>(section: 告警数, type: digital-flop)</div>
+      <div class="bub a">已将告警数区块替换为翻牌器（digital-flop）。</div>
+      <div style="border-top:1px dashed var(--line); margin:8px 0 4px; padding-top:10px; font-size:11px; color:var(--warn)">以下为 P2 · 数据链路（自动建表 + 生成 API + 组件绑定）的对话形态预览：</div>
+      <div class="bub u">这块翻牌器展示真实的告警数吧，别用演示数据</div>
+      <div class="tool db"><b>define_table</b>(name: alarm_stats, cols: [level, count, updated_at])</div>
+      <div class="tool db"><b>create_api</b>(GET /api/q/alarm-stats → alarm_stats)</div>
+      <div class="tool db"><b>bind_datasource</b>(component: digital-flop, api: /api/q/alarm-stats)</div>
+      <div class="bub a">已创建数据表 alarm_stats 并生成查询接口，翻牌器现在绑定真实数据（当前 37 条告警）。</div>
+    </div>
+    <div class="inputbar">
+      <input placeholder="继续描述你想调整的内容……">
+      <button>发送</button>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-h">呈现区
+      <span style="display:flex;gap:10px;align-items:center">
+        <span style="display:inline-flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;font-size:11px;font-weight:400">
+          <button onclick="toggleView('canvas')" id="vtab-c" style="border:none;cursor:pointer;padding:2px 12px;background:#24344f;color:#fff">大屏</button>
+          <button onclick="toggleView('doc')" id="vtab-d" style="border:none;cursor:pointer;padding:2px 12px;background:transparent;color:var(--dim)">文档</button>
+        </span>
+        <span class="pill" style="background:rgba(255,214,102,.1);color:var(--warn);border-color:rgba(255,214,102,.4)">版本历史 (P1)</span>
+        <span class="live">schema 热刷新</span>
+      </span>
+    </div>
+    <div class="stage" id="view-canvas">
+      <div class="cell" style="left:2%; top:5%; width:96%; height:9%; text-align:center"><div style="color:#fff;font-weight:700">设备监控中心</div></div>
+      <div class="cell" style="left:2%; top:17%; width:20%; height:25%"><div>在线设备</div><div class="num">1,284</div><div class="bar fill"></div></div>
+      <div class="cell hl" style="left:2%; top:45%; width:20%; height:25%"><div>告警数 · digital-flop</div><div class="flop" style="display:flex;gap:4px;margin-top:8px"><span style="background:#0a1524;border:1px solid #ffd666;color:#ffd666;font:700 22px/1.4 Consolas,monospace;border-radius:3px;padding:2px 8px">3</span><span style="background:#0a1524;border:1px solid #ffd666;color:#ffd666;font:700 22px/1.4 Consolas,monospace;border-radius:3px;padding:2px 8px">7</span></div></div>
+      <div class="cell" style="left:2%; top:73%; width:20%; height:23%"><div>可用率</div><div class="num">99.2%</div><div class="bar fill"></div></div>
+      <div class="cell" style="left:24%; top:17%; width:48%; height:79%"><div>设备分布地图 · emap-gis</div><svg viewBox="0 0 100 60" style="width:100%;height:82%"><path d="M15 40 Q30 10 50 25 T85 20" fill="none" stroke="#24344f" stroke-width="1.5"/><circle cx="50" cy="25" r="3" fill="#35d0ff"/><circle cx="30" cy="18" r="2.5" fill="#4cd7a1"/><circle cx="70" cy="33" r="2.5" fill="#ffd666"/></svg></div>
+      <div class="cell" style="right:2%; top:17%; width:22%; height:79%"><div>实时告警 · detail-table</div><div class="bar2"></div><div class="bar2 fill2"></div><div class="bar2"></div><div class="bar2 fill2"></div><div class="bar2"></div><div class="bar2"></div></div>
+    </div>
+    <div id="view-doc" style="display:none;flex:1;overflow:hidden">
+      <div style="display:flex;height:100%;overflow:hidden">
+        <div style="width:230px;border-right:1px solid var(--line);padding:12px 0;font:12px/1.9 var(--f-sans, sans-serif);color:var(--dim);flex-shrink:0;overflow:auto" id="ftree">
+          <div style="padding:0 14px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ scene-设备监控/</div>
+          <div style="padding:0 14px 0 26px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ src/</div>
+          <div style="padding:0 14px 0 38px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ components/</div>
+          <div style="padding:0 14px 0 38px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">&nbsp;&nbsp;▾ materials/</div>
+          <div class="ftree-item" onclick="pickFile(this,'registry.tsx')" style="padding:0 14px 0 62px;cursor:pointer">registry.tsx</div>
+          <div class="ftree-item" onclick="pickFile(this,'digital-flop.tsx')" style="padding:0 14px 0 62px;cursor:pointer">digital-flop.tsx <span style="color:var(--warn)">●</span></div>
+          <div style="padding:0 14px 0 62px;opacity:.7">indicator-view.tsx</div>
+          <div style="padding:0 14px 0 62px;opacity:.7">emap-gis.tsx</div>
+          <div style="padding:0 14px 0 38px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ screens/</div>
+          <div class="ftree-item" onclick="pickFile(this,'Home.tsx')" style="padding:0 14px 0 62px;cursor:pointer">Home.tsx</div>
+          <div class="ftree-item" onclick="pickFile(this,'main.tsx')" style="padding:0 14px 0 38px;cursor:pointer">main.tsx</div>
+          <div style="padding:0 14px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ public/</div>
+          <div style="padding:0 14px 0 26px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ schemas/</div>
+          <div class="ftree-item sel" onclick="pickFile(this,'home.schema.json')" style="padding:0 14px 0 50px;cursor:pointer;color:#35d0ff;background:rgba(53,208,255,.08)">home.schema.json</div>
+          <div style="padding:0 14px 0 26px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ vendors/</div>
+          <div style="padding:0 14px 0 50px;opacity:.7">screen-renderer.iife.js</div>
+          <div style="padding:0 14px 0 26px;color:#fff;font-weight:700;font-family:Consolas,monospace;font-size:12px">▾ assets/</div>
+          <div style="padding:0 14px 0 50px;opacity:.7">bg-dark.png · logo.svg</div>
+          <div class="ftree-item" onclick="pickFile(this,'package.json')" style="padding:0 14px 0 26px;cursor:pointer;margin-top:4px">package.json</div>
+          <div style="padding:0 14px 0 26px;opacity:.7">vite.config.ts</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:14px 18px;font:12px/1.8 Consolas,monospace;color:var(--dim)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <b id="fname" style="color:#fff;font-family:Consolas,monospace">public/schemas/home.schema.json</b>
+            <span style="color:var(--ok,#4cd7a1)">● 只读</span>
+          </div>
+<div id="fcontent">{
+  <span style="color:#6ea8ff">"version"</span>: <span style="color:#ffd666">"2"</span>,
+  <span style="color:#6ea8ff">"layout"</span>: { <span style="color:#6ea8ff">"type"</span>: <span style="color:#ffd666">"three-section"</span>, <span style="color:#6ea8ff">"title"</span>: <span style="color:#ffd666">"设备监控中心"</span> },
+  <span style="color:#6ea8ff">"sections"</span>: [
+    { <span style="color:#6ea8ff">"id"</span>: <span style="color:#ffd666">"left"</span>, <span style="color:#6ea8ff">"components"</span>: [
+      { <span style="color:#6ea8ff">"type"</span>: <span style="color:#ffd666">"indicator-view"</span>, <span style="color:#6ea8ff">"props"</span>: { <span style="color:#6ea8ff">"title"</span>: <span style="color:#ffd666">"在线设备"</span> } },
+      <span style="background:rgba(255,214,102,.15);display:inline-block;width:100%"><span style="color:#6ea8ff">"type"</span>: <span style="color:#ffd666">"digital-flop"</span>, <span style="color:#6ea8ff">"props"</span>: { <span style="color:#6ea8ff">"title"</span>: <span style="color:#ffd666">"告警数"</span> } },  <span style="color:var(--warn)">← 刚被 upsert_component 替换</span></span>
+    ]},
+    { <span style="color:#6ea8ff">"id"</span>: <span style="color:#ffd666">"center"</span>, <span style="color:#6ea8ff">"components"</span>: [ { <span style="color:#6ea8ff">"type"</span>: <span style="color:#ffd666">"emap-gis"</span> } ] },
+    { <span style="color:#6ea8ff">"id"</span>: <span style="color:#ffd666">"right"</span>, <span style="color:#6ea8ff">"components"</span>: [ { <span style="color:#6ea8ff">"type"</span>: <span style="color:#ffd666">"detail-table"</span> } ] }
+  ]
+}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 页面 4：P2 数据链路（对话形态 + 数据面板） ═══ -->
+<div class="sec-title">页面 4 · 数据链路（P2 预留）</div>
+<div class="sec-desc">领导点名的「自动建表 + 生成 API」：用户一句话要真实数据 → 智能体 define_table 建表（SQLite 起步）→ create_api 生成查询接口 → bind_datasource 绑到组件 props。P0 阶段组件全部用 mock 数据，此页仅为能力预留。</div>
+<div class="layout">
+  <div class="chat" style="min-height:340px">
+    <div class="chat-h">对话形态 <span class="p2tag">P2</span></div>
+    <div class="msgs" style="min-height:220px">
+      <div class="bub u">给设备分布地图接真实数据</div>
+      <div class="tool db"><b>define_table</b>(name: device_geo, cols: [region, online, total])</div>
+      <div class="tool db"><b>create_api</b>(GET /api/q/device-geo)</div>
+      <div class="tool db"><b>bind_datasource</b>(component: emap-gis, api: /api/q/device-geo)</div>
+      <div class="bub a">已建表并生成接口，地图现在每 30s 拉取一次真实分布数据。</div>
+    </div>
+  </div>
+  <div class="screen" style="min-height:340px">
+    <div class="chat-h">数据面板（工作区侧栏/弹层） <span class="p2tag">P2</span></div>
+    <div class="msgs" style="min-height:220px; gap:8px">
+      <div class="cell" style="position:relative;left:0;top:0;width:100%;margin-bottom:8px"><div>📊 数据表（SQLite）</div><div style="color:var(--ok);font-family:Consolas,monospace;font-size:12px">alarm_stats · device_geo</div></div>
+      <div class="cell" style="position:relative;left:0;top:0;width:100%;margin-bottom:8px"><div>🔌 已生成 API</div><div style="font-family:Consolas,monospace;font-size:12px;color:var(--dim)">GET /api/q/alarm-stats<br>GET /api/q/device-geo</div></div>
+      <div class="cell" style="position:relative;left:0;top:0;width:100%"><div>🔗 组件绑定</div><div style="font-family:Consolas,monospace;font-size:12px;color:var(--dim)">digital-flop → alarm-stats<br>emap-gis → device-geo</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 页面 3：素材管理 ═══ -->
+<div class="sec-title">页面 3 · 素材管理</div>
+<div class="sec-desc">与场景列表平级：上传/管理图片素材（背景、装饰、图标），搭屏时智能体经 <b>list_assets</b> 检索并在 schema 中以 asset://id 引用；被场景引用的素材禁止删除。</div>
+<div class="scenes">
+  <div class="scenes-h">
+    <b>素材库</b>
+    <button class="newscene">⬆ 上传素材</button>
+  </div>
+  <div style="border:1px dashed var(--line); border-radius:8px; padding:18px; margin-bottom:16px; color:var(--dim); font-size:13px; text-align:center">
+    拖拽 / 粘贴图片到此处上传 · 支持 png / jpg / svg · 单张 ≤ 5MB
+  </div>
+  <div class="cards" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+    <div class="scard">
+      <div class="thumb" style="background:linear-gradient(135deg,#0a1524 40%,rgba(53,208,255,.25)); margin-bottom:10px; height:100px; display:flex; align-items:center; justify-content:center; color:var(--acc); font-size:12px">科技蓝大屏背景.png</div>
+      <div class="name">科技蓝大屏背景</div>
+      <div class="meta">背景 · 2.1MB · 被 1 个场景引用</div>
+    </div>
+    <div class="scard">
+      <div class="thumb" style="margin-bottom:10px; height:100px; display:flex; align-items:center; justify-content:center; border-color:rgba(76,215,161,.5); color:var(--ok); font-size:22px">⬡</div>
+      <div class="name">六边形装饰边框</div>
+      <div class="meta">装饰 · svg · 未引用</div>
+    </div>
+    <div class="scard">
+      <div class="thumb" style="margin-bottom:10px; height:100px; display:flex; align-items:center; justify-content:center; color:var(--warn); font-size:22px">◈</div>
+      <div class="name">设备图标组</div>
+      <div class="meta">图标 · svg · 被 3 个场景引用</div>
+    </div>
+    <div class="scard empty-card">
+      <div style="padding:30px 0; font-size:13px">＋ 继续上传</div>
+    </div>
+  </div>
+  <div style="margin-top:14px; color:var(--dim); font-size:12px">删除保护：「设备图标组」被 3 个场景引用，删除前需先解除引用</div>
+</div>
+
+<div class="foot">fedx-vis-ai-view · design/v2-chat-mcp/prototype.html · 2026-11-17</div>
+
+</div>
+<script>
+var fileMock = {
+  'home.schema.json': null, // 已内联在 DOM，切换时还原初始内容
+  'registry.tsx': '// src/components/materials/registry.tsx\nimport { lazy } from \'react\';\n\nexport const registry = {\n  \'indicator-view\': lazy(() => import(\'./indicator-view\')),\n  \'digital-flop\':   lazy(() => import(\'./digital-flop\')),   // ← upsert_component 新增\n  \'emap-gis\':       lazy(() => import(\'./emap-gis\')),\n};\n\nexport type MaterialKey = keyof typeof registry;',
+  'digital-flop.tsx': '// src/components/materials/digital-flop.tsx\n// 来源：物料站 docs/materials/components/ui/digital-flop（四件套 code/）\n// 由 upsert_component 于本次会话写入\nimport { useEffect, useState } from \'react\';\n\nexport default function DigitalFlop({ title, value }: { title: string; value: number }) {\n  const [display, setDisplay] = useState(0);\n  useEffect(() => { /* 翻牌动画 */ }, [value]);\n  return (\n    <div className="flop-card">\n      <div className="flop-title">{title}</div>\n      <div className="flop-value">{display}</div>\n    </div>\n  );\n}',
+  'Home.tsx': '// src/screens/Home.tsx\nimport { ScalerContainer, SectionFrame } from \'screen-renderer\';\nimport { registry } from \'../components/materials/registry\';\nimport schema from \'../../public/schemas/home.schema.json\';\n\nexport default function Home() {\n  // 按 schema.sections 编排：scaler 缩放 + section 分区 + registry 懒加载物料\n  return (\n    <ScalerContainer design={[1920, 1080]}>\n      {schema.sections.map(sec => (\n        <SectionFrame key={sec.id} {...sec}>\n          {sec.components.map(c => {\n            const C = registry[c.type];\n            return C ? <C key={c.type} {...c.props} /> : null;\n          })}\n        </SectionFrame>\n      ))}\n    </ScalerContainer>\n  );\n}',
+  'main.tsx': '// src/main.tsx\nimport { createRoot } from \'react-dom/client\';\nimport Home from \'./screens/Home\';\n\ncreateRoot(document.getElementById(\'root\')!).render(<Home />);',
+  'package.json': '{\n  "name": "scene-device-monitor",\n  "private": true,\n  "type": "module",\n  "scripts": { "dev": "vite", "build": "vite build" },\n  "dependencies": {\n    "react": "^18.3.0",\n    "react-dom": "^18.3.0"\n  },\n  "devDependencies": { "vite": "^8.0.0" }\n}'
+};
+var initialSchema = null;
+function pickFile(el, name) {
+  var items = document.querySelectorAll('#ftree .ftree-item');
+  items.forEach(function(i){ i.style.color = ''; i.style.background = ''; });
+  el.style.color = '#35d0ff';
+  el.style.background = 'rgba(53,208,255,.08)';
+  document.getElementById('fname').textContent = name;
+  var fc = document.getElementById('fcontent');
+  if (!initialSchema) initialSchema = fc.innerHTML;
+  fc.innerHTML = fileMock[name] === null ? initialSchema : '<div style="white-space:pre-wrap;font-family:inherit;color:var(--dim)">' + fileMock[name] + '</div>';
+}
+function toggleChat() {
+  var layout = document.getElementById('wk-layout');
+  var chat = document.getElementById('wk-chat');
+  var btn = chat.querySelector('.collapse-btn');
+  layout.classList.toggle('collapsed');
+  chat.classList.toggle('collapsed-w');
+  btn.textContent = chat.classList.contains('collapsed-w') ? '»' : '«';
+}
+function toggleView(v) {
+  var canvas = document.getElementById('view-canvas');
+  var doc = document.getElementById('view-doc');
+  var tc = document.getElementById('vtab-c');
+  var td = document.getElementById('vtab-d');
+  var isCanvas = (v === 'canvas');
+  canvas.style.display = isCanvas ? '' : 'none';
+  doc.style.display = isCanvas ? 'none' : '';
+  tc.style.background = isCanvas ? '#24344f' : 'transparent';
+  tc.style.color = isCanvas ? '#fff' : 'var(--dim)';
+  td.style.background = isCanvas ? 'transparent' : '#24344f';
+  td.style.color = isCanvas ? 'var(--dim)' : '#fff';
+}
+</script>
+</body>
+</html>

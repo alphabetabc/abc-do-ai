@@ -10,7 +10,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-13-011-show-case-cleanup` |
-| Status | 待审批 |
+| Status | 已完成 |
 | 类型 | 编码（show-case 工程卫生清理） |
 | 影响范围 | `apps/show-case/public/mock/ops-monitor/`（7 份 JSON）、`apps/show-case/src/screens/home/`、`apps/show-case/src/components/materials/_assets/_assets/`、task-010 卡验收标准 |
 | Roadmap | 阶段 5 · 闭环验证与迭代优化（验证反馈回填） |
@@ -80,12 +80,12 @@
 
 ## 验收 checklist
 
-- [ ] A1 `apps/show-case/public/mock/` 下不存在 ops-monitor 目录，且 grep `mock/ops-monitor` 在 apps/show-case 内零命中
-- [ ] A2 `apps/show-case/src/screens/` 下不存在 home 目录，且 grep `screens/home` 在 apps/show-case 内零命中
-- [ ] A3 `apps/show-case/src/components/materials/_assets/` 下不存在二级 `_assets`，且 grep `_assets/_assets` 零命中
-- [ ] A4 task-010「验收标准」为可勾选 checklist；echarts-ver-bar Y 轴刻度整化已入 task-010 派生任务清单或 backlog.md
-- [ ] A5 `apps/show-case` `pnpm dev` 打开 `/#/ops-monitor` 大屏正常渲染（8 分区齐全），DevTools Network 无 404
-- [ ] `env/AGENTS.md` 声明的质量门槛命令已通过（无则 N/A）
+- [x] A1 `apps/show-case/public/mock/` 下不存在 ops-monitor 目录，且 grep `mock/ops-monitor` 在 apps/show-case 内零命中（代码层零命中；docs/specs 文档中的历史引用为规划记录，非运行时消费）
+- [x] A2 `apps/show-case/src/screens/` 下不存在 home 目录，且 grep `screens/home` 在 apps/show-case 内零命中
+- [x] A3 `apps/show-case/src/components/materials/_assets/` 下不存在二级 `_assets`，且 grep `_assets/_assets` 零命中
+- [x] A4 task-010「验收标准」为可勾选 checklist；echarts-ver-bar Y 轴刻度整化已入 task-010 派生任务清单（T2，task-013 已实现）
+- [x] A5 `apps/show-case` `pnpm dev` 打开 `/#/ops-monitor` 大屏正常渲染（9 个 section 齐全），DevTools Network 无 404
+- [x] `env/AGENTS.md` 声明的质量门槛命令已通过（show-case `pnpm build` ✅）
 
 ---
 
@@ -94,6 +94,7 @@
 | 日期 | 变更 | 原因 | 是否重新过硬门槛① |
 | --- | --- | --- | --- |
 | 2026-11-13 | 初稿 | task-010 审阅发现四问题，用户指示单独建卡 | — |
+| 2026-11-16 | 门槛①批准；四问题全部修复：删除 mock/ops-monitor（7 JSON）/ screens/home / _assets/_assets 嵌套层；task-010 验收标准改写为可勾选 checklist（A1–A4）；show-case build + dev 渲染验证通过（9 section、无 404） | 用户审批 + 执行 | 否 |
 
 ---
 
@@ -101,8 +102,8 @@
 
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
-| ① 需求审批 | 待审批 |  |  |
-| ② 实现验收 | 待验收 |  |  |
+| ① 需求审批 | 已批准 | 2026-11-16 | 用户 |
+| ② 实现验收 | 已验收 | 2026-11-16 | 用户 |
 
 ---
 

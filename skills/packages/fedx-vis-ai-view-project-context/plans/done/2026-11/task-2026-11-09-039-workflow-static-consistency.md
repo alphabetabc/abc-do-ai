@@ -5,7 +5,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-09-039-workflow-static-consistency` |
-| Status | 已完成（待验收归档） |
+| Status | 已完成 |
 | 类型 | docs |
 | 影响范围 | `docs/workflows/big-screen-assembly.md`、`scripts/export-skill.mjs`（SKILL.md 文案）、`docs/materials/_templates/`、约 20 个 `docs/materials/**/spec.md`（补节）、`docs/materials/business/pie-3d/`（依赖声明核对） |
 | Roadmap | `plans/roadmap.md` 阶段 4（skill 产物化） |

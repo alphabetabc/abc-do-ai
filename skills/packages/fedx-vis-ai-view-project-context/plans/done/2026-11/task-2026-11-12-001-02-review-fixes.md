@@ -5,7 +5,7 @@
 | 项 | 值 |
 | --- | --- |
 | 编号 | `task-2026-11-12-001-02-review-fixes` |
-| Status | 已完成（待验收②） |
+| Status | 已完成 |
 | 类型 | 编码 / 配置 / 文档 |
 | 影响范围 | `docs/skeleton/package.json`（build 前置命令）、`.gitignore`、`packages/screen-renderer/src/types.ts`（头注释）、根 `AGENTS.md`（目录结构 / 常用命令回填）、`packages/screen-renderer/`（变更记录补记） |
 | Roadmap | MVP · 里程碑 1 · 001 的修正任务 |
@@ -93,7 +93,7 @@
 | 门槛 | 状态 | 日期 | 批准人 |
 | --- | --- | --- | --- |
 | ① 需求审批 | 已批准（用户指令「执行」） | 2026-11-12 | 用户 |
-| ② 实现验收 | 待验收 | — | — |
+| ② 实现验收 | 已验收 | 2026-11-16 | 用户（归档时已实际验收，卡面回填） |
 
 ---
 
