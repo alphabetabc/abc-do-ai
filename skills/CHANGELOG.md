@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: 401d4b754a8e8aa1a2b5528fe4d5473f12b6de68 -->
+<!-- changelog-last-commit: c824264fe15279d0c068da7bc805a93f3fad9e7d -->
+
+## 2026-11-19
+
+- 发布 skill
+    - 「oss-pmmp-project-context」 v0.0.0；
+- 新增 skill
+    - 「oss-pmmp-project-context」项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
 
 ## 2026-11-17
 
