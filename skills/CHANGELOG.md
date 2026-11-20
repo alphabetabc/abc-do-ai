@@ -1,6 +1,6 @@
 # Changelog
 
-<!-- changelog-last-commit: 8866e5a48a0ff7067ec4ca464cbc328e3037ecc1 -->
+<!-- changelog-last-commit: d8f39d43d33bf78a2ec099f16fa6a514b9a58df3 -->
 
 ## 2026-11-20
 
@@ -11,6 +11,7 @@
     - 「oss-project-manager-context」；
 - 更新 skill
     - 「oss-pmmp-project-context」（配置）；
+    - 「oss-project-manager-context」（配置、其他）；项目治理骨架：加载 design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载项目上下文 / 当前计划索引...；
 - 变更文件
     - skills/.beehive-skills-manager-db/projects/list.json；
 
