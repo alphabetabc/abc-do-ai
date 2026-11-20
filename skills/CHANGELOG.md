@@ -1,6 +1,18 @@
 # Changelog
 
-<!-- changelog-last-commit: c824264fe15279d0c068da7bc805a93f3fad9e7d -->
+<!-- changelog-last-commit: 8866e5a48a0ff7067ec4ca464cbc328e3037ecc1 -->
+
+## 2026-11-20
+
+- 发布 skill
+    - 「oss-pmmp-project-context」 v0.0.0；
+    - 「oss-project-manager-context」 v0.0.0；
+- 新增 skill
+    - 「oss-project-manager-context」；
+- 更新 skill
+    - 「oss-pmmp-project-context」（配置）；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-11-19
 
@@ -8,6 +20,8 @@
     - 「oss-pmmp-project-context」 v0.0.0；
 - 新增 skill
     - 「oss-pmmp-project-context」项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
+- 变更文件
+    - skills/.beehive-skills-manager-db/projects/list.json；
 
 ## 2026-11-17
 
