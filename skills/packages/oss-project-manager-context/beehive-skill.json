@@ -1,5 +1,5 @@
 {
-  "contentHash": "73d695f4b2d34157db52062907a8d7a2cd0eac548cb36d0e39bfbfffe62bbeb4",
+  "contentHash": "d12e270d95d88bb1c83a8bf82eed5b032fa0477b1ec3329f8300531b4b5d56cb",
   "files": [
     "./branches/",
     "./env/",
@@ -9,5 +9,6 @@
     "./pm/"
   ],
   "id": "oss-project-manager-context",
+  "updatedAt": "2026-11-20T06:39:51.160Z",
   "version": "0.0.0"
 }
