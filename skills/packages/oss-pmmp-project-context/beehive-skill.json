@@ -1,6 +1,16 @@
 {
+  "contentHash": "bcd6426872adfe043b2f66ba60130f82aca4320d3a0aaaa421ab2d5065962d73",
+  "files": [
+    "./design/",
+    "./env/",
+    "./plans/",
+    "./scripts/",
+    "./references/",
+    "./pm/"
+  ],
   "id": "oss-pmmp-project-context",
-  "version": "0.0.0",
-  "targets": ["trae"],
-  "files": ["./design/", "./env/", "./plans/", "./scripts/", "./references/"]
+  "targets": [
+    "trae"
+  ],
+  "version": "0.0.0"
 }

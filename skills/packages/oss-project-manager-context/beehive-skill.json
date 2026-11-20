@@ -1,0 +1,13 @@
+{
+  "contentHash": "73d695f4b2d34157db52062907a8d7a2cd0eac548cb36d0e39bfbfffe62bbeb4",
+  "files": [
+    "./branches/",
+    "./env/",
+    "./plans/",
+    "./scripts/",
+    "./references/",
+    "./pm/"
+  ],
+  "id": "oss-project-manager-context",
+  "version": "0.0.0"
+}
