@@ -1,6 +1,13 @@
 # Changelog
 
-<!-- changelog-last-commit: d8f39d43d33bf78a2ec099f16fa6a514b9a58df3 -->
+<!-- changelog-last-commit: c2cbb0c2acfe8fd10a22aa8f81e1ff76a98af2ec -->
+
+## 2026-11-24
+
+- 发布 skill
+    - 「oss-hwms-monitor-project-context」 v0.0.0；
+- 更新 skill
+    - 「oss-hwms-monitor-project-context」（配置、其他）；项目治理骨架：加载 env/AGENTS.md、design/ 意图层与 plans/ 计划层。触发：项目治理 / 加载...；
 
 ## 2026-11-20
 
